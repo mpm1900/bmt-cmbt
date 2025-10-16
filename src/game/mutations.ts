@@ -10,11 +10,13 @@ function pushAction(
   action: SAction,
   context: DeltaContext
 ): State {
-  const actionQueue = pushItems(state.actionQueue, {
-    ID: v4(),
-    action,
-    context,
-  })
+  const actionQueue = pushItems(state.actionQueue, [
+    {
+      ID: v4(),
+      action,
+      context,
+    },
+  ])
   return {
     ...state,
     actionQueue,
@@ -34,7 +36,7 @@ function registerTrigger(
     trigger,
     context,
   }))
-  const triggerQueue = pushItems(state.triggerQueue, ...items)
+  const triggerQueue = pushItems(state.triggerQueue, items)
 
   return {
     ...state,

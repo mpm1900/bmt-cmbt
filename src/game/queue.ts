@@ -21,7 +21,7 @@ function enqueueItems<T>(queue: Queue<T>, ...items: Array<T>): Queue<T> {
   }
 }
 
-function pushItems<T>(queue: Queue<T>, ...items: Array<T>): Queue<T> {
+function pushItems<T>(queue: Queue<T>, items: Array<T>): Queue<T> {
   return {
     ...queue,
     queue: [...items, ...queue.queue],

@@ -27,7 +27,7 @@ function nextAction(state: State): State {
     state,
     actionQueue.active.context
   )
-  const mutationQueue = pushItems(state.mutationQueue, ...mutations)
+  const mutationQueue = pushItems(state.mutationQueue, mutations)
   return {
     ...state,
     mutationQueue,
@@ -41,12 +41,13 @@ function nextTrigger(state: State): State {
     triggerQueue,
   }
   if (!triggerQueue.active) return state
+
   const mutations = resolve(
     triggerQueue.active.trigger,
     state,
     triggerQueue.active.context
   )
-  const mutationQueue = pushItems(state.mutationQueue, ...mutations)
+  const mutationQueue = pushItems(state.mutationQueue, mutations)
   return {
     ...state,
     mutationQueue,
@@ -62,7 +63,6 @@ function nextMutation(state: State): State {
 
   const { delta, context } = state.mutationQueue.active
   if (delta.filter && !delta.filter(state, context)) return state
-
   return state.mutationQueue.active.delta.apply(
     state,
     state.mutationQueue.active.context
@@ -70,11 +70,11 @@ function nextMutation(state: State): State {
 }
 
 function next(state: State): State {
-  if (state.mutationQueue.queue.length > 0) {
-    return nextMutation(state)
-  }
   if (state.triggerQueue.queue.length > 0) {
     return nextTrigger(state)
+  }
+  if (state.mutationQueue.queue.length > 0) {
+    return nextMutation(state)
   }
   if (state.actionQueue.queue.length > 0) {
     return nextAction(state)
