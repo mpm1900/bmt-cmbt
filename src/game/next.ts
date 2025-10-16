@@ -1,0 +1,100 @@
+import { popItem, pushItems } from './queue'
+import type { State } from './state'
+import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
+
+function resolve(
+  resolver: DeltaResolver<State>,
+  state: State,
+  context: DeltaContext
+): DeltaQueueItem<State>[] {
+  if (!resolver.validate(state, context)) {
+    console.error('resolver validation failed', resolver, state, context)
+    return []
+  }
+  return resolver.resolve(state, context).flatMap((m) => m)
+}
+
+function nextAction(state: State): State {
+  const actionQueue = popItem(state.actionQueue)
+  state = {
+    ...state,
+    actionQueue,
+  }
+  if (!actionQueue.active) return state
+
+  const mutations = resolve(
+    actionQueue.active.action,
+    state,
+    actionQueue.active.context
+  )
+  const mutationQueue = pushItems(state.mutationQueue, ...mutations)
+  return {
+    ...state,
+    mutationQueue,
+  }
+}
+
+function nextTrigger(state: State): State {
+  const triggerQueue = popItem(state.triggerQueue)
+  state = {
+    ...state,
+    triggerQueue,
+  }
+  if (!triggerQueue.active) return state
+  const mutations = resolve(
+    triggerQueue.active.trigger,
+    state,
+    triggerQueue.active.context
+  )
+  const mutationQueue = pushItems(state.mutationQueue, ...mutations)
+  return {
+    ...state,
+    mutationQueue,
+  }
+}
+
+function nextMutation(state: State): State {
+  state = {
+    ...state,
+    mutationQueue: popItem(state.mutationQueue),
+  }
+  if (!state.mutationQueue.active) return state
+
+  const { delta, context } = state.mutationQueue.active
+  if (delta.filter && !delta.filter(state, context)) return state
+
+  return state.mutationQueue.active.delta.apply(
+    state,
+    state.mutationQueue.active.context
+  )
+}
+
+function next(state: State): State {
+  if (state.mutationQueue.queue.length > 0) {
+    return nextMutation(state)
+  }
+  if (state.triggerQueue.queue.length > 0) {
+    return nextTrigger(state)
+  }
+  if (state.actionQueue.queue.length > 0) {
+    return nextAction(state)
+  }
+  return state
+}
+
+function hasNext(state: State): boolean {
+  return (
+    state.mutationQueue.queue.length > 0 ||
+    state.triggerQueue.queue.length > 0 ||
+    state.actionQueue.queue.length > 0
+  )
+}
+
+function flush(state: State): State {
+  while (hasNext(state)) {
+    state = next(state)
+  }
+  return state
+}
+
+export { nextAction, nextTrigger, nextMutation, next, hasNext, flush }
