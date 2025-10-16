@@ -11,6 +11,7 @@ export const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   validate: (state, context) =>
+    context.targetIDs.length == 1 &&
     !!mapActor(
       state,
       context.sourceID,

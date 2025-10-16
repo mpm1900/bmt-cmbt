@@ -1,3 +1,4 @@
+import { ActionContextGenerator } from '@/components/action-context-generator'
 import { Actor } from '@/components/actor'
 import {
   Breadcrumb,
@@ -16,10 +17,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { getModifiers } from '@/game/access'
-import { withModifiers } from '@/game/actor'
+import { withEffects } from '@/game/actor'
 import { Fireball } from '@/game/data/actions/fireball'
-import { Slice } from '@/game/data/actions/slice'
+import { MagicMissile } from '@/game/data/actions/magic-missile'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
 import { createFileRoute } from '@tanstack/react-router'
@@ -36,13 +36,11 @@ export const Route = createFileRoute('/battle')({
   component: RouteComponent,
 })
 
-const actions = [Fireball, Slice]
+const actions = [Fireball, MagicMissile]
 
 function RouteComponent() {
   const { state, pushAction, next } = useGameState((store) => store)
-  const actors = state.actors.map((actor) =>
-    withModifiers(actor, getModifiers(state))
-  )
+  const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   const [activeActorID, setActiveActorID] = useState(actors[0][0]?.ID)
   const [activeActionID, setActiveActionID] = useState<string | undefined>(
     undefined
@@ -50,8 +48,9 @@ function RouteComponent() {
   const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
   const activeAction = actions.find((action) => action.ID === activeActionID)
 
+  // bg-[url('./public/platforms.jpg')]
   return (
-    <div className="h-screen w-screen flex flex-col items-between">
+    <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <div>
         <div>Actions: {state.actionQueue.queue.length}</div>
         <div>Triggers: {state.triggerQueue.queue.length}</div>
@@ -134,42 +133,14 @@ function RouteComponent() {
                   </Label>
                 ))}
               </RadioGroup>
-              {activeAction && (
-                <Card>
-                  <CardContent>
-                    <div className="flex flex-col items-center justify-center gap-4">
-                      <span className="text-muted-foreground text-sm italic">
-                        Select{' '}
-                        {activeAction.maxTargetCount(state, {
-                          sourceID: activeActorID,
-                          targetIDs: [],
-                        })}{' '}
-                        Target(s)
-                      </span>
-                      <ButtonGroup>
-                        {activeAction
-                          .targets(state, {
-                            sourceID: activeActorID,
-                            targetIDs: [],
-                          })
-                          .map((target) => (
-                            <Button
-                              key={target.ID}
-                              variant={`outline`}
-                              onClick={() => {
-                                pushAction(activeAction, {
-                                  sourceID: activeActorID,
-                                  targetIDs: [target.ID],
-                                })
-                              }}
-                            >
-                              {target.name}
-                            </Button>
-                          ))}
-                      </ButtonGroup>
-                    </div>
-                  </CardContent>
-                </Card>
+              {activeAction && activeActorID && (
+                <ActionContextGenerator
+                  action={activeAction}
+                  sourceID={activeActorID}
+                  onContextConfirm={(context) =>
+                    pushAction(activeAction, context)
+                  }
+                />
               )}
             </CardContent>
           </Card>
@@ -192,11 +163,11 @@ function RouteComponent() {
           </ButtonGroup>
         </div>
         <div className="flex self-center justify-self-center justify-center gap-2 my-2">
-          {actors.map(([actor, modifiers]) => (
+          {actors.map(([actor, effects]) => (
             <Actor
               key={actor.ID}
               actor={actor}
-              modifiers={modifiers}
+              effects={effects}
               active={activeActorID === actor.ID}
               disabled={false}
               onClick={() => {

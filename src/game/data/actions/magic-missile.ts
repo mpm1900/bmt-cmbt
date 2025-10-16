@@ -5,11 +5,12 @@ import { damageResolver } from '@/game/resolvers'
 
 const SliceDamage = 10
 
-export const Slice: SAction = {
+export const MagicMissile: SAction = {
   ID: v4(),
-  name: 'Slice',
-  validate: (_state, _context) => true,
-  maxTargetCount: () => 1,
+  name: 'Magic Missile',
+  validate: (_state, _context) => _context.targetIDs.length === 5,
+  maxTargetCount: () => 5,
+  uniqueTargets: false,
   targets: (state, context) =>
     state.actors.filter((a) => a.ID !== context.sourceID),
   resolve: (_, context) => {

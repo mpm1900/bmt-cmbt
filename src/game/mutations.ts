@@ -27,10 +27,14 @@ function registerTrigger(
   type: STrigger['type']
 ): State {
   const triggers = getTriggers(state).filter(
-    (item) =>
-      item.trigger.type === type && item.trigger.validate(state, context)
+    (trigger) => trigger.type === type && trigger.validate(state, context)
   )
-  const triggerQueue = pushItems(state.triggerQueue, ...triggers)
+  const items = triggers.map((trigger) => ({
+    ID: v4(),
+    trigger,
+    context,
+  }))
+  const triggerQueue = pushItems(state.triggerQueue, ...items)
 
   return {
     ...state,

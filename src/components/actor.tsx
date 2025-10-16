@@ -1,4 +1,4 @@
-import type { SActor, SModifier } from '@/game/state'
+import type { SActor } from '@/game/state'
 import { cn } from '@/lib/utils'
 import { cva } from 'class-variance-authority'
 import { Atom, EllipsisVertical } from 'lucide-react'
@@ -42,12 +42,12 @@ function Actor({
   actor,
   active,
   disabled,
-  modifiers = [],
+  effects,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
   actor: SActor
-  modifiers: Array<SModifier>
+  effects: Array<string>
   active: boolean
   disabled: boolean
   onClick: () => void
@@ -56,9 +56,9 @@ function Actor({
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
       <div className="flex transition-all justify-between -mb-3 mt-4 group-hover:mb-1 group-hover:-mt-3 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
-          {modifiers.map((modifier) => (
+          {effects.map((effect) => (
             <InputGroupButton
-              key={modifier.ID}
+              key={effect}
               variant="outline"
               size="icon-xs"
               className="rounded-full transition-all"
@@ -94,6 +94,7 @@ function Actor({
             className="h-1"
             indicator={{ className: 'bg-blue-300' }}
           />
+          <pre>{JSON.stringify(actor.stats)}</pre>
         </ItemContent>
       </ActorButton>
     </div>

@@ -1,9 +1,10 @@
-import type { Effect, EffectItem, EffectModifier } from './types/effect'
+import type { Effect, EffectItem } from './types/effect'
 import type { ActionQueue } from './types/action'
 import type { Delta, DeltaQueue, DeltaQueueItem } from './types/delta'
 import type { Trigger, TriggerQueue, TriggerQueueItem } from './types/trigger'
 import type { Action } from './types/action'
 import type { Actor } from './types/actor'
+import type { Modifier } from './types/modifier'
 
 type Player = {
   ID: string
@@ -14,7 +15,7 @@ type SEffect = Effect<State, SActor>
 type SEffectItem = EffectItem<State, SActor>
 type SDelta = Delta<State>
 type SMutation = DeltaQueueItem<State>
-type SModifier = EffectModifier<SActor>
+type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 

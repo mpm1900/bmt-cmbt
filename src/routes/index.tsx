@@ -1,11 +1,10 @@
-import { getModifiers } from '@/game/access'
-import { withModifiers } from '@/game/actor'
 import { Fireball } from '@/game/data/actions/fireball'
 import { useGameState } from '@/hooks/useGameState'
 import { createFileRoute } from '@tanstack/react-router'
 
 import { DbAction } from '../components/db-action'
 import { Button } from '@/components/ui/button'
+import { withEffects } from '@/game/actor'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -13,9 +12,7 @@ export const Route = createFileRoute('/')({
 
 function App() {
   const { state, next, flush } = useGameState((state) => state)
-  const modifiers = getModifiers(state)
-  console.log('modifiers', modifiers)
-  const actors = state.actors.map((actor) => withModifiers(actor, modifiers))
+  const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   console.log(actors)
 
   return (

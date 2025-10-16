@@ -1,4 +1,5 @@
-import type { SActor, SModifier } from './state'
+import { v4 } from 'uuid'
+import type { SActor, SEffectItem } from './state'
 
 function withState(actor: SActor, state: Partial<SActor['state']>): SActor {
   return {
@@ -20,32 +21,43 @@ function withStats(actor: SActor, stats: Partial<SActor['stats']>): SActor {
   }
 }
 
-function withModifiers(
+function withEffects(
   actor: SActor,
-  modifiers: Array<SModifier>
-): [SActor, Array<SModifier>] {
+  effects: Array<SEffectItem>
+): [SActor, Array<string>] {
   if (actor.modified) {
-    console.error('already modified', actor, modifiers)
+    console.error('already modified', actor, effects)
     return [actor, []]
   }
 
-  const applied: Array<SModifier> = []
-  actor = modifiers.reduce<SActor>(
-    (next, modifier) => {
-      if (
-        modifier.delta.filter &&
-        !modifier.delta.filter(next, modifier.context)
-      ) {
-        return next
-      }
+  const applied: Set<string> = new Set<string>()
+  const modifiers = effects
+    .flatMap((item) => {
+      const { effect, context } = item
+      const items = effect.modifiers(context).map((modifier) => ({
+        ID: v4(),
+        effectID: effect.ID,
+        modifier,
+        context,
+      }))
 
-      applied.push(modifier)
-      return modifier.delta.apply(next, modifier.context)
+      return items
+    })
+    .sort((a, b) => a.modifier.priority - b.modifier.priority)
+
+  actor = modifiers.reduce(
+    (next, item) => {
+      const { modifier, context, effectID } = item
+      if (modifier.filter && !modifier.filter(next, context)) return next
+
+      applied.add(effectID)
+      return modifier.apply(next, context)
     },
     { ...actor }
   )
+
   actor.modified = true
-  return [actor, applied]
+  return [actor, Array.from(applied)]
 }
 
-export { withState, withStats, withModifiers }
+export { withState, withStats, withEffects }

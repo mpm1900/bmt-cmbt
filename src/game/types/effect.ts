@@ -1,20 +1,15 @@
-import type { ContextItem, DeltaContext, DeltaQueueItem } from './delta'
-import type { TriggerQueueItem } from './trigger'
-
-type EffectModifier<A> = DeltaQueueItem<A> & {
-  delay: number
-  duration: number | undefined
-  priority: number
-}
+import type { ContextItem, DeltaContext } from './delta'
+import type { Modifier } from './modifier'
+import type { Trigger } from './trigger'
 
 type Effect<T, A> = {
   ID: string
-  modifiers: (context: DeltaContext) => Array<EffectModifier<A>>
-  triggers: (context: DeltaContext) => Array<TriggerQueueItem<T>>
+  modifiers: (context: DeltaContext) => Array<Modifier<A>>
+  triggers: (context: DeltaContext) => Array<Trigger<T>>
 }
 
 type EffectItem<T, A> = ContextItem & {
   effect: Effect<T, A>
 }
 
-export type { EffectModifier, Effect, EffectItem }
+export type { Effect, EffectItem }

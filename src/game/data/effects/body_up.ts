@@ -4,22 +4,19 @@ import { v4 } from 'uuid'
 
 const BodyUp: SEffect = {
   ID: v4(),
-  modifiers: (context) => [
+  modifiers: () => [
     {
       ID: v4(),
-      context,
       delay: 0,
       duration: undefined,
       priority: 0,
-      delta: {
-        filter: (actor, mcontext) => actor.ID === mcontext.sourceID,
-        apply: (actor) => {
-          return withStats(actor, { body: actor.stats.body + 10 })
-        },
+      filter: (actor, mcontext) => actor.ID === mcontext.sourceID,
+      apply: (actor) => {
+        return withStats(actor, { body: actor.stats.body + 10 })
       },
     },
   ],
-  triggers: (_context) => [],
+  triggers: () => [],
 }
 
 export { BodyUp }
