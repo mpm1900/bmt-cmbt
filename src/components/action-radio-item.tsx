@@ -23,7 +23,11 @@ function ActionRadioItem({ action }: { action: SAction }) {
           {renderer ? <renderer.Name /> : action.name}
         </span>
       </div>
-      <div className="action-description pl-6 hidden">test</div>
+      {renderer && (
+        <div className="action-description pl-6 hidden">
+          <renderer.DescriptionShort />
+        </div>
+      )}
     </Label>
   )
 }
