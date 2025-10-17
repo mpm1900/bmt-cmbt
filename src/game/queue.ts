@@ -37,4 +37,11 @@ function popItem<T>(queue: Queue<T>): Queue<T> {
   }
 }
 
-export { newQueue, clearActive, enqueueItems, pushItems, popItem }
+function sort<T>(queue: Queue<T>, compareFn: (a: T, b: T) => number): Queue<T> {
+  return {
+    ...queue,
+    queue: queue.queue.sort(compareFn),
+  }
+}
+
+export { newQueue, clearActive, enqueueItems, pushItems, popItem, sort }

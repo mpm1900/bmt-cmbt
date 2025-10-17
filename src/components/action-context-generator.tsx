@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { CircleDashed, Target } from 'lucide-react'
 import { Separator } from './ui/separator'
 import { cn } from '@/lib/utils'
+import { useGameUI } from '@/hooks/useGameUI'
 
 function DuplicateTargetGenerator({
   action,
@@ -127,20 +128,20 @@ function ActionContextGenerator({
   onContextConfirm: (context: DeltaContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const [context, setContext] = useState<DeltaContext>({
-    sourceID,
-    targetIDs: [],
-  })
-  const max = action.maxTargetCount(state, context)
+  const { stagingContext = { sourceID, targetIDs: [] }, set: setUI } =
+    useGameUI((s) => s)
+  const max = action.maxTargetCount(state, stagingContext)
 
   useEffect(() => {
-    setContext({
-      sourceID,
-      targetIDs: [],
+    setUI({
+      stagingContext: {
+        sourceID,
+        targetIDs: [],
+      },
     })
   }, [sourceID, action.ID])
 
-  const ready = action.validate(state, context)
+  const ready = action.validate(state, stagingContext)
 
   return (
     <Card>
@@ -154,21 +155,24 @@ function ActionContextGenerator({
             <DuplicateTargetGenerator
               action={action}
               state={state}
-              context={context}
-              onContextChange={setContext}
+              context={stagingContext}
+              onContextChange={(c) => setUI({ stagingContext: c })}
             />
           )}
           {action.uniqueTargets && (
             <UniqueTargetGenerator
               action={action}
               state={state}
-              context={context}
-              onContextChange={setContext}
+              context={stagingContext}
+              onContextChange={(c) => setUI({ stagingContext: c })}
             />
           )}
           {ready && <Separator />}
           {ready && (
-            <Button variant="outline" onClick={() => onContextConfirm(context)}>
+            <Button
+              variant="outline"
+              onClick={() => onContextConfirm(stagingContext)}
+            >
               Confirm
             </Button>
           )}

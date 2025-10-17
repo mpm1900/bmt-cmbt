@@ -1,5 +1,6 @@
 import { ActionContextGenerator } from '@/components/action-context-generator'
 import { Actor } from '@/components/actor'
+import { PhaseController } from '@/components/phase-controller'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { withEffects } from '@/game/actor'
 import { BrainBlast } from '@/game/data/actions/brain-blast'
 import { DragonDance } from '@/game/data/actions/dragon-dance'
@@ -24,6 +26,7 @@ import { Fireball } from '@/game/data/actions/fireball'
 import { Heal } from '@/game/data/actions/heal'
 import { MagicMissile } from '@/game/data/actions/magic-missile'
 import { useGameState } from '@/hooks/useGameState'
+import { useGameUI } from '@/hooks/useGameUI'
 import { cn } from '@/lib/utils'
 import { createFileRoute } from '@tanstack/react-router'
 import {
@@ -33,7 +36,6 @@ import {
   FoldVertical,
   Slash,
 } from 'lucide-react'
-import { useState } from 'react'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -44,16 +46,14 @@ const actions = [Fireball, MagicMissile, BrainBlast, Heal, DragonDance]
 function RouteComponent() {
   const { state, pushAction, next } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
-  const [activeActorID, setActiveActorID] = useState(actors[0][0]?.ID)
-  const [activeActionID, setActiveActionID] = useState<string | undefined>(
-    undefined
-  )
+  const { activeActionID, activeActorID, set: setUI } = useGameUI((s) => s)
   const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
   const activeAction = actions.find((action) => action.ID === activeActionID)
 
   // bg-[url('./public/platforms.jpg')]
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
+      <PhaseController />
       <div>
         <div>Phase: {state.turn.phase}</div>
         <div>Actions: {state.actionQueue.queue.length}</div>
@@ -62,7 +62,7 @@ function RouteComponent() {
         <Button onClick={next}>Next</Button>
       </div>
       <div className="flex-1 flex items-center justify-center">
-        {activeActor && (
+        {activeActor && state.turn.phase === 'planning' && (
           <Card className="min-w-200 w-full max-w-[70%]">
             <CardHeader>
               <Breadcrumb>
@@ -109,10 +109,10 @@ function RouteComponent() {
               </Breadcrumb>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <div>
+              <ScrollArea className="h-64">
                 <RadioGroup
                   value={activeActionID ?? null}
-                  onValueChange={setActiveActionID}
+                  onValueChange={(value) => setUI({ activeActionID: value })}
                 >
                   {actions.map((action) => (
                     <Label
@@ -138,17 +138,17 @@ function RouteComponent() {
                     </Label>
                   ))}
                 </RadioGroup>
-              </div>
+              </ScrollArea>
               {activeAction && activeActorID && (
-                <div>
+                <ScrollArea className="h-64">
                   <ActionContextGenerator
                     action={activeAction}
                     sourceID={activeActorID}
-                    onContextConfirm={(context) =>
+                    onContextConfirm={(context) => {
                       pushAction(activeAction, context)
-                    }
+                    }}
                   />
-                </div>
+                </ScrollArea>
               )}
             </CardContent>
           </Card>
@@ -177,10 +177,12 @@ function RouteComponent() {
               actor={actor}
               effects={effects}
               active={activeActorID === actor.ID}
-              disabled={false}
+              disabled={state.turn.phase !== 'planning'}
               onClick={() => {
-                setActiveActionID(actions[0].ID)
-                setActiveActorID(actor.ID)
+                setUI({
+                  activeActionID: undefined,
+                  activeActorID: actor.ID,
+                })
               }}
             />
           ))}

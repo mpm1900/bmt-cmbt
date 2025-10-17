@@ -1,5 +1,9 @@
 import type { Action } from './action'
 
+type ActorStats = {
+  body: number
+  speed: number
+}
 type ActorState = Record<string, number>
 
 type Actor<T> = {
@@ -7,7 +11,7 @@ type Actor<T> = {
   name: string
   modified: boolean
   actions: Array<Action<T, Actor<T>>>
-  stats: Record<string, number>
+  stats: ActorStats
   state: ActorState
 }
 

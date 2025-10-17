@@ -1,4 +1,5 @@
-import { popItem, pushItems } from './queue'
+import { mapActor } from './access'
+import { popItem, pushItems, sort } from './queue'
 import type { State, Turn } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
@@ -85,13 +86,28 @@ function nextPhase(phase: Turn['phase']): Turn['phase'] {
 }
 
 function nextTurnPhase(state: State): State {
-  return {
+  state = {
     ...state,
     turn: {
       ...state.turn,
       phase: nextPhase(state.turn.phase),
     },
   }
+
+  if (state.turn.phase === 'main') {
+    state = {
+      ...state,
+      actionQueue: sort(state.actionQueue, (a, b) => {
+        const aSpe =
+          mapActor(state, a.context.sourceID, (ac) => ac.stats.speed) ?? 0
+        const bSpe =
+          mapActor(state, b.context.sourceID, (ac) => ac.stats.speed) ?? 0
+        return aSpe - bSpe
+      }),
+    }
+  }
+
+  return state
 }
 
 function next(state: State): State {
@@ -123,4 +139,12 @@ function flush(state: State): State {
   return state
 }
 
-export { nextAction, nextTrigger, nextMutation, next, hasNext, flush }
+export {
+  nextAction,
+  nextTrigger,
+  nextMutation,
+  nextTurnPhase,
+  next,
+  hasNext,
+  flush,
+}

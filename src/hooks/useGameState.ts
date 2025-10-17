@@ -1,6 +1,6 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaContext } from '@/game/types/delta'
-import { flush, next } from '@/game/next'
+import { flush, next, nextTurnPhase } from '@/game/next'
 import type { SAction, SActor, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
@@ -21,6 +21,7 @@ const Max: SActor = {
   actions: [],
   stats: {
     body: 100,
+    speed: 100,
   },
   state: {
     mana: 100,
@@ -42,6 +43,7 @@ const initialState: State = {
       actions: [],
       stats: {
         body: 180,
+        speed: 70,
       },
       state: {
         mana: 100,
@@ -55,6 +57,7 @@ const initialState: State = {
       actions: [],
       stats: {
         body: 80,
+        speed: 150,
       },
       state: {
         mana: 100,
@@ -97,8 +100,14 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
         return { state }
       }
 
+      state = pushAction(state, action, context)
+
+      if (state.actionQueue.queue.length === state.actors.length) {
+        state = nextTurnPhase(state)
+      }
+
       return {
-        state: pushAction(state, action, context),
+        state,
       }
     })
   },

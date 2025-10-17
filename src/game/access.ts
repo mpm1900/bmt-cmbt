@@ -6,6 +6,7 @@ function getTriggers(state: State): Array<STrigger> {
     effect.triggers(context)
   )
 }
+
 function mapActor<T = unknown>(
   state: State,
   sourceID: string,
