@@ -33,6 +33,7 @@ import {
   ArrowDownUp,
   Box,
   ChevronDown,
+  CircleSmall,
   FoldVertical,
   Slash,
 } from 'lucide-react'
@@ -155,7 +156,7 @@ function RouteComponent() {
         )}
       </div>
       <div className="flex justify-start gap-2 my-2">
-        <div className="flex items-end p-4">
+        <div className="flex flex-col items-center justify-end p-4 gap-1">
           <ButtonGroup>
             <Button variant="secondary" size="icon-lg">
               <Box />
@@ -167,6 +168,26 @@ function RouteComponent() {
             <ButtonGroupSeparator />
             <Button variant="secondary" size="icon-lg">
               <ArrowDownUp />
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup className="grid grid-cols-3">
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
+            </Button>
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
+            </Button>
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
+            </Button>
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
+            </Button>
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
+            </Button>
+            <Button size="icon-sm" variant="secondary">
+              <CircleSmall />
             </Button>
           </ButtonGroup>
         </div>
