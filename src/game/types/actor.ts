@@ -1,10 +1,17 @@
 import type { Action } from './action'
 
+type Element = 'physical' | 'fire' | 'shock' | 'psy'
+
 type ActorStats = {
   body: number
+  reflexes: number
+  intelligence: number
   speed: number
 }
-type ActorState = Record<string, number>
+type ActorState = {
+  damage: number
+  mana: number
+}
 
 type Actor<T> = {
   ID: string
@@ -15,4 +22,4 @@ type Actor<T> = {
   state: ActorState
 }
 
-export type { Actor, ActorState }
+export type { Actor, ActorStats, ActorState, Element }

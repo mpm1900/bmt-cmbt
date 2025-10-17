@@ -109,7 +109,7 @@ function RouteComponent() {
               </Breadcrumb>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <ScrollArea className="h-64">
+              <ScrollArea className="h-64 pr-4">
                 <RadioGroup
                   value={activeActionID ?? null}
                   onValueChange={(value) => setUI({ activeActionID: value })}

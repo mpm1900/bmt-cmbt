@@ -1,8 +1,14 @@
 import { damageResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
+import type { Damage } from '@/game/types/damage'
 import { v4 } from 'uuid'
 
-const BrainBlastDamage = 30
+const BrainBlastDamage: Damage = {
+  offenseStat: 'intelligence',
+  defenseStat: 'intelligence',
+  element: 'psy',
+  power: 30,
+}
 
 const BrainBlast: SAction = {
   ID: v4(),

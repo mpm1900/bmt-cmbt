@@ -1,9 +1,10 @@
 import { v4 } from 'uuid'
-import { getTriggers } from './access'
-import { withState } from './actor'
+import { getTriggers, mapActor } from './access'
+import { withDamage, withState } from './actor'
 import { pushItems } from './queue'
 import type { SAction, SActor, State, STrigger } from './state'
 import type { Delta, DeltaContext } from './types/delta'
+import type { Damage } from './types/damage'
 
 function pushAction(
   state: State,
@@ -63,13 +64,21 @@ function mutateActor(
 function mutateDamage(
   state: State,
   context: DeltaContext,
-  damage: number
+  damage: Damage
 ): State {
+  let committed = 0
   state = mutateActor(state, context, {
-    filter: (a) => a.ID === context.targetIDs[0],
-    apply: (a) => withState(a, { damage: a.state.damage + damage }),
+    filter: (ac) => ac.ID === context.targetIDs[0],
+    apply: (ac) => {
+      const a = mapActor(state, context.sourceID, (ac) => ac)
+      const b = mapActor(state, context.targetIDs[0], (ac) => ac)
+      if (!a || !b) return ac
+      const damageAmount = withDamage(a, b, damage)
+      committed += damageAmount
+      return withState(ac, { damage: ac.state.damage + damageAmount })
+    },
   })
-  if (damage > 0) {
+  if (committed > 0) {
     state = registerTrigger(state, context, 'onDamage')
   }
   return state

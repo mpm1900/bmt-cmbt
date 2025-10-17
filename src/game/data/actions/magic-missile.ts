@@ -2,8 +2,14 @@ import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
 import { damageResolver } from '@/game/resolvers'
+import type { Damage } from '@/game/types/damage'
 
-const MagicMissileDamage = 10
+const MagicMissileDamage: Damage = {
+  offenseStat: 'intelligence',
+  defenseStat: 'intelligence',
+  element: 'shock',
+  power: 10,
+}
 
 export const MagicMissile: SAction = {
   ID: v4(),

@@ -94,7 +94,6 @@ function Actor({
             className="h-1"
             indicator={{ className: 'bg-blue-300' }}
           />
-          <pre>{JSON.stringify(actor.stats)}</pre>
         </ItemContent>
       </ActorButton>
     </div>

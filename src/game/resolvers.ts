@@ -4,10 +4,11 @@ import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import { mutateActor, mutateDamage } from '@/game/mutations'
 import type { ActorState } from './types/actor'
+import type { Damage } from './types/damage'
 
 function costResolver(
   context: DeltaContext,
-  fn: (s: ActorState) => ActorState
+  fn: (s: ActorState) => Partial<ActorState>
 ): DeltaQueueItem<State> {
   const cost: Delta<State> = {
     apply: (state, context) =>
@@ -69,7 +70,7 @@ function addEffectResolver(
 
 function damageResolver(
   context: DeltaContext,
-  damage: number
+  damage: Damage
 ): DeltaQueueItem<State> {
   return {
     ID: v4(),

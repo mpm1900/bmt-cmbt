@@ -1,5 +1,6 @@
 import { v4 } from 'uuid'
 import type { SActor, SEffectItem } from './state'
+import type { Damage } from './types/damage'
 
 function withState(actor: SActor, state: Partial<SActor['state']>): SActor {
   return {
@@ -19,6 +20,14 @@ function withStats(actor: SActor, stats: Partial<SActor['stats']>): SActor {
       ...(stats as SActor['stats']),
     },
   }
+}
+
+function withDamage(source: SActor, target: SActor, damage: Damage): number {
+  const sourceStat = source.stats[damage.offenseStat]
+  const targetStat = target.stats[damage.defenseStat]
+  const ratio = sourceStat / targetStat
+  const damageAmount = damage.power * ratio
+  return damageAmount
 }
 
 function withEffects(
@@ -60,4 +69,4 @@ function withEffects(
   return [actor, Array.from(applied)]
 }
 
-export { withState, withStats, withEffects }
+export { withState, withStats, withDamage, withEffects }
