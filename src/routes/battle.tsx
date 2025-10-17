@@ -1,4 +1,5 @@
 import { ActionContextGenerator } from '@/components/action-context-generator'
+import { ActionRadioItem } from '@/components/action-radio-item'
 import { Actor } from '@/components/actor'
 import { PhaseController } from '@/components/phase-controller'
 import {
@@ -7,7 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import {
@@ -16,8 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup } from '@/components/ui/radio-group'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { withEffects } from '@/game/actor'
 import { BrainBlast } from '@/game/data/actions/brain-blast'
@@ -27,7 +27,6 @@ import { Heal } from '@/game/data/actions/heal'
 import { MagicMissile } from '@/game/data/actions/magic-missile'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
-import { cn } from '@/lib/utils'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   ArrowDownUp,
@@ -110,38 +109,18 @@ function RouteComponent() {
               </Breadcrumb>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <ScrollArea className="h-64 pr-4">
+              <ScrollArea className="h-72 pr-4">
                 <RadioGroup
                   value={activeActionID ?? null}
                   onValueChange={(value) => setUI({ activeActionID: value })}
                 >
                   {actions.map((action) => (
-                    <Label
-                      key={action.ID}
-                      htmlFor={action.ID}
-                      className={cn(
-                        buttonVariants({ variant: 'outline' }),
-                        'items-start flex-col h-auto',
-                        'has-[[data-state=checked]]:[&_.action-description]:flex'
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <RadioGroupItem
-                          value={action.ID}
-                          id={action.ID}
-                          className="peer"
-                        />
-                        <span className="peer-data-[state=unchecked]:text-muted-foreground">
-                          {action.name}
-                        </span>
-                      </div>
-                      <div className="action-description pl-6 hidden">test</div>
-                    </Label>
+                    <ActionRadioItem action={action} />
                   ))}
                 </RadioGroup>
               </ScrollArea>
               {activeAction && activeActorID && (
-                <ScrollArea className="h-64">
+                <ScrollArea className="h-72">
                   <ActionContextGenerator
                     action={activeAction}
                     sourceID={activeActorID}

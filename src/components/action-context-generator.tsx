@@ -1,12 +1,18 @@
 import type { SAction, State } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
-import { Card, CardContent } from './ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './ui/card'
 import { ButtonGroup } from './ui/button-group'
 import { Button } from './ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
-import { CircleDashed, Target } from 'lucide-react'
-import { Separator } from './ui/separator'
+import { ArrowRight, CircleDashed, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useGameUI } from '@/hooks/useGameUI'
 
@@ -145,12 +151,12 @@ function ActionContextGenerator({
 
   return (
     <Card>
+      <CardHeader>
+        <CardTitle>{action.name}</CardTitle>
+        <CardDescription>Select {max} Target(s)</CardDescription>
+      </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center justify-center gap-4">
-          <span className="text-muted-foreground text-sm italic">
-            Select {max} Target(s)
-          </span>
-
           {!action.uniqueTargets && (
             <DuplicateTargetGenerator
               action={action}
@@ -167,17 +173,19 @@ function ActionContextGenerator({
               onContextChange={(c) => setUI({ stagingContext: c })}
             />
           )}
-          {ready && <Separator />}
-          {ready && (
-            <Button
-              variant="outline"
-              onClick={() => onContextConfirm(stagingContext)}
-            >
-              Confirm
-            </Button>
-          )}
         </div>
       </CardContent>
+      {ready && (
+        <CardFooter className="justify-end">
+          <Button
+            variant="outline"
+            onClick={() => onContextConfirm(stagingContext)}
+          >
+            Confirm
+            <ArrowRight />
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }

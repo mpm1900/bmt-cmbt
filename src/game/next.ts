@@ -102,7 +102,7 @@ function nextTurnPhase(state: State): State {
           mapActor(state, a.context.sourceID, (ac) => ac.stats.speed) ?? 0
         const bSpe =
           mapActor(state, b.context.sourceID, (ac) => ac.stats.speed) ?? 0
-        return aSpe - bSpe
+        return bSpe - aSpe
       }),
     }
   }
