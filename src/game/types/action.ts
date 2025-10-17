@@ -5,7 +5,7 @@ type Action<T, A> = DeltaResolver<T> & {
   name: string
   targets: (state: T, context: DeltaContext) => Array<A>
   maxTargetCount: (state: T, context: DeltaContext) => number
-  uniqueTargets?: boolean
+  uniqueTargets: boolean
 }
 
 type ActionQueueItem<T, A> = ContextItem & {

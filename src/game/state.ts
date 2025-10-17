@@ -19,8 +19,13 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 
+type Turn = {
+  phase: 'start' | 'planning' | 'main' | 'end'
+}
+
 type State = {
   players: Array<Player>
+  turn: Turn
   actors: Array<SActor>
   effects: Array<SEffectItem>
   actionQueue: ActionQueue<State, SActor>
@@ -30,10 +35,12 @@ type State = {
 
 export type {
   Player,
+  Turn,
   State,
   SActor,
   SAction,
   SEffect,
+  SEffectItem,
   SDelta,
   SMutation,
   SModifier,

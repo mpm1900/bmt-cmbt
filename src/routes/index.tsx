@@ -2,7 +2,7 @@ import { Fireball } from '@/game/data/actions/fireball'
 import { useGameState } from '@/hooks/useGameState'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { DbAction } from '../components/db-action'
+import { DbAction } from '../components/__dep/db-action'
 import { Button } from '@/components/ui/button'
 import { withEffects } from '@/game/actor'
 

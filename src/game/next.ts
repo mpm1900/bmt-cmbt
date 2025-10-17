@@ -1,5 +1,5 @@
 import { popItem, pushItems } from './queue'
-import type { State } from './state'
+import type { State, Turn } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
 function resolve(
@@ -69,6 +69,31 @@ function nextMutation(state: State): State {
   )
 }
 
+function nextPhase(phase: Turn['phase']): Turn['phase'] {
+  switch (phase) {
+    case 'start':
+      return 'planning'
+    case 'planning':
+      return 'main'
+    case 'main':
+      return 'end'
+    case 'end':
+      return 'start'
+    default:
+      return 'start'
+  }
+}
+
+function nextTurnPhase(state: State): State {
+  return {
+    ...state,
+    turn: {
+      ...state.turn,
+      phase: nextPhase(state.turn.phase),
+    },
+  }
+}
+
 function next(state: State): State {
   if (state.triggerQueue.queue.length > 0) {
     return nextTrigger(state)
@@ -79,7 +104,8 @@ function next(state: State): State {
   if (state.actionQueue.queue.length > 0) {
     return nextAction(state)
   }
-  return state
+
+  return nextTurnPhase(state)
 }
 
 function hasNext(state: State): boolean {

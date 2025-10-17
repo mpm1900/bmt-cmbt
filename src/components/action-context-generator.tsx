@@ -1,4 +1,4 @@
-import type { SAction } from '@/game/state'
+import type { SAction, State } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
 import { Card, CardContent } from './ui/card'
 import { ButtonGroup } from './ui/button-group'
@@ -7,6 +7,115 @@ import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
 import { CircleDashed, Target } from 'lucide-react'
 import { Separator } from './ui/separator'
+import { cn } from '@/lib/utils'
+
+function DuplicateTargetGenerator({
+  action,
+  context,
+  onContextChange,
+  state,
+}: {
+  action: SAction
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
+  state: State
+}) {
+  const [targetIndex, setTargetIndex] = useState(0)
+  const max = action.maxTargetCount(state, context)
+  const done = context.targetIDs.length === max
+
+  useEffect(() => {
+    setTargetIndex(0)
+  }, [context.sourceID, action.ID])
+
+  return (
+    <>
+      <ButtonGroup className={cn({ 'border rounded-lg border-ring': done })}>
+        {Array.from({
+          length: action.maxTargetCount(state, context),
+        }).map((_, i) => (
+          <Button
+            key={i}
+            variant={i === targetIndex ? 'default' : 'secondary'}
+            size="icon-sm"
+            onClick={() => setTargetIndex(i)}
+          >
+            {context.targetIDs[i] ? <Target /> : <CircleDashed />}
+          </Button>
+        ))}
+      </ButtonGroup>
+      <ButtonGroup>
+        {action.targets(state, context).map((target) => (
+          <Button
+            key={target.ID}
+            variant={
+              target.ID === context.targetIDs[targetIndex]
+                ? 'default'
+                : 'secondary'
+            }
+            onClick={() => {
+              const tids = [...context.targetIDs]
+              tids[targetIndex] = target.ID
+              onContextChange({
+                ...context,
+                targetIDs: tids,
+              })
+
+              setTargetIndex((v) => (v + 1) % max)
+            }}
+          >
+            {target.name}
+          </Button>
+        ))}
+      </ButtonGroup>
+    </>
+  )
+}
+
+function UniqueTargetGenerator({
+  action,
+  state,
+  context,
+  onContextChange,
+}: {
+  action: SAction
+  state: State
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
+}) {
+  const max = action.maxTargetCount(state, context)
+  const done = context.targetIDs.length === max
+  const ready = action.validate(state, context)
+
+  return (
+    <ButtonGroup>
+      {action.targets(state, context).map((target) => (
+        <Button
+          key={target.ID}
+          disabled={ready && done && !context.targetIDs.includes(target.ID)}
+          variant={
+            context.targetIDs.includes(target.ID) ? 'default' : 'secondary'
+          }
+          onClick={() => {
+            if (context.targetIDs.includes(target.ID)) {
+              onContextChange({
+                ...context,
+                targetIDs: context.targetIDs.filter((id) => id !== target.ID),
+              })
+            } else {
+              onContextChange({
+                ...context,
+                targetIDs: [...context.targetIDs, target.ID],
+              })
+            }
+          }}
+        >
+          {target.name}
+        </Button>
+      ))}
+    </ButtonGroup>
+  )
+}
 
 function ActionContextGenerator({
   action,
@@ -22,16 +131,16 @@ function ActionContextGenerator({
     sourceID,
     targetIDs: [],
   })
-  const [targetIndex, setTargetIndex] = useState(0)
   const max = action.maxTargetCount(state, context)
 
   useEffect(() => {
-    setTargetIndex(0)
     setContext({
       sourceID,
       targetIDs: [],
     })
   }, [sourceID, action.ID])
+
+  const ready = action.validate(state, context)
 
   return (
     <Card>
@@ -40,55 +149,28 @@ function ActionContextGenerator({
           <span className="text-muted-foreground text-sm italic">
             Select {max} Target(s)
           </span>
-          {action.uniqueTargets === false && (
-            <ButtonGroup>
-              {Array.from({
-                length: action.maxTargetCount(state, context),
-              }).map((_, i) => (
-                <Button
-                  key={i}
-                  variant={i === targetIndex ? 'default' : 'secondary'}
-                  size="icon-sm"
-                  onClick={() => setTargetIndex(i)}
-                >
-                  {context.targetIDs[i] ? <Target /> : <CircleDashed />}
-                </Button>
-              ))}
-            </ButtonGroup>
+
+          {!action.uniqueTargets && (
+            <DuplicateTargetGenerator
+              action={action}
+              state={state}
+              context={context}
+              onContextChange={setContext}
+            />
           )}
-          <ButtonGroup>
-            {action.targets(state, context).map((target) => (
-              <Button
-                key={target.ID}
-                variant={
-                  target.ID === context.targetIDs[targetIndex]
-                    ? 'default'
-                    : 'secondary'
-                }
-                onClick={() => {
-                  const tids = [...context.targetIDs]
-                  tids[targetIndex] = target.ID
-                  setContext({
-                    ...context,
-                    targetIDs: tids,
-                  })
-                  setTargetIndex((v) => (v + 1) % max)
-                }}
-              >
-                {target.name}
-              </Button>
-            ))}
-          </ButtonGroup>
-          {action.validate(state, context) && (
-            <>
-              <Separator />
-              <Button
-                variant="outline"
-                onClick={() => onContextConfirm(context)}
-              >
-                Confirm
-              </Button>
-            </>
+          {action.uniqueTargets && (
+            <UniqueTargetGenerator
+              action={action}
+              state={state}
+              context={context}
+              onContextChange={setContext}
+            />
+          )}
+          {ready && <Separator />}
+          {ready && (
+            <Button variant="outline" onClick={() => onContextConfirm(context)}>
+              Confirm
+            </Button>
           )}
         </div>
       </CardContent>

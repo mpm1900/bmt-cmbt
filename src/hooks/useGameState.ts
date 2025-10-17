@@ -30,6 +30,9 @@ const Max: SActor = {
 
 const initialState: State = {
   players: [],
+  turn: {
+    phase: 'start',
+  },
   actors: [
     Max,
     {
@@ -86,9 +89,18 @@ const initialState: State = {
 const gameStateStore = createStore<GameStateStore>((set) => ({
   state: initialState,
   pushAction: (action: SAction, context: DeltaContext) => {
-    set(({ state }) => ({
-      state: pushAction(state, action, context),
-    }))
+    set(({ state }) => {
+      const existing = state.actionQueue.queue.find(
+        (i) => i.context.sourceID === context.sourceID
+      )
+      if (!!existing) {
+        return { state }
+      }
+
+      return {
+        state: pushAction(state, action, context),
+      }
+    })
   },
   next: () => {
     set(({ state }) => ({

@@ -18,6 +18,7 @@ export const Fireball: SAction = {
       (a) => a.state.mana >= FireballManaCost
     ),
   maxTargetCount: () => 1,
+  uniqueTargets: true,
   targets: (state, context) =>
     state.actors.filter((a) => a.ID !== context.sourceID),
   resolve: (_, context) => {

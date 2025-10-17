@@ -18,7 +18,10 @@ import {
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { withEffects } from '@/game/actor'
+import { BrainBlast } from '@/game/data/actions/brain-blast'
+import { DragonDance } from '@/game/data/actions/dragon-dance'
 import { Fireball } from '@/game/data/actions/fireball'
+import { Heal } from '@/game/data/actions/heal'
 import { MagicMissile } from '@/game/data/actions/magic-missile'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
@@ -36,7 +39,7 @@ export const Route = createFileRoute('/battle')({
   component: RouteComponent,
 })
 
-const actions = [Fireball, MagicMissile]
+const actions = [Fireball, MagicMissile, BrainBlast, Heal, DragonDance]
 
 function RouteComponent() {
   const { state, pushAction, next } = useGameState((store) => store)
@@ -52,6 +55,7 @@ function RouteComponent() {
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <div>
+        <div>Phase: {state.turn.phase}</div>
         <div>Actions: {state.actionQueue.queue.length}</div>
         <div>Triggers: {state.triggerQueue.queue.length}</div>
         <div>Mutations: {state.mutationQueue.queue.length}</div>
@@ -59,7 +63,7 @@ function RouteComponent() {
       </div>
       <div className="flex-1 flex items-center justify-center">
         {activeActor && (
-          <Card className="w-160">
+          <Card className="min-w-200 w-full max-w-[70%]">
             <CardHeader>
               <Breadcrumb>
                 <BreadcrumbList>
@@ -105,48 +109,52 @@ function RouteComponent() {
               </Breadcrumb>
             </CardHeader>
             <CardContent className="grid grid-cols-2 gap-4">
-              <RadioGroup
-                value={activeActionID ?? null}
-                onValueChange={setActiveActionID}
-              >
-                {actions.map((action) => (
-                  <Label
-                    key={action.ID}
-                    htmlFor={action.ID}
-                    className={cn(
-                      buttonVariants({ variant: 'outline' }),
-                      'items-start flex-col h-auto',
-                      'has-[[data-state=checked]]:[&_.action-description]:flex'
-                    )}
-                  >
-                    <div className="flex items-center gap-2">
-                      <RadioGroupItem
-                        value={action.ID}
-                        id={action.ID}
-                        className="peer"
-                      />
-                      <span className="peer-data-[state=unchecked]:text-muted-foreground">
-                        {action.name}
-                      </span>
-                    </div>
-                    <div className="action-description pl-6 hidden">test</div>
-                  </Label>
-                ))}
-              </RadioGroup>
+              <div>
+                <RadioGroup
+                  value={activeActionID ?? null}
+                  onValueChange={setActiveActionID}
+                >
+                  {actions.map((action) => (
+                    <Label
+                      key={action.ID}
+                      htmlFor={action.ID}
+                      className={cn(
+                        buttonVariants({ variant: 'outline' }),
+                        'items-start flex-col h-auto',
+                        'has-[[data-state=checked]]:[&_.action-description]:flex'
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem
+                          value={action.ID}
+                          id={action.ID}
+                          className="peer"
+                        />
+                        <span className="peer-data-[state=unchecked]:text-muted-foreground">
+                          {action.name}
+                        </span>
+                      </div>
+                      <div className="action-description pl-6 hidden">test</div>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              </div>
               {activeAction && activeActorID && (
-                <ActionContextGenerator
-                  action={activeAction}
-                  sourceID={activeActorID}
-                  onContextConfirm={(context) =>
-                    pushAction(activeAction, context)
-                  }
-                />
+                <div>
+                  <ActionContextGenerator
+                    action={activeAction}
+                    sourceID={activeActorID}
+                    onContextConfirm={(context) =>
+                      pushAction(activeAction, context)
+                    }
+                  />
+                </div>
               )}
             </CardContent>
           </Card>
         )}
       </div>
-      <div className="flex justify-end gap-2 my-2">
+      <div className="flex justify-start gap-2 my-2">
         <div className="flex items-end p-4">
           <ButtonGroup>
             <Button variant="secondary" size="icon-lg">

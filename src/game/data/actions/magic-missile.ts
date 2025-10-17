@@ -3,7 +3,7 @@ import { v4 } from 'uuid'
 
 import { damageResolver } from '@/game/resolvers'
 
-const SliceDamage = 10
+const MagicMissileDamage = 10
 
 export const MagicMissile: SAction = {
   ID: v4(),
@@ -16,7 +16,10 @@ export const MagicMissile: SAction = {
   resolve: (_, context) => {
     return [
       context.targetIDs.map((targetID) =>
-        damageResolver({ ...context, targetIDs: [targetID] }, SliceDamage)
+        damageResolver(
+          { ...context, targetIDs: [targetID] },
+          MagicMissileDamage
+        )
       ),
     ]
   },
