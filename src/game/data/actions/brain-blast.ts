@@ -1,9 +1,10 @@
 import { damageResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
-import type { Damage } from '@/game/types/damage'
+import type { PowerDamage } from '@/game/types/damage'
 import { v4 } from 'uuid'
 
-const BrainBlastDamage: Damage = {
+const BrainBlastDamage: PowerDamage = {
+  type: 'power',
   offenseStat: 'intelligence',
   defenseStat: 'intelligence',
   element: 'psy',

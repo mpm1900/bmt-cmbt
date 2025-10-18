@@ -3,10 +3,11 @@ import { v4 } from 'uuid'
 
 import { mapActor } from '@/game/access'
 import { costResolver, damageResolver } from '@/game/resolvers'
-import type { Damage } from '@/game/types/damage'
+import type { PowerDamage } from '@/game/types/damage'
 
 const FireballManaCost = 50
-const FireballDamage: Damage = {
+const FireballDamage: PowerDamage = {
+  type: 'power',
   offenseStat: 'intelligence',
   defenseStat: 'intelligence',
   element: 'fire',

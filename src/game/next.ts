@@ -1,6 +1,5 @@
-import { mapActor } from './access'
-import { validateState } from './mutations'
-import { pop, push, sort } from './queue'
+import { sortActionQueue, validateState } from './mutations'
+import { pop, push } from './queue'
 import type { State, Turn } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
@@ -17,8 +16,7 @@ function resolve(
 }
 
 function nextAction(state: State): State {
-  if (!state.actionQueue[0]) return state
-
+  state = sortActionQueue(state)
   const mutations = resolve(
     state.actionQueue[0].action,
     state,
@@ -90,19 +88,6 @@ function nextTurnPhase(state: State): State {
     },
   }
 
-  if (state.turn.phase === 'main') {
-    state = {
-      ...state,
-      actionQueue: sort(state.actionQueue, (a, b) => {
-        const aSpe =
-          mapActor(state, a.context.sourceID, (ac) => ac.stats.speed) ?? 0
-        const bSpe =
-          mapActor(state, b.context.sourceID, (ac) => ac.stats.speed) ?? 0
-        return bSpe - aSpe
-      }),
-    }
-  }
-
   return state
 }
 
@@ -113,14 +98,13 @@ function next(state: State): State {
   if (state.mutationQueue.length > 0) {
     return nextMutation(state)
   }
-  if (state.promptQueue[0]) {
-    return state
+  if (state.promptQueue.length > 0) {
+    return state // pause, wait for input
   }
-
-  let result = validateState(state, { minActiveActorCount: 3 })
-  state = result[0]
-  const valid = result[1]
-  if (!valid) return state
+  // before each action pop, run the validations
+  const valid = validateState(state, { minActiveActorCount: 3 })
+  state = valid[0]
+  if (!valid[1]) return state
 
   if (state.actionQueue.length > 0) {
     return nextAction(state)

@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
-import { getActor, getTriggers } from './access'
+import { getActor, getTriggers, mapActor } from './access'
 import { getDamageAmount, withDamage } from './actor'
-import { push } from './queue'
+import { push, sort } from './queue'
 import type { SAction, SActor, State, STrigger } from './state'
 import type { Delta, DeltaContext } from './types/delta'
 import type { Damage } from './types/damage'
@@ -79,6 +79,20 @@ function registerTrigger(
   }
 }
 
+function sortActionQueue(state: State): State {
+  const actionQueue = sort(state.actionQueue, (a, b) => {
+    const aSpe =
+      mapActor(state, a.context.sourceID, (ac) => ac.stats.speed) ?? 0
+    const bSpe =
+      mapActor(state, b.context.sourceID, (ac) => ac.stats.speed) ?? 0
+    return bSpe - aSpe
+  })
+  return {
+    ...state,
+    actionQueue,
+  }
+}
+
 function mutateActor(
   state: State,
   context: DeltaContext,
@@ -149,6 +163,7 @@ export {
   pushPrompt,
   resolvePrompt,
   registerTrigger,
+  sortActionQueue,
   mutateActor,
   mutateDamage,
   validateState,
