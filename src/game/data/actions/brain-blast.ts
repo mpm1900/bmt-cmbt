@@ -16,10 +16,12 @@ const BrainBlast: SAction = {
   name: 'Brain Blast',
   validate: (_state, context) =>
     0 < context.targetIDs.length && context.targetIDs.length <= 2,
-  maxTargetCount: () => 2,
-  uniqueTargets: true,
-  targets: (state, context) =>
-    state.actors.filter((a) => a.ID !== context.sourceID),
+  targets: {
+    unique: true,
+    max: () => 2,
+    get: (state, context) =>
+      state.actors.filter((a) => a.ID !== context.sourceID),
+  },
   resolve: (_, context) => {
     return [
       context.targetIDs.map((targetID) =>

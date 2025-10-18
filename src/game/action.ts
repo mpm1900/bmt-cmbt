@@ -6,7 +6,7 @@ function validateTargetsLength(
   action: SAction,
   context: DeltaContext
 ): boolean {
-  const max = action.maxTargetCount(state, context)
+  const max = action.targets.max(state, context)
   return context.targetIDs.length <= max
 }
 
@@ -15,7 +15,7 @@ function validateTargetValues(
   action: SAction,
   context: DeltaContext
 ): boolean {
-  const all = action.targets(state, context)
+  const all = action.targets.get(state, context)
   return context.targetIDs.every((t) => all.find((a) => a.ID === t))
 }
 

@@ -1,9 +1,9 @@
-import type { ActorStats, Element } from './actor'
+import type { Element, MainStat } from './actor'
 
 type PowerDamage = {
   type: 'power'
-  offenseStat: keyof ActorStats
-  defenseStat: keyof ActorStats
+  offenseStat: MainStat
+  defenseStat: MainStat
   element: Element
   power: number
 }

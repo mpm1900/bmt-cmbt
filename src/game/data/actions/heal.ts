@@ -7,10 +7,10 @@ const Heal: SAction = {
   ID: v4(),
   name: 'Heal',
   validate: (_state, context) => context.targetIDs.length === 1,
-  maxTargetCount: () => 1,
-  uniqueTargets: true,
-  targets: (state, _context) => {
-    return state.actors
+  targets: {
+    unique: true,
+    max: () => 1,
+    get: (state, _context) => state.actors,
   },
   resolve(_state, context) {
     return [

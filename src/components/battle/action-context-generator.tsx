@@ -30,7 +30,7 @@ function DuplicateTargetGenerator({
   state: State
 }) {
   const [targetIndex, setTargetIndex] = useState(0)
-  const max = action.maxTargetCount(state, context)
+  const max = action.targets.max(state, context)
   const selectedTargets = context.targetIDs.filter((id) => !!id)
   const done = selectedTargets.length === max
 
@@ -42,7 +42,7 @@ function DuplicateTargetGenerator({
     <>
       <ButtonGroup className={cn({ 'border rounded-lg border-ring': done })}>
         {Array.from({
-          length: action.maxTargetCount(state, context),
+          length: max,
         }).map((_, i) => (
           <Button
             key={i}
@@ -55,7 +55,7 @@ function DuplicateTargetGenerator({
         ))}
       </ButtonGroup>
       <ButtonGroup>
-        {action.targets(state, context).map((target) => (
+        {action.targets.get(state, context).map((target) => (
           <Button
             key={target.ID}
             variant={
@@ -93,14 +93,14 @@ function UniqueTargetGenerator({
   context: DeltaContext
   onContextChange: (context: DeltaContext) => void
 }) {
-  const max = action.maxTargetCount(state, context)
+  const max = action.targets.max(state, context)
   const selectedTargets = context.targetIDs.filter((id) => !!id)
   const done = selectedTargets.length === max
   const ready = action.validate(state, context)
 
   return (
     <ButtonGroup>
-      {action.targets(state, context).map((target) => (
+      {action.targets.get(state, context).map((target) => (
         <Button
           key={target.ID}
           disabled={ready && done && !context.targetIDs.includes(target.ID)}
@@ -143,7 +143,7 @@ function ActionContextGenerator({
     set: setUI,
   } = useGameUI((s) => s)
   const renderer = ACTION_RENDERERS[action.ID]
-  const max = action.maxTargetCount(state, stagingContext)
+  const max = action.targets.max(state, stagingContext)
   const ready = action.validate(state, stagingContext)
   const selectedTargets = stagingContext.targetIDs.filter((id) => !!id)
 
@@ -171,7 +171,7 @@ function ActionContextGenerator({
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center justify-center gap-4">
-          {!action.uniqueTargets && (
+          {!action.targets.unique && (
             <DuplicateTargetGenerator
               action={action}
               state={state}
@@ -179,7 +179,7 @@ function ActionContextGenerator({
               onContextChange={(c) => setUI({ stagingContext: c })}
             />
           )}
-          {action.uniqueTargets && (
+          {action.targets.unique && (
             <UniqueTargetGenerator
               action={action}
               state={state}

@@ -6,16 +6,18 @@ import { v4 } from 'uuid'
 const Swap: SAction = {
   ID: v4(),
   name: 'Swap',
-  validate: (_state, _context) => true,
-  maxTargetCount: () => 1,
-  uniqueTargets: true,
-  targets: (state, context) =>
-    state.actors.filter(
-      (a) =>
-        !a.state.active &&
-        a.playerID ===
-          state.actors.find((s) => s.ID === context.sourceID)?.playerID
-    ),
+  validate: (_state, context) => context.targetIDs.length === 1,
+  targets: {
+    unique: true,
+    max: () => 1,
+    get: (state, context) =>
+      state.actors.filter(
+        (a) =>
+          !a.state.active &&
+          a.playerID ===
+            state.actors.find((s) => s.ID === context.sourceID)?.playerID
+      ),
+  },
   resolve: (_, context) => {
     return [
       mutateActorResolver(context.sourceID, context, (a) =>
@@ -30,11 +32,4 @@ const Swap: SAction = {
   },
 }
 
-const SwapIn: SAction = {
-  ...Swap,
-  ID: v4(),
-  name: 'Swap In',
-  validate: (_state, context) => context.targetIDs.length === 1,
-}
-
-export { Swap, SwapIn }
+export { Swap }

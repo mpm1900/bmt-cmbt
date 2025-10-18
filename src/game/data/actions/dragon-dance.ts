@@ -7,9 +7,11 @@ const DragonDance: SAction = {
   ID: v4(),
   name: 'Dragon Dance',
   validate: () => true,
-  maxTargetCount: () => 0,
-  uniqueTargets: true,
-  targets: () => [],
+  targets: {
+    unique: true,
+    max: () => 0,
+    get: () => [],
+  },
   resolve: (_, context) => {
     return [
       addEffectResolver(

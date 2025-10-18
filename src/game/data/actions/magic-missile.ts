@@ -19,10 +19,12 @@ const MagicMissile: SAction = {
   name: 'Magic Missile',
   validate: (_state, context) =>
     context.targetIDs.filter((id) => !!id).length === 5,
-  maxTargetCount: () => 5,
-  uniqueTargets: false,
-  targets: (state, context) =>
-    state.actors.filter((a) => a.ID !== context.sourceID),
+  targets: {
+    unique: false,
+    max: () => 5,
+    get: (state, context) =>
+      state.actors.filter((a) => a.ID !== context.sourceID),
+  },
   resolve: (_, context) => {
     return [
       context.targetIDs.map((targetID) => {

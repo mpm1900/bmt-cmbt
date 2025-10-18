@@ -1,10 +1,12 @@
-import type { Element } from '@/game/types/actor'
+import type { Element, MainStat } from '@/game/types/actor'
 import {
   GiBrainStem,
   GiFlamer,
   GiGooeyImpact,
   GiPowerLightning,
 } from 'react-icons/gi'
+import { LuBrain, LuBicepsFlexed } from 'react-icons/lu'
+import { FaGun } from 'react-icons/fa6'
 import type { IconType } from 'react-icons/lib'
 
 const ELEMENT_ICONS: Record<Element, IconType> = {
@@ -14,4 +16,10 @@ const ELEMENT_ICONS: Record<Element, IconType> = {
   shock: GiPowerLightning,
 }
 
-export { ELEMENT_ICONS }
+const MAIN_STAT_ICONS: Record<MainStat, IconType> = {
+  body: LuBicepsFlexed,
+  intelligence: LuBrain,
+  reflexes: FaGun,
+}
+
+export { ELEMENT_ICONS, MAIN_STAT_ICONS }

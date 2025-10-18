@@ -1,11 +1,15 @@
 import type { ContextItem, DeltaContext, DeltaResolver } from './delta'
 import type { Queue } from './queue'
 
+type ActionTargetGenerator<T, A> = {
+  get: (state: T, context: DeltaContext) => Array<A>
+  max: (state: T, context: DeltaContext) => number
+  unique: boolean
+}
+
 type Action<T, A> = DeltaResolver<T> & {
   name: string
-  targets: (state: T, context: DeltaContext) => Array<A>
-  maxTargetCount: (state: T, context: DeltaContext) => number
-  uniqueTargets: boolean
+  targets: ActionTargetGenerator<T, A>
 }
 
 type ActionQueueItem<T, A> = ContextItem & {
@@ -14,4 +18,4 @@ type ActionQueueItem<T, A> = ContextItem & {
 
 type ActionQueue<T, A> = Queue<ActionQueueItem<T, A>>
 
-export type { Action, ActionQueueItem, ActionQueue }
+export type { Action, ActionTargetGenerator, ActionQueueItem, ActionQueue }

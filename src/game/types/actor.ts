@@ -2,10 +2,8 @@ import type { Action } from './action'
 
 type Element = 'physical' | 'fire' | 'shock' | 'psy'
 
-type ActorStats = {
-  body: number
-  reflexes: number
-  intelligence: number
+type MainStat = 'body' | 'reflexes' | 'intelligence'
+type ActorStats = Record<MainStat, number> & {
   speed: number
 }
 type ActorState = {
@@ -27,4 +25,4 @@ type Actor<T> = {
   state: ActorState
 }
 
-export type { Actor, ActorStats, ActorState, Element }
+export type { Actor, ActorStats, ActorState, MainStat, Element }

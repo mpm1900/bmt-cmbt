@@ -17,19 +17,21 @@ function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
       </ItemContent>
       <ItemActions>
         <ButtonGroup>
-          {action.targets(state, { sourceID, targetIDs: [] }).map((target) => (
-            <Button
-              key={target.ID}
-              size="sm"
-              variant="outline"
-              disabled={hasAction}
-              onClick={() =>
-                pushAction(action, { sourceID, targetIDs: [target.ID] })
-              }
-            >
-              {target.name}
-            </Button>
-          ))}
+          {action.targets
+            .get(state, { sourceID, targetIDs: [] })
+            .map((target) => (
+              <Button
+                key={target.ID}
+                size="sm"
+                variant="outline"
+                disabled={hasAction}
+                onClick={() =>
+                  pushAction(action, { sourceID, targetIDs: [target.ID] })
+                }
+              >
+                {target.name}
+              </Button>
+            ))}
         </ButtonGroup>
       </ItemActions>
     </Item>

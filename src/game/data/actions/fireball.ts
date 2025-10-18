@@ -5,7 +5,7 @@ import { mapActor } from '@/game/access'
 import { costResolver, damageResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 
-const FireballTargetCount = 1
+const FireballTargetCount = 2
 const FireballManaCost = 50
 const FireballDamage: PowerDamage = {
   type: 'power',
@@ -19,24 +19,24 @@ const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   validate: (state, context) =>
-    context.targetIDs.length == FireballTargetCount &&
+    context.targetIDs.length > 0 &&
     !!mapActor(
       state,
       context.sourceID,
       (a) => a.state.mana >= FireballManaCost
     ),
-  maxTargetCount: () => FireballTargetCount,
-  uniqueTargets: true,
-  targets: (state, context) =>
-    state.actors.filter((a) => a.ID !== context.sourceID),
+  targets: {
+    unique: true,
+    get: (state, context) =>
+      state.actors.filter((a) => a.ID !== context.sourceID),
+    max: () => FireballTargetCount,
+  },
   resolve: (_, context) => {
     return [
       costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
-      context.targetIDs.map((targetID) =>
-        damageResolver({ ...context, targetIDs: [targetID] }, FireballDamage)
-      ),
+      damageResolver(context, FireballDamage),
     ]
   },
 }
 
-export { Fireball, FireballDamage }
+export { Fireball, FireballDamage, FireballTargetCount }
