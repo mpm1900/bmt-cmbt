@@ -13,7 +13,7 @@ const FireballDamage: Damage = {
   power: 50,
 }
 
-export const Fireball: SAction = {
+const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   validate: (state, context) =>
@@ -36,3 +36,5 @@ export const Fireball: SAction = {
     ]
   },
 }
+
+export { Fireball, FireballDamage }

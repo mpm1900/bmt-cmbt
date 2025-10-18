@@ -4,6 +4,8 @@ import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 
 type GameUIState = {
+  playerID: string
+  planningView: 'actions' | 'items' | 'switch'
   activeActorID: string | undefined
   activeActionID: string | undefined
   stagingContext: DeltaContext | undefined
@@ -16,6 +18,8 @@ type GameUIStore = GameUIState & {
 
 const gameUIStore = createStore<GameUIStore>((set) => {
   return {
+    playerID: '__player__',
+    planningView: 'actions',
     activeActorID: undefined,
     activeActionID: undefined,
     stagingContext: undefined,

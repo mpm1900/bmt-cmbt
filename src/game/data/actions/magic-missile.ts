@@ -11,10 +11,11 @@ const MagicMissileDamage: Damage = {
   power: 10,
 }
 
-export const MagicMissile: SAction = {
+const MagicMissile: SAction = {
   ID: v4(),
   name: 'Magic Missile',
-  validate: (_state, _context) => _context.targetIDs.length === 5,
+  validate: (_state, context) =>
+    context.targetIDs.filter((id) => !!id).length === 5,
   maxTargetCount: () => 5,
   uniqueTargets: false,
   targets: (state, context) =>
@@ -30,3 +31,5 @@ export const MagicMissile: SAction = {
     ]
   },
 }
+
+export { MagicMissile, MagicMissileDamage }

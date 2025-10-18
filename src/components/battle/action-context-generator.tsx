@@ -2,19 +2,21 @@ import type { SAction, State } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from './ui/card'
-import { ButtonGroup } from './ui/button-group'
-import { Button } from './ui/button'
+} from '../ui/card'
+import { ButtonGroup } from '../ui/button-group'
+import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
 import { ArrowRight, CircleDashed, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useGameUI } from '@/hooks/useGameUI'
+import { ACTION_RENDERERS } from '@/renderers'
 
 function DuplicateTargetGenerator({
   action,
@@ -29,7 +31,8 @@ function DuplicateTargetGenerator({
 }) {
   const [targetIndex, setTargetIndex] = useState(0)
   const max = action.maxTargetCount(state, context)
-  const done = context.targetIDs.length === max
+  const selectedTargets = context.targetIDs.filter((id) => !!id)
+  const done = selectedTargets.length === max
 
   useEffect(() => {
     setTargetIndex(0)
@@ -91,7 +94,8 @@ function UniqueTargetGenerator({
   onContextChange: (context: DeltaContext) => void
 }) {
   const max = action.maxTargetCount(state, context)
-  const done = context.targetIDs.length === max
+  const selectedTargets = context.targetIDs.filter((id) => !!id)
+  const done = selectedTargets.length === max
   const ready = action.validate(state, context)
 
   return (
@@ -136,7 +140,10 @@ function ActionContextGenerator({
   const state = useGameState((s) => s.state)
   const { stagingContext = { sourceID, targetIDs: [] }, set: setUI } =
     useGameUI((s) => s)
+  const renderer = ACTION_RENDERERS[action.ID]
   const max = action.maxTargetCount(state, stagingContext)
+  const ready = action.validate(state, stagingContext)
+  const selectedTargets = stagingContext.targetIDs.filter((id) => !!id)
 
   useEffect(() => {
     setUI({
@@ -147,13 +154,18 @@ function ActionContextGenerator({
     })
   }, [sourceID, action.ID])
 
-  const ready = action.validate(state, stagingContext)
-
   return (
     <Card>
       <CardHeader>
         <CardTitle>{action.name}</CardTitle>
-        <CardDescription>Select {max} Target(s)</CardDescription>
+        <CardDescription>
+          {selectedTargets.length} of {max} Targets selected.
+        </CardDescription>
+        {renderer && (
+          <CardAction>
+            <renderer.Badges />
+          </CardAction>
+        )}
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center justify-center gap-4">

@@ -12,7 +12,7 @@ const Goku: SEffect = {
       ID: v4(),
       type: 'onDamage',
       validate: (_state: State, tcontext: DeltaContext) => {
-        return econtext.sourceID === tcontext.targetIDs[0]
+        return tcontext.targetIDs.includes(econtext.sourceID)
       },
       resolve: (_state: State, _tcontext: DeltaContext) => {
         return [addEffectResolver(BodyUp, econtext)]

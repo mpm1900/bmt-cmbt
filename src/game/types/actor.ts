@@ -15,6 +15,7 @@ type ActorState = {
 
 type Actor<T> = {
   ID: string
+  playerID: string | undefined
   name: string
   modified: boolean
   actions: Array<Action<T, Actor<T>>>

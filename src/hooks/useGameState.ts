@@ -1,7 +1,7 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaContext } from '@/game/types/delta'
 import { flush, next, nextTurnPhase } from '@/game/next'
-import type { SAction, SActor, State } from '@/game/state'
+import type { Player, SAction, SActor, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
@@ -14,8 +14,13 @@ type GameStateStore = {
   flush: () => void
 }
 
+const player: Player = {
+  ID: '__player__',
+}
+
 const Max: SActor = {
   ID: v4(),
+  playerID: player.ID,
   name: 'MAX',
   modified: false,
   actions: [],
@@ -32,7 +37,7 @@ const Max: SActor = {
 }
 
 const initialState: State = {
-  players: [],
+  players: [player],
   turn: {
     phase: 'start',
   },
@@ -40,6 +45,7 @@ const initialState: State = {
     Max,
     {
       ID: v4(),
+      playerID: player.ID,
       name: 'KATIE',
       modified: false,
       actions: [],
@@ -56,6 +62,7 @@ const initialState: State = {
     },
     {
       ID: v4(),
+      playerID: player.ID,
       name: 'HANK',
       modified: false,
       actions: [],

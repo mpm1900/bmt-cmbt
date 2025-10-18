@@ -2,9 +2,9 @@ import type { SActor } from '@/game/state'
 import { cn } from '@/lib/utils'
 import { cva } from 'class-variance-authority'
 import { Atom, EllipsisVertical } from 'lucide-react'
-import { InputGroupButton } from './ui/input-group'
-import { Item, ItemContent, ItemTitle } from './ui/item'
-import { Progress } from './ui/progress'
+import { InputGroupButton } from '../ui/input-group'
+import { Item, ItemContent, ItemTitle } from '../ui/item'
+import { Progress } from '../ui/progress'
 
 const actorButtonVariants = cva('relative h-auto p-4', {
   variants: {
