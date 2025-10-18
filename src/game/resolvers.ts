@@ -82,4 +82,20 @@ function damageResolver(
   }
 }
 
-export { costResolver, mutateActorResolver, addEffectResolver, damageResolver }
+function emptyResolver(context: DeltaContext): DeltaQueueItem<State> {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State, _context: DeltaContext) => state,
+    },
+  }
+}
+
+export {
+  emptyResolver,
+  costResolver,
+  mutateActorResolver,
+  addEffectResolver,
+  damageResolver,
+}

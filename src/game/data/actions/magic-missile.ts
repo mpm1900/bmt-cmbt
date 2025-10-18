@@ -1,8 +1,9 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { damageResolver } from '@/game/resolvers'
+import { damageResolver, emptyResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
+import { chance } from '@/lib/chance'
 
 const MagicMissileDamage: PowerDamage = {
   type: 'power',
@@ -11,6 +12,7 @@ const MagicMissileDamage: PowerDamage = {
   element: 'shock',
   power: 10,
 }
+const MagicMissileAccuracy = 50
 
 const MagicMissile: SAction = {
   ID: v4(),
@@ -23,12 +25,15 @@ const MagicMissile: SAction = {
     state.actors.filter((a) => a.ID !== context.sourceID),
   resolve: (_, context) => {
     return [
-      context.targetIDs.map((targetID) =>
-        damageResolver(
+      context.targetIDs.map((targetID) => {
+        if (!chance(MagicMissileAccuracy)) {
+          return emptyResolver(context)
+        }
+        return damageResolver(
           { ...context, targetIDs: [targetID] },
           MagicMissileDamage
         )
-      ),
+      }),
     ]
   },
 }
