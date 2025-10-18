@@ -5,6 +5,7 @@ import { Atom, EllipsisVertical } from 'lucide-react'
 import { InputGroupButton } from '../ui/input-group'
 import { Item, ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
+import { getHealth } from '@/game/actor'
 
 const actorButtonVariants = cva('relative h-auto p-4', {
   variants: {
@@ -86,7 +87,7 @@ function Actor({
           <ItemTitle>{actor.name}</ItemTitle>
           <Progress
             value={
-              ((actor.stats.body - actor.state.damage) * 100) / actor.stats.body
+              ((getHealth(actor) - actor.state.damage) * 100) / getHealth(actor)
             }
           />
           <Progress

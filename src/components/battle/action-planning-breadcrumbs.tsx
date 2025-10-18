@@ -20,19 +20,19 @@ function ActionPlanningBreadcrumbs({
   action,
 }: {
   source: SActor
-  action: SAction
+  action: SAction | undefined
 }) {
   const actors = useGameState((s) =>
     s.state.actors.filter((a) => a.playerID === source.playerID)
   )
-  const { set } = useGameUI((s) => s)
+  const { set, planningView } = useGameUI((s) => s)
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-              Actions <ChevronDown />
+            <DropdownMenuTrigger className="flex items-center gap-1 capitalize [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+              {planningView} <ChevronDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem onSelect={() => set({ planningView: 'items' })}>

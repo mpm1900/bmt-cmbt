@@ -1,26 +1,34 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaContext } from '@/game/types/delta'
-import { flush, next, nextTurnPhase } from '@/game/next'
+import { flush, next, nextAction, nextTurnPhase } from '@/game/next'
 import type { Player, SAction, SActor, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
 import { pushAction } from '@/game/mutations'
+import { clearActive } from '@/game/queue'
 
 type GameStateStore = {
   state: State
   pushAction: (action: SAction, context: DeltaContext) => void
+  pushPromptAction: (action: SAction, context: DeltaContext) => void
   next: () => void
   flush: () => void
+  nextPhase: () => void
 }
 
 const player: Player = {
   ID: '__player__',
 }
+const computer: Player = {
+  ID: undefined,
+}
 
 const Max: SActor = {
   ID: v4(),
   playerID: player.ID,
+  parentID: undefined,
+  type: 'parent',
   name: 'MAX',
   modified: false,
   actions: [],
@@ -33,11 +41,13 @@ const Max: SActor = {
   state: {
     mana: 100,
     damage: 0,
+    active: 1,
+    alive: 1,
   },
 }
 
 const initialState: State = {
-  players: [player],
+  players: [computer, player],
   turn: {
     phase: 'start',
   },
@@ -46,6 +56,8 @@ const initialState: State = {
     {
       ID: v4(),
       playerID: player.ID,
+      parentID: undefined,
+      type: 'parent',
       name: 'KATIE',
       modified: false,
       actions: [],
@@ -58,12 +70,16 @@ const initialState: State = {
       state: {
         mana: 100,
         damage: 0,
+        active: 1,
+        alive: 1,
       },
     },
     {
       ID: v4(),
       playerID: player.ID,
       name: 'HANK',
+      parentID: undefined,
+      type: 'parent',
       modified: false,
       actions: [],
       stats: {
@@ -75,6 +91,8 @@ const initialState: State = {
       state: {
         mana: 100,
         damage: 0,
+        active: 1,
+        alive: 1,
       },
     },
   ],
@@ -89,6 +107,10 @@ const initialState: State = {
     },
   ],
   actionQueue: {
+    queue: [],
+    active: undefined,
+  },
+  promptQueue: {
     queue: [],
     active: undefined,
   },
@@ -113,7 +135,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
         return { state }
       }
 
-      state = pushAction(state, action, context)
+      state = pushAction(state, context, action)
 
       if (state.actionQueue.queue.length === state.actors.length) {
         state = nextTurnPhase(state)
@@ -124,6 +146,17 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       }
     })
   },
+  pushPromptAction: (action: SAction, context: DeltaContext) => {
+    set(({ state }) => {
+      state = pushAction(state, context, action)
+      state = {
+        ...state,
+        promptQueue: clearActive(state.promptQueue),
+      }
+      state = nextAction(state)
+      return { state }
+    })
+  },
   next: () => {
     set(({ state }) => ({
       state: next(state),
@@ -132,6 +165,11 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   flush: () => {
     set(({ state }) => ({
       state: flush(state),
+    }))
+  },
+  nextPhase: () => {
+    set(({ state }) => ({
+      state: nextTurnPhase(state),
     }))
   },
 }))

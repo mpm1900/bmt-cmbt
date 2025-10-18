@@ -1,5 +1,5 @@
 import type { SAction, SActor } from '@/game/state'
-import { Card, CardContent, CardHeader } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import type { ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { RadioGroup } from '../ui/radio-group'
@@ -13,19 +13,24 @@ function ActionSelectionCard({
   activeActionID,
   onActiveActionIDChange,
   onActionConfirm,
+  title,
   breadcrumbs,
 }: {
-  source: SActor
+  source: SActor | undefined
   actions: Array<SAction>
   activeActionID: string | undefined
   onActiveActionIDChange: (actionID: string | undefined) => void
   onActionConfirm: (action: SAction, context: DeltaContext) => void
-  breadcrumbs?: ReactNode
+  title: ReactNode
+  breadcrumbs: ReactNode
 }) {
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
     <Card className="min-w-200 w-full max-w-[70%]">
-      <CardHeader>{breadcrumbs}</CardHeader>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        {breadcrumbs}
+      </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4">
         <ScrollArea className="h-72 pr-4">
           <RadioGroup
@@ -33,15 +38,19 @@ function ActionSelectionCard({
             onValueChange={onActiveActionIDChange}
           >
             {actions.map((action) => (
-              <ActionRadioItem key={action.ID} action={action} />
+              <ActionRadioItem
+                key={action.ID}
+                action={action}
+                active={action.ID === activeActionID}
+              />
             ))}
           </RadioGroup>
         </ScrollArea>
-        {activeAction && source.ID && (
+        {activeAction && (
           <ScrollArea className="h-72">
             <ActionContextGenerator
               action={activeAction}
-              sourceID={source.ID}
+              sourceID={source?.ID}
               onContextConfirm={(context) => {
                 onActionConfirm(activeAction, context)
               }}

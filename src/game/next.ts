@@ -1,4 +1,5 @@
 import { mapActor } from './access'
+import { validateState } from './mutations'
 import { popItem, pushItems, sort } from './queue'
 import type { State, Turn } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
@@ -70,6 +71,15 @@ function nextMutation(state: State): State {
   )
 }
 
+function nextPrompt(state: State): State {
+  state = {
+    ...state,
+    promptQueue: popItem(state.promptQueue),
+  }
+
+  return state
+}
+
 function nextPhase(phase: Turn['phase']): Turn['phase'] {
   switch (phase) {
     case 'start':
@@ -117,6 +127,20 @@ function next(state: State): State {
   if (state.mutationQueue.queue.length > 0) {
     return nextMutation(state)
   }
+  if (state.promptQueue.queue.length > 0) {
+    return nextPrompt(state)
+  }
+  if (state.promptQueue.active) {
+    return state
+  }
+
+  state = validateState(state, { minActiveActorCount: 3 })
+  if (state.promptQueue.queue.length > 0) {
+    return nextPrompt(state)
+  }
+  if (state.promptQueue.active) {
+    return state
+  }
   if (state.actionQueue.queue.length > 0) {
     return nextAction(state)
   }
@@ -128,8 +152,19 @@ function hasNext(state: State): boolean {
   return (
     state.mutationQueue.queue.length > 0 ||
     state.triggerQueue.queue.length > 0 ||
-    state.actionQueue.queue.length > 0
+    (state.actionQueue.queue.length > 0 && state.promptQueue.queue.length === 0)
   )
+}
+
+function getStatus(state: State): string {
+  if (hasNext(state)) {
+    return 'running'
+  }
+  if (state.promptQueue.queue.length > 0) {
+    return 'pending'
+  }
+
+  return 'idle'
 }
 
 function flush(state: State): State {
@@ -140,11 +175,13 @@ function flush(state: State): State {
 }
 
 export {
+  resolve,
   nextAction,
   nextTrigger,
   nextMutation,
   nextTurnPhase,
   next,
   hasNext,
+  getStatus,
   flush,
 }

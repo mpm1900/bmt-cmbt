@@ -134,12 +134,14 @@ function ActionContextGenerator({
   onContextConfirm,
 }: {
   action: SAction
-  sourceID: string
+  sourceID: string | undefined
   onContextConfirm: (context: DeltaContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { stagingContext = { sourceID, targetIDs: [] }, set: setUI } =
-    useGameUI((s) => s)
+  const {
+    stagingContext = { sourceID: sourceID ?? '', targetIDs: [] },
+    set: setUI,
+  } = useGameUI((s) => s)
   const renderer = ACTION_RENDERERS[action.ID]
   const max = action.maxTargetCount(state, stagingContext)
   const ready = action.validate(state, stagingContext)
@@ -148,7 +150,7 @@ function ActionContextGenerator({
   useEffect(() => {
     setUI({
       stagingContext: {
-        sourceID,
+        sourceID: sourceID ?? '',
         targetIDs: [],
       },
     })

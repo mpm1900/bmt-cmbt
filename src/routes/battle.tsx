@@ -4,35 +4,27 @@ import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
 import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group'
 import { withEffects } from '@/game/actor'
-import { BrainBlast } from '@/game/data/actions/brain-blast'
-import { DragonDance } from '@/game/data/actions/dragon-dance'
-import { Fireball } from '@/game/data/actions/fireball'
-import { Heal } from '@/game/data/actions/heal'
-import { MagicMissile } from '@/game/data/actions/magic-missile'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
 import { ArrowDownUp, Box, CircleSmall, FoldVertical } from 'lucide-react'
-import { ActionSelectionCard } from '@/components/battle/action-selection-card'
-import { ActionPlanningBreadcrumbs } from '@/components/battle/action-planning-breadcrumbs'
+import { PhasePlanning } from '@/components/battle/phase-planning'
+import { PhaseMain } from '@/components/battle/phase-main'
+import { Swap } from '@/game/data/actions/swap'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
 })
 
-const actions = [Fireball, MagicMissile, BrainBlast, Heal, DragonDance]
-
 function RouteComponent() {
-  const { state, pushAction, next } = useGameState((store) => store)
+  const { state, next, nextPhase } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   const {
-    activeActionID,
     activeActorID,
     planningView,
+    playerID,
     set: setUI,
   } = useGameUI((s) => s)
-  const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
-  const activeAction = actions.find((action) => action.ID === activeActionID)
 
   // bg-[url('./public/platforms.jpg')]
   return (
@@ -41,30 +33,15 @@ function RouteComponent() {
       <div>
         <div>Phase: {state.turn.phase}</div>
         <div>Actions: {state.actionQueue.queue.length}</div>
+        <div>Prompts: {state.promptQueue.queue.length}</div>
         <div>Triggers: {state.triggerQueue.queue.length}</div>
         <div>Mutations: {state.mutationQueue.queue.length}</div>
         <Button onClick={next}>Next</Button>
+        <Button onClick={nextPhase}>Next Phase</Button>
       </div>
       <div className="flex-1 flex items-center justify-center">
-        {activeActor && state.turn.phase === 'planning' && (
-          <ActionSelectionCard
-            source={activeActor}
-            actions={actions}
-            activeActionID={activeActionID}
-            onActiveActionIDChange={(activeActionID) =>
-              setUI({ activeActionID })
-            }
-            onActionConfirm={(action, context) => pushAction(action, context)}
-            breadcrumbs={
-              activeAction && (
-                <ActionPlanningBreadcrumbs
-                  source={activeActor}
-                  action={activeAction}
-                />
-              )
-            }
-          />
-        )}
+        {state.turn.phase === 'planning' && <PhasePlanning />}
+        {state.turn.phase === 'main' && <PhaseMain />}
       </div>
       <div className="flex justify-start gap-2 my-2">
         <div className="flex flex-col items-center justify-end p-4 gap-1">
@@ -88,7 +65,9 @@ function RouteComponent() {
             <Button
               variant={planningView === 'switch' ? 'default' : 'secondary'}
               size="icon-lg"
-              onClick={() => setUI({ planningView: 'switch' })}
+              onClick={() =>
+                setUI({ planningView: 'switch', activeActionID: Swap.ID })
+              }
             >
               <ArrowDownUp />
             </Button>
@@ -99,14 +78,19 @@ function RouteComponent() {
         </div>
         <div className="flex self-center justify-self-center justify-center gap-2 my-2">
           {actors
-            .filter((a) => a[0].playerID === state.players[0].ID)
+            .filter(([a]) => a.playerID === playerID && a.state.active)
             .map(([actor, effects]) => (
               <Actor
                 key={actor.ID}
                 actor={actor}
                 effects={effects}
                 active={activeActorID === actor.ID}
-                disabled={state.turn.phase !== 'planning'}
+                disabled={
+                  state.turn.phase !== 'planning' ||
+                  !!state.actionQueue.queue.find(
+                    (a) => a.context.sourceID === actor.ID
+                  )
+                }
                 onClick={() => {
                   setUI({
                     activeActionID: undefined,

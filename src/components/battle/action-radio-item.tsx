@@ -6,7 +6,13 @@ import type { SAction } from '@/game/state'
 import { ACTION_RENDERERS } from '@/renderers'
 import { Item, ItemActions, ItemContent } from '../ui/item'
 
-function ActionRadioItem({ action }: { action: SAction }) {
+function ActionRadioItem({
+  action,
+  active,
+}: {
+  action: SAction
+  active: boolean
+}) {
   const renderer = ACTION_RENDERERS[action.ID]
   return (
     <Item asChild>
@@ -15,7 +21,8 @@ function ActionRadioItem({ action }: { action: SAction }) {
         className={cn(
           buttonVariants({ variant: 'outline' }),
           'items-start h-auto',
-          'has-[[data-state=checked]]:[&_.action-description]:flex'
+          'has-[[data-state=checked]]:[&_.action-description]:flex',
+          { '!bg-input !border-ring': active }
         )}
       >
         <ItemContent>

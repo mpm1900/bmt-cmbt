@@ -7,14 +7,22 @@ function getTriggers(state: State): Array<STrigger> {
   )
 }
 
+function getActor(state: State, sourceID: string): SActor | undefined {
+  const source = state.actors.find((a) => a.ID === sourceID)
+  if (!source) return undefined
+
+  return withEffects(source, state.effects)[0]
+}
+
 function mapActor<T = unknown>(
   state: State,
   sourceID: string,
   fn: (a: SActor) => T
 ): T | undefined {
-  const source = state.actors.find((a) => a.ID === sourceID)
+  const source = getActor(state, sourceID)
   if (!source) return undefined
 
-  return fn(withEffects(source, state.effects)[0])
+  return fn(source)
 }
-export { getTriggers, mapActor }
+
+export { getTriggers, getActor, mapActor }

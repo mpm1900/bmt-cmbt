@@ -7,7 +7,7 @@ import type { Actor } from './types/actor'
 import type { Modifier } from './types/modifier'
 
 type Player = {
-  ID: string
+  ID: string | undefined
 }
 type SActor = Actor<State>
 type SAction = Action<State, SActor>
@@ -29,6 +29,7 @@ type State = {
   actors: Array<SActor>
   effects: Array<SEffectItem>
   actionQueue: ActionQueue<State, SActor>
+  promptQueue: ActionQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State>
 }
