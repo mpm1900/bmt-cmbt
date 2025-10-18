@@ -1,6 +1,6 @@
 import { mapActor } from './access'
 import { validateState } from './mutations'
-import { popItem, pushItems, sort } from './queue'
+import { pop, push, sort } from './queue'
 import type { State, Turn } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
@@ -17,67 +17,53 @@ function resolve(
 }
 
 function nextAction(state: State): State {
-  const actionQueue = popItem(state.actionQueue)
-  state = {
-    ...state,
-    actionQueue,
-  }
-  if (!actionQueue.active) return state
+  if (!state.actionQueue[0]) return state
 
   const mutations = resolve(
-    actionQueue.active.action,
+    state.actionQueue[0].action,
     state,
-    actionQueue.active.context
+    state.actionQueue[0].context
   )
-  const mutationQueue = pushItems(state.mutationQueue, mutations)
+  const mutationQueue = push(state.mutationQueue, mutations)
+  const actionQueue = pop(state.actionQueue)
   return {
     ...state,
+    actionQueue,
     mutationQueue,
   }
 }
 
 function nextTrigger(state: State): State {
-  const triggerQueue = popItem(state.triggerQueue)
-  state = {
-    ...state,
-    triggerQueue,
-  }
-  if (!triggerQueue.active) return state
+  if (!state.triggerQueue[0]) return state
 
   const mutations = resolve(
-    triggerQueue.active.trigger,
+    state.triggerQueue[0].trigger,
     state,
-    triggerQueue.active.context
+    state.triggerQueue[0].context
   )
-  const mutationQueue = pushItems(state.mutationQueue, mutations)
+  const triggerQueue = pop(state.triggerQueue)
+  const mutationQueue = push(state.mutationQueue, mutations)
   return {
     ...state,
     mutationQueue,
+    triggerQueue,
   }
 }
 
 function nextMutation(state: State): State {
-  state = {
-    ...state,
-    mutationQueue: popItem(state.mutationQueue),
-  }
-  if (!state.mutationQueue.active) return state
+  if (!state.mutationQueue[0]) return state
 
-  const { delta, context } = state.mutationQueue.active
+  const { delta, context } = state.mutationQueue[0]
   if (delta.filter && !delta.filter(state, context)) return state
-  return state.mutationQueue.active.delta.apply(
+  state = state.mutationQueue[0].delta.apply(
     state,
-    state.mutationQueue.active.context
+    state.mutationQueue[0].context
   )
-}
-
-function nextPrompt(state: State): State {
-  state = {
+  const mutationQueue = pop(state.mutationQueue)
+  return {
     ...state,
-    promptQueue: popItem(state.promptQueue),
+    mutationQueue,
   }
-
-  return state
 }
 
 function nextPhase(phase: Turn['phase']): Turn['phase'] {
@@ -121,27 +107,22 @@ function nextTurnPhase(state: State): State {
 }
 
 function next(state: State): State {
-  if (state.triggerQueue.queue.length > 0) {
+  if (state.triggerQueue.length > 0) {
     return nextTrigger(state)
   }
-  if (state.mutationQueue.queue.length > 0) {
+  if (state.mutationQueue.length > 0) {
     return nextMutation(state)
   }
-  if (state.promptQueue.queue.length > 0) {
-    return nextPrompt(state)
-  }
-  if (state.promptQueue.active) {
+  if (state.promptQueue[0]) {
     return state
   }
 
-  state = validateState(state, { minActiveActorCount: 3 })
-  if (state.promptQueue.queue.length > 0) {
-    return nextPrompt(state)
-  }
-  if (state.promptQueue.active) {
-    return state
-  }
-  if (state.actionQueue.queue.length > 0) {
+  let result = validateState(state, { minActiveActorCount: 3 })
+  state = result[0]
+  const valid = result[1]
+  if (!valid) return state
+
+  if (state.actionQueue.length > 0) {
     return nextAction(state)
   }
 
@@ -150,9 +131,9 @@ function next(state: State): State {
 
 function hasNext(state: State): boolean {
   return (
-    state.mutationQueue.queue.length > 0 ||
-    state.triggerQueue.queue.length > 0 ||
-    (state.actionQueue.queue.length > 0 && state.promptQueue.queue.length === 0)
+    state.mutationQueue.length > 0 ||
+    state.triggerQueue.length > 0 ||
+    (state.actionQueue.length > 0 && state.promptQueue.length === 0)
   )
 }
 
@@ -160,7 +141,7 @@ function getStatus(state: State): string {
   if (hasNext(state)) {
     return 'running'
   }
-  if (state.promptQueue.queue.length > 0) {
+  if (state.promptQueue.length > 0) {
     return 'pending'
   }
 

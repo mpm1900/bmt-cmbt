@@ -1,47 +1,20 @@
 import type { Queue } from './types/queue'
 
-function newQueue<T>(initial: Array<T> = []): Queue<T> {
-  return {
-    queue: initial,
-    active: undefined,
-  }
+function enqueue<T>(queue: Queue<T>, ...items: Array<T>): Queue<T> {
+  return [...queue, ...items]
 }
 
-function clearActive<T>(queue: Queue<T>): Queue<T> {
-  return {
-    ...queue,
-    active: undefined,
-  }
+function push<T>(queue: Queue<T>, items: Array<T>): Queue<T> {
+  return [...items, ...queue]
 }
 
-function enqueueItems<T>(queue: Queue<T>, ...items: Array<T>): Queue<T> {
-  return {
-    ...queue,
-    queue: [...queue.queue, ...items],
-  }
-}
-
-function pushItems<T>(queue: Queue<T>, items: Array<T>): Queue<T> {
-  return {
-    ...queue,
-    queue: [...items, ...queue.queue],
-  }
-}
-
-function popItem<T>(queue: Queue<T>): Queue<T> {
-  const [item, ...next] = queue.queue
-  return {
-    ...queue,
-    queue: next,
-    active: item,
-  }
+function pop<T>(queue: Queue<T>): Queue<T> {
+  const [_, ...next] = queue
+  return next
 }
 
 function sort<T>(queue: Queue<T>, compareFn: (a: T, b: T) => number): Queue<T> {
-  return {
-    ...queue,
-    queue: queue.queue.sort(compareFn),
-  }
+  return queue.sort(compareFn)
 }
 
-export { newQueue, clearActive, enqueueItems, pushItems, popItem, sort }
+export { enqueue, push, pop, sort }

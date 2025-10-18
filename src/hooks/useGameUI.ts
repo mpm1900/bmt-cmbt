@@ -27,7 +27,7 @@ const gameUIStore = createStore<GameUIStore>((set) => {
     next: (game: State) => {
       // Implement logic to advance the game state
       const nextAvailableActor = game.actors.find(
-        (a) => !game.actionQueue.queue.find((q) => q.context.sourceID === a.ID)
+        (a) => !game.actionQueue.find((q) => q.context.sourceID === a.ID)
       )
       if (nextAvailableActor) {
         set({ activeActorID: nextAvailableActor.ID })

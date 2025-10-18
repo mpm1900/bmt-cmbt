@@ -6,7 +6,7 @@ import { ButtonGroup } from '../ui/button-group'
 
 function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
   const { state, pushAction } = useGameState((s) => s)
-  const hasAction = !!state.actionQueue.queue.find(
+  const hasAction = !!state.actionQueue.find(
     (i) => i.context.sourceID === sourceID
   )
 

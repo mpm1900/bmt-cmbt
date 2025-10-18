@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { getActor, getTriggers } from './access'
 import { getDamageAmount, withDamage } from './actor'
-import { pushItems } from './queue'
+import { push } from './queue'
 import type { SAction, SActor, State, STrigger } from './state'
 import type { Delta, DeltaContext } from './types/delta'
 import type { Damage } from './types/damage'
@@ -12,7 +12,7 @@ function pushAction(
   context: DeltaContext,
   action: SAction
 ): State {
-  const actionQueue = pushItems(state.actionQueue, [
+  const actionQueue = push(state.actionQueue, [
     {
       ID: v4(),
       action,
@@ -30,7 +30,7 @@ function pushPrompt(
   context: DeltaContext,
   prompt: SAction
 ): State {
-  const promptQueue = pushItems(state.promptQueue, [
+  const promptQueue = push(state.promptQueue, [
     {
       ID: v4(),
       action: prompt,
@@ -44,12 +44,11 @@ function pushPrompt(
 }
 
 function resolvePrompt(state: State, context: DeltaContext): State {
-  const prompt = state.promptQueue.active
-  if (!prompt) return state
-  const actionQueue = pushItems(state.actionQueue, [
+  if (!state.promptQueue[0]) return state
+  const actionQueue = push(state.actionQueue, [
     {
       ID: v4(),
-      action: prompt.action,
+      action: state.promptQueue[0].action,
       context,
     },
   ])
@@ -72,7 +71,7 @@ function registerTrigger(
     trigger,
     context,
   }))
-  const triggerQueue = pushItems(state.triggerQueue, items)
+  const triggerQueue = push(state.triggerQueue, items)
 
   return {
     ...state,
@@ -125,12 +124,13 @@ function validateState(
   options: {
     minActiveActorCount: number
   }
-): State {
+): [State, boolean] {
   const teams = state.players.map((player) =>
     state.actors.filter((a) => a.playerID === player.ID && a.state.alive)
   )
   console.log('validating state')
   console.log(teams)
+  let valid = true
   teams.forEach((team) => {
     const active = team.filter((a) => a.state.active)
     const bench = team.filter((a) => !a.state.active)
@@ -138,9 +138,10 @@ function validateState(
       // select a random bench actor to be the source
       const source = bench[0]
       state = pushPrompt(state, { sourceID: source.ID, targetIDs: [] }, SwapIn)
+      valid = false
     }
   })
-  return state
+  return [state, valid]
 }
 
 export {

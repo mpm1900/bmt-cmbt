@@ -6,7 +6,7 @@ import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
 import { pushAction } from '@/game/mutations'
-import { clearActive } from '@/game/queue'
+import { pop } from '@/game/queue'
 
 type GameStateStore = {
   state: State
@@ -106,29 +106,17 @@ const initialState: State = {
       },
     },
   ],
-  actionQueue: {
-    queue: [],
-    active: undefined,
-  },
-  promptQueue: {
-    queue: [],
-    active: undefined,
-  },
-  triggerQueue: {
-    queue: [],
-    active: undefined,
-  },
-  mutationQueue: {
-    queue: [],
-    active: undefined,
-  },
+  actionQueue: [],
+  promptQueue: [],
+  triggerQueue: [],
+  mutationQueue: [],
 }
 
 const gameStateStore = createStore<GameStateStore>((set) => ({
   state: initialState,
   pushAction: (action: SAction, context: DeltaContext) => {
     set(({ state }) => {
-      const existing = state.actionQueue.queue.find(
+      const existing = state.actionQueue.find(
         (i) => i.context.sourceID === context.sourceID
       )
       if (!!existing) {
@@ -137,7 +125,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
 
       state = pushAction(state, context, action)
 
-      if (state.actionQueue.queue.length === state.actors.length) {
+      if (state.actionQueue.length === state.actors.length) {
         state = nextTurnPhase(state)
       }
 
@@ -149,11 +137,11 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   pushPromptAction: (action: SAction, context: DeltaContext) => {
     set(({ state }) => {
       state = pushAction(state, context, action)
+      state = nextAction(state)
       state = {
         ...state,
-        promptQueue: clearActive(state.promptQueue),
+        promptQueue: pop(state.promptQueue),
       }
-      state = nextAction(state)
       return { state }
     })
   },

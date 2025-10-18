@@ -32,10 +32,10 @@ function RouteComponent() {
       <PhaseController />
       <div>
         <div>Phase: {state.turn.phase}</div>
-        <div>Actions: {state.actionQueue.queue.length}</div>
-        <div>Prompts: {state.promptQueue.queue.length}</div>
-        <div>Triggers: {state.triggerQueue.queue.length}</div>
-        <div>Mutations: {state.mutationQueue.queue.length}</div>
+        <div>Actions: {state.actionQueue.length}</div>
+        <div>Prompts: {state.promptQueue.length}</div>
+        <div>Triggers: {state.triggerQueue.length}</div>
+        <div>Mutations: {state.mutationQueue.length}</div>
         <Button onClick={next}>Next</Button>
         <Button onClick={nextPhase}>Next Phase</Button>
       </div>
@@ -87,7 +87,7 @@ function RouteComponent() {
                 active={activeActorID === actor.ID}
                 disabled={
                   state.turn.phase !== 'planning' ||
-                  !!state.actionQueue.queue.find(
+                  !!state.actionQueue.find(
                     (a) => a.context.sourceID === actor.ID
                   )
                 }

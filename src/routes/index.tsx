@@ -19,9 +19,9 @@ function App() {
     <div className="flex gap-4">
       <div>
         <div>
-          <p>Acions: {state.actionQueue.queue.length}</p>
-          <p>Triggers: {state.triggerQueue.queue.length}</p>
-          <p>Mutations: {state.mutationQueue.queue.length}</p>
+          <p>Acions: {state.actionQueue.length}</p>
+          <p>Triggers: {state.triggerQueue.length}</p>
+          <p>Mutations: {state.mutationQueue.length}</p>
         </div>
         <Button onClick={() => next()}>Next</Button>
         <Button onClick={() => flush()}>Flush</Button>

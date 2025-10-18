@@ -1,6 +1,3 @@
-type Queue<T> = {
-  queue: Array<T>
-  active: T | undefined
-}
+type Queue<T> = Array<T>
 
 export type { Queue }

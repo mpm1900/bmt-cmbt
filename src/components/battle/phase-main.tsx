@@ -4,10 +4,11 @@ import { getActor } from '@/game/access'
 
 function PhaseMain() {
   const { state, pushPromptAction } = useGameState((s) => s)
-  if (state.promptQueue.active) {
-    const action = state.promptQueue.active.action
-    console.log('context', state.promptQueue.active.context)
-    const source = getActor(state, state.promptQueue.active.context.sourceID)
+  console.log(state)
+  if (state.promptQueue[0]) {
+    const action = state.promptQueue[0].action
+    console.log('context', state.promptQueue[0].context)
+    const source = getActor(state, state.promptQueue[0].context.sourceID)
     return (
       <ActionSelectionCard
         source={source}
