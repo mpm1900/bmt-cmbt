@@ -1,49 +1,51 @@
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '../ui/button'
-import { Label } from '../ui/label'
-import { RadioGroupItem } from '../ui/radio-group'
 import type { SAction } from '@/game/state'
 import { ACTION_RENDERERS } from '@/renderers'
 import { Item, ItemActions, ItemContent } from '../ui/item'
+import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 
 function ActionRadioItem({
   action,
   active,
+  onActiveChange,
 }: {
   action: SAction
   active: boolean
+  onActiveChange: (active: boolean) => void
 }) {
   const renderer = ACTION_RENDERERS[action.ID]
   return (
-    <Item asChild>
-      <Label
-        htmlFor={action.ID}
-        className={cn(
-          buttonVariants({ variant: 'outline' }),
-          'items-start h-auto',
-          'has-[[data-state=checked]]:[&_.action-description]:flex',
-          { '!bg-input !border-ring': active }
-        )}
-      >
+    <Item
+      asChild
+      onClick={() => onActiveChange(!active)}
+      className={cn(
+        buttonVariants({ variant: active ? 'outline-active' : 'outline' }),
+        'whitespace-normal items-start h-auto cursor-default'
+      )}
+    >
+      <Collapsible open={active}>
         <ItemContent>
           <div className="flex items-center gap-2">
-            <RadioGroupItem value={action.ID} id={action.ID} className="peer" />
-            <span className="peer-data-[state=unchecked]:text-muted-foreground">
+            <span className={cn({ 'text-muted-foreground': !active })}>
               {renderer ? <renderer.Name /> : action.name}
             </span>
           </div>
           {renderer && (
-            <div className="action-description pl-6 hidden text-muted-foreground">
+            <CollapsibleContent className="text-muted-foreground">
               <renderer.DescriptionShort />
-            </div>
+            </CollapsibleContent>
           )}
         </ItemContent>
         {renderer && (
-          <ItemActions>
-            <renderer.Badges />
+          <ItemActions className="flex-col items-end">
+            <renderer.Icons />
+            <CollapsibleContent>
+              <renderer.Damage />
+            </CollapsibleContent>
           </ItemActions>
         )}
-      </Label>
+      </Collapsible>
     </Item>
   )
 }

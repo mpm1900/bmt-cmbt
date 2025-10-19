@@ -9,8 +9,16 @@ import { ActionPlanningBreadcrumbs } from './action-planning-breadcrumbs'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/swap'
+import { HotShots } from '@/game/data/actions/hot-shots'
 
-const actions = [Fireball, MagicMissile, BrainBlast, Heal, DragonDance]
+const actions = [
+  Fireball,
+  MagicMissile,
+  BrainBlast,
+  Heal,
+  DragonDance,
+  HotShots,
+]
 
 function PhasePlanning() {
   const { state, pushAction } = useGameState((store) => store)

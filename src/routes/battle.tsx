@@ -7,10 +7,11 @@ import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
-import { ArrowDownUp, Box, CircleSmall, FoldVertical } from 'lucide-react'
+import { ArrowDownUp, Box, Circle, CircleOff, FoldVertical } from 'lucide-react'
 import { PhasePlanning } from '@/components/battle/phase-planning'
 import { PhaseMain } from '@/components/battle/phase-main'
 import { Swap } from '@/game/data/actions/swap'
+import { PiNumberOne, PiNumberTwo, PiNumberThree } from 'react-icons/pi'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -102,23 +103,23 @@ function RouteComponent() {
         </div>
         <div className="flex flex-col justify-end p-4">
           <ButtonGrid grid={[2, 3]}>
-            <Button size="icon-sm" variant="default">
-              <CircleSmall />
+            <Button size="icon-sm" variant="default" disabled>
+              <PiNumberThree />
             </Button>
-            <Button size="icon-sm" variant="default">
-              <CircleSmall />
+            <Button size="icon-sm" variant="default" disabled>
+              <PiNumberTwo />
             </Button>
-            <Button size="icon-sm" variant="default">
-              <CircleSmall />
-            </Button>
-            <Button size="icon-sm" variant="secondary">
-              <CircleSmall />
+            <Button size="icon-sm" variant="default" disabled>
+              <PiNumberOne />
             </Button>
             <Button size="icon-sm" variant="secondary" disabled>
-              <CircleSmall />
+              <Circle />
             </Button>
-            <Button size="icon-sm" variant="secondary" disabled>
-              <CircleSmall />
+            <Button size="icon-sm" variant="ghost" disabled>
+              <CircleOff />
+            </Button>
+            <Button size="icon-sm" variant="ghost" disabled>
+              <CircleOff />
             </Button>
           </ButtonGrid>
         </div>

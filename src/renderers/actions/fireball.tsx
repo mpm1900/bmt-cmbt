@@ -12,15 +12,21 @@ const StatIcon = MAIN_STAT_ICONS[FireballDamage.offenseStat]
 const FireballRenderer: ActionRenderer = {
   actionID: Fireball.ID,
   Name: () => <div className="">Fireball</div>,
-  DescriptionShort: () => <div>Deals fire damage to a single target.</div>,
-  Badges: () => (
+  DescriptionShort: () => (
+    <div>
+      Deals fire damage to {FireballTargetCount} targets simultaneously.
+    </div>
+  ),
+  Icons: () => (
     <div className="flex gap-2 items-center">
-      <div>
-        <span className="font-bold">{FireballDamage.power}</span>{' '}
-        <span className="text-muted-foreground">@ {FireballTargetCount}</span>
-      </div>
       <ElementIcon className="size-5" />
       <StatIcon className="size-5" />
+    </div>
+  ),
+  Damage: () => (
+    <div>
+      <span className="font-bold">{FireballDamage.power}</span>{' '}
+      <span className="text-muted-foreground">@ {FireballTargetCount}</span>
     </div>
   ),
 }

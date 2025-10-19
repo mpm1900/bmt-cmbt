@@ -4,6 +4,9 @@ type Element = 'physical' | 'fire' | 'shock' | 'psy'
 
 type MainStat = 'body' | 'reflexes' | 'intelligence'
 type ActorStats = Record<MainStat, number> & {
+  accuracy: number
+  evasion: number
+  health: number
   speed: number
 }
 type ActorState = {

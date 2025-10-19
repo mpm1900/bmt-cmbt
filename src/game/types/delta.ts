@@ -10,6 +10,10 @@ type DeltaContext = {
   targetIDs: string[]
 }
 
+type DeltaPlayerContext = DeltaContext & {
+  playerID: string | undefined // undefined = computer/AI controlled, change type if that changes
+}
+
 type ContextItem = {
   ID: string
   context: DeltaContext
@@ -33,6 +37,7 @@ type DeltaResolver<T> = {
 export type {
   Delta,
   DeltaContext,
+  DeltaPlayerContext,
   ContextItem,
   DeltaQueueItem,
   DeltaQueue,

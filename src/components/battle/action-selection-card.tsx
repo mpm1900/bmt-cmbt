@@ -2,7 +2,6 @@ import type { SAction, SActor } from '@/game/state'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import type { ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
-import { RadioGroup } from '../ui/radio-group'
 import { ActionRadioItem } from './action-radio-item'
 import { ActionContextGenerator } from './action-context-generator'
 import type { DeltaContext } from '@/game/types/delta'
@@ -33,18 +32,25 @@ function ActionSelectionCard({
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4">
         <ScrollArea className="h-72 pr-4">
-          <RadioGroup
-            value={activeAction?.ID ?? null}
-            onValueChange={onActiveActionIDChange}
-          >
+          <div className="flex flex-col gap-2">
             {actions.map((action) => (
               <ActionRadioItem
                 key={action.ID}
                 action={action}
                 active={action.ID === activeActionID}
+                onActiveChange={(active) => {
+                  if (active) {
+                    onActiveActionIDChange(action.ID)
+                    return
+                  }
+                  if (action.ID === activeActionID) {
+                    onActiveActionIDChange(undefined)
+                    return
+                  }
+                }}
               />
             ))}
-          </RadioGroup>
+          </div>
         </ScrollArea>
         {activeAction && (
           <ScrollArea className="h-72">

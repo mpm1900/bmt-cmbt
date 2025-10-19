@@ -33,7 +33,10 @@ const Max: SActor = {
   modified: false,
   actions: [],
   stats: {
+    accuracy: 0,
     body: 100,
+    evasion: 0,
+    health: 0,
     reflexes: 100,
     intelligence: 100,
     speed: 100,
@@ -62,7 +65,10 @@ const initialState: State = {
       modified: false,
       actions: [],
       stats: {
+        accuracy: 0,
         body: 100,
+        evasion: 0,
+        health: 0,
         reflexes: 100,
         intelligence: 180,
         speed: 70,
@@ -83,9 +89,12 @@ const initialState: State = {
       modified: false,
       actions: [],
       stats: {
+        accuracy: 0,
         body: 80,
-        reflexes: 150,
+        evasion: 0,
+        health: 0,
         intelligence: 100,
+        reflexes: 150,
         speed: 150,
       },
       state: {

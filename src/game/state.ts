@@ -1,5 +1,5 @@
 import type { Effect, EffectItem } from './types/effect'
-import type { ActionQueue } from './types/action'
+import type { ActionQueue, PromptQueue } from './types/action'
 import type { Delta, DeltaQueue, DeltaQueueItem } from './types/delta'
 import type { Trigger, TriggerQueue, TriggerQueueItem } from './types/trigger'
 import type { Action } from './types/action'
@@ -24,12 +24,12 @@ type Turn = {
 }
 
 type State = {
-  players: Array<Player>
   turn: Turn
+  players: Array<Player>
   actors: Array<SActor>
   effects: Array<SEffectItem>
   actionQueue: ActionQueue<State, SActor>
-  promptQueue: ActionQueue<State, SActor>
+  promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State>
 }

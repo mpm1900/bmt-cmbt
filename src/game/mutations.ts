@@ -2,7 +2,7 @@ import { v4 } from 'uuid'
 import { getActor, getTriggers, mapActor } from './access'
 import { getDamageAmount, withDamage } from './actor'
 import { push, sort } from './queue'
-import type { SAction, SActor, State, STrigger } from './state'
+import type { Player, SAction, SActor, State, STrigger } from './state'
 import type { Delta, DeltaContext } from './types/delta'
 import type { Damage } from './types/damage'
 import { Swap } from './data/actions/swap'
@@ -27,7 +27,7 @@ function pushAction(
 
 function pushPrompt(
   state: State,
-  context: DeltaContext,
+  context: DeltaContext & { playerID: string | undefined },
   prompt: SAction
 ): State {
   const promptQueue = push(state.promptQueue, [
@@ -101,7 +101,7 @@ function mutateActor(
   return {
     ...state,
     actors: state.actors.map((a) => {
-      if (delta.filter && !delta.filter(a, context)) {
+      if (!a.state.alive || (delta.filter && !delta.filter(a, context))) {
         return a
       }
       return delta.apply(a, context)
@@ -138,17 +138,22 @@ function validateState(
     minActiveActorCount: number
   }
 ): [State, boolean] {
-  const teams = state.players.map((player) =>
-    state.actors.filter((a) => a.playerID === player.ID && a.state.alive)
-  )
+  const teams: [Player, SActor[]][] = state.players.map((player) => [
+    player,
+    state.actors.filter((a) => a.playerID === player.ID && a.state.alive),
+  ])
   let valid = true
-  teams.forEach((team) => {
+  teams.forEach(([player, team]) => {
     const active = team.filter((a) => a.state.active)
     const bench = team.filter((a) => !a.state.active)
     if (active.length < options.minActiveActorCount && bench.length > 0) {
       // select a random bench actor to be the source
       const source = bench[0]
-      state = pushPrompt(state, { sourceID: source.ID, targetIDs: [] }, Swap)
+      state = pushPrompt(
+        state,
+        { playerID: player.ID, sourceID: source.ID, targetIDs: [] },
+        Swap
+      )
       valid = false
     }
   })

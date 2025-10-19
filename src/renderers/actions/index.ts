@@ -4,7 +4,8 @@ type ActionRenderer = {
   actionID: string
   Name: ComponentType
   DescriptionShort: ComponentType
-  Badges: ComponentType
+  Icons: ComponentType
+  Damage: ComponentType
 }
 
 export type { ActionRenderer }

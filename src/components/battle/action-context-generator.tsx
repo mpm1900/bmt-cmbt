@@ -165,7 +165,7 @@ function ActionContextGenerator({
         </CardDescription>
         {renderer && (
           <CardAction>
-            <renderer.Badges />
+            <renderer.Icons />
           </CardAction>
         )}
       </CardHeader>

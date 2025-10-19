@@ -90,6 +90,25 @@ function withEffects(
   return [actor, Array.from(applied)]
 }
 
+function getStats(actor: SActor): ActorStats {
+  const { accuracy, body, evasion, health, intelligence, reflexes, ...stats } =
+    actor.stats
+
+  const accuracyModifier = reflexes
+  const evasionModifier = reflexes
+  const healthModifier = body
+
+  return {
+    ...stats,
+    accuracy: accuracy + accuracyModifier,
+    body,
+    evasion: evasion + evasionModifier,
+    health: health + healthModifier,
+    intelligence,
+    reflexes,
+  }
+}
+
 export {
   getHealth,
   withState,
@@ -97,4 +116,5 @@ export {
   withDamage,
   getDamageAmount,
   withEffects,
+  getStats,
 }

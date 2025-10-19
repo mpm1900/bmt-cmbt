@@ -1,4 +1,9 @@
-import type { ContextItem, DeltaContext, DeltaResolver } from './delta'
+import type {
+  ContextItem,
+  DeltaContext,
+  DeltaPlayerContext,
+  DeltaResolver,
+} from './delta'
 import type { Queue } from './queue'
 
 type ActionTargetGenerator<T, A> = {
@@ -16,6 +21,18 @@ type ActionQueueItem<T, A> = ContextItem & {
   action: Action<T, A>
 }
 
-type ActionQueue<T, A> = Queue<ActionQueueItem<T, A>>
+type PromptQueueItem<T, A> = ActionQueueItem<T, A> & {
+  context: DeltaPlayerContext
+}
 
-export type { Action, ActionTargetGenerator, ActionQueueItem, ActionQueue }
+type ActionQueue<T, A> = Queue<ActionQueueItem<T, A>>
+type PromptQueue<T, A> = Queue<PromptQueueItem<T, A>>
+
+export type {
+  Action,
+  ActionTargetGenerator,
+  ActionQueueItem,
+  PromptQueueItem,
+  ActionQueue,
+  PromptQueue,
+}
