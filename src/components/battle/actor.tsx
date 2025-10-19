@@ -1,43 +1,11 @@
 import type { SActor } from '@/game/state'
-import { cn } from '@/lib/utils'
-import { cva } from 'class-variance-authority'
 import { Atom, EllipsisVertical } from 'lucide-react'
 import { InputGroupButton } from '../ui/input-group'
 import { Item, ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
 import { getHealth } from '@/game/actor'
-
-const actorButtonVariants = cva('relative h-auto p-4', {
-  variants: {
-    variant: {
-      default: 'bg-card hover:bg-accent cursor-pointer',
-      disabled: 'border-border/40 bg-card [&>*]:opacity-70',
-      active: 'bg-sidebar border-ring hover:bg-accent',
-      targeted: '',
-    },
-  },
-  defaultVariants: {
-    variant: 'default',
-  },
-})
-
-function ActorButton({
-  className,
-  active,
-  disabled,
-  ...props
-}: React.ComponentProps<typeof Item> & {
-  active?: boolean
-  disabled?: boolean
-}) {
-  const variant = disabled ? 'disabled' : active ? 'active' : 'default'
-  return (
-    <Item
-      className={cn(actorButtonVariants({ variant }), className)}
-      {...props}
-    />
-  )
-}
+import { Button, buttonVariants } from '../ui/button'
+import { cn } from '@/lib/utils'
 
 function Actor({
   actor,
@@ -55,7 +23,7 @@ function Actor({
 }) {
   return (
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
-      <div className="flex transition-all justify-between -mb-3 mt-4 group-hover:mb-1 group-hover:-mt-3 z-10">
+      <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:-mt-2 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
           {effects.map((effect) => (
             <InputGroupButton
@@ -76,11 +44,10 @@ function Actor({
           <EllipsisVertical />
         </InputGroupButton>
       </div>
-      <ActorButton
-        variant="outline"
-        className="z-20"
-        active={active}
+      <Button
+        variant={active ? 'outline-active' : 'outline'}
         disabled={disabled}
+        className={cn('h-auto', '')}
         onClick={() => onClick()}
       >
         <ItemContent>
@@ -97,7 +64,7 @@ function Actor({
           />
           <pre>{actor.stats.body}</pre>
         </ItemContent>
-      </ActorButton>
+      </Button>
     </div>
   )
 }

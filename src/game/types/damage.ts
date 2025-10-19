@@ -6,6 +6,8 @@ type PowerDamage = {
   defenseStat: MainStat
   element: Element
   power: number
+  critical?: boolean
+  criticalModifier: number
 }
 
 type RawDamage = {

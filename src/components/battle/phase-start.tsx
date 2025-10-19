@@ -2,7 +2,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
 
-function PhaseMain() {
+function PhaseStart() {
   const { state, pushPromptAction } = useGameState((s) => s)
   if (state.promptQueue[0]) {
     const action = state.promptQueue[0].action
@@ -25,4 +25,4 @@ function PhaseMain() {
   return null
 }
 
-export { PhaseMain }
+export { PhaseStart }

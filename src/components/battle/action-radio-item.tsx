@@ -39,9 +39,16 @@ function ActionRadioItem({
         </ItemContent>
         {renderer && (
           <ItemActions className="flex-col items-end">
-            <renderer.Icons />
-            <CollapsibleContent>
+            <div
+              className={cn({
+                'text-muted-foreground': !active,
+              })}
+            >
+              <renderer.Icons />
+            </div>
+            <CollapsibleContent className="flex flex-col items-end">
               <renderer.Damage />
+              <renderer.Critical />
             </CollapsibleContent>
           </ItemActions>
         )}

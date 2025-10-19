@@ -24,6 +24,7 @@ const HotShots: SAction = {
           defenseStat: 'reflexes',
           element: 'fire',
           power: 20,
+          criticalModifier: 1,
         })
       )
     }

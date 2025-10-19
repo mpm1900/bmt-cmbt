@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 import { damageResolver, emptyResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 import { chance } from '@/lib/chance'
+import { withCritical } from '@/game/actor'
 
 const MagicMissileDamage: PowerDamage = {
   type: 'power',
@@ -11,8 +12,10 @@ const MagicMissileDamage: PowerDamage = {
   defenseStat: 'intelligence',
   element: 'shock',
   power: 10,
+  criticalModifier: 1.5,
 }
 const MagicMissileAccuracy = 50
+const MagicMissileCritChance = 10
 
 const MagicMissile: SAction = {
   ID: v4(),
@@ -33,11 +36,16 @@ const MagicMissile: SAction = {
         }
         return damageResolver(
           { ...context, targetIDs: [targetID] },
-          MagicMissileDamage
+          withCritical(MagicMissileDamage, chance(MagicMissileCritChance))
         )
       }),
     ]
   },
 }
 
-export { MagicMissile, MagicMissileDamage }
+export {
+  MagicMissile,
+  MagicMissileDamage,
+  MagicMissileAccuracy,
+  MagicMissileCritChance,
+}

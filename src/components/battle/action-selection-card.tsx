@@ -20,14 +20,14 @@ function ActionSelectionCard({
   activeActionID: string | undefined
   onActiveActionIDChange: (actionID: string | undefined) => void
   onActionConfirm: (action: SAction, context: DeltaContext) => void
-  title: ReactNode
+  title?: ReactNode
   breadcrumbs: ReactNode
 }) {
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card className="min-w-200 w-full max-w-[70%]">
+    <Card className="w-200">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        {title && <CardTitle>{title}</CardTitle>}
         {breadcrumbs}
       </CardHeader>
       <CardContent className="grid grid-cols-2 gap-4">

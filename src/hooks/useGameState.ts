@@ -44,7 +44,7 @@ const Max: SActor = {
   state: {
     mana: 100,
     damage: 0,
-    active: 1,
+    active: 0,
     alive: 1,
   },
 }
@@ -76,7 +76,7 @@ const initialState: State = {
       state: {
         mana: 100,
         damage: 0,
-        active: 1,
+        active: 0,
         alive: 1,
       },
     },
@@ -100,7 +100,7 @@ const initialState: State = {
       state: {
         mana: 100,
         damage: 0,
-        active: 1,
+        active: 0,
         alive: 1,
       },
     },
@@ -119,6 +119,7 @@ const initialState: State = {
   promptQueue: [],
   triggerQueue: [],
   mutationQueue: [],
+  combatLog: [],
 }
 
 const gameStateStore = createStore<GameStateStore>((set) => ({

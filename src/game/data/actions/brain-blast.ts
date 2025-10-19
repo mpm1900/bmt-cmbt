@@ -9,6 +9,7 @@ const BrainBlastDamage: PowerDamage = {
   defenseStat: 'intelligence',
   element: 'psy',
   power: 30,
+  criticalModifier: 1.5,
 }
 
 const BrainBlast: SAction = {

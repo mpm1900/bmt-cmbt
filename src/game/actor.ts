@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import type { SActor, SEffectItem } from './state'
-import type { Damage } from './types/damage'
+import type { Damage, PowerDamage } from './types/damage'
 import type { ActorState, ActorStats } from './types/actor'
 
 function getHealth(actor: SActor): number {
@@ -27,6 +27,13 @@ function withStats(actor: SActor, stats: Partial<ActorStats>): SActor {
   }
 }
 
+function withCritical(damage: PowerDamage, critical: boolean): PowerDamage {
+  return {
+    ...damage,
+    critical,
+  }
+}
+
 function getDamageAmount(
   source: SActor,
   target: SActor,
@@ -40,7 +47,8 @@ function getDamageAmount(
     const sourceStat = source.stats[damage.offenseStat]
     const targetStat = target.stats[damage.defenseStat]
     const ratio = sourceStat / targetStat
-    const damageAmount = damage.power * ratio
+    const criticalModifier = damage.critical ? damage.criticalModifier : 1
+    const damageAmount = damage.power * ratio * criticalModifier
     return damageAmount
   }
 
@@ -114,6 +122,7 @@ export {
   withState,
   withStats,
   withDamage,
+  withCritical,
   getDamageAmount,
   withEffects,
   getStats,

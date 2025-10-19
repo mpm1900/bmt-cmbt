@@ -1,6 +1,8 @@
 import type { ActionRenderer } from '.'
 import {
   MagicMissile,
+  MagicMissileAccuracy,
+  MagicMissileCritChance,
   MagicMissileDamage,
 } from '@/game/data/actions/magic-missile'
 import { Brain } from 'lucide-react'
@@ -21,8 +23,15 @@ const MagicMissileRenderer: ActionRenderer = {
     <div>
       <span>
         <span className="font-bold">{MagicMissileDamage.power}</span>{' '}
-        <span className="text-muted-foreground">x 5</span>,{' '}
-        <span className="text-muted-foreground">~</span>50%
+        <span className="text-muted-foreground">x</span> 5,{' '}
+        {MagicMissileAccuracy}%
+      </span>
+    </div>
+  ),
+  Critical: () => (
+    <div>
+      <span className="text-muted-foreground/80 text-xs">
+        x{MagicMissileDamage.criticalModifier * 100}%, {MagicMissileCritChance}%
       </span>
     </div>
   ),

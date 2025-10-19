@@ -13,6 +13,7 @@ const FireballDamage: PowerDamage = {
   defenseStat: 'intelligence',
   element: 'fire',
   power: 50,
+  criticalModifier: 1.5,
 }
 
 const Fireball: SAction = {

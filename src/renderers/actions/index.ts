@@ -6,6 +6,7 @@ type ActionRenderer = {
   DescriptionShort: ComponentType
   Icons: ComponentType
   Damage: ComponentType
+  Critical: ComponentType
 }
 
 export type { ActionRenderer }

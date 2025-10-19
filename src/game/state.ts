@@ -32,6 +32,7 @@ type State = {
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State>
+  combatLog: any[]
 }
 
 export type {

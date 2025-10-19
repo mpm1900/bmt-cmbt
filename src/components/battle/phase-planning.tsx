@@ -42,7 +42,6 @@ function PhasePlanning() {
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => pushAction(action, context)}
-          title={`What action will ${activeActor.name} take?`}
           breadcrumbs={
             <ActionPlanningBreadcrumbs
               source={activeActor}
@@ -58,7 +57,6 @@ function PhasePlanning() {
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => pushAction(action, context)}
-          title="Switch Active Characters?"
           breadcrumbs={
             <ActionPlanningBreadcrumbs
               source={activeActor}
