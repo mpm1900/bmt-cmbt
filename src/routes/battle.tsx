@@ -102,7 +102,7 @@ function RouteComponent() {
             ))}
         </div>
         <div className="flex flex-col justify-end p-4">
-          <ButtonGrid grid={[2, 3]}>
+          <ButtonGrid>
             <Button size="icon-sm" variant="default" disabled>
               <PiNumberThree />
             </Button>
