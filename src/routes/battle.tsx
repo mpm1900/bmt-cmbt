@@ -19,6 +19,7 @@ import { PhaseMain } from '@/components/battle/phase-main'
 import { Swap } from '@/game/data/actions/swap'
 import { PiNumberOne, PiNumberTwo, PiNumberThree } from 'react-icons/pi'
 import { PhaseStart } from '@/components/battle/phase-start'
+import { Item } from '@/components/ui/item'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -33,6 +34,8 @@ function RouteComponent() {
     playerID,
     set: setUI,
   } = useGameUI((s) => s)
+
+  const player = state.players.find((p) => p.ID === playerID)!
 
   // bg-[url('./public/platforms.jpg')]
   return (
@@ -53,15 +56,25 @@ function RouteComponent() {
         {state.turn.phase === 'main' && <PhaseMain />}
       </div>
       <div className="flex justify-start gap-2 m-2">
-        <div className="flex self-center justify-self-center justify-center gap-2 m-2">
-          {actors
-            .filter(([a]) => a.playerID === playerID && a.state.active)
-            .map(([actor, effects]) => (
+        <div className="flex self-center justify-self-center justify-center items-end gap-2 m-2">
+          {player.activeActorIDs.map((actorID) => {
+            if (!actorID)
+              return (
+                <Item
+                  variant="outline"
+                  className="h-20 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                >
+                  inactive
+                </Item>
+              )
+            const afx = actors.find((a) => a[0].ID === actorID)!
+            const [actor, effectIDs] = afx
+            return (
               <Actor
-                key={actor.ID}
+                key={actorID}
                 actor={actor}
-                effects={effects}
-                active={activeActorID === actor.ID}
+                effects={effectIDs}
+                active={activeActorID === actorID}
                 disabled={
                   state.turn.phase !== 'planning' ||
                   !!state.actionQueue.find(
@@ -75,7 +88,8 @@ function RouteComponent() {
                   })
                 }}
               />
-            ))}
+            )
+          })}
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
           <ButtonGrid className="grid grid-cols-2 grid-rows-2">

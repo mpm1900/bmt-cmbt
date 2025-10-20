@@ -77,19 +77,27 @@ function activateActorResolver(
     delta: {
       apply: (state: State) => {
         const player = state.players.find((p) => p.ID === playerID)!
-        if (player.activeActorIDs.every((id) => id !== null)) {
+        const index = player.activeActorIDs.indexOf(null)
+        const aindex = player.activeActorIDs.indexOf(actorID)
+        if (index === -1) {
           // no space
           console.log('NO SPACE')
           return state
         }
+        if (aindex !== -1) {
+          // already active
+          console.log('ALREADY ACTIVE')
+          return state
+        }
 
-        const index = player.activeActorIDs.indexOf(null)
         state = mutatePlayer(state, context, {
           filter: (p) => p.ID === playerID,
-          apply: (p) => {
-            p.activeActorIDs[index] = actorID
-            return p
-          },
+          apply: (p) => ({
+            ...p,
+            activeActorIDs: p.activeActorIDs.map((id, i) =>
+              i === index ? actorID : id
+            ),
+          }),
         })
         state = mutateActor(state, context, {
           filter: (a) => a.ID === actorID,
@@ -120,10 +128,13 @@ function deactivateActorResolver(
         }
 
         state = mutatePlayer(state, context, {
-          apply: (p) => {
-            p.activeActorIDs[index] = null
-            return p
-          },
+          filter: (p) => p.ID === playerID,
+          apply: (p) => ({
+            ...p,
+            activeActorIDs: p.activeActorIDs.map((id, i) =>
+              i === index ? null : id
+            ),
+          }),
         })
         state = mutateActor(state, context, {
           filter: (a) => a.ID === actorID,
