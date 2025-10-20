@@ -20,7 +20,12 @@ function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
       <ItemActions>
         <ButtonGroup>
           {action.targets
-            .get(state, { sourceID, positions: [], targetIDs: [] })
+            .get(state, {
+              playerID: '',
+              sourceID,
+              positions: [],
+              targetIDs: [],
+            })
             .map(({ ID, target, type }) => (
               <Button
                 key={ID}
@@ -34,6 +39,7 @@ function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
                     index: 0,
                   }
                   pushAction(action, {
+                    playerID: '',
                     sourceID,
                     positions: [position],
                     targetIDs: [],

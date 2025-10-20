@@ -1,9 +1,4 @@
-import type {
-  DeltaContext,
-  DeltaPlayerContext,
-  DeltaPositionContext,
-  DeltaResolver,
-} from './delta'
+import type { DeltaContext, DeltaPositionContext, DeltaResolver } from './delta'
 import type { Queue } from './queue'
 
 type ActionTarget<A> = {
@@ -30,7 +25,7 @@ type ActionQueueItem<T, A> = {
 }
 
 type PromptQueueItem<T, A> = ActionQueueItem<T, A> & {
-  context: DeltaPlayerContext<DeltaPositionContext>
+  context: DeltaPositionContext
 }
 
 type ActionQueue<T, A> = Queue<ActionQueueItem<T, A>>

@@ -18,7 +18,6 @@ function createActor(
     state: {
       mana: 100,
       damage: 0,
-      active: 0,
       alive: 1,
     },
   }

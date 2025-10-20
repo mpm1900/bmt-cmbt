@@ -1,8 +1,4 @@
-import type {
-  Delta,
-  DeltaContext,
-  DeltaPlayerContext,
-} from '@/game/types/delta'
+import type { Delta, DeltaContext } from '@/game/types/delta'
 import type { SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
@@ -50,7 +46,7 @@ function mutateActorResolver(
 
 function mutatePlayerResolver(
   playerID: string,
-  context: DeltaPlayerContext<DeltaContext>,
+  context: DeltaContext,
   fn: (p: Player) => Player
 ): SMutation {
   return {
@@ -69,7 +65,7 @@ function mutatePlayerResolver(
 function activateActorResolver(
   playerID: string,
   actorID: string,
-  context: DeltaPlayerContext<DeltaContext>
+  context: DeltaContext
 ): SMutation {
   return {
     ID: v4(),
@@ -99,10 +95,6 @@ function activateActorResolver(
             ),
           }),
         })
-        state = mutateActor(state, context, {
-          filter: (a) => a.ID === actorID,
-          apply: (a) => withState(a, { active: 1 }),
-        })
         return state
       },
     },
@@ -112,7 +104,7 @@ function activateActorResolver(
 function deactivateActorResolver(
   playerID: string,
   actorID: string,
-  context: DeltaPlayerContext<DeltaContext>
+  context: DeltaContext
 ): SMutation {
   return {
     ID: v4(),
@@ -136,10 +128,7 @@ function deactivateActorResolver(
             ),
           }),
         })
-        state = mutateActor(state, context, {
-          filter: (a) => a.ID === actorID,
-          apply: (a) => withState(a, { active: 0 }),
-        })
+
         return state
       },
     },

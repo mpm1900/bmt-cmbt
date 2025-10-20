@@ -57,10 +57,11 @@ function RouteComponent() {
       </div>
       <div className="flex justify-start gap-2 m-2">
         <div className="flex self-center justify-self-center justify-center items-end gap-2 m-2">
-          {player.activeActorIDs.map((actorID) => {
+          {player.activeActorIDs.map((actorID, i) => {
             if (!actorID)
               return (
                 <Item
+                  key={i}
                   variant="outline"
                   className="h-20 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
                 >

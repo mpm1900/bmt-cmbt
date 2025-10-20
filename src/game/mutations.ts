@@ -3,15 +3,19 @@ import { getActor, getTriggers, mapActor } from './access'
 import { getDamageAmount, withDamage } from './actor'
 import { push, sort } from './queue'
 import type { SAction, SActor, State, STrigger } from './state'
-import type {
-  Delta,
-  DeltaContext,
-  DeltaPlayerContext,
-  DeltaPositionContext,
-} from './types/delta'
+import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Damage } from './types/damage'
 import { Swap } from './data/actions/swap'
 import type { Player } from './types/player'
+
+function newContext(context: Partial<DeltaContext>): DeltaContext {
+  return {
+    playerID: '',
+    sourceID: '',
+    targetIDs: [],
+    ...context,
+  }
+}
 
 function pushAction(
   state: State,
@@ -33,7 +37,7 @@ function pushAction(
 
 function pushPrompt(
   state: State,
-  context: DeltaPlayerContext<DeltaPositionContext>,
+  context: DeltaPositionContext,
   prompt: SAction
 ): State {
   const promptQueue = push(state.promptQueue, [
@@ -154,17 +158,32 @@ function mutateDamage(
   return state
 }
 
-function validateState(
-  state: State,
-  options: {
-    minActiveActorCount: number
-  }
-): [State, boolean] {
+function validateState(state: State): [State, boolean] {
+  let valid = true
+  state.players.forEach((player) => {
+    const actorIDs = player.activeActorIDs
+    const inactiveActors = state.actors.filter(
+      (a) => a.playerID === player.ID && !actorIDs.includes(a.ID)
+    )
+    if (actorIDs.some((id) => id === null) && inactiveActors.length > 0) {
+      state = pushPrompt(
+        state,
+        {
+          playerID: player.ID,
+          sourceID: inactiveActors[0]?.ID,
+          positions: [],
+          targetIDs: [],
+        },
+        Swap
+      )
+      valid = false
+    }
+  })
+  /*
   const teams: [Player, SActor[]][] = state.players.map((player) => [
     player,
     state.actors.filter((a) => a.playerID === player.ID && a.state.alive),
   ])
-  let valid = true
   teams.forEach(([player, team]) => {
     const active = team.filter((a) => a.state.active)
     const bench = team.filter((a) => !a.state.active)
@@ -184,10 +203,12 @@ function validateState(
       valid = false
     }
   })
+  */
   return [state, valid]
 }
 
 export {
+  newContext,
   pushAction,
   pushPrompt,
   resolvePrompt,

@@ -31,6 +31,7 @@ function App() {
           <div key={actor.ID}>
             <p>{actor.name}</p>
             {Fireball.validate(state, {
+              playerID: '',
               sourceID: actor.ID,
               positions: [],
               targetIDs: [],

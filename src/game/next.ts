@@ -123,7 +123,7 @@ function next(state: State): State {
     return state // pause, wait for input
   }
   // before each action pop, run the validations
-  const valid = validateState(state, { minActiveActorCount: 3 })
+  const valid = validateState(state)
   state = valid[0]
   if (!valid[1]) return state
 

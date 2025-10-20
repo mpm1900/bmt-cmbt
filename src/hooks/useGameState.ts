@@ -76,6 +76,7 @@ const initialState: State = {
       ID: v4(),
       effect: Goku,
       context: {
+        playerID: player.ID,
         sourceID: Max.ID,
         targetIDs: [],
       },

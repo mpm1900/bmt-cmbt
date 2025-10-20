@@ -119,11 +119,12 @@ function ActionContextGenerator({
   onContextConfirm: (context: DeltaPositionContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { stagingContext, set: setUI } = useGameUI((s) => s)
+  const { playerID, stagingContext, set: setUI } = useGameUI((s) => s)
 
   useEffect(() => {
     setUI({
       stagingContext: {
+        playerID,
         sourceID: sourceID ?? '',
         positions: [],
         targetIDs: [],

@@ -4,6 +4,7 @@ import { getActorID, getPosition } from './player'
 import type { SActor, State, STrigger } from './state'
 import type { ActionTarget } from './types/action'
 import type { DeltaContext, DeltaPositionContext } from './types/delta'
+import type { Position } from './types/player'
 
 function getTriggers(state: State): Array<STrigger> {
   return state.effects.flatMap(({ effect, context }) =>
@@ -40,17 +41,27 @@ function mapTarget(
   }
 }
 
+function isActive(state: State, actorID: string) {
+  return state.players.some((player) => player.activeActorIDs.includes(actorID))
+}
+
 function convertTargetToPositionContext(
   state: State,
   context: DeltaContext
 ): DeltaPositionContext {
   const positions_targets = context.targetIDs.map(
-    (targetID) => getPosition(state, targetID) ?? targetID
+    (targetID) =>
+      [getPosition(state, targetID), targetID] as [Position | undefined, string]
   )
   return {
+    playerID: context.playerID,
     sourceID: context.sourceID,
-    positions: positions_targets.filter((pt) => typeof pt !== 'string'),
-    targetIDs: positions_targets.filter((pt) => typeof pt === 'string'),
+    positions: positions_targets
+      .filter((pt) => pt[0] !== undefined)
+      .map((pt) => pt[0]!),
+    targetIDs: positions_targets
+      .filter((pt) => pt[0] === undefined)
+      .map((pt) => pt[1]),
   }
 }
 
@@ -61,6 +72,7 @@ function convertPositionToTargetContext(
   const targetIDs = context.positions.map((p) => getActorID(state, p))
 
   return {
+    playerID: context.playerID,
     sourceID: context.sourceID,
     targetIDs: targetIDs
       .filter((id) => id !== undefined)
@@ -73,6 +85,7 @@ export {
   getActor,
   mapTarget,
   mapActor,
+  isActive,
   convertPositionToTargetContext,
   convertTargetToPositionContext,
 }

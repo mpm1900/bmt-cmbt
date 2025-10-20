@@ -30,6 +30,7 @@ const DragonDance: SAction = {
           ],
         },
         {
+          playerID: context.playerID,
           sourceID: context.sourceID,
           targetIDs: [context.sourceID],
         }

@@ -12,7 +12,6 @@ type ActorStats = Record<MainStat, number> & {
 type ActorState = {
   damage: number
   mana: number
-  active: 0 | 1
   alive: 0 | 1
 }
 

@@ -7,14 +7,12 @@ type Delta<T> = {
 }
 
 type DeltaContext = {
+  playerID: string
   sourceID: string
   targetIDs: Array<string>
 }
 type DeltaPositionContext = DeltaContext & {
   positions: Array<Position>
-}
-type DeltaPlayerContext<C> = C & {
-  playerID: string
 }
 
 type ContextItem<C> = {
@@ -40,7 +38,6 @@ type DeltaResolver<T, C1, C2> = {
 export type {
   Delta,
   DeltaContext,
-  DeltaPlayerContext,
   DeltaPositionContext,
   ContextItem,
   DeltaQueueItem,
