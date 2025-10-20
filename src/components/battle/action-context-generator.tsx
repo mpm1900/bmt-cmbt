@@ -19,6 +19,7 @@ import { ACTION_RENDERERS } from '@/renderers'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
 import { ActionRepeatPages } from './action-repeat-pages'
+import { cn } from '@/lib/utils'
 
 function getSelectedCount(context: DeltaPositionContext) {
   return (
@@ -58,7 +59,7 @@ function DuplicateTargetGenerator({
         index={targetIndex}
         onIndexChange={setTargetIndex}
       />
-      <ButtonGroup>
+      <ButtonGroup className="border rounded-md">
         {action.targets.get(state, context).map(({ target, type }) => {
           return (
             <ActionRepeatTargetButton
@@ -91,7 +92,7 @@ function UniqueTargetGenerator({
   onContextChange: (context: DeltaPositionContext) => void
 }) {
   return (
-    <ButtonGroup>
+    <ButtonGroup className={cn('border rounded-md flex-wrap')}>
       {action.targets.get(state, context).map(({ target, type }) => {
         return (
           <ActionUniqueTargetButton
@@ -110,16 +111,18 @@ function UniqueTargetGenerator({
 }
 
 function ActionContextGenerator({
+  playerID,
   action,
   sourceID,
   onContextConfirm,
 }: {
+  playerID: string
   action: SAction
   sourceID: string | undefined
   onContextConfirm: (context: DeltaPositionContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { playerID, stagingContext, set: setUI } = useGameUI((s) => s)
+  const { stagingContext, set: setUI } = useGameUI((s) => s)
 
   useEffect(() => {
     setUI({
@@ -135,17 +138,23 @@ function ActionContextGenerator({
   if (!stagingContext) return null
 
   const renderer = ACTION_RENDERERS[action.ID]
-  const max = action.targets.max(state, stagingContext)
+  const max = Math.min(
+    action.targets.max(state, stagingContext),
+    action.targets.get(state, stagingContext).length
+  )
   const ready = action.validate(state, stagingContext)
   const selectedTargets = getSelectedCount(stagingContext)
+  const done = max === selectedTargets
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{action.name}</CardTitle>
-        <CardDescription>
-          {selectedTargets} of {max} Targets selected.
-        </CardDescription>
+        {renderer && (
+          <CardDescription>
+            <renderer.DescriptionShort />
+          </CardDescription>
+        )}
         {renderer && (
           <CardAction>
             <renderer.Icons />
@@ -172,17 +181,21 @@ function ActionContextGenerator({
           )}
         </div>
       </CardContent>
-      {ready && (
-        <CardFooter className="justify-end">
+
+      <CardFooter className="justify-end items-center gap-4">
+        <div className="text-muted-foreground text-sm text-end">
+          {selectedTargets}/{max} Targets selected.
+        </div>
+        {ready && (
           <Button
-            variant="outline"
+            variant={done ? 'default' : 'secondary'}
             onClick={() => onContextConfirm(stagingContext)}
           >
             Confirm
             <ArrowRight />
           </Button>
-        </CardFooter>
-      )}
+        )}
+      </CardFooter>
     </Card>
   )
 }

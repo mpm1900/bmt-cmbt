@@ -1,4 +1,4 @@
-import { getActor, isActive, mapTarget } from '@/game/access'
+import { isActive, mapTarget } from '@/game/access'
 import {
   activateActorResolver,
   deactivateActorResolver,
@@ -8,26 +8,29 @@ import { v4 } from 'uuid'
 
 const Swap: SAction = {
   ID: v4(),
-  name: 'Swap',
+  name: 'Activate',
   validate: (_state, context) => context.targetIDs.length === 1,
   targets: {
     unique: true,
     max: () => 1,
     get: (state, context) => {
-      const source = state.actors.find((a) => a.ID === context.sourceID)
       return state.actors
-        .filter((a) => !isActive(state, a.ID) && a.playerID == source?.playerID)
+        .filter(
+          (a) =>
+            !isActive(state, a.ID) &&
+            a.playerID == context.playerID &&
+            a.state.alive
+        )
         .map((a) => mapTarget(a, 'targetID'))
     },
   },
-  resolve: (state, context) => {
-    const source = getActor(state, context.sourceID)
-    if (!source) return []
+  resolve: (_, context) => {
+    console.log(context)
 
     return [
-      deactivateActorResolver(source.playerID, source.ID, context),
+      deactivateActorResolver(context.playerID, context.sourceID, context),
       context.targetIDs.map((targetID) =>
-        activateActorResolver(source.playerID, targetID, context)
+        activateActorResolver(context.playerID, targetID, context)
       ),
     ]
   },

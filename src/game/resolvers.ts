@@ -2,7 +2,13 @@ import type { Delta, DeltaContext } from '@/game/types/delta'
 import type { SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
-import { mutateActor, mutateDamage, mutatePlayer } from '@/game/mutations'
+import {
+  decrementEffectItem,
+  mutateActor,
+  mutateDamage,
+  mutatePlayer,
+  newContext,
+} from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
@@ -77,12 +83,12 @@ function activateActorResolver(
         const aindex = player.activeActorIDs.indexOf(actorID)
         if (index === -1) {
           // no space
-          console.log('NO SPACE')
+          console.error('NO SPACE')
           return state
         }
         if (aindex !== -1) {
           // already active
-          console.log('ALREADY ACTIVE')
+          console.error('ALREADY ACTIVE')
           return state
         }
 
@@ -111,11 +117,15 @@ function deactivateActorResolver(
     context,
     delta: {
       apply: (state: State) => {
+        if (!actorID) {
+          console.log('NO SOURCE, returning early')
+          return state
+        }
         const player = state.players.find((p) => p.ID === playerID)!
         const index = player.activeActorIDs.indexOf(actorID)
         if (index === -1) {
           // actor not found
-          console.log('ACTOR NOT FOUND')
+          console.error('ACTOR NOT FOUND')
           return state
         }
 
@@ -130,6 +140,23 @@ function deactivateActorResolver(
         })
 
         return state
+      },
+    },
+  }
+}
+
+function decrementEffectsResolver(): SMutation {
+  return {
+    ID: v4(),
+    context: newContext({}),
+    delta: {
+      apply: (state, _context) => {
+        return {
+          ...state,
+          effects: state.effects
+            .map((item) => decrementEffectItem(item))
+            .filter((item) => item.effect.duration !== 0),
+        }
       },
     },
   }
@@ -183,6 +210,7 @@ export {
   costResolver,
   mutatePlayerResolver,
   mutateActorResolver,
+  decrementEffectsResolver,
   addEffectResolver,
   damageResolver,
   activateActorResolver,

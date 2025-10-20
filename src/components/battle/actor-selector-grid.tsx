@@ -3,9 +3,10 @@ import { ButtonGrid } from '../button-grid'
 import { ActorSelectorButton } from './actor-selector-button'
 import { getPosition } from '@/game/player'
 
-function ActorSelectorGrid() {
+function ActorSelectorGrid({ playerID }: { playerID: string }) {
   const { state } = useGameState((s) => s)
-  const actors = state.actors
+  const actors = state.actors.filter((actor) => actor.playerID === playerID)
+
   return (
     <ButtonGrid>
       {Array.from({ length: 6 }).map((_, index) => (

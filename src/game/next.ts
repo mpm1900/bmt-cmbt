@@ -1,7 +1,12 @@
 import { convertPositionToTargetContext } from './access'
-import { sortActionQueue, validateState } from './mutations'
+import {
+  handleTrigger,
+  newContext,
+  sortActionQueue,
+  validateState,
+} from './mutations'
 import { pop, push } from './queue'
-import type { State, Turn } from './state'
+import type { State, Battle } from './state'
 import type {
   DeltaContext,
   DeltaPositionContext,
@@ -78,14 +83,13 @@ function nextMutation(state: State): State {
     state.mutationQueue[0].context
   )
   const mutationQueue = pop(state.mutationQueue)
-  console.log(state.players)
   return {
     ...state,
     mutationQueue,
   }
 }
 
-function nextPhase(phase: Turn['phase']): Turn['phase'] {
+function nextPhase(phase: Battle['phase']): Battle['phase'] {
   switch (phase) {
     case 'start':
       return 'planning'
@@ -101,12 +105,19 @@ function nextPhase(phase: Turn['phase']): Turn['phase'] {
 }
 
 function nextTurnPhase(state: State): State {
+  if (!state.battle) return state
+  const phase = nextPhase(state.battle.phase)
+
   state = {
     ...state,
-    turn: {
-      ...state.turn,
-      phase: nextPhase(state.turn.phase),
+    battle: {
+      ...state.battle,
+      phase,
     },
+  }
+
+  if (phase === 'end') {
+    state = handleTrigger(state, newContext({}), 'onTurnEnd')
   }
 
   return state
@@ -125,13 +136,19 @@ function next(state: State): State {
   // before each action pop, run the validations
   const valid = validateState(state)
   state = valid[0]
+
+  // if there was a valication response, wait again
   if (!valid[1]) return state
 
   if (state.actionQueue.length > 0) {
     return nextAction(state)
   }
 
-  return nextTurnPhase(state)
+  if (state.battle) {
+    return nextTurnPhase(state)
+  }
+
+  return state
 }
 
 function hasNext(state: State): boolean {

@@ -74,21 +74,21 @@ function withEffects(
       const { effect, context } = item
       const items = effect.modifiers(context).map((modifier) => ({
         ID: v4(),
-        effectID: effect.ID,
+        effect: effect,
         modifier,
         context,
       }))
 
       return items
     })
-    .sort((a, b) => a.modifier.priority - b.modifier.priority)
+    .sort((a, b) => a.effect.priority - b.effect.priority)
 
   actor = modifiers.reduce(
     (next, item) => {
-      const { modifier, context, effectID } = item
+      const { modifier, context, effect } = item
       if (modifier.filter && !modifier.filter(next, context)) return next
 
-      applied.add(effectID)
+      applied.add(effect.ID)
       return modifier.apply(next, context)
     },
     { ...actor }

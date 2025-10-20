@@ -1,19 +1,19 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaPositionContext } from '@/game/types/delta'
-import { flush, next, nextAction, nextTurnPhase } from '@/game/next'
+import { flush, next, nextTurnPhase } from '@/game/next'
 import type { SAction, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
-import { pushAction } from '@/game/mutations'
-import { pop } from '@/game/queue'
+import { newContext, pushAction, resolvePrompt } from '@/game/mutations'
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
+import { HANDLE_DEATH, HANDLE_TURN_END } from '@/game/data/effects/_system'
 
 type GameStateStore = {
   state: State
   pushAction: (action: SAction, context: DeltaPositionContext) => void
-  pushPromptAction: (action: SAction, context: DeltaPositionContext) => void
+  resolvePrompt: (context: DeltaPositionContext) => void
   next: () => void
   flush: () => void
   nextPhase: () => void
@@ -55,6 +55,15 @@ const Milo = createActor('Milo', '__player__', {
   reflexes: 100,
   speed: 100,
 })
+const Criminal = createActor('Criminal', '__ai__', {
+  accuracy: 0,
+  body: 100,
+  evasion: 0,
+  health: 0,
+  intelligence: 100,
+  reflexes: 100,
+  speed: 100,
+})
 
 const player: Player = {
   ID: '__player__',
@@ -62,24 +71,35 @@ const player: Player = {
 }
 const computer: Player = {
   ID: '__ai__',
-  activeActorIDs: [],
+  activeActorIDs: [null],
 }
 
 const initialState: State = {
   players: [computer, player],
-  turn: {
+  battle: {
+    turn: 0,
     phase: 'start',
+    effects: [],
   },
-  actors: [Max, Katie, Hank, Milo],
+  actors: [Max, Katie, Hank, Milo, Criminal],
   effects: [
     {
       ID: v4(),
       effect: Goku,
-      context: {
+      context: newContext({
         playerID: player.ID,
         sourceID: Max.ID,
-        targetIDs: [],
-      },
+      }),
+    },
+    {
+      ID: v4(),
+      effect: HANDLE_DEATH,
+      context: newContext({}),
+    },
+    {
+      ID: v4(),
+      effect: HANDLE_TURN_END,
+      context: newContext({}),
     },
   ],
   actionQueue: [],
@@ -102,7 +122,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
 
       state = pushAction(state, context, action)
       const maxLength = state.players.reduce(
-        (len, player) => len + player.activeActorIDs.length,
+        (len, player) => len + player.activeActorIDs.filter(Boolean).length,
         0
       )
 
@@ -115,14 +135,9 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       }
     })
   },
-  pushPromptAction: (action, context) => {
+  resolvePrompt: (context) => {
     set(({ state }) => {
-      state = pushAction(state, context, action)
-      state = nextAction(state)
-      state = {
-        ...state,
-        promptQueue: pop(state.promptQueue),
-      }
+      state = resolvePrompt(state, context)
       return { state }
     })
   },
@@ -138,7 +153,10 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   },
   nextPhase: () => {
     set(({ state }) => ({
-      state: nextTurnPhase(state),
+      state: {
+        ...nextTurnPhase(state),
+        promptQueue: [],
+      },
     }))
   },
 }))

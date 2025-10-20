@@ -7,6 +7,7 @@ import { ActionContextGenerator } from './action-context-generator'
 import type { DeltaPositionContext } from '@/game/types/delta'
 
 function ActionSelectionCard({
+  playerID,
   source,
   actions,
   activeActionID,
@@ -15,6 +16,7 @@ function ActionSelectionCard({
   title,
   breadcrumbs,
 }: {
+  playerID: string
   source: SActor | undefined
   actions: Array<SAction>
   activeActionID: string | undefined
@@ -25,28 +27,22 @@ function ActionSelectionCard({
 }) {
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card className="w-200">
-      <CardHeader>
-        {title && <CardTitle>{title}</CardTitle>}
-        {breadcrumbs}
-      </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-4">
-        <ScrollArea className="h-72 pr-4">
+    <Card className="w-172">
+      {title && (
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+      )}
+      <CardContent className="grid grid-cols-2 gap-3">
+        <ScrollArea className="h-72 pr-3">
           <div className="flex flex-col gap-2">
             {actions.map((action) => (
               <ActionRadioItem
                 key={action.ID}
                 action={action}
                 active={action.ID === activeActionID}
-                onActiveChange={(active) => {
-                  if (active) {
-                    onActiveActionIDChange(action.ID)
-                    return
-                  }
-                  if (action.ID === activeActionID) {
-                    onActiveActionIDChange(undefined)
-                    return
-                  }
+                onActiveChange={() => {
+                  onActiveActionIDChange(action.ID)
                 }}
               />
             ))}
@@ -55,6 +51,7 @@ function ActionSelectionCard({
         {activeAction && (
           <ScrollArea className="h-72">
             <ActionContextGenerator
+              playerID={playerID}
               action={activeAction}
               sourceID={source?.ID}
               onContextConfirm={(context) => {

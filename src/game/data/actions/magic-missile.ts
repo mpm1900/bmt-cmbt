@@ -34,12 +34,12 @@ const MagicMissile: SAction = {
   resolve: (_, context) => {
     return [
       context.targetIDs.map((targetID) => {
-        if (!chance(MagicMissileAccuracy)) {
+        if (!chance(MagicMissileAccuracy)[0]) {
           return emptyResolver(context)
         }
         return damageResolver(
           { ...context, targetIDs: [targetID] },
-          withCritical(MagicMissileDamage, chance(MagicMissileCritChance))
+          withCritical(MagicMissileDamage, chance(MagicMissileCritChance)[0])
         )
       }),
     ]

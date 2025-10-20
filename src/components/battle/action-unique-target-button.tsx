@@ -24,32 +24,32 @@ function ActionUniqueTargetButton({
   const done = getSelectedCount(context) === max
   const ready = action.validate(state, context)
 
-  if (type === 'targetID') {
-    return (
-      <ActionTargetIdButton
-        target={target}
-        disabled={done && ready}
-        context={context}
-        onContextChange={(c) => onContextChange({ ...context, ...c })}
-      />
-    )
-  }
-  if (type === 'position') {
-    return (
-      <ActionPositionButton
-        state={state}
-        target={target}
-        disabled={done && ready}
-        context={context}
-        onContextChange={(c) =>
-          onContextChange({
-            ...context,
-            ...c,
-          })
-        }
-      />
-    )
-  }
+  return (
+    <>
+      {type === 'targetID' && (
+        <ActionTargetIdButton
+          target={target}
+          disabled={done && ready}
+          context={context}
+          onContextChange={(c) => onContextChange({ ...context, ...c })}
+        />
+      )}
+      {type === 'position' && (
+        <ActionPositionButton
+          state={state}
+          target={target}
+          disabled={done && ready}
+          context={context}
+          onContextChange={(c) =>
+            onContextChange({
+              ...context,
+              ...c,
+            })
+          }
+        />
+      )}
+    </>
+  )
 }
 
 function ActionTargetIdButton({
@@ -66,7 +66,7 @@ function ActionTargetIdButton({
   const active = context.targetIDs.includes(target.ID)
   return (
     <Button
-      variant={active ? 'default' : 'secondary'}
+      variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && !active}
       onClick={() => {
         if (active) {
@@ -104,7 +104,7 @@ function ActionPositionButton({
     context.positions.some((p) => positionEquals(p, position))
   return (
     <Button
-      variant={active ? 'default' : 'secondary'}
+      variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && !active}
       onClick={() => {
         if (!position) return

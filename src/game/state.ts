@@ -22,12 +22,14 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 
-type Turn = {
+type Battle = {
+  turn: number
   phase: 'start' | 'planning' | 'main' | 'end'
+  effects: Array<SEffectItem>
 }
 
 type State = {
-  turn: Turn
+  battle: Battle | undefined
   players: Array<Player>
   actors: Array<SActor>
   effects: Array<SEffectItem>
@@ -39,7 +41,7 @@ type State = {
 }
 
 export type {
-  Turn,
+  Battle,
   State,
   SActor,
   SAction,

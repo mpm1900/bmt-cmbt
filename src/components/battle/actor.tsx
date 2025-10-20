@@ -1,6 +1,5 @@
 import type { SActor } from '@/game/state'
-import { Atom, EllipsisVertical } from 'lucide-react'
-import { InputGroupButton } from '../ui/input-group'
+import { Atom } from 'lucide-react'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
 import { getHealth } from '@/game/actor'
@@ -12,6 +11,7 @@ function Actor({
   active,
   disabled,
   effects,
+  status,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
@@ -19,30 +19,22 @@ function Actor({
   effects: Array<string>
   active: boolean
   disabled: boolean
+  status: string
   onClick: () => void
 }) {
   return (
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
-      <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:-mt-2 z-10">
+      <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
           {effects.map((effect) => (
-            <InputGroupButton
+            <div
               key={effect}
-              variant="outline"
-              size="icon-xs"
-              className="rounded-full transition-all"
+              className="size-6 bg-background border-border border rounded-full text-muted-foreground transition-all [&>svg]:size-4 flex items-center justify-center"
             >
               <Atom />
-            </InputGroupButton>
+            </div>
           ))}
         </div>
-        <InputGroupButton
-          variant="outline"
-          size="icon-xs"
-          className="rounded-full transition-all"
-        >
-          <EllipsisVertical />
-        </InputGroupButton>
       </div>
       <Button
         variant={active ? 'default' : 'secondary'}
@@ -71,6 +63,9 @@ function Actor({
           <pre>{actor.stats.body}</pre>
         </ItemContent>
       </Button>
+      <span className="uppercase font-bold text-sm text-muted-foreground/40 text-center">
+        {status}
+      </span>
     </div>
   )
 }

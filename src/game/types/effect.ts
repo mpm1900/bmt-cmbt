@@ -4,6 +4,9 @@ import type { Trigger } from './trigger'
 
 type Effect<T, A> = {
   ID: string
+  delay: number
+  duration: number | undefined
+  priority: number
   modifiers: (context: DeltaContext) => Array<Modifier<A>>
   triggers: (context: DeltaContext) => Array<Trigger<T>>
 }

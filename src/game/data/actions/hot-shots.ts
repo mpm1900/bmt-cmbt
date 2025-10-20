@@ -18,7 +18,9 @@ const HotShots: SAction = {
   },
   resolve: (_, context) => {
     const deltas: Array<SMutation> = []
-    while (chance(50)) {
+    let result = chance(80)
+    const results = [result[1]]
+    while (result[0]) {
       deltas.push(
         damageResolver(context, {
           type: 'power',
@@ -29,7 +31,10 @@ const HotShots: SAction = {
           criticalModifier: 1,
         })
       )
+      result = chance(80)
+      results.push(result[1])
     }
+    console.log(results)
     return deltas
   },
 }

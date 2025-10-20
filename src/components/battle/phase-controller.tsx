@@ -3,7 +3,7 @@ import { useGameUI } from '@/hooks/useGameUI'
 import { useEffect } from 'react'
 
 function PhaseController() {
-  const phase = useGameState((s) => s.state.turn.phase)
+  const phase = useGameState((s) => s.state.battle?.phase)
   const next = useGameState((s) => s.next)
 
   switch (phase) {
@@ -24,7 +24,7 @@ function StartPhaseController({ next }: { next: () => void }) {
   useEffect(() => {
     const interval = setInterval(() => {
       next()
-    }, 0)
+    }, 100)
 
     return () => clearInterval(interval)
   }, [])

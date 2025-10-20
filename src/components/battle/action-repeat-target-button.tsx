@@ -4,6 +4,7 @@ import type { DeltaPositionContext } from '@/game/types/delta'
 import { getSelectedCount } from './action-context-generator'
 import { getPosition, positionEquals } from '@/game/player'
 import { Button } from '../ui/button'
+import { Target } from 'lucide-react'
 
 function ActionRepeatTargetButton({
   state,
@@ -26,13 +27,12 @@ function ActionRepeatTargetButton({
 }) {
   const max = action.targets.max(state, context)
   const done = getSelectedCount(context) === max
-  const ready = action.validate(state, context)
 
   if (type === 'targetID') {
     return (
       <ActionTargetIdButton
         target={target}
-        disabled={done && ready}
+        disabled={true}
         index={index}
         context={context}
         onContextChange={(c) => {
@@ -47,7 +47,7 @@ function ActionRepeatTargetButton({
       <ActionPositionButton
         state={state}
         target={target}
-        disabled={done && ready}
+        disabled={true}
         index={index}
         context={context}
         onContextChange={(c) => {
@@ -76,7 +76,7 @@ function ActionTargetIdButton({
   const active = contextTargetID === target.ID
   return (
     <Button
-      variant={active ? 'default' : 'secondary'}
+      variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && active}
       onClick={() => {
         if (active) return
@@ -87,6 +87,7 @@ function ActionTargetIdButton({
         })
       }}
     >
+      {active && <Target />}
       {target.name}
     </Button>
   )
@@ -113,7 +114,7 @@ function ActionPositionButton({
 
   return (
     <Button
-      variant={active ? 'default' : 'secondary'}
+      variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && active}
       onClick={() => {
         if (!targetPosition) return
@@ -125,6 +126,7 @@ function ActionPositionButton({
         })
       }}
     >
+      {active && <Target />}
       {target.name}
     </Button>
   )

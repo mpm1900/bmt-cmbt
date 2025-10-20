@@ -25,35 +25,10 @@ function ActionPlanningBreadcrumbs({
   const actors = useGameState((s) =>
     s.state.actors.filter((a) => a.playerID === source.playerID)
   )
-  const { set, planningView } = useGameUI((s) => s)
+  const { set, view } = useGameUI((s) => s)
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 capitalize [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-              {planningView} <ChevronDown />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => set({ planningView: 'items' })}>
-                Items
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => set({ planningView: 'actions' })}
-              >
-                Actions
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => set({ planningView: 'switch' })}
-              >
-                Switch
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator>
-          <Slash />
-        </BreadcrumbSeparator>
         <BreadcrumbItem>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
@@ -68,6 +43,27 @@ function ActionPlanningBreadcrumbs({
                   {actor.name}
                 </DropdownMenuItem>
               ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator>
+          <Slash />
+        </BreadcrumbSeparator>
+        <BreadcrumbItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 capitalize [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+              {view} <ChevronDown />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onSelect={() => set({ view: 'items' })}>
+                Items
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => set({ view: 'actions' })}>
+                Actions
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => set({ view: 'switch' })}>
+                Switch
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </BreadcrumbItem>

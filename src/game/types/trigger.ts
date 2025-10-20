@@ -2,7 +2,7 @@ import type { ContextItem, DeltaContext, DeltaResolver } from './delta'
 import { type Queue } from './queue'
 
 type Trigger<T> = DeltaResolver<T, DeltaContext, DeltaContext> & {
-  type: 'onTurnStart' | 'onDamage'
+  type: 'onDamage' | 'onDeath' | 'onTurnStart' | 'onTurnEnd'
 }
 
 type TriggerQueueItem<T> = ContextItem<DeltaContext> & {

@@ -21,10 +21,15 @@ function ActorSelectorButton({
       variant={active ? 'default' : 'secondary'}
       {...props}
       disabled={!actor || disabled}
-      children={
-        active ? position.index + 1 : actor ? <Circle /> : <CircleOff />
-      }
-    />
+    >
+      {active ? (
+        position.index + 1
+      ) : actor.state.alive ? (
+        <Circle />
+      ) : (
+        <CircleOff />
+      )}
+    </Button>
   )
 }
 

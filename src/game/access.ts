@@ -7,16 +7,19 @@ import type { DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Position } from './types/player'
 
 function getTriggers(state: State): Array<STrigger> {
-  return state.effects.flatMap(({ effect, context }) =>
-    effect.triggers(context)
-  )
+  const effects = [...state.effects, ...(state.battle?.effects ?? [])]
+  return effects.flatMap(({ effect, context }) => effect.triggers(context))
 }
 
-function getActor(state: State, sourceID: string): SActor | undefined {
+function getActor(
+  state: State,
+  sourceID: string | undefined
+): SActor | undefined {
   const source = state.actors.find((a) => a.ID === sourceID)
   if (!source) return undefined
 
-  return withEffects(source, state.effects)[0]
+  const effects = [...state.effects, ...(state.battle?.effects ?? [])]
+  return withEffects(source, effects)[0]
 }
 
 function mapActor<T = unknown>(

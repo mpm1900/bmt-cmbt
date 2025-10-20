@@ -3,20 +3,23 @@ import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
 
 function PhaseStart() {
-  const { state, pushPromptAction } = useGameState((s) => s)
+  const { state, resolvePrompt } = useGameState((s) => s)
   if (state.promptQueue[0]) {
     const action = state.promptQueue[0].action
-    const source = getActor(state, state.promptQueue[0].context.sourceID)
+    const context = state.promptQueue[0].context
+    const source = getActor(state, context.sourceID)
     return (
       <ActionSelectionCard
+        key={state.promptQueue[0].ID}
+        playerID={context.playerID}
         source={source}
         actions={[action]}
         activeActionID={action.ID}
         onActiveActionIDChange={() => {}}
-        onActionConfirm={(action, context) => {
-          pushPromptAction(action, context)
+        onActionConfirm={(_action, context) => {
+          resolvePrompt(context)
         }}
-        title="Please select a character to activate"
+        title="Select a character to activate"
         breadcrumbs={<></>}
       />
     )

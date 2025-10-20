@@ -17,13 +17,13 @@ const DragonDance: SAction = {
       addEffectResolver(
         {
           ID: v4(),
+          delay: 0,
+          duration: undefined,
+          priority: 0,
           triggers: () => [],
           modifiers: () => [
             {
               ID: v4(),
-              delay: 0,
-              duration: undefined,
-              priority: 0,
               filter: (a, mcontext) => a.ID === mcontext.sourceID,
               apply: (a) => withStats(a, { body: a.stats.body * 1.5 }),
             },

@@ -1,26 +1,16 @@
 import { Actor } from '@/components/battle/actor'
-import { ButtonGrid } from '@/components/button-grid'
 import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
 import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  ArrowDownUp,
-  Box,
-  Circle,
-  CircleOff,
-  Component,
-  MessageSquare,
-} from 'lucide-react'
 import { PhasePlanning } from '@/components/battle/phase-planning'
 import { PhaseMain } from '@/components/battle/phase-main'
-import { Swap } from '@/game/data/actions/swap'
-import { PiNumberOne, PiNumberTwo, PiNumberThree } from 'react-icons/pi'
 import { PhaseStart } from '@/components/battle/phase-start'
-import { Item } from '@/components/ui/item'
 import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
+import { BattleViewGrid } from '@/components/battle/battle-view-grid'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -29,12 +19,7 @@ export const Route = createFileRoute('/battle')({
 function RouteComponent() {
   const { state, next, nextPhase } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
-  const {
-    activeActorID,
-    planningView,
-    playerID,
-    set: setUI,
-  } = useGameUI((s) => s)
+  const { activeActorID, playerID, set: setUI } = useGameUI((s) => s)
 
   const player = state.players.find((p) => p.ID === playerID)!
 
@@ -42,52 +27,75 @@ function RouteComponent() {
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <PhaseController />
-      <div>
-        <div>Phase: {state.turn.phase}</div>
-        <div>Actions: {state.actionQueue.length}</div>
-        <div>Prompts: {state.promptQueue.length}</div>
-        <div>Triggers: {state.triggerQueue.length}</div>
-        <div>Mutations: {state.mutationQueue.length}</div>
-        <Button onClick={next}>Next</Button>
-        <Button onClick={nextPhase}>Next Phase</Button>
-      </div>
-      <div className="flex-1 flex items-center justify-center">
-        {state.turn.phase === 'start' && <PhaseStart />}
-        {state.turn.phase === 'planning' && <PhasePlanning />}
-        {state.turn.phase === 'main' && <PhaseMain />}
-      </div>
+
+      {state.battle && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex gap-4">
+            {state.battle.phase === 'start' && <PhaseStart />}
+            {state.battle.phase === 'planning' && <PhasePlanning />}
+            {state.battle.phase === 'main' && <PhaseMain />}
+            <Card>
+              <CardHeader>Debug</CardHeader>
+              <CardContent>
+                <div>Actions: {state.actionQueue.length}</div>
+                <div>Prompts: {state.promptQueue.length}</div>
+                <div>Triggers: {state.triggerQueue.length}</div>
+                <div>Mutations: {state.mutationQueue.length}</div>
+                <div>Phase: {state.battle?.phase}</div>
+                <Button onClick={next}>Next</Button>
+                <Button onClick={nextPhase}>Next Phase</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-start gap-2 m-2">
-        <div className="flex flex-col items-center gap-1">
-          <div className="flex self-center justify-self-center justify-center items-end gap-2 mx-2">
+        <div className="flex flex-col items-center px-4 gap-1">
+          <div className="flex self-center justify-self-center justify-center items-end gap-2">
             {player.activeActorIDs.map((actorID, i) => {
               if (!actorID)
                 return (
-                  <Button
-                    key={i}
-                    disabled
-                    variant="outline"
-                    className="h-20 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
-                  >
-                    inactive
-                  </Button>
+                  <div key={i} className="flex flex-col gap-1">
+                    <Button
+                      disabled
+                      variant="outline"
+                      className="h-20 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                    >
+                      inactive
+                    </Button>
+                    <span className="uppercase font-bold text-sm text-muted-foreground/40 text-center opacity-0">
+                      -
+                    </span>
+                  </div>
                 )
               const afx = actors.find((a) => a[0].ID === actorID)!
               const [actor, effectIDs] = afx
+              const planning = state.battle?.phase === 'planning'
+              const active = planning && activeActorID === actorID
+              const done = !!state.actionQueue.find(
+                (a) => a.context.sourceID === actor.ID
+              )
+              const status = active ? 'active' : done ? '...' : 'select action'
               return (
                 <Actor
                   key={actorID}
                   actor={actor}
                   effects={effectIDs}
-                  active={activeActorID === actorID}
+                  status={planning ? status : '...'}
+                  active={
+                    state.battle?.phase === 'planning' &&
+                    activeActorID === actorID
+                  }
                   disabled={
-                    state.turn.phase !== 'planning' ||
+                    state.battle?.phase !== 'planning' ||
                     !!state.actionQueue.find(
                       (a) => a.context.sourceID === actor.ID
                     )
                   }
                   onClick={() => {
                     setUI({
-                      activeActionID: undefined,
+                      activeActionID: actor.actions[0]?.ID,
                       activeActorID: actor.ID,
                     })
                   }}
@@ -95,45 +103,15 @@ function RouteComponent() {
               )
             })}
           </div>
-          <span className="uppercase font-bold text-sm text-muted-foreground">
-            Active
-          </span>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
-          <ButtonGrid className="grid grid-cols-2 grid-rows-2">
-            <Button disabled variant="secondary" size="icon-lg">
-              <MessageSquare />
-            </Button>
-            <Button
-              variant={planningView === 'items' ? 'default' : 'secondary'}
-              size="icon-lg"
-              onClick={() => setUI({ planningView: 'items' })}
-            >
-              <Box />
-            </Button>
-            <Button
-              variant={planningView === 'actions' ? 'default' : 'secondary'}
-              size="icon-lg"
-              onClick={() => setUI({ planningView: 'actions' })}
-            >
-              <Component />
-            </Button>
-            <Button
-              variant={planningView === 'switch' ? 'default' : 'secondary'}
-              size="icon-lg"
-              onClick={() =>
-                setUI({ planningView: 'switch', activeActionID: Swap.ID })
-              }
-            >
-              <ArrowDownUp />
-            </Button>
-          </ButtonGrid>
+          <BattleViewGrid />
           <span className="uppercase font-bold text-sm text-muted-foreground">
             Views
           </span>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
-          <ActorSelectorGrid />
+          <ActorSelectorGrid playerID={playerID} />
           <span className="uppercase font-bold text-sm text-muted-foreground">
             Team
           </span>

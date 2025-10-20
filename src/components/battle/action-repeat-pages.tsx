@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
-import { CircleDashed, Target } from 'lucide-react'
+import { Circle, Target } from 'lucide-react'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import type { SAction, State } from '@/game/state'
 import { getSelectedCount } from './action-context-generator'
@@ -32,7 +32,11 @@ function ActionRepeatPages({
           size="icon-sm"
           onClick={() => onIndexChange(i)}
         >
-          {context.positions[i] ? <Target /> : <CircleDashed />}
+          {context.positions[i] ? (
+            <Target />
+          ) : (
+            <Circle className="opacity-20" />
+          )}
         </Button>
       ))}
     </ButtonGroup>
