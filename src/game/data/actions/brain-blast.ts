@@ -1,4 +1,4 @@
-import { mapTarget } from '@/game/access'
+import { isActive, mapTarget } from '@/game/access'
 import { damageResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'
@@ -23,7 +23,7 @@ const BrainBlast: SAction = {
     max: () => 2,
     get: (state, context) =>
       state.actors
-        .filter((a) => a.ID !== context.sourceID)
+        .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
         .map((actor) => mapTarget(actor, 'position')),
   },
   resolve: (_, context) => {

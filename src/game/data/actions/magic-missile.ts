@@ -5,7 +5,7 @@ import { damageResolver, emptyResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 import { chance } from '@/lib/chance'
 import { withCritical } from '@/game/actor'
-import { mapTarget } from '@/game/access'
+import { isActive, mapTarget } from '@/game/access'
 
 const MagicMissileDamage: PowerDamage = {
   type: 'power',
@@ -28,7 +28,7 @@ const MagicMissile: SAction = {
     max: () => 5,
     get: (state, context) =>
       state.actors
-        .filter((a) => a.ID !== context.sourceID)
+        .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
         .map((a) => mapTarget(a, 'position')),
   },
   resolve: (_, context) => {

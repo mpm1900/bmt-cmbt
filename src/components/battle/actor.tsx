@@ -45,7 +45,7 @@ function Actor({
         </InputGroupButton>
       </div>
       <Button
-        variant={active ? 'outline-active' : 'outline'}
+        variant={active ? 'default' : 'secondary'}
         disabled={disabled}
         className={cn('h-auto', '')}
         onClick={() => onClick()}
@@ -56,11 +56,17 @@ function Actor({
             value={
               ((getHealth(actor) - actor.state.damage) * 100) / getHealth(actor)
             }
+            indicator={{ className: cn({ 'bg-background': active }) }}
           />
           <Progress
             value={100}
             className="h-1"
-            indicator={{ className: 'bg-blue-300' }}
+            indicator={{
+              className: cn({
+                'bg-blue-800/60': active,
+                'bg-blue-300': !active,
+              }),
+            }}
           />
           <pre>{actor.stats.body}</pre>
         </ItemContent>

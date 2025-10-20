@@ -1,7 +1,7 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { mapActor, mapTarget } from '@/game/access'
+import { isActive, mapActor, mapTarget } from '@/game/access'
 import { costResolver, damageResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 
@@ -30,7 +30,7 @@ const Fireball: SAction = {
     unique: true,
     get: (state, context) =>
       state.actors
-        .filter((a) => a.ID !== context.sourceID)
+        .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
         .map((actor) => mapTarget(actor, 'position')),
     max: () => FireballTargetCount,
   },

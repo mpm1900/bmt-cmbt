@@ -12,7 +12,7 @@ function getPosition(state: State, actorID: string): Position | undefined {
   const actor = state.actors.find((a) => a.ID === actorID)
   const player = state.players.find((p) => p.ID === actor?.playerID)
   const index = player?.activeActorIDs.indexOf(actorID)
-  return player?.ID && index !== undefined
+  return player?.ID && index !== undefined && index !== -1
     ? { ID: v4(), playerID: player.ID, index }
     : undefined
 }

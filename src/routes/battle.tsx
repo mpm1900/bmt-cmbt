@@ -20,6 +20,7 @@ import { Swap } from '@/game/data/actions/swap'
 import { PiNumberOne, PiNumberTwo, PiNumberThree } from 'react-icons/pi'
 import { PhaseStart } from '@/components/battle/phase-start'
 import { Item } from '@/components/ui/item'
+import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -126,26 +127,7 @@ function RouteComponent() {
           </span>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
-          <ButtonGrid>
-            <Button size="icon-lg" variant="default" disabled>
-              <PiNumberThree />
-            </Button>
-            <Button size="icon-lg" variant="default" disabled>
-              <PiNumberTwo />
-            </Button>
-            <Button size="icon-lg" variant="default" disabled>
-              <PiNumberOne />
-            </Button>
-            <Button size="icon-lg" variant="secondary" disabled>
-              <Circle />
-            </Button>
-            <Button size="icon-lg" variant="ghost" disabled>
-              <CircleOff />
-            </Button>
-            <Button size="icon-lg" variant="ghost" disabled>
-              <CircleOff />
-            </Button>
-          </ButtonGrid>
+          <ActorSelectorGrid />
           <span className="uppercase font-bold text-sm text-muted-foreground">
             Team
           </span>
