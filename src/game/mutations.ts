@@ -2,14 +2,20 @@ import { v4 } from 'uuid'
 import { getActor, getTriggers, mapActor } from './access'
 import { getDamageAmount, withDamage } from './actor'
 import { push, sort } from './queue'
-import type { Player, SAction, SActor, State, STrigger } from './state'
-import type { Delta, DeltaContext } from './types/delta'
+import type { SAction, SActor, State, STrigger } from './state'
+import type {
+  Delta,
+  DeltaContext,
+  DeltaPlayerContext,
+  DeltaPositionContext,
+} from './types/delta'
 import type { Damage } from './types/damage'
 import { Swap } from './data/actions/swap'
+import type { Player } from './types/player'
 
 function pushAction(
   state: State,
-  context: DeltaContext,
+  context: DeltaPositionContext,
   action: SAction
 ): State {
   const actionQueue = push(state.actionQueue, [
@@ -27,7 +33,7 @@ function pushAction(
 
 function pushPrompt(
   state: State,
-  context: DeltaContext & { playerID: string | undefined },
+  context: DeltaPlayerContext<DeltaPositionContext>,
   prompt: SAction
 ): State {
   const promptQueue = push(state.promptQueue, [
@@ -43,7 +49,7 @@ function pushPrompt(
   }
 }
 
-function resolvePrompt(state: State, context: DeltaContext): State {
+function resolvePrompt(state: State, context: DeltaPositionContext): State {
   if (!state.promptQueue[0]) return state
   const actionQueue = push(state.actionQueue, [
     {
@@ -109,6 +115,22 @@ function mutateActor(
   }
 }
 
+function mutatePlayer(
+  state: State,
+  context: DeltaPlayerContext<DeltaContext>,
+  delta: Delta<Player>
+): State {
+  return {
+    ...state,
+    players: state.players.map((p) => {
+      if (delta.filter && !delta.filter(p, context)) {
+        return p
+      }
+      return delta.apply(p, context)
+    }),
+  }
+}
+
 function mutateDamage(
   state: State,
   context: DeltaContext,
@@ -151,7 +173,12 @@ function validateState(
       const source = bench[0]
       state = pushPrompt(
         state,
-        { playerID: player.ID, sourceID: source.ID, targetIDs: [] },
+        {
+          playerID: player.ID,
+          sourceID: source.ID,
+          positions: [],
+          targetIDs: [],
+        },
         Swap
       )
       valid = false
@@ -167,6 +194,7 @@ export {
   registerTrigger,
   sortActionQueue,
   mutateActor,
+  mutatePlayer,
   mutateDamage,
   validateState,
 }

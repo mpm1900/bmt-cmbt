@@ -1,15 +1,20 @@
-import type { Delta, DeltaContext, DeltaQueueItem } from '@/game/types/delta'
-import type { SActor, SEffect, State } from '@/game/state'
+import type {
+  Delta,
+  DeltaContext,
+  DeltaPlayerContext,
+} from '@/game/types/delta'
+import type { SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
-import { mutateActor, mutateDamage } from '@/game/mutations'
+import { mutateActor, mutateDamage, mutatePlayer } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
+import type { Player } from './types/player'
 
 function costResolver(
   context: DeltaContext,
   fn: (s: ActorState) => Partial<ActorState>
-): DeltaQueueItem<State> {
+): SMutation {
   const cost: Delta<State> = {
     apply: (state, context) =>
       mutateActor(state, context, {
@@ -29,7 +34,7 @@ function mutateActorResolver(
   targetID: string,
   context: DeltaContext,
   fn: (a: SActor) => SActor
-): DeltaQueueItem<State> {
+): SMutation {
   return {
     ID: v4(),
     context,
@@ -43,10 +48,94 @@ function mutateActorResolver(
   }
 }
 
-function addEffectResolver(
-  effect: SEffect,
-  context: DeltaContext
-): DeltaQueueItem<State> {
+function mutatePlayerResolver(
+  playerID: string,
+  context: DeltaPlayerContext<DeltaContext>,
+  fn: (p: Player) => Player
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State) =>
+        mutatePlayer(state, context, {
+          filter: (p) => p.ID === playerID,
+          apply: fn,
+        }),
+    },
+  }
+}
+
+function activateActorResolver(
+  playerID: string,
+  actorID: string,
+  context: DeltaPlayerContext<DeltaContext>
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State) => {
+        const player = state.players.find((p) => p.ID === playerID)!
+        if (player.activeActorIDs.every((id) => id !== null)) {
+          // no space
+          console.log('NO SPACE')
+          return state
+        }
+
+        const index = player.activeActorIDs.indexOf(null)
+        state = mutatePlayer(state, context, {
+          filter: (p) => p.ID === playerID,
+          apply: (p) => {
+            p.activeActorIDs[index] = actorID
+            return p
+          },
+        })
+        state = mutateActor(state, context, {
+          filter: (a) => a.ID === actorID,
+          apply: (a) => withState(a, { active: 1 }),
+        })
+        return state
+      },
+    },
+  }
+}
+
+function deactivateActorResolver(
+  playerID: string,
+  actorID: string,
+  context: DeltaPlayerContext<DeltaContext>
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State) => {
+        const player = state.players.find((p) => p.ID === playerID)!
+        const index = player.activeActorIDs.indexOf(actorID)
+        if (index === -1) {
+          // actor not found
+          console.log('ACTOR NOT FOUND')
+          return state
+        }
+
+        state = mutatePlayer(state, context, {
+          apply: (p) => {
+            p.activeActorIDs[index] = null
+            return p
+          },
+        })
+        state = mutateActor(state, context, {
+          filter: (a) => a.ID === actorID,
+          apply: (a) => withState(a, { active: 0 }),
+        })
+        return state
+      },
+    },
+  }
+}
+
+function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
   return {
     ID: v4(),
     context,
@@ -68,10 +157,7 @@ function addEffectResolver(
   }
 }
 
-function damageResolver(
-  context: DeltaContext,
-  damage: Damage
-): DeltaQueueItem<State> {
+function damageResolver(context: DeltaContext, damage: Damage): SMutation {
   return {
     ID: v4(),
     context,
@@ -82,7 +168,7 @@ function damageResolver(
   }
 }
 
-function emptyResolver(context: DeltaContext): DeltaQueueItem<State> {
+function emptyResolver(context: DeltaContext): SMutation {
   return {
     ID: v4(),
     context,
@@ -95,7 +181,10 @@ function emptyResolver(context: DeltaContext): DeltaQueueItem<State> {
 export {
   emptyResolver,
   costResolver,
+  mutatePlayerResolver,
   mutateActorResolver,
   addEffectResolver,
   damageResolver,
+  activateActorResolver,
+  deactivateActorResolver,
 }

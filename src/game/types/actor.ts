@@ -18,9 +18,8 @@ type ActorState = {
 
 type Actor<T> = {
   ID: string
-  playerID: string | undefined
+  playerID: string
   parentID: string | undefined
-  type: 'parent' | 'child'
   name: string
   modified: boolean
   actions: Array<Action<T, Actor<T>>>

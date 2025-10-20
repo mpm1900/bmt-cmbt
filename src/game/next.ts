@@ -1,13 +1,33 @@
+import { convertPositionToTargetContext } from './access'
 import { sortActionQueue, validateState } from './mutations'
 import { pop, push } from './queue'
 import type { State, Turn } from './state'
-import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
+import type {
+  DeltaContext,
+  DeltaPositionContext,
+  DeltaQueueItem,
+  DeltaResolver,
+} from './types/delta'
 
-function resolve(
-  resolver: DeltaResolver<State>,
+function resolveAction(
+  resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>,
+  state: State,
+  context: DeltaPositionContext
+): DeltaQueueItem<State, DeltaContext>[] {
+  if (!resolver.validate(state, context)) {
+    console.error('resolver validation failed', resolver, state, context)
+    return []
+  }
+  const resolverContext = convertPositionToTargetContext(state, context)
+  console.log('resolving action', context, resolverContext, state)
+  return resolver.resolve(state, resolverContext).flatMap((m) => m)
+}
+
+function resolveTrigger(
+  resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
   state: State,
   context: DeltaContext
-): DeltaQueueItem<State>[] {
+): DeltaQueueItem<State, DeltaContext>[] {
   if (!resolver.validate(state, context)) {
     console.error('resolver validation failed', resolver, state, context)
     return []
@@ -17,7 +37,7 @@ function resolve(
 
 function nextAction(state: State): State {
   state = sortActionQueue(state)
-  const mutations = resolve(
+  const mutations = resolveAction(
     state.actionQueue[0].action,
     state,
     state.actionQueue[0].context
@@ -34,7 +54,7 @@ function nextAction(state: State): State {
 function nextTrigger(state: State): State {
   if (!state.triggerQueue[0]) return state
 
-  const mutations = resolve(
+  const mutations = resolveTrigger(
     state.triggerQueue[0].trigger,
     state,
     state.triggerQueue[0].context
@@ -58,6 +78,7 @@ function nextMutation(state: State): State {
     state.mutationQueue[0].context
   )
   const mutationQueue = pop(state.mutationQueue)
+  console.log(state.players)
   return {
     ...state,
     mutationQueue,
@@ -140,7 +161,7 @@ function flush(state: State): State {
 }
 
 export {
-  resolve,
+  resolveAction,
   nextAction,
   nextTrigger,
   nextMutation,

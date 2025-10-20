@@ -1,10 +1,10 @@
 import type { SActor } from '@/game/state'
 import { Atom, EllipsisVertical } from 'lucide-react'
 import { InputGroupButton } from '../ui/input-group'
-import { Item, ItemContent, ItemTitle } from '../ui/item'
+import { ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
 import { getHealth } from '@/game/actor'
-import { Button, buttonVariants } from '../ui/button'
+import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 
 function Actor({

@@ -1,3 +1,4 @@
+import type { Position } from './player'
 import { type Queue } from './queue'
 
 type Delta<T> = {
@@ -7,37 +8,40 @@ type Delta<T> = {
 
 type DeltaContext = {
   sourceID: string
-  targetIDs: string[]
+  targetIDs: Array<string>
+}
+type DeltaPositionContext = DeltaContext & {
+  positions: Array<Position>
+}
+type DeltaPlayerContext<C> = C & {
+  playerID: string
 }
 
-type DeltaPlayerContext = DeltaContext & {
-  playerID: string | undefined // undefined = computer/AI controlled, change type if that changes
-}
-
-type ContextItem = {
+type ContextItem<C> = {
   ID: string
-  context: DeltaContext
+  context: C
 }
 
-type DeltaQueueItem<T> = ContextItem & {
+type DeltaQueueItem<T, C> = ContextItem<C> & {
   delta: Delta<T>
 }
 
-type DeltaQueue<T> = Queue<DeltaQueueItem<T>>
+type DeltaQueue<T, C> = Queue<DeltaQueueItem<T, C>>
 
-type DeltaResolver<T> = {
+type DeltaResolver<T, C1, C2> = {
   ID: string
-  validate: (state: T, context: DeltaContext) => boolean
+  validate: (state: T, context: C1) => boolean
   resolve: (
     state: T,
-    context: DeltaContext
-  ) => Array<DeltaQueueItem<T> | Array<DeltaQueueItem<T>>>
+    context: C2
+  ) => Array<DeltaQueueItem<T, C2> | Array<DeltaQueueItem<T, C2>>>
 }
 
 export type {
   Delta,
   DeltaContext,
   DeltaPlayerContext,
+  DeltaPositionContext,
   ContextItem,
   DeltaQueueItem,
   DeltaQueue,

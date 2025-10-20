@@ -3,6 +3,8 @@ import { useGameState } from '@/hooks/useGameState'
 import { Button } from '@/components/ui/button'
 import { Item, ItemActions, ItemContent, ItemTitle } from '../ui/item'
 import { ButtonGroup } from '../ui/button-group'
+import type { Position } from '@/game/types/player'
+import { v4 } from 'uuid'
 
 function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
   const { state, pushAction } = useGameState((s) => s)
@@ -18,16 +20,25 @@ function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
       <ItemActions>
         <ButtonGroup>
           {action.targets
-            .get(state, { sourceID, targetIDs: [] })
-            .map((target) => (
+            .get(state, { sourceID, positions: [], targetIDs: [] })
+            .map(({ ID, target, type }) => (
               <Button
-                key={target.ID}
+                key={ID}
                 size="sm"
                 variant="outline"
                 disabled={hasAction}
-                onClick={() =>
-                  pushAction(action, { sourceID, targetIDs: [target.ID] })
-                }
+                onClick={() => {
+                  const position: Position = {
+                    ID: v4(),
+                    playerID: target.playerID,
+                    index: 0,
+                  }
+                  pushAction(action, {
+                    sourceID,
+                    positions: [position],
+                    targetIDs: [],
+                  })
+                }}
               >
                 {target.name}
               </Button>

@@ -1,7 +1,7 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { mapActor } from '@/game/access'
+import { mapActor, mapTarget } from '@/game/access'
 import { costResolver, damageResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 
@@ -20,7 +20,7 @@ const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   validate: (state, context) =>
-    context.targetIDs.length > 0 &&
+    context.positions.length > 0 &&
     !!mapActor(
       state,
       context.sourceID,
@@ -29,7 +29,9 @@ const Fireball: SAction = {
   targets: {
     unique: true,
     get: (state, context) =>
-      state.actors.filter((a) => a.ID !== context.sourceID),
+      state.actors
+        .filter((a) => a.ID !== context.sourceID)
+        .map((actor) => mapTarget(actor, 'position')),
     max: () => FireballTargetCount,
   },
   resolve: (_, context) => {

@@ -1,5 +1,5 @@
 import type { SAction, State } from '@/game/state'
-import type { DeltaContext } from '@/game/types/delta'
+import type { DeltaPositionContext } from '@/game/types/delta'
 import {
   Card,
   CardAction,
@@ -13,10 +13,19 @@ import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
-import { ArrowRight, CircleDashed, Target } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { ArrowRight } from 'lucide-react'
 import { useGameUI } from '@/hooks/useGameUI'
 import { ACTION_RENDERERS } from '@/renderers'
+import { ActionUniqueTargetButton } from './action-unique-target-button'
+import { ActionRepeatTargetButton } from './action-repeat-target-button'
+import { ActionRepeatPages } from './action-repeat-pages'
+
+function getSelectedCount(context: DeltaPositionContext) {
+  return (
+    context.positions.filter((p) => !!p).length +
+    context.targetIDs.filter((id) => !!id).length
+  )
+}
 
 function DuplicateTargetGenerator({
   action,
@@ -25,14 +34,16 @@ function DuplicateTargetGenerator({
   state,
 }: {
   action: SAction
-  context: DeltaContext
-  onContextChange: (context: DeltaContext) => void
+  context: DeltaPositionContext
+  onContextChange: (context: DeltaPositionContext) => void
   state: State
 }) {
   const [targetIndex, setTargetIndex] = useState(0)
   const max = action.targets.max(state, context)
-  const selectedTargets = context.targetIDs.filter((id) => !!id)
-  const done = selectedTargets.length === max
+
+  function next() {
+    setTargetIndex((i) => (i + 1) % max)
+  }
 
   useEffect(() => {
     setTargetIndex(0)
@@ -40,43 +51,29 @@ function DuplicateTargetGenerator({
 
   return (
     <>
-      <ButtonGroup className={cn({ 'border rounded-lg border-ring': done })}>
-        {Array.from({
-          length: max,
-        }).map((_, i) => (
-          <Button
-            key={i}
-            variant={i === targetIndex ? 'default' : 'secondary'}
-            size="icon-sm"
-            onClick={() => setTargetIndex(i)}
-          >
-            {context.targetIDs[i] ? <Target /> : <CircleDashed />}
-          </Button>
-        ))}
-      </ButtonGroup>
+      <ActionRepeatPages
+        state={state}
+        action={action}
+        context={context}
+        index={targetIndex}
+        onIndexChange={setTargetIndex}
+      />
       <ButtonGroup>
-        {action.targets.get(state, context).map((target) => (
-          <Button
-            key={target.ID}
-            variant={
-              target.ID === context.targetIDs[targetIndex]
-                ? 'default'
-                : 'secondary'
-            }
-            onClick={() => {
-              const tids = [...context.targetIDs]
-              tids[targetIndex] = target.ID
-              onContextChange({
-                ...context,
-                targetIDs: tids,
-              })
-
-              setTargetIndex((v) => (v + 1) % max)
-            }}
-          >
-            {target.name}
-          </Button>
-        ))}
+        {action.targets.get(state, context).map(({ target, type }) => {
+          return (
+            <ActionRepeatTargetButton
+              key={target.ID}
+              state={state}
+              action={action}
+              target={target}
+              type={type}
+              index={targetIndex}
+              context={context}
+              onContextChange={onContextChange}
+              next={next}
+            />
+          )
+        })}
       </ButtonGroup>
     </>
   )
@@ -90,40 +87,24 @@ function UniqueTargetGenerator({
 }: {
   action: SAction
   state: State
-  context: DeltaContext
-  onContextChange: (context: DeltaContext) => void
+  context: DeltaPositionContext
+  onContextChange: (context: DeltaPositionContext) => void
 }) {
-  const max = action.targets.max(state, context)
-  const selectedTargets = context.targetIDs.filter((id) => !!id)
-  const done = selectedTargets.length === max
-  const ready = action.validate(state, context)
-
   return (
     <ButtonGroup>
-      {action.targets.get(state, context).map((target) => (
-        <Button
-          key={target.ID}
-          disabled={ready && done && !context.targetIDs.includes(target.ID)}
-          variant={
-            context.targetIDs.includes(target.ID) ? 'default' : 'secondary'
-          }
-          onClick={() => {
-            if (context.targetIDs.includes(target.ID)) {
-              onContextChange({
-                ...context,
-                targetIDs: context.targetIDs.filter((id) => id !== target.ID),
-              })
-            } else {
-              onContextChange({
-                ...context,
-                targetIDs: [...context.targetIDs, target.ID],
-              })
-            }
-          }}
-        >
-          {target.name}
-        </Button>
-      ))}
+      {action.targets.get(state, context).map(({ target, type }) => {
+        return (
+          <ActionUniqueTargetButton
+            key={target.ID}
+            state={state}
+            action={action}
+            target={target}
+            type={type}
+            context={context}
+            onContextChange={onContextChange}
+          />
+        )
+      })}
     </ButtonGroup>
   )
 }
@@ -135,33 +116,34 @@ function ActionContextGenerator({
 }: {
   action: SAction
   sourceID: string | undefined
-  onContextConfirm: (context: DeltaContext) => void
+  onContextConfirm: (context: DeltaPositionContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const {
-    stagingContext = { sourceID: sourceID ?? '', targetIDs: [] },
-    set: setUI,
-  } = useGameUI((s) => s)
-  const renderer = ACTION_RENDERERS[action.ID]
-  const max = action.targets.max(state, stagingContext)
-  const ready = action.validate(state, stagingContext)
-  const selectedTargets = stagingContext.targetIDs.filter((id) => !!id)
+  const { stagingContext, set: setUI } = useGameUI((s) => s)
 
   useEffect(() => {
     setUI({
       stagingContext: {
         sourceID: sourceID ?? '',
+        positions: [],
         targetIDs: [],
       },
     })
   }, [sourceID, action.ID])
+
+  if (!stagingContext) return null
+
+  const renderer = ACTION_RENDERERS[action.ID]
+  const max = action.targets.max(state, stagingContext)
+  const ready = action.validate(state, stagingContext)
+  const selectedTargets = getSelectedCount(stagingContext)
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{action.name}</CardTitle>
         <CardDescription>
-          {selectedTargets.length} of {max} Targets selected.
+          {selectedTargets} of {max} Targets selected.
         </CardDescription>
         {renderer && (
           <CardAction>
@@ -204,4 +186,4 @@ function ActionContextGenerator({
   )
 }
 
-export { ActionContextGenerator }
+export { getSelectedCount, ActionContextGenerator }

@@ -8,7 +8,7 @@ type Effect<T, A> = {
   triggers: (context: DeltaContext) => Array<Trigger<T>>
 }
 
-type EffectItem<T, A> = ContextItem & {
+type EffectItem<T, A> = ContextItem<DeltaContext> & {
   effect: Effect<T, A>
 }
 

@@ -32,6 +32,7 @@ function App() {
             <p>{actor.name}</p>
             {Fireball.validate(state, {
               sourceID: actor.ID,
+              positions: [],
               targetIDs: [],
             }) && <DbAction action={Fireball} sourceID={actor.ID} />}
             <pre>{JSON.stringify(actor.stats)}</pre>

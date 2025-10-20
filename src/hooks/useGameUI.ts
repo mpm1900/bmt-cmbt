@@ -1,5 +1,5 @@
 import type { State } from '@/game/state'
-import type { DeltaContext } from '@/game/types/delta'
+import type { DeltaPositionContext } from '@/game/types/delta'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 
@@ -8,7 +8,7 @@ type GameUIState = {
   planningView: 'actions' | 'items' | 'switch'
   activeActorID: string | undefined
   activeActionID: string | undefined
-  stagingContext: DeltaContext | undefined
+  stagingContext: DeltaPositionContext | undefined
 }
 
 type GameUIStore = GameUIState & {

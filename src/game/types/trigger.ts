@@ -1,11 +1,11 @@
-import type { ContextItem, DeltaResolver } from './delta'
+import type { ContextItem, DeltaContext, DeltaResolver } from './delta'
 import { type Queue } from './queue'
 
-type Trigger<T> = DeltaResolver<T> & {
+type Trigger<T> = DeltaResolver<T, DeltaContext, DeltaContext> & {
   type: 'onTurnStart' | 'onDamage'
 }
 
-type TriggerQueueItem<T> = ContextItem & {
+type TriggerQueueItem<T> = ContextItem<DeltaContext> & {
   trigger: Trigger<T>
 }
 

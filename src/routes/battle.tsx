@@ -2,7 +2,6 @@ import { Actor } from '@/components/battle/actor'
 import { ButtonGrid } from '@/components/button-grid'
 import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
-import { ButtonGroupSeparator } from '@/components/ui/button-group'
 import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
@@ -13,14 +12,12 @@ import {
   Circle,
   CircleOff,
   Component,
-  FoldVertical,
   MessageSquare,
 } from 'lucide-react'
 import { PhasePlanning } from '@/components/battle/phase-planning'
 import { PhaseMain } from '@/components/battle/phase-main'
 import { Swap } from '@/game/data/actions/swap'
 import { PiNumberOne, PiNumberTwo, PiNumberThree } from 'react-icons/pi'
-import { GiProcessor } from 'react-icons/gi'
 import { PhaseStart } from '@/components/battle/phase-start'
 
 export const Route = createFileRoute('/battle')({

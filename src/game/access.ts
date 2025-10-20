@@ -1,5 +1,9 @@
+import { v4 } from 'uuid'
 import { withEffects } from './actor'
+import { getActorID, getPosition } from './player'
 import type { SActor, State, STrigger } from './state'
+import type { ActionTarget } from './types/action'
+import type { DeltaContext, DeltaPositionContext } from './types/delta'
 
 function getTriggers(state: State): Array<STrigger> {
   return state.effects.flatMap(({ effect, context }) =>
@@ -25,4 +29,50 @@ function mapActor<T = unknown>(
   return fn(source)
 }
 
-export { getTriggers, getActor, mapActor }
+function mapTarget(
+  actor: SActor,
+  type: ActionTarget<SActor>['type']
+): ActionTarget<SActor> {
+  return {
+    ID: v4(),
+    type,
+    target: actor,
+  }
+}
+
+function convertTargetToPositionContext(
+  state: State,
+  context: DeltaContext
+): DeltaPositionContext {
+  const positions_targets = context.targetIDs.map(
+    (targetID) => getPosition(state, targetID) ?? targetID
+  )
+  return {
+    sourceID: context.sourceID,
+    positions: positions_targets.filter((pt) => typeof pt !== 'string'),
+    targetIDs: positions_targets.filter((pt) => typeof pt === 'string'),
+  }
+}
+
+function convertPositionToTargetContext(
+  state: State,
+  context: DeltaPositionContext
+): DeltaContext {
+  const targetIDs = context.positions.map((p) => getActorID(state, p))
+
+  return {
+    sourceID: context.sourceID,
+    targetIDs: targetIDs
+      .filter((id) => id !== undefined)
+      .concat(context.targetIDs),
+  }
+}
+
+export {
+  getTriggers,
+  getActor,
+  mapTarget,
+  mapActor,
+  convertPositionToTargetContext,
+  convertTargetToPositionContext,
+}

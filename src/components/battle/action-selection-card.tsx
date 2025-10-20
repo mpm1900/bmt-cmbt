@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { ActionRadioItem } from './action-radio-item'
 import { ActionContextGenerator } from './action-context-generator'
-import type { DeltaContext } from '@/game/types/delta'
+import type { DeltaPositionContext } from '@/game/types/delta'
 
 function ActionSelectionCard({
   source,
@@ -19,7 +19,7 @@ function ActionSelectionCard({
   actions: Array<SAction>
   activeActionID: string | undefined
   onActiveActionIDChange: (actionID: string | undefined) => void
-  onActionConfirm: (action: SAction, context: DeltaContext) => void
+  onActionConfirm: (action: SAction, context: DeltaPositionContext) => void
   title?: ReactNode
   breadcrumbs: ReactNode
 }) {
