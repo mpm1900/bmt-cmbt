@@ -33,10 +33,10 @@ function StartPhaseController({ next }: { next: () => void }) {
 
 function PlanningPhaseController() {
   const state = useGameState((s) => s.state)
-  const { next } = useGameUI((s) => s)
+  const { resetActive } = useGameUI((s) => s)
   const count = state.actionQueue.map((i) => i.ID).length
   useEffect(() => {
-    next(state)
+    resetActive(state)
   }, [count])
   return null
 }

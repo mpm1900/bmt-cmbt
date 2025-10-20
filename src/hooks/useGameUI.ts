@@ -1,3 +1,4 @@
+import { isActive } from '@/game/access'
 import type { State } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { createStore, useStore } from 'zustand'
@@ -13,10 +14,10 @@ type GameUIState = {
 
 type GameUIStore = GameUIState & {
   set: (state: Partial<GameUIState>) => void
-  next: (game: State) => void
+  resetActive: (game: State) => void
 }
 
-const gameUIStore = createStore<GameUIStore>((set) => {
+const gameUIStore = createStore<GameUIStore>((set, get) => {
   return {
     playerID: '__player__',
     planningView: 'actions',
@@ -24,13 +25,22 @@ const gameUIStore = createStore<GameUIStore>((set) => {
     activeActionID: undefined,
     stagingContext: undefined,
     set: (state: Partial<GameUIState>) => set(state),
-    next: (game: State) => {
-      // Implement logic to advance the game state
-      const nextAvailableActor = game.actors.find(
-        (a) => !game.actionQueue.find((q) => q.context.sourceID === a.ID)
+    resetActive: (game: State) => {
+      const playerID = get().playerID
+      const player = game.players.find((p) => p.ID === playerID)
+      const nextAvailableActor = player?.activeActorIDs.find(
+        (a) =>
+          a &&
+          player.ID === playerID &&
+          isActive(game, a) &&
+          !game.actionQueue.find((q) => q.context.sourceID === a)
       )
       if (nextAvailableActor) {
-        set({ activeActorID: nextAvailableActor.ID })
+        set({
+          activeActorID: nextAvailableActor,
+          activeActionID: undefined,
+          stagingContext: undefined,
+        })
       }
     },
   }

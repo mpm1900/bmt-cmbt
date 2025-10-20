@@ -14,10 +14,11 @@ function ActorSelectorButton({
   position: Position | undefined
 }) {
   const active = position?.index !== undefined
+  if (!actor) return <div />
   return (
     <Button
       size="icon-lg"
-      variant={actor ? (active ? 'default' : 'secondary') : 'ghost'}
+      variant={active ? 'default' : 'secondary'}
       {...props}
       disabled={!actor || disabled}
       children={

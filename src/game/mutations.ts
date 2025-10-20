@@ -8,11 +8,12 @@ import type { Damage } from './types/damage'
 import { Swap } from './data/actions/swap'
 import type { Player } from './types/player'
 
-function newContext(context: Partial<DeltaContext>): DeltaContext {
+function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
   return {
     playerID: '',
     sourceID: '',
     targetIDs: [],
+    positions: [],
     ...context,
   }
 }
@@ -121,7 +122,7 @@ function mutateActor(
 
 function mutatePlayer(
   state: State,
-  context: DeltaPlayerContext<DeltaContext>,
+  context: DeltaContext,
   delta: Delta<Player>
 ): State {
   return {
@@ -161,49 +162,25 @@ function mutateDamage(
 function validateState(state: State): [State, boolean] {
   let valid = true
   state.players.forEach((player) => {
-    const actorIDs = player.activeActorIDs
     const inactiveActors = state.actors.filter(
-      (a) => a.playerID === player.ID && !actorIDs.includes(a.ID)
+      (a) => a.playerID === player.ID && !player.activeActorIDs.includes(a.ID)
     )
-    if (actorIDs.some((id) => id === null) && inactiveActors.length > 0) {
+    if (
+      player.activeActorIDs.some((id) => id === null) &&
+      inactiveActors.length > 0
+    ) {
       state = pushPrompt(
         state,
-        {
+        newContext({
           playerID: player.ID,
           sourceID: inactiveActors[0]?.ID,
-          positions: [],
-          targetIDs: [],
-        },
+        }),
         Swap
       )
       valid = false
     }
   })
-  /*
-  const teams: [Player, SActor[]][] = state.players.map((player) => [
-    player,
-    state.actors.filter((a) => a.playerID === player.ID && a.state.alive),
-  ])
-  teams.forEach(([player, team]) => {
-    const active = team.filter((a) => a.state.active)
-    const bench = team.filter((a) => !a.state.active)
-    if (active.length < options.minActiveActorCount && bench.length > 0) {
-      // select a random bench actor to be the source
-      const source = bench[0]
-      state = pushPrompt(
-        state,
-        {
-          playerID: player.ID,
-          sourceID: source.ID,
-          positions: [],
-          targetIDs: [],
-        },
-        Swap
-      )
-      valid = false
-    }
-  })
-  */
+
   return [state, valid]
 }
 

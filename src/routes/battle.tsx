@@ -57,41 +57,47 @@ function RouteComponent() {
         {state.turn.phase === 'main' && <PhaseMain />}
       </div>
       <div className="flex justify-start gap-2 m-2">
-        <div className="flex self-center justify-self-center justify-center items-end gap-2 m-2">
-          {player.activeActorIDs.map((actorID, i) => {
-            if (!actorID)
+        <div className="flex flex-col items-center gap-1">
+          <div className="flex self-center justify-self-center justify-center items-end gap-2 mx-2">
+            {player.activeActorIDs.map((actorID, i) => {
+              if (!actorID)
+                return (
+                  <Button
+                    key={i}
+                    disabled
+                    variant="outline"
+                    className="h-20 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                  >
+                    inactive
+                  </Button>
+                )
+              const afx = actors.find((a) => a[0].ID === actorID)!
+              const [actor, effectIDs] = afx
               return (
-                <Item
-                  key={i}
-                  variant="outline"
-                  className="h-20 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
-                >
-                  inactive
-                </Item>
+                <Actor
+                  key={actorID}
+                  actor={actor}
+                  effects={effectIDs}
+                  active={activeActorID === actorID}
+                  disabled={
+                    state.turn.phase !== 'planning' ||
+                    !!state.actionQueue.find(
+                      (a) => a.context.sourceID === actor.ID
+                    )
+                  }
+                  onClick={() => {
+                    setUI({
+                      activeActionID: undefined,
+                      activeActorID: actor.ID,
+                    })
+                  }}
+                />
               )
-            const afx = actors.find((a) => a[0].ID === actorID)!
-            const [actor, effectIDs] = afx
-            return (
-              <Actor
-                key={actorID}
-                actor={actor}
-                effects={effectIDs}
-                active={activeActorID === actorID}
-                disabled={
-                  state.turn.phase !== 'planning' ||
-                  !!state.actionQueue.find(
-                    (a) => a.context.sourceID === actor.ID
-                  )
-                }
-                onClick={() => {
-                  setUI({
-                    activeActionID: undefined,
-                    activeActorID: actor.ID,
-                  })
-                }}
-              />
-            )
-          })}
+            })}
+          </div>
+          <span className="uppercase font-bold text-sm text-muted-foreground">
+            Active
+          </span>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
           <ButtonGrid className="grid grid-cols-2 grid-rows-2">

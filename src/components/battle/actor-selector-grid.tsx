@@ -13,7 +13,7 @@ function ActorSelectorGrid() {
           key={index}
           actor={actors[index]}
           position={getPosition(state, actors[index]?.ID)}
-        ></ActorSelectorButton>
+        />
       ))}
     </ButtonGrid>
   )

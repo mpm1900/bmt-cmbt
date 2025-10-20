@@ -101,8 +101,12 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       }
 
       state = pushAction(state, context, action)
+      const maxLength = state.players.reduce(
+        (len, player) => len + player.activeActorIDs.length,
+        0
+      )
 
-      if (state.actionQueue.length === state.actors.length) {
+      if (state.actionQueue.length === maxLength) {
         state = nextTurnPhase(state)
       }
 
