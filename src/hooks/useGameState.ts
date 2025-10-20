@@ -71,7 +71,7 @@ const player: Player = {
 }
 const computer: Player = {
   ID: '__ai__',
-  activeActorIDs: [null],
+  activeActorIDs: [null, null, null],
 }
 
 const initialState: State = {

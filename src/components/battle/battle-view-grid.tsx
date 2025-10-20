@@ -22,7 +22,12 @@ function BattleViewGrid() {
   const disabled = !(phase === 'planning')
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
-      <Button disabled variant="secondary" size="icon-lg">
+      <Button
+        variant={variant('dialog')}
+        size="icon-lg"
+        disabled={disabled || !state.battle}
+        onClick={() => set({ view: 'dialog' })}
+      >
         <MessageSquare />
       </Button>
       <Button

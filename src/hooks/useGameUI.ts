@@ -6,7 +6,7 @@ import { useShallow } from 'zustand/shallow'
 
 type GameUIState = {
   playerID: string
-  view: 'actions' | 'items' | 'switch'
+  view: 'actions' | 'items' | 'switch' | 'dialog'
   activeActorID: string | undefined
   activeActionID: string | undefined
   stagingContext: DeltaPositionContext | undefined

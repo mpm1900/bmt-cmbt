@@ -1,4 +1,4 @@
-import { Actor } from '@/components/battle/actor'
+import { Actor, EnemyActor } from '@/components/battle/actor'
 import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
 import { withEffects } from '@/game/actor'
@@ -11,6 +11,7 @@ import { PhaseStart } from '@/components/battle/phase-start'
 import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
 import { BattleViewGrid } from '@/components/battle/battle-view-grid'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ButtonGroup } from '@/components/ui/button-group'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -22,11 +23,50 @@ function RouteComponent() {
   const { activeActorID, playerID, set: setUI } = useGameUI((s) => s)
 
   const player = state.players.find((p) => p.ID === playerID)!
+  const ai = state.players.find((p) => p.ID !== playerID)!
 
   // bg-[url('./public/platforms.jpg')]
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <PhaseController />
+      {ai && (
+        <div className="w-full flex flex-row-reverse justify-start items-end p-4 gap-2">
+          {ai.activeActorIDs.map((actorID, i) => {
+            if (!actorID)
+              return (
+                <div key={i} className="flex flex-col gap-1">
+                  <Button
+                    disabled
+                    variant="outline"
+                    className="h-14 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                  >
+                    inactive
+                  </Button>
+                </div>
+              )
+            const afx = actors.find((a) => a[0].ID === actorID)!
+            const [actor, effectIDs] = afx
+
+            return (
+              <EnemyActor
+                key={actorID}
+                actor={actor}
+                effects={effectIDs}
+                active={
+                  state.battle?.phase === 'planning' &&
+                  activeActorID === actorID
+                }
+                onClick={() => {
+                  setUI({
+                    activeActionID: actor.actions[0]?.ID,
+                    activeActorID: actor.ID,
+                  })
+                }}
+              />
+            )
+          })}
+        </div>
+      )}
 
       {state.battle && (
         <div className="flex-1 flex items-center justify-center">
@@ -42,8 +82,14 @@ function RouteComponent() {
                 <div>Triggers: {state.triggerQueue.length}</div>
                 <div>Mutations: {state.mutationQueue.length}</div>
                 <div>Phase: {state.battle?.phase}</div>
-                <Button onClick={next}>Next</Button>
-                <Button onClick={nextPhase}>Next Phase</Button>
+                <ButtonGroup>
+                  <Button variant="outline" onClick={next}>
+                    Next
+                  </Button>
+                  <Button variant="outline" onClick={nextPhase}>
+                    Next Phase
+                  </Button>
+                </ButtonGroup>
               </CardContent>
             </Card>
           </div>
@@ -106,13 +152,13 @@ function RouteComponent() {
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
           <BattleViewGrid />
-          <span className="uppercase font-bold text-sm text-muted-foreground">
+          <span className="uppercase font-bold text-xs text-muted-foreground">
             Views
           </span>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
           <ActorSelectorGrid playerID={playerID} />
-          <span className="uppercase font-bold text-sm text-muted-foreground">
+          <span className="uppercase font-bold text-xs text-muted-foreground">
             Team
           </span>
         </div>
