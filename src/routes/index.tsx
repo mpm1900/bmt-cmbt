@@ -1,5 +1,5 @@
 import { useGameState } from '@/hooks/useGameState'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { withEffects } from '@/game/actor'
 import { useGameUI } from '@/hooks/useGameUI'
 
@@ -15,5 +15,9 @@ function App() {
     .map((actor) => withEffects(actor, state.effects))
   console.log(actors)
 
-  return <div className="flex gap-4"></div>
+  return (
+    <div className="flex gap-4">
+      <Link to="/battle">to battle</Link>
+    </div>
+  )
 }

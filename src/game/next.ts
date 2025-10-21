@@ -163,7 +163,7 @@ function hasNext(state: State): boolean {
   )
 }
 
-function getStatus(state: State): string {
+function getStatus(state: State): 'pending' | 'running' | 'idle' {
   if (state.battle?.phase === 'planning') {
     return 'pending'
   }

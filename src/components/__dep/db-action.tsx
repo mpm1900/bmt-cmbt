@@ -26,7 +26,7 @@ function DbAction({ action, sourceID }: { action: SAction; sourceID: string }) {
               positions: [],
               targetIDs: [],
             })
-            .map(({ ID, target, type }) => (
+            .map(({ ID, target }) => (
               <Button
                 key={ID}
                 size="sm"

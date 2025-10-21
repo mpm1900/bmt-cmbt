@@ -25,6 +25,17 @@ function PhaseMain() {
     )
   }
 
+  if (state.actionQueue[0]) {
+    const { action, context } = state.actionQueue[0]
+    const source = getActor(state, context.sourceID)
+    return (
+      <div className="w-172">
+        <div className="text-center">{source?.name} uses</div>
+        <h1 className="text-6xl font-bold text-center">{action.name}</h1>
+      </div>
+    )
+  }
+
   return null
 }
 

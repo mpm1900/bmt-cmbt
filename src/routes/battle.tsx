@@ -5,23 +5,21 @@ import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
-import { PhasePlanning } from '@/components/battle/phase-planning'
-import { PhaseMain } from '@/components/battle/phase-main'
-import { PhaseStart } from '@/components/battle/phase-start'
 import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
 import { BattleViewGrid } from '@/components/battle/battle-view-grid'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { getStatus } from '@/game/next'
 import { Badge } from '@/components/ui/badge'
 import { BattlePhases } from '@/game/state'
+import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
+import { BattleView } from '@/components/battle/battle-view'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { state, next, nextPhase } = useGameState((store) => store)
+  const { state } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   const {
     activeActorID,
@@ -38,9 +36,28 @@ function RouteComponent() {
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <div className="flex items-center justify-center gap-2 p-1">
-        {BattlePhases.map((phase) => (
-          <Badge variant={'outline'}>{phase}</Badge>
-        ))}
+        {getStatus(state) === 'running' && <Spinner />}
+        <Separator orientation="vertical" />
+        <Badge variant="outline">Dialog</Badge>
+        <Badge variant="secondary">Combat</Badge>
+        {state.battle && (
+          <>
+            <Separator orientation="vertical" />
+            <Badge variant="secondary">Turn {state.battle.turn + 1}</Badge>
+            <Separator orientation="vertical" />
+            {BattlePhases.map((phase) => (
+              <Badge
+                key={phase}
+                variant={
+                  state.battle?.phase === phase ? 'secondary' : 'outline'
+                }
+              >
+                {phase}
+              </Badge>
+            ))}
+          </>
+        )}
+        <Separator orientation="vertical" />
       </div>
       <PhaseController />
       {ai && (
@@ -82,35 +99,8 @@ function RouteComponent() {
         </div>
       )}
 
-      {state.battle && (
-        <div className="flex-1 flex items-center justify-center px-16">
-          <div className="flex flex-1 gap-4 justify-center">
-            {state.battle.phase === 'start' && <PhaseStart />}
-            {state.battle.phase === 'planning' && <PhasePlanning />}
-            {state.battle.phase === 'main' && <PhaseMain />}
-            <Card className="flex-1 max-w-80">
-              <CardHeader>Debug</CardHeader>
-              <CardContent>
-                <div>Actions: {state.actionQueue.length}</div>
-                <div>Prompts: {state.promptQueue.length}</div>
-                <div>Triggers: {state.triggerQueue.length}</div>
-                <div>Mutations: {state.mutationQueue.length}</div>
-                <div>Status: {getStatus(state)}</div>
-                <div>Turn: {state.battle.turn}</div>
-                <div>Phase: {state.battle?.phase}</div>
-                <ButtonGroup>
-                  <Button variant="outline" onClick={next}>
-                    Next
-                  </Button>
-                  <Button variant="outline" onClick={nextPhase}>
-                    Next Phase
-                  </Button>
-                </ButtonGroup>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
+      {state.battle && <BattleView />}
+      {view === 'dialog' && <div className="flex-1 h-full" />}
 
       <div className="flex justify-start gap-2 m-2">
         <div className="flex flex-col items-center px-4 gap-1">
