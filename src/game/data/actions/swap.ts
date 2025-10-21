@@ -9,7 +9,7 @@ import { v4 } from 'uuid'
 const Swap: SAction = {
   ID: v4(),
   name: 'Activate',
-  validate: (_state, context) => context.targetIDs.length === 1,
+  validate: () => true,
   targets: {
     unique: true,
     max: () => 1,
@@ -23,6 +23,7 @@ const Swap: SAction = {
         )
         .map((a) => mapTarget(a, 'targetID'))
     },
+    validate: (_state, context) => context.targetIDs.length === 1,
   },
   resolve: (_, context) => {
     return [
@@ -37,10 +38,10 @@ const Swap: SAction = {
 function SwapWith(count: number): SAction {
   return {
     ...Swap,
-    validate: (_state, context) => context.targetIDs.length === count,
     targets: {
       ...Swap.targets,
       max: () => count,
+      validate: (_state, context) => context.targetIDs.length === count,
     },
   }
 }

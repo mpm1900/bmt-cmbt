@@ -7,11 +7,12 @@ import { v4 } from 'uuid'
 const Heal: SAction = {
   ID: v4(),
   name: 'Heal',
-  validate: (_state, context) => context.positions.length === 1,
+  validate: () => true,
   targets: {
     unique: true,
     max: () => 1,
     get: (state, _context) => state.actors.map((a) => mapTarget(a, 'position')),
+    validate: (_state, context) => context.positions.length === 1,
   },
   resolve(_, context) {
     return [

@@ -13,6 +13,8 @@ import { BattlePhases } from '@/game/state'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { BattleView } from '@/components/battle/battle-view'
+import { nextAvailableAction } from '@/game/access'
+import { DialogView } from '@/components/dialog/dialog-view'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -35,29 +37,31 @@ function RouteComponent() {
   // bg-[url('./public/platforms.jpg')]
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
-      <div className="flex items-center justify-center gap-2 p-1">
-        {getStatus(state) === 'running' && <Spinner />}
+      <div className="flex items-center justify-start gap-2 p-1">
         <Separator orientation="vertical" />
         <Badge variant="outline">Dialog</Badge>
         <Badge variant="secondary">Combat</Badge>
         {state.battle && (
           <>
             <Separator orientation="vertical" />
-            <Badge variant="secondary">Turn {state.battle.turn + 1}</Badge>
+            <Badge variant="secondary">Turn {state.battle.turn}</Badge>
             <Separator orientation="vertical" />
-            {BattlePhases.map((phase) => (
-              <Badge
-                key={phase}
-                variant={
-                  state.battle?.phase === phase ? 'secondary' : 'outline'
-                }
-              >
-                {phase}
-              </Badge>
-            ))}
+            {BattlePhases.filter((p) => p !== 'pre' && p !== 'post').map(
+              (phase) => (
+                <Badge
+                  key={phase}
+                  variant={
+                    state.battle?.phase === phase ? 'secondary' : 'outline'
+                  }
+                >
+                  {phase}
+                </Badge>
+              )
+            )}
           </>
         )}
         <Separator orientation="vertical" />
+        {getStatus(state) === 'running' && <Spinner />}
       </div>
       <PhaseController />
       {ai && (
@@ -89,7 +93,7 @@ function RouteComponent() {
                 }
                 onClick={() => {
                   setUI({
-                    activeActionID: actor.actions[0]?.ID,
+                    activeActionID: nextAvailableAction(actor, state)?.ID,
                     activeActorID: actor.ID,
                   })
                 }}
@@ -100,6 +104,7 @@ function RouteComponent() {
       )}
 
       {state.battle && <BattleView />}
+      {view === 'dialog' && <DialogView />}
       {view === 'dialog' && <div className="flex-1 h-full" />}
 
       <div className="flex justify-start gap-2 m-2">
@@ -149,7 +154,7 @@ function RouteComponent() {
                     setUI({
                       activeActionID:
                         view === 'actions'
-                          ? actor.actions[0]?.ID
+                          ? nextAvailableAction(actor, state)?.ID
                           : activeActionID,
                       activeActorID: actor.ID,
                     })

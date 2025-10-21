@@ -14,6 +14,7 @@ function PhaseController() {
     case 'main':
       return <MainPhaseController next={next} />
     case 'end':
+    case 'pre':
       return <EndPhaseController next={next} />
     default:
       return null
@@ -56,7 +57,7 @@ function EndPhaseController({ next }: { next: () => void }) {
   useEffect(() => {
     const interval = setInterval(() => {
       next()
-    }, 1000)
+    }, 100)
 
     return () => clearInterval(interval)
   }, [])

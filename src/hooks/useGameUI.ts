@@ -1,4 +1,4 @@
-import { isActive } from '@/game/access'
+import { isActive, nextAvailableAction } from '@/game/access'
 import type { State } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { createStore, useStore } from 'zustand'
@@ -26,7 +26,8 @@ const gameUIStore = createStore<GameUIStore>((set, get) => {
     stagingContext: undefined,
     set: (state: Partial<GameUIState>) => set(state),
     resetActive: (game: State) => {
-      const playerID = get().playerID
+      const state = get()
+      const playerID = state.playerID
       const nextAvailableActor = game.actors.find(
         (a) =>
           a &&
@@ -37,7 +38,7 @@ const gameUIStore = createStore<GameUIStore>((set, get) => {
       if (nextAvailableActor) {
         set({
           activeActorID: nextAvailableActor.ID,
-          activeActionID: nextAvailableActor.actions[0]?.ID,
+          activeActionID: nextAvailableAction(nextAvailableActor, game)?.ID,
           stagingContext: undefined,
         })
       }

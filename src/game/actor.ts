@@ -1,7 +1,8 @@
 import { v4 } from 'uuid'
 import type { SActor, SEffectItem } from './state'
-import type { Damage, PowerDamage } from './types/damage'
+import type { ChanceEvent, Damage, PowerDamage } from './types/damage'
 import type { ActorState, ActorStats } from './types/actor'
+import { chance } from '@/lib/chance'
 
 function getHealth(actor: SActor): number {
   return actor.stats.body
@@ -34,7 +35,78 @@ function withCritical(damage: PowerDamage, critical: boolean): PowerDamage {
   }
 }
 
-function getDamageAmount(
+function newDamage(
+  damage: Partial<PowerDamage> &
+    Pick<PowerDamage, 'offenseStat' | 'defenseStat' | 'power'>
+): PowerDamage {
+  return {
+    type: 'power',
+    success: false,
+    evade: false,
+    critical: false,
+    criticalModifier: 1,
+    element: 'physical',
+    ...damage,
+  }
+}
+
+function newChanceEvent(chanceEvent: Partial<ChanceEvent>): ChanceEvent {
+  return {
+    success: false,
+    successRoll: 0,
+    successThreshold: 0,
+    critical: false,
+    criticalRoll: 0,
+    criticalThreshold: 0,
+    ...chanceEvent,
+  }
+}
+
+function withChanceEvents(
+  damage: PowerDamage,
+  sourceEvent: ChanceEvent,
+  evasionEvent: ChanceEvent
+): PowerDamage {
+  return {
+    ...damage,
+    success: sourceEvent.success && !evasionEvent.success,
+    evade: evasionEvent.success,
+    critical: sourceEvent.success && sourceEvent.critical,
+  }
+}
+
+function getSourceChance(
+  success: number,
+  critical: number,
+  source: SActor
+): ChanceEvent {
+  const successThreshold = success + source.stats.accuracy
+  const successRoll = chance(successThreshold)
+  const criticalThreshold = critical + 0 // TODO: critical stat
+  const criticalRoll = chance(criticalThreshold)
+  const sourceEvent: ChanceEvent = newChanceEvent({
+    success: successRoll[0],
+    successRoll: successRoll[1],
+    successThreshold,
+    critical: criticalRoll[0],
+    criticalRoll: criticalRoll[1],
+    criticalThreshold,
+  })
+
+  return sourceEvent
+}
+
+function getTargetChance(target: SActor): ChanceEvent {
+  const evasionRoll = chance(target.stats.evasion)
+  const targetEvent: ChanceEvent = newChanceEvent({
+    success: evasionRoll[0],
+    successRoll: evasionRoll[1],
+    successThreshold: target.stats.evasion,
+  })
+  return targetEvent
+}
+
+function getDamageResult(
   source: SActor,
   target: SActor,
   damage: Damage
@@ -47,8 +119,10 @@ function getDamageAmount(
     const sourceStat = source.stats[damage.offenseStat]
     const targetStat = target.stats[damage.defenseStat]
     const ratio = sourceStat / targetStat
+    const successModifier = damage.success ? 1 : 0
     const criticalModifier = damage.critical ? damage.criticalModifier : 1
-    const damageAmount = damage.power * ratio * criticalModifier
+    const damageAmount =
+      damage.power * ratio * successModifier * criticalModifier
     return damageAmount
   }
 
@@ -123,7 +197,11 @@ export {
   withStats,
   withDamage,
   withCritical,
-  getDamageAmount,
+  newDamage,
+  withChanceEvents,
+  getSourceChance,
+  getTargetChance,
+  getDamageResult,
   withEffects,
   getStats,
 }

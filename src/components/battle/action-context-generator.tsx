@@ -241,7 +241,7 @@ function ActionContextGenerator({
   const maxP = !action.targets.unique
     ? max
     : Math.min(max, action.targets.get(state, stagingContext).length)
-  const ready = action.validate(state, stagingContext)
+  const ready = action.targets.validate(state, stagingContext)
   const selectedTargets = getSelectedCount(stagingContext)
   const done = max === selectedTargets
 

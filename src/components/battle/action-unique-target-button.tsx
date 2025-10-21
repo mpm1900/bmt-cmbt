@@ -21,8 +21,8 @@ function ActionUniqueTargetButton({
   onContextChange: (context: DeltaPositionContext) => void
 }) {
   const max = action.targets.max(state, context)
+  const ready = action.targets.validate(state, context)
   const done = getSelectedCount(context) === max
-  const ready = action.validate(state, context)
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { getActor, getTriggers, isActive, mapActor } from './access'
-import { getDamageAmount, withDamage } from './actor'
+import { getDamageResult, withDamage } from './actor'
 import { enqueue, pop, push, sort } from './queue'
 import type {
   SAction,
@@ -37,6 +37,13 @@ function decrementEffectItem(effectItem: SEffectItem): SEffectItem {
   return {
     ...effectItem,
     effect: decrementEffect(effectItem.effect),
+  }
+}
+
+function pushLog(state: State, log: State['combatLog'][number]): State {
+  return {
+    ...state,
+    combatLog: [...state.combatLog, log],
   }
 }
 
@@ -167,17 +174,19 @@ function mutateDamage(
       const a = getActor(state, context.sourceID)
       const b = getActor(state, ac.ID)
       if (!a || !b) return ac
-      const damageAmount = getDamageAmount(a, b, damage)
+      const damageAmount = getDamageResult(a, b, damage)
       committed += damageAmount
       return withDamage(ac, ac.state.damage + damageAmount)
     },
   })
-  if (committed > 0) {
-    state = handleTrigger(state, context, 'onDamage')
-  }
+
   const deadActors = state.actors.filter(
     (a) => isActive(state, a.ID) && !a.state.alive
   )
+
+  if (committed > 0) {
+    state = handleTrigger(state, context, 'onDamage')
+  }
   if (deadActors.length > 0) {
     state = handleTrigger(
       state,
@@ -224,6 +233,7 @@ export {
   newContext,
   decrementEffect,
   decrementEffectItem,
+  pushLog,
   pushAction,
   pushPrompt,
   resolvePrompt,

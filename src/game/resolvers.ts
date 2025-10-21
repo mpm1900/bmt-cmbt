@@ -9,10 +9,12 @@ import {
   mutateDamage,
   mutatePlayer,
   newContext,
+  pushLog,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
+import { findActor } from './access'
 
 function costResolver(
   context: DeltaContext,
@@ -29,6 +31,21 @@ function costResolver(
   return {
     ID: v4(),
     delta: cost,
+    context,
+  }
+}
+
+function pushLogResolver(
+  context: DeltaContext,
+  logFn: (state: State, context: DeltaContext) => State['combatLog'][number]
+): SMutation {
+  const delta: Delta<State> = {
+    apply: (state, context) => pushLog(state, logFn(state, context)),
+  }
+
+  return {
+    ID: v4(),
+    delta,
     context,
   }
 }
@@ -103,6 +120,7 @@ function activateActorResolver(
           }),
         })
 
+        state = pushLog(state, `Activated ${findActor(state, actorID)?.name}`)
         state = handleTrigger(state, context, 'onActorActivate')
         return state
       },
@@ -229,6 +247,7 @@ function emptyResolver(context: DeltaContext): SMutation {
 export {
   emptyResolver,
   costResolver,
+  pushLogResolver,
   mutatePlayerResolver,
   mutateActorResolver,
   decrementEffectsResolver,

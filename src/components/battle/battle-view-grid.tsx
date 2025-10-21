@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/swap'
 import { useGameState } from '@/hooks/useGameState'
-import { getActor } from '@/game/access'
+import { getActor, nextAvailableAction } from '@/game/access'
 
 function BattleViewGrid() {
   const { set, view, activeActorID } = useGameUI((s) => s)
@@ -42,7 +42,10 @@ function BattleViewGrid() {
         variant={variant('actions')}
         size="icon-lg"
         onClick={() =>
-          set({ view: 'actions', activeActionID: actor?.actions[0].ID })
+          set({
+            view: 'actions',
+            activeActionID: nextAvailableAction(actor, state)?.ID,
+          })
         }
         disabled={disabled}
       >

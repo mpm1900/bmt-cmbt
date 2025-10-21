@@ -1,23 +1,27 @@
-import { isActive, mapTarget } from '@/game/access'
+import { getActor, isActive, mapTarget } from '@/game/access'
+import {
+  getSourceChance,
+  getTargetChance,
+  newDamage,
+  withChanceEvents,
+} from '@/game/actor'
 import { damageResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'
 import { v4 } from 'uuid'
 
-const BrainBlastDamage: PowerDamage = {
-  type: 'power',
+const BrainBlastDamage: PowerDamage = newDamage({
   offenseStat: 'intelligence',
   defenseStat: 'intelligence',
   element: 'psy',
   power: 30,
   criticalModifier: 1.5,
-}
+})
 
 const BrainBlast: SAction = {
   ID: v4(),
   name: 'Brain Blast',
-  validate: (_state, context) =>
-    0 < context.positions.length && context.positions.length <= 2,
+  validate: () => true,
   targets: {
     unique: true,
     max: () => 2,
@@ -25,14 +29,20 @@ const BrainBlast: SAction = {
       state.actors
         .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
         .map((actor) => mapTarget(actor, 'position')),
+    validate: (_state, context) =>
+      0 < context.positions.length && context.positions.length <= 2,
   },
-  resolve: (_, context) => {
+  resolve: (state, context) => {
     return [
       context.targetIDs.map((targetID) => {
-        return damageResolver(
-          { ...context, targetIDs: [targetID] },
-          BrainBlastDamage
+        const source = getSourceChance(
+          100,
+          0,
+          getActor(state, context.sourceID)!
         )
+        const target = getTargetChance(getActor(state, targetID)!)
+        const damage = withChanceEvents(BrainBlastDamage, source, target)
+        return damageResolver({ ...context, targetIDs: [targetID] }, damage)
       }),
     ]
   },

@@ -1,4 +1,5 @@
 import { isActive, mapTarget } from '@/game/access'
+import { newDamage } from '@/game/actor'
 import { damageResolver } from '@/game/resolvers'
 import type { SAction, SMutation } from '@/game/state'
 import { chance } from '@/lib/chance'
@@ -7,7 +8,7 @@ import { v4 } from 'uuid'
 const HotShots: SAction = {
   ID: v4(),
   name: 'Hot Shots',
-  validate: (_, context) => context.positions.length === 1,
+  validate: () => true,
   targets: {
     unique: false,
     max: () => 1,
@@ -15,6 +16,7 @@ const HotShots: SAction = {
       state.actors
         .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
         .map((a) => mapTarget(a, 'position')),
+    validate: (_, context) => context.positions.length === 1,
   },
   resolve: (_, context) => {
     const deltas: Array<SMutation> = []
@@ -22,19 +24,19 @@ const HotShots: SAction = {
     const results = [result[1]]
     while (result[0]) {
       deltas.push(
-        damageResolver(context, {
-          type: 'power',
-          offenseStat: 'reflexes',
-          defenseStat: 'reflexes',
-          element: 'fire',
-          power: 20,
-          criticalModifier: 1,
-        })
+        damageResolver(
+          context,
+          newDamage({
+            offenseStat: 'reflexes',
+            defenseStat: 'reflexes',
+            element: 'fire',
+            power: 20,
+          })
+        )
       )
       result = chance(80)
       results.push(result[1])
     }
-    console.log(results)
     return deltas
   },
 }

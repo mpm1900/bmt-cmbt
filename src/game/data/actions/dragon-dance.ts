@@ -11,6 +11,7 @@ const DragonDance: SAction = {
     unique: true,
     max: () => 0,
     get: () => [],
+    validate: () => true,
   },
   resolve: (_, context) => {
     return [

@@ -82,7 +82,7 @@ const initialState: State = {
   players: [computer, player],
   battle: {
     turn: 0,
-    phase: 'start',
+    phase: 'pre',
     effects: [
       {
         ID: v4(),
@@ -116,7 +116,7 @@ const initialState: State = {
   promptQueue: [],
   triggerQueue: [],
   mutationQueue: [],
-  combatLog: [],
+  combatLog: ['Combat started'],
 }
 
 const gameStateStore = createStore<GameStateStore>((set) => ({

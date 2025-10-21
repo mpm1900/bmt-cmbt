@@ -10,6 +10,7 @@ type ActionTarget<A> = {
 type ActionTargetGenerator<T, A> = {
   get: (state: T, context: DeltaPositionContext) => Array<ActionTarget<A>>
   max: (state: T, context: DeltaPositionContext) => number
+  validate: (state: T, context: DeltaPositionContext) => boolean
   unique: boolean
 }
 

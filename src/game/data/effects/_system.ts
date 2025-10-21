@@ -2,6 +2,7 @@ import {
   deactivateActorResolver,
   decrementEffectsResolver,
   nextTurnResolver,
+  pushLogResolver,
 } from '@/game/resolvers'
 import type { SEffect } from '@/game/state'
 import { v4 } from 'uuid'
@@ -39,7 +40,13 @@ const HANDLE_TURN_START: SEffect = {
       type: 'onTurnStart',
       validate: () => true,
       resolve: (_state, tcontext) => {
-        return [nextTurnResolver(tcontext)]
+        return [
+          nextTurnResolver(tcontext),
+          pushLogResolver(
+            tcontext,
+            (state) => `Turn ${state.battle?.turn} started`
+          ),
+        ]
       },
     },
   ],
@@ -56,8 +63,14 @@ const HANDLE_TURN_END: SEffect = {
       ID: v4(),
       type: 'onTurnEnd',
       validate: () => true,
-      resolve: (_state, _tcontext) => {
-        return [decrementEffectsResolver()]
+      resolve: (_state, tcontext) => {
+        return [
+          decrementEffectsResolver(),
+          pushLogResolver(
+            tcontext,
+            (state) => `Turn ${state.battle?.turn} ended`
+          ),
+        ]
       },
     },
   ],

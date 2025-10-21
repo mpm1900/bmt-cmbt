@@ -22,7 +22,14 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 
-const BattlePhases = ['start', 'planning', 'main', 'end'] as const
+const BattlePhases = [
+  'pre',
+  'start',
+  'planning',
+  'main',
+  'end',
+  'post',
+] as const
 type Battle = {
   turn: number
   phase: (typeof BattlePhases)[number]
@@ -38,7 +45,7 @@ type State = {
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State, DeltaContext>
-  combatLog: any[]
+  combatLog: string[]
 }
 
 export { BattlePhases }

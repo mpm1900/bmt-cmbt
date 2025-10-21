@@ -24,7 +24,6 @@ function resolveAction(
     return []
   }
   const resolverContext = convertPositionToTargetContext(state, context)
-  console.log('resolving action', context, resolverContext, state)
   return resolver.resolve(state, resolverContext).flatMap((m) => m)
 }
 
@@ -91,6 +90,8 @@ function nextMutation(state: State): State {
 
 function nextPhase(phase: Battle['phase']): Battle['phase'] {
   switch (phase) {
+    case 'pre':
+      return 'start'
     case 'start':
       return 'planning'
     case 'planning':
@@ -100,7 +101,7 @@ function nextPhase(phase: Battle['phase']): Battle['phase'] {
     case 'end':
       return 'start'
     default:
-      return 'start'
+      return 'pre'
   }
 }
 
