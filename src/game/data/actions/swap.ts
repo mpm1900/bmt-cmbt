@@ -25,8 +25,6 @@ const Swap: SAction = {
     },
   },
   resolve: (_, context) => {
-    console.log(context)
-
     return [
       deactivateActorResolver(context.playerID, context.sourceID, context),
       context.targetIDs.map((targetID) =>
@@ -36,4 +34,15 @@ const Swap: SAction = {
   },
 }
 
-export { Swap }
+function SwapWith(count: number): SAction {
+  return {
+    ...Swap,
+    validate: (_state, context) => context.targetIDs.length === count,
+    targets: {
+      ...Swap.targets,
+      max: () => count,
+    },
+  }
+}
+
+export { Swap, SwapWith }

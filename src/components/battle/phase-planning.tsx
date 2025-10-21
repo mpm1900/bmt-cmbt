@@ -9,7 +9,6 @@ function PhasePlanning() {
   const { state, pushAction } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   const {
-    playerID,
     activeActionID,
     activeActorID,
     view,
@@ -26,7 +25,7 @@ function PhasePlanning() {
     <>
       {view === 'actions' && (
         <ActionSelectionCard
-          playerID={playerID}
+          playerID={activeActor.playerID}
           source={activeActor}
           actions={activeActor.actions}
           activeActionID={activeActionID}
@@ -42,7 +41,7 @@ function PhasePlanning() {
       )}
       {view === 'switch' && (
         <ActionSelectionCard
-          playerID={playerID}
+          playerID={activeActor.playerID}
           source={activeActor}
           actions={[Swap]}
           activeActionID={activeActionID}

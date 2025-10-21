@@ -41,6 +41,8 @@ function DuplicateTargetGenerator({
 }) {
   const [targetIndex, setTargetIndex] = useState(0)
   const max = action.targets.max(state, context)
+  const targets = action.targets.get(state, context)
+  const players = new Set(targets.map((t) => t.target.playerID))
 
   function next() {
     setTargetIndex((i) => (i + 1) % max)
@@ -52,6 +54,72 @@ function DuplicateTargetGenerator({
 
   return (
     <>
+      {players.size > 1 ? (
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-2">
+            <div className="font-semibold text-sm">Ally Targets</div>
+            <ButtonGroup className={cn('border rounded-md flex-wrap')}>
+              {targets
+                .filter((t) => t.target.playerID === context.playerID)
+                .map(({ target, type }) => {
+                  return (
+                    <ActionRepeatTargetButton
+                      key={target.ID}
+                      state={state}
+                      action={action}
+                      target={target}
+                      type={type}
+                      index={targetIndex}
+                      context={context}
+                      onContextChange={onContextChange}
+                      next={next}
+                    />
+                  )
+                })}
+            </ButtonGroup>
+          </div>
+          <div className="flex flex-col justify-center gap-2">
+            <div className="font-semibold text-sm">Enemy Targets</div>
+            <ButtonGroup className={cn('border rounded-md flex-wrap')}>
+              {targets
+                .filter((t) => t.target.playerID !== context.playerID)
+                .map(({ target, type }) => {
+                  return (
+                    <ActionRepeatTargetButton
+                      key={target.ID}
+                      state={state}
+                      action={action}
+                      target={target}
+                      type={type}
+                      index={targetIndex}
+                      context={context}
+                      onContextChange={onContextChange}
+                      next={next}
+                    />
+                  )
+                })}
+            </ButtonGroup>
+          </div>
+        </div>
+      ) : (
+        <ButtonGroup className="border rounded-md">
+          {action.targets.get(state, context).map(({ target, type }) => {
+            return (
+              <ActionRepeatTargetButton
+                key={target.ID}
+                state={state}
+                action={action}
+                target={target}
+                type={type}
+                index={targetIndex}
+                context={context}
+                onContextChange={onContextChange}
+                next={next}
+              />
+            )
+          })}
+        </ButtonGroup>
+      )}
       <ActionRepeatPages
         state={state}
         action={action}
@@ -59,23 +127,6 @@ function DuplicateTargetGenerator({
         index={targetIndex}
         onIndexChange={setTargetIndex}
       />
-      <ButtonGroup className="border rounded-md">
-        {action.targets.get(state, context).map(({ target, type }) => {
-          return (
-            <ActionRepeatTargetButton
-              key={target.ID}
-              state={state}
-              action={action}
-              target={target}
-              type={type}
-              index={targetIndex}
-              context={context}
-              onContextChange={onContextChange}
-              next={next}
-            />
-          )
-        })}
-      </ButtonGroup>
     </>
   )
 }
@@ -91,9 +142,57 @@ function UniqueTargetGenerator({
   context: DeltaPositionContext
   onContextChange: (context: DeltaPositionContext) => void
 }) {
+  const targets = action.targets.get(state, context)
+  const players = new Set(targets.map((t) => t.target.playerID))
+  if (players.size > 1) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="space-y-2">
+          <div className="font-semibold text-sm">Ally Targets</div>
+          <ButtonGroup className={cn('border rounded-md flex-wrap')}>
+            {targets
+              .filter((t) => t.target.playerID === context.playerID)
+              .map(({ target, type }) => {
+                return (
+                  <ActionUniqueTargetButton
+                    key={target.ID}
+                    state={state}
+                    action={action}
+                    target={target}
+                    type={type}
+                    context={context}
+                    onContextChange={onContextChange}
+                  />
+                )
+              })}
+          </ButtonGroup>
+        </div>
+        <div className="flex flex-col justify-center gap-2">
+          <div className="font-semibold text-sm">Enemy Targets</div>
+          <ButtonGroup className={cn('border rounded-md flex-wrap')}>
+            {targets
+              .filter((t) => t.target.playerID !== context.playerID)
+              .map(({ target, type }) => {
+                return (
+                  <ActionUniqueTargetButton
+                    key={target.ID}
+                    state={state}
+                    action={action}
+                    target={target}
+                    type={type}
+                    context={context}
+                    onContextChange={onContextChange}
+                  />
+                )
+              })}
+          </ButtonGroup>
+        </div>
+      </div>
+    )
+  }
   return (
     <ButtonGroup className={cn('border rounded-md flex-wrap')}>
-      {action.targets.get(state, context).map(({ target, type }) => {
+      {targets.map(({ target, type }) => {
         return (
           <ActionUniqueTargetButton
             key={target.ID}
@@ -138,10 +237,10 @@ function ActionContextGenerator({
   if (!stagingContext) return null
 
   const renderer = ACTION_RENDERERS[action.ID]
-  const max = Math.min(
-    action.targets.max(state, stagingContext),
-    action.targets.get(state, stagingContext).length
-  )
+  const max = action.targets.max(state, stagingContext)
+  const maxP = !action.targets.unique
+    ? max
+    : Math.min(max, action.targets.get(state, stagingContext).length)
   const ready = action.validate(state, stagingContext)
   const selectedTargets = getSelectedCount(stagingContext)
   const done = max === selectedTargets
@@ -183,9 +282,17 @@ function ActionContextGenerator({
       </CardContent>
 
       <CardFooter className="justify-end items-center gap-4">
-        <div className="text-muted-foreground text-sm text-end">
-          {selectedTargets}/{max} Targets selected.
-        </div>
+        {
+          <div className="text-muted-foreground text-sm text-end">
+            {maxP > 0 ? (
+              <span>
+                {selectedTargets}/{maxP} Targets selected.
+              </span>
+            ) : (
+              <span>No selection required.</span>
+            )}
+          </div>
+        }
         {ready && (
           <Button
             variant={done ? 'default' : 'secondary'}

@@ -12,7 +12,7 @@ import type {
 } from './state'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Damage } from './types/damage'
-import { Swap } from './data/actions/swap'
+import { SwapWith } from './data/actions/swap'
 import type { Player } from './types/player'
 import { resolveAction } from './next'
 
@@ -202,12 +202,16 @@ function validateState(state: State): [State, boolean] {
       player.activeActorIDs.some((id) => id === null) &&
       inactiveActors.length > 0
     ) {
+      const count = Math.min(
+        inactiveActors.length,
+        player.activeActorIDs.filter((a) => a === null).length
+      )
       state = pushPrompt(
         state,
         newContext({
           playerID: player.ID,
         }),
-        Swap
+        SwapWith(count)
       )
       valid = false
     }

@@ -8,7 +8,11 @@ import { v4 } from 'uuid'
 import { newContext, pushAction, resolvePrompt } from '@/game/mutations'
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
-import { HANDLE_DEATH, HANDLE_TURN_END } from '@/game/data/effects/_system'
+import {
+  HANDLE_DEATH,
+  HANDLE_TURN_END,
+  HANDLE_TURN_START,
+} from '@/game/data/effects/_system'
 
 type GameStateStore = {
   state: State
@@ -79,7 +83,23 @@ const initialState: State = {
   battle: {
     turn: 0,
     phase: 'start',
-    effects: [],
+    effects: [
+      {
+        ID: v4(),
+        effect: HANDLE_DEATH,
+        context: newContext({}),
+      },
+      {
+        ID: v4(),
+        effect: HANDLE_TURN_START,
+        context: newContext({}),
+      },
+      {
+        ID: v4(),
+        effect: HANDLE_TURN_END,
+        context: newContext({}),
+      },
+    ],
   },
   actors: [Max, Katie, Hank, Milo, Criminal],
   effects: [
@@ -90,16 +110,6 @@ const initialState: State = {
         playerID: player.ID,
         sourceID: Max.ID,
       }),
-    },
-    {
-      ID: v4(),
-      effect: HANDLE_DEATH,
-      context: newContext({}),
-    },
-    {
-      ID: v4(),
-      effect: HANDLE_TURN_END,
-      context: newContext({}),
     },
   ],
   actionQueue: [],

@@ -116,6 +116,10 @@ function nextTurnPhase(state: State): State {
     },
   }
 
+  if (phase === 'start') {
+    state = handleTrigger(state, newContext({}), 'onTurnStart')
+  }
+
   if (phase === 'end') {
     state = handleTrigger(state, newContext({}), 'onTurnEnd')
   }
@@ -160,6 +164,9 @@ function hasNext(state: State): boolean {
 }
 
 function getStatus(state: State): string {
+  if (state.battle?.phase === 'planning') {
+    return 'pending'
+  }
   if (hasNext(state)) {
     return 'running'
   }

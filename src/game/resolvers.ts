@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import {
   decrementEffectItem,
+  handleTrigger,
   mutateActor,
   mutateDamage,
   mutatePlayer,
@@ -101,6 +102,8 @@ function activateActorResolver(
             ),
           }),
         })
+
+        state = handleTrigger(state, context, 'onActorActivate')
         return state
       },
     },
@@ -117,15 +120,13 @@ function deactivateActorResolver(
     context,
     delta: {
       apply: (state: State) => {
-        if (!actorID) {
-          console.log('NO SOURCE, returning early')
-          return state
-        }
         const player = state.players.find((p) => p.ID === playerID)!
         const index = player.activeActorIDs.indexOf(actorID)
         if (index === -1) {
-          // actor not found
-          console.error('ACTOR NOT FOUND')
+          if (actorID) {
+            // actor not found
+            console.error('ACTOR NOT FOUND', actorID)
+          }
           return state
         }
 
@@ -139,6 +140,7 @@ function deactivateActorResolver(
           }),
         })
 
+        state = handleTrigger(state, context, 'onActorDeactivate')
         return state
       },
     },
@@ -195,6 +197,25 @@ function damageResolver(context: DeltaContext, damage: Damage): SMutation {
   }
 }
 
+function nextTurnResolver(context: DeltaContext): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State, _context: DeltaContext) => {
+        if (!state.battle) return state
+        return {
+          ...state,
+          battle: {
+            ...state.battle,
+            turn: state.battle.turn + 1,
+          },
+        }
+      },
+    },
+  }
+}
+
 function emptyResolver(context: DeltaContext): SMutation {
   return {
     ID: v4(),
@@ -213,6 +234,7 @@ export {
   decrementEffectsResolver,
   addEffectResolver,
   damageResolver,
+  nextTurnResolver,
   activateActorResolver,
   deactivateActorResolver,
 }

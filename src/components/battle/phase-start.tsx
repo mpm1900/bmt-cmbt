@@ -19,7 +19,7 @@ function PhaseStart() {
         onActionConfirm={(_action, context) => {
           resolvePrompt(context)
         }}
-        title="Select a character to activate"
+        title="Select character(s) to activate"
         breadcrumbs={<></>}
       />
     )

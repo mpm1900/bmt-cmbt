@@ -12,6 +12,7 @@ import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
 import { BattleViewGrid } from '@/components/battle/battle-view-grid'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ButtonGroup } from '@/components/ui/button-group'
+import { getStatus } from '@/game/next'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -20,7 +21,13 @@ export const Route = createFileRoute('/battle')({
 function RouteComponent() {
   const { state, next, nextPhase } = useGameState((store) => store)
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
-  const { activeActorID, playerID, set: setUI } = useGameUI((s) => s)
+  const {
+    activeActorID,
+    activeActionID,
+    playerID,
+    view,
+    set: setUI,
+  } = useGameUI((s) => s)
 
   const player = state.players.find((p) => p.ID === playerID)!
   const ai = state.players.find((p) => p.ID !== playerID)!
@@ -38,7 +45,7 @@ function RouteComponent() {
                   <Button
                     disabled
                     variant="outline"
-                    className="h-14 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                    className="h-12 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
                   >
                     inactive
                   </Button>
@@ -69,18 +76,20 @@ function RouteComponent() {
       )}
 
       {state.battle && (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex gap-4">
+        <div className="flex-1 flex items-center justify-center px-16">
+          <div className="flex flex-1 gap-4">
             {state.battle.phase === 'start' && <PhaseStart />}
             {state.battle.phase === 'planning' && <PhasePlanning />}
             {state.battle.phase === 'main' && <PhaseMain />}
-            <Card>
+            <Card className="flex-1">
               <CardHeader>Debug</CardHeader>
               <CardContent>
                 <div>Actions: {state.actionQueue.length}</div>
                 <div>Prompts: {state.promptQueue.length}</div>
                 <div>Triggers: {state.triggerQueue.length}</div>
                 <div>Mutations: {state.mutationQueue.length}</div>
+                <div>Status: {getStatus(state)}</div>
+                <div>Turn: {state.battle.turn}</div>
                 <div>Phase: {state.battle?.phase}</div>
                 <ButtonGroup>
                   <Button variant="outline" onClick={next}>
@@ -141,7 +150,10 @@ function RouteComponent() {
                   }
                   onClick={() => {
                     setUI({
-                      activeActionID: actor.actions[0]?.ID,
+                      activeActionID:
+                        view === 'actions'
+                          ? actor.actions[0]?.ID
+                          : activeActionID,
                       activeActorID: actor.ID,
                     })
                   }}
