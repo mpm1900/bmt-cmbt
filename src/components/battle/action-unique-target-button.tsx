@@ -66,6 +66,7 @@ function ActionTargetIdButton({
   const active = context.targetIDs.includes(target.ID)
   return (
     <Button
+      size="sm"
       variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && !active}
       onClick={() => {
@@ -104,6 +105,7 @@ function ActionPositionButton({
     context.positions.some((p) => positionEquals(p, position))
   return (
     <Button
+      size="sm"
       variant={active ? 'secondary' : 'ghost'}
       disabled={disabled && !active}
       onClick={() => {

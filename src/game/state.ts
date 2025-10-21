@@ -22,9 +22,10 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 
+const BattlePhases = ['start', 'planning', 'main', 'end'] as const
 type Battle = {
   turn: number
-  phase: 'start' | 'planning' | 'main' | 'end'
+  phase: (typeof BattlePhases)[number]
   effects: Array<SEffectItem>
 }
 
@@ -40,6 +41,7 @@ type State = {
   combatLog: any[]
 }
 
+export { BattlePhases }
 export type {
   Battle,
   State,

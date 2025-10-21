@@ -54,9 +54,16 @@ function DuplicateTargetGenerator({
 
   return (
     <>
-      {players.size > 1 ? (
+      <ActionRepeatPages
+        state={state}
+        action={action}
+        context={context}
+        index={targetIndex}
+        onIndexChange={setTargetIndex}
+      />
+      {players.size > 1 && targets.length > 4 ? (
         <div className="flex flex-col items-center gap-4">
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-1">
             <div className="font-semibold text-sm">Ally Targets</div>
             <ButtonGroup className={cn('border rounded-md flex-wrap')}>
               {targets
@@ -78,7 +85,7 @@ function DuplicateTargetGenerator({
                 })}
             </ButtonGroup>
           </div>
-          <div className="flex flex-col justify-center gap-2">
+          <div className="flex flex-col items-center gap-1">
             <div className="font-semibold text-sm">Enemy Targets</div>
             <ButtonGroup className={cn('border rounded-md flex-wrap')}>
               {targets
@@ -120,13 +127,6 @@ function DuplicateTargetGenerator({
           })}
         </ButtonGroup>
       )}
-      <ActionRepeatPages
-        state={state}
-        action={action}
-        context={context}
-        index={targetIndex}
-        onIndexChange={setTargetIndex}
-      />
     </>
   )
 }
@@ -144,10 +144,10 @@ function UniqueTargetGenerator({
 }) {
   const targets = action.targets.get(state, context)
   const players = new Set(targets.map((t) => t.target.playerID))
-  if (players.size > 1) {
+  if (players.size > 1 && targets.length > 4) {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="space-y-2">
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-1">
           <div className="font-semibold text-sm">Ally Targets</div>
           <ButtonGroup className={cn('border rounded-md flex-wrap')}>
             {targets
@@ -167,7 +167,7 @@ function UniqueTargetGenerator({
               })}
           </ButtonGroup>
         </div>
-        <div className="flex flex-col justify-center gap-2">
+        <div className="flex flex-col items-center gap-1">
           <div className="font-semibold text-sm">Enemy Targets</div>
           <ButtonGroup className={cn('border rounded-md flex-wrap')}>
             {targets
@@ -284,7 +284,7 @@ function ActionContextGenerator({
       <CardFooter className="justify-end items-center gap-4">
         {
           <div className="text-muted-foreground text-sm text-end">
-            {maxP > 0 ? (
+            {max > 0 ? (
               <span>
                 {selectedTargets}/{maxP} Targets selected.
               </span>

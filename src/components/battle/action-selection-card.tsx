@@ -31,10 +31,11 @@ function ActionSelectionCard({
       {title && (
         <CardHeader>
           <CardTitle>{title}</CardTitle>
+          {breadcrumbs}
         </CardHeader>
       )}
       <CardContent className="grid grid-cols-2 gap-3">
-        <ScrollArea className="h-96 pr-3">
+        <ScrollArea className="max-h-90 pr-3">
           <div className="flex flex-col gap-2">
             {actions.map((action) => (
               <ActionRadioItem
@@ -49,7 +50,7 @@ function ActionSelectionCard({
           </div>
         </ScrollArea>
         {activeAction && (
-          <ScrollArea className="h-96">
+          <ScrollArea className="max-h-90">
             <ActionContextGenerator
               playerID={playerID}
               action={activeAction}

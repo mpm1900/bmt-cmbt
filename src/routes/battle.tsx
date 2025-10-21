@@ -13,6 +13,8 @@ import { BattleViewGrid } from '@/components/battle/battle-view-grid'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { getStatus } from '@/game/next'
+import { Badge } from '@/components/ui/badge'
+import { BattlePhases } from '@/game/state'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -35,6 +37,11 @@ function RouteComponent() {
   // bg-[url('./public/platforms.jpg')]
   return (
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
+      <div className="flex items-center justify-center gap-2 p-1">
+        {BattlePhases.map((phase) => (
+          <Badge variant={'outline'}>{phase}</Badge>
+        ))}
+      </div>
       <PhaseController />
       {ai && (
         <div className="w-full flex flex-row-reverse justify-start items-end p-4 gap-2">
@@ -77,11 +84,11 @@ function RouteComponent() {
 
       {state.battle && (
         <div className="flex-1 flex items-center justify-center px-16">
-          <div className="flex flex-1 gap-4">
+          <div className="flex flex-1 gap-4 justify-center">
             {state.battle.phase === 'start' && <PhaseStart />}
             {state.battle.phase === 'planning' && <PhasePlanning />}
             {state.battle.phase === 'main' && <PhaseMain />}
-            <Card className="flex-1">
+            <Card className="flex-1 max-w-80">
               <CardHeader>Debug</CardHeader>
               <CardContent>
                 <div>Actions: {state.actionQueue.length}</div>
