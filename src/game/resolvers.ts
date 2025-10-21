@@ -1,5 +1,11 @@
 import type { Delta, DeltaContext } from '@/game/types/delta'
-import type { SActor, SEffect, SMutation, State } from '@/game/state'
+import type {
+  CombatLogItem,
+  SActor,
+  SEffect,
+  SMutation,
+  State,
+} from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import {
@@ -9,7 +15,7 @@ import {
   mutateDamage,
   mutatePlayer,
   newContext,
-  pushLog,
+  pushLogs,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
@@ -40,7 +46,7 @@ function pushLogResolver(
   logFn: (state: State, context: DeltaContext) => State['combatLog'][number]
 ): SMutation {
   const delta: Delta<State> = {
-    apply: (state, context) => pushLog(state, logFn(state, context)),
+    apply: (state, context) => pushLogs(state, [logFn(state, context)]),
   }
 
   return {
@@ -120,7 +126,9 @@ function activateActorResolver(
           }),
         })
 
-        state = pushLog(state, `Activated ${findActor(state, actorID)?.name}`)
+        state = pushLogs(state, [
+          `Activated ${findActor(state, actorID)?.name}`,
+        ])
         state = handleTrigger(state, context, 'onActorActivate')
         return state
       },
@@ -204,13 +212,23 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
   }
 }
 
-function damageResolver(context: DeltaContext, damage: Damage): SMutation {
+function damagesResolver(
+  context: DeltaContext,
+  damages: Array<Damage>,
+  contexts: Array<DeltaContext>,
+  logs: Array<CombatLogItem> = []
+): SMutation {
   return {
     ID: v4(),
     context,
     delta: {
-      apply: (state: State, context: DeltaContext) =>
-        mutateDamage(state, context, damage),
+      apply: (state: State, dcontext: DeltaContext) => {
+        state = damages.reduce((s, damage, index) => {
+          return mutateDamage(s, contexts[index] ?? dcontext, damage)
+        }, state)
+        state = pushLogs(state, logs)
+        return state
+      },
     },
   }
 }
@@ -252,7 +270,7 @@ export {
   mutateActorResolver,
   decrementEffectsResolver,
   addEffectResolver,
-  damageResolver,
+  damagesResolver,
   nextTurnResolver,
   activateActorResolver,
   deactivateActorResolver,

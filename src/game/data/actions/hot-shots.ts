@@ -1,6 +1,6 @@
 import { isActive, mapTarget } from '@/game/access'
 import { newDamage } from '@/game/actor'
-import { damageResolver } from '@/game/resolvers'
+import { damagesResolver } from '@/game/resolvers'
 import type { SAction, SMutation } from '@/game/state'
 import { chance } from '@/lib/chance'
 import { v4 } from 'uuid'
@@ -24,14 +24,17 @@ const HotShots: SAction = {
     const results = [result[1]]
     while (result[0]) {
       deltas.push(
-        damageResolver(
+        damagesResolver(
           context,
-          newDamage({
-            offenseStat: 'reflexes',
-            defenseStat: 'reflexes',
-            element: 'fire',
-            power: 20,
-          })
+          [
+            newDamage({
+              offenseStat: 'reflexes',
+              defenseStat: 'reflexes',
+              element: 'fire',
+              power: 20,
+            }),
+          ],
+          [context]
         )
       )
       result = chance(80)

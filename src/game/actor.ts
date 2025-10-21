@@ -28,13 +28,6 @@ function withStats(actor: SActor, stats: Partial<ActorStats>): SActor {
   }
 }
 
-function withCritical(damage: PowerDamage, critical: boolean): PowerDamage {
-  return {
-    ...damage,
-    critical,
-  }
-}
-
 function newDamage(
   damage: Partial<PowerDamage> &
     Pick<PowerDamage, 'offenseStat' | 'defenseStat' | 'power'>
@@ -196,7 +189,6 @@ export {
   withState,
   withStats,
   withDamage,
-  withCritical,
   newDamage,
   withChanceEvents,
   getSourceChance,

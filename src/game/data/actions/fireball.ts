@@ -1,10 +1,15 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { isActive, mapActor, mapTarget } from '@/game/access'
-import { costResolver, damageResolver } from '@/game/resolvers'
+import { getActor, isActive, mapActor, mapTarget } from '@/game/access'
+import { costResolver, damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
-import { newDamage } from '@/game/actor'
+import {
+  getSourceChance,
+  getTargetChance,
+  newDamage,
+  withChanceEvents,
+} from '@/game/actor'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50
@@ -36,13 +41,24 @@ const Fireball: SAction = {
       0 < context.positions.length &&
       context.positions.length <= FireballTargetCount,
   },
-  resolve: (_, context) => {
+  resolve: (state, context) => {
+    const source = getActor(state, context.sourceID)!
+    const sChance = getSourceChance(100, 0, source)
     return [
       costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
-      damageResolver(context, {
-        ...FireballDamage,
-        success: true,
-      }),
+      damagesResolver(
+        context,
+        context.targetIDs.map((targetID) => {
+          const target = getActor(state, targetID)!
+          const tChance = getTargetChance(target)
+          const damage = withChanceEvents(FireballDamage, sChance, tChance)
+          return damage
+        }),
+        context.targetIDs.map((targetID) => ({
+          ...context,
+          targetIDs: [targetID],
+        }))
+      ),
     ]
   },
 }

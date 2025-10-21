@@ -15,6 +15,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { BattleView } from '@/components/battle/battle-view'
 import { nextAvailableAction } from '@/game/access'
 import { DialogView } from '@/components/dialog/dialog-view'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -39,7 +40,9 @@ function RouteComponent() {
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <div className="flex items-center justify-start gap-2 p-1">
         <Separator orientation="vertical" />
-        <Badge variant="outline">Dialog</Badge>
+        <Badge variant="outline" className="text-muted-foreground">
+          Dialog
+        </Badge>
         <Badge variant="secondary">Combat</Badge>
         {state.battle && (
           <>
@@ -53,6 +56,9 @@ function RouteComponent() {
                   variant={
                     state.battle?.phase === phase ? 'secondary' : 'outline'
                   }
+                  className={cn({
+                    'text-muted-foreground': state.battle?.phase !== phase,
+                  })}
                 >
                   {phase}
                 </Badge>

@@ -36,6 +36,8 @@ type Battle = {
   effects: Array<SEffectItem>
 }
 
+type CombatLogItem = string
+
 type State = {
   battle: Battle | undefined
   players: Array<Player>
@@ -45,7 +47,7 @@ type State = {
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State, DeltaContext>
-  combatLog: string[]
+  combatLog: CombatLogItem[]
 }
 
 export { BattlePhases }
@@ -61,4 +63,5 @@ export type {
   SModifier,
   STrigger,
   STriggerItem,
+  CombatLogItem,
 }

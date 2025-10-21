@@ -5,7 +5,7 @@ import {
   newDamage,
   withChanceEvents,
 } from '@/game/actor'
-import { damageResolver } from '@/game/resolvers'
+import { damagesResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'
 import { v4 } from 'uuid'
@@ -42,7 +42,8 @@ const BrainBlast: SAction = {
         )
         const target = getTargetChance(getActor(state, targetID)!)
         const damage = withChanceEvents(BrainBlastDamage, source, target)
-        return damageResolver({ ...context, targetIDs: [targetID] }, damage)
+        const ctx = { ...context, targetIDs: [targetID] }
+        return damagesResolver(ctx, [damage], [ctx])
       }),
     ]
   },

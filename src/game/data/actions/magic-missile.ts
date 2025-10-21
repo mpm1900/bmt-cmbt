@@ -1,11 +1,15 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { damageResolver, emptyResolver } from '@/game/resolvers'
+import { damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
-import { chance } from '@/lib/chance'
-import { newDamage, withCritical } from '@/game/actor'
-import { isActive, mapTarget } from '@/game/access'
+import {
+  getSourceChance,
+  getTargetChance,
+  newDamage,
+  withChanceEvents,
+} from '@/game/actor'
+import { getActor, isActive, mapTarget } from '@/game/access'
 
 const MagicMissileDamage: PowerDamage = newDamage({
   offenseStat: 'intelligence',
@@ -31,16 +35,18 @@ const MagicMissile: SAction = {
     validate: (_state, context) =>
       context.positions.filter((id) => !!id).length === 5,
   },
-  resolve: (_, context) => {
+  resolve: (state, context) => {
     return [
       context.targetIDs.map((targetID) => {
-        if (!chance(MagicMissileAccuracy)[0]) {
-          return emptyResolver(context)
-        }
-        return damageResolver(
-          { ...context, targetIDs: [targetID] },
-          withCritical(MagicMissileDamage, chance(MagicMissileCritChance)[0])
+        const source = getSourceChance(
+          100,
+          0,
+          getActor(state, context.sourceID)!
         )
+        const target = getTargetChance(getActor(state, targetID)!)
+        const damage = withChanceEvents(MagicMissileDamage, source, target)
+        const ctx = { ...context, targetIDs: [targetID] }
+        return damagesResolver(ctx, [damage], [ctx])
       }),
     ]
   },

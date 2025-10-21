@@ -40,10 +40,13 @@ function decrementEffectItem(effectItem: SEffectItem): SEffectItem {
   }
 }
 
-function pushLog(state: State, log: State['combatLog'][number]): State {
+function pushLogs(
+  state: State,
+  logs: Array<State['combatLog'][number]>
+): State {
   return {
     ...state,
-    combatLog: [...state.combatLog, log],
+    combatLog: [...state.combatLog, ...logs],
   }
 }
 
@@ -233,7 +236,7 @@ export {
   newContext,
   decrementEffect,
   decrementEffectItem,
-  pushLog,
+  pushLogs,
   pushAction,
   pushPrompt,
   resolvePrompt,
