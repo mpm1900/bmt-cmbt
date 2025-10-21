@@ -28,25 +28,13 @@ function ActionRadioItem({
         buttonVariants({
           variant: active ? 'outline-active' : 'outline',
         }),
-        'whitespace-normal items-start h-auto cursor-default',
+        'whitespace-normal items-start h-auto cursor-default block',
         { 'opacity-50 pointer-events-none !cursor-not-allowed': disabled }
       )}
     >
       <Collapsible open={active}>
-        <ItemContent>
-          <div className="flex items-center gap-2">
-            <span className={cn({ 'text-muted-foreground': !active })}>
-              {renderer ? <renderer.Name /> : action.name}
-            </span>
-          </div>
-          {renderer && (
-            <CollapsibleContent className="text-muted-foreground">
-              <renderer.DescriptionShort />
-            </CollapsibleContent>
-          )}
-        </ItemContent>
         {renderer && (
-          <ItemActions className="flex-col items-end">
+          <ItemActions className="flex-col items-end float-right pb-1">
             <div
               className={cn({
                 'text-muted-foreground': !active,
@@ -60,6 +48,21 @@ function ActionRadioItem({
             </CollapsibleContent>
           </ItemActions>
         )}
+        <ItemContent className="block">
+          <span
+            className={cn('inline-block', {
+              'mb-2': active,
+              'text-muted-foreground': !active,
+            })}
+          >
+            {renderer ? <renderer.Name /> : action.name}
+          </span>
+          {renderer && (
+            <CollapsibleContent className="text-muted-foreground">
+              <renderer.DescriptionShort />
+            </CollapsibleContent>
+          )}
+        </ItemContent>
       </Collapsible>
     </Item>
   )

@@ -4,7 +4,6 @@ import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -249,11 +248,6 @@ function ActionContextGenerator({
     <Card>
       <CardHeader>
         <CardTitle>{action.name}</CardTitle>
-        {renderer && (
-          <CardDescription>
-            <renderer.DescriptionShort />
-          </CardDescription>
-        )}
         {renderer && (
           <CardAction>
             <renderer.Icons />

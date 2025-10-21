@@ -19,9 +19,12 @@ const HANDLE_DEATH: SEffect = {
       type: 'onDeath',
       validate: () => true,
       resolve: (state, tcontext) => {
-        return tcontext.targetIDs.map((targetID) => {
+        return tcontext.targetIDs.flatMap((targetID) => {
           const target = state.actors.find((a) => a.ID === targetID)!
-          return deactivateActorResolver(target.playerID, targetID, tcontext)
+          return [
+            pushLogResolver(tcontext, () => `${target.name} died.`),
+            deactivateActorResolver(target.playerID, targetID, tcontext),
+          ]
         })
       },
     },

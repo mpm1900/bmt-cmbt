@@ -62,7 +62,7 @@ function withChanceEvents(
 ): PowerDamage {
   return {
     ...damage,
-    success: sourceEvent.success && !evasionEvent.success,
+    success: sourceEvent.success,
     evade: evasionEvent.success,
     critical: sourceEvent.success && sourceEvent.critical,
   }
@@ -114,8 +114,14 @@ function getDamageResult(
     const ratio = sourceStat / targetStat
     const successModifier = damage.success ? 1 : 0
     const criticalModifier = damage.critical ? damage.criticalModifier : 1
-    const damageAmount =
-      damage.power * ratio * successModifier * criticalModifier
+    const evasionModifier = damage.evade ? 0 : 1
+    const damageAmount = Math.round(
+      damage.power *
+        ratio *
+        successModifier *
+        criticalModifier *
+        evasionModifier
+    )
     return damageAmount
   }
 

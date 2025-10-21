@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { getActor, getTriggers, isActive, mapActor } from './access'
+import { findActor, getActor, getTriggers, isActive, mapActor } from './access'
 import { getDamageResult, withDamage } from './actor'
 import { enqueue, pop, push, sort } from './queue'
 import type {
@@ -133,6 +133,21 @@ function sortActionQueue(state: State): State {
   }
 }
 
+function filterActionQueue(state: State, sourceID: string): State {
+  const actionQueue = state.actionQueue.filter(
+    (action) => action.context.sourceID !== sourceID
+  )
+
+  console.log('filtering action queue', sourceID)
+  console.log(state.actionQueue)
+  console.log(actionQueue)
+
+  return {
+    ...state,
+    actionQueue,
+  }
+}
+
 function mutateActor(
   state: State,
   context: DeltaContext,
@@ -183,19 +198,17 @@ function mutateDamage(
     },
   })
 
-  const deadActors = state.actors.filter(
-    (a) => isActive(state, a.ID) && !a.state.alive
-  )
+  const targetID = context.targetIDs[0] // this line could be problematic, but probs not
+  const target = findActor(state, targetID)
+  const dead = isActive(state, targetID) && !target?.state.alive
 
   if (committed > 0) {
     state = handleTrigger(state, context, 'onDamage')
+    state = pushLogs(state, [`${target?.name} took ${committed} damage.`])
   }
-  if (deadActors.length > 0) {
-    state = handleTrigger(
-      state,
-      { ...context, targetIDs: deadActors.map((a) => a.ID) },
-      'onDeath'
-    )
+
+  if (dead) {
+    state = handleTrigger(state, context, 'onDeath')
   }
 
   return state
@@ -242,6 +255,7 @@ export {
   resolvePrompt,
   handleTrigger,
   sortActionQueue,
+  filterActionQueue,
   mutateActor,
   mutatePlayer,
   mutateDamage,

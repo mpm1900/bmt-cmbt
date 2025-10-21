@@ -1,15 +1,10 @@
 import type { Delta, DeltaContext } from '@/game/types/delta'
-import type {
-  CombatLogItem,
-  SActor,
-  SEffect,
-  SMutation,
-  State,
-} from '@/game/state'
+import type { SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import {
   decrementEffectItem,
+  filterActionQueue,
   handleTrigger,
   mutateActor,
   mutateDamage,
@@ -20,7 +15,7 @@ import {
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
-import { findActor } from './access'
+import { findActor, getActor } from './access'
 
 function costResolver(
   context: DeltaContext,
@@ -166,6 +161,7 @@ function deactivateActorResolver(
           }),
         })
 
+        state = filterActionQueue(state, actorID)
         state = handleTrigger(state, context, 'onActorDeactivate')
         return state
       },
@@ -215,18 +211,30 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
 function damagesResolver(
   context: DeltaContext,
   damages: Array<Damage>,
-  contexts: Array<DeltaContext>,
-  logs: Array<CombatLogItem> = []
+  contexts: Array<DeltaContext>
 ): SMutation {
   return {
     ID: v4(),
     context,
     delta: {
       apply: (state: State, dcontext: DeltaContext) => {
-        state = damages.reduce((s, damage, index) => {
-          return mutateDamage(s, contexts[index] ?? dcontext, damage)
+        state = damages.reduce((next, damage, index) => {
+          const ctx = contexts[index] ?? dcontext
+          const source = getActor(next, ctx.sourceID)
+
+          if (damage.type === 'power' && source) {
+            if (!damage.success) {
+              next = pushLogs(next, [`${source.name}'s attack missed.`])
+            }
+            if (damage.evade) {
+              const target = getActor(next, ctx.targetIDs[0])
+              next = pushLogs(next, [`${target?.name} evaded the attack.`])
+            }
+          }
+
+          next = mutateDamage(next, ctx, damage)
+          return next
         }, state)
-        state = pushLogs(state, logs)
         return state
       },
     },

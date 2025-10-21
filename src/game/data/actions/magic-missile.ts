@@ -18,7 +18,7 @@ const MagicMissileDamage: PowerDamage = newDamage({
   power: 10,
   criticalModifier: 1.5,
 })
-const MagicMissileAccuracy = 100
+const MagicMissileAccuracy = 50
 const MagicMissileCritChance = 10
 
 const MagicMissile: SAction = {
@@ -39,7 +39,7 @@ const MagicMissile: SAction = {
     return [
       context.targetIDs.map((targetID) => {
         const source = getSourceChance(
-          100,
+          MagicMissileAccuracy,
           0,
           getActor(state, context.sourceID)!
         )

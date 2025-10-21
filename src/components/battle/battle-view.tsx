@@ -51,8 +51,8 @@ function BattleView() {
                   </ButtonGroup>
                 </TabsContent>
                 <TabsContent value="combat-log">
-                  <ScrollArea className="h-82">
-                    <ul>
+                  <ScrollArea className="h-84">
+                    <ul className="text-sm">
                       {state.combatLog.map((log, index) => (
                         <li key={index}>{log}</li>
                       ))}

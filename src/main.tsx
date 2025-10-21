@@ -39,7 +39,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="dark">
           <RouterProvider router={router} basepath="bmt-cmbt" />
         </ThemeProvider>
       </TanStackQueryProvider.Provider>

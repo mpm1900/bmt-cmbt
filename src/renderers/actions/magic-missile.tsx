@@ -12,7 +12,12 @@ const ElementIcon = ELEMENT_ICONS[MagicMissileDamage.element]
 const MagicMissileRenderer: ActionRenderer = {
   actionID: MagicMissile.ID,
   Name: () => <div className="">Magic Missile</div>,
-  DescriptionShort: () => <div>Deals shock damage 5 times.</div>,
+  DescriptionShort: () => (
+    <div>
+      Deals shock damage 5 times. Testing out a much longer description name to
+      see how lines break, hopefully well.
+    </div>
+  ),
   Icons: () => (
     <div className="flex gap-2 items-center">
       <ElementIcon className="size-5" />
@@ -22,8 +27,8 @@ const MagicMissileRenderer: ActionRenderer = {
   Damage: () => (
     <div>
       <span>
-        <span className="font-bold">{MagicMissileDamage.power}</span>{' '}
-        <span className="text-muted-foreground">x</span> 5,{' '}
+        (<span className="font-bold">{MagicMissileDamage.power}</span>{' '}
+        <span className="text-muted-foreground"></span>x 5){' '}
         {MagicMissileAccuracy}%
       </span>
     </div>
@@ -31,7 +36,8 @@ const MagicMissileRenderer: ActionRenderer = {
   Critical: () => (
     <div>
       <span className="text-muted-foreground/80 text-xs">
-        x{MagicMissileDamage.criticalModifier * 100}%, {MagicMissileCritChance}%
+        (x{MagicMissileDamage.criticalModifier * 100}%) {MagicMissileCritChance}
+        %
       </span>
     </div>
   ),

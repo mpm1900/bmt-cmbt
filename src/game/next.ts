@@ -1,7 +1,8 @@
-import { convertPositionToTargetContext } from './access'
+import { convertPositionToTargetContext, mapActor } from './access'
 import {
   handleTrigger,
   newContext,
+  pushLogs,
   sortActionQueue,
   validateState,
 } from './mutations'
@@ -41,11 +42,11 @@ function resolveTrigger(
 
 function nextAction(state: State): State {
   state = sortActionQueue(state)
-  const mutations = resolveAction(
-    state.actionQueue[0].action,
-    state,
-    state.actionQueue[0].context
-  )
+  const item = state.actionQueue[0]
+  state = pushLogs(state, [
+    `${mapActor(state, item.context.sourceID, (a) => a.name)} uses ${item.action.name}.`,
+  ])
+  const mutations = resolveAction(item.action, state, item.context)
   const mutationQueue = push(state.mutationQueue, mutations)
   const actionQueue = pop(state.actionQueue)
   return {
