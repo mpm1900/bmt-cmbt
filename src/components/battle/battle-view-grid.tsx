@@ -19,13 +19,13 @@ function BattleViewGrid() {
     return 'secondary'
   }
 
-  const disabled = !(phase === 'planning')
+  const disabled = phase !== 'planning' && view !== 'dialog'
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
       <Button
-        variant={variant('dialog')}
+        variant={view === 'dialog' ? 'default' : 'secondary'}
         size="icon-lg"
-        disabled={disabled || !state.battle}
+        disabled={disabled && !state.battle}
         onClick={() => set({ view: 'dialog' })}
       >
         <MessageSquare />
