@@ -125,7 +125,7 @@ function deactivateActorResolver(
         if (index === -1) {
           if (actorID) {
             // actor not found
-            console.error('ACTOR NOT FOUND', actorID)
+            console.error('ACTOR NOT FOUND', actorID, playerID, context)
           }
           return state
         }

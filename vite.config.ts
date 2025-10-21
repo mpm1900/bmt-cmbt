@@ -13,6 +13,7 @@ export default defineConfig({
     viteReact(),
     tailwindcss(),
   ],
+  base: '/bmt-cmbt/',
   test: {
     globals: true,
     environment: 'jsdom',

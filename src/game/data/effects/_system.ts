@@ -17,10 +17,11 @@ const HANDLE_DEATH: SEffect = {
       ID: v4(),
       type: 'onDeath',
       validate: () => true,
-      resolve: (_state, tcontext) => {
-        return tcontext.targetIDs.map((targetID) =>
-          deactivateActorResolver(tcontext.playerID, targetID, tcontext)
-        )
+      resolve: (state, tcontext) => {
+        return tcontext.targetIDs.map((targetID) => {
+          const target = state.actors.find((a) => a.ID === targetID)!
+          return deactivateActorResolver(target.playerID, targetID, tcontext)
+        })
       },
     },
   ],

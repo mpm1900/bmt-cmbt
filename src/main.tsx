@@ -40,7 +40,7 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <RouterProvider router={router} basepath="bmt-cmbt" />
         </ThemeProvider>
       </TanStackQueryProvider.Provider>
     </StrictMode>
