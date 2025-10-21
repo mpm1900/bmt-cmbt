@@ -1,1 +1,0 @@
-import{j as o}from"./index-BuRjw3it.js";import{u as r,a as c,w as p}from"./useGameUI-Cb4xv3nF.js";function f(){const{state:t}=r(s=>s),{playerID:e}=c(s=>s),a=t.actors.filter(s=>s.playerID===e).map(s=>p(s,t.effects));return console.log(a),o.jsx("div",{className:"flex gap-4"})}export{f as component};
