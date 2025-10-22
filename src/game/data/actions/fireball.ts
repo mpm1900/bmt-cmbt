@@ -41,6 +41,21 @@ const Fireball: SAction = {
       0 < context.positions.length &&
       context.positions.length <= FireballTargetCount,
   },
+  ai: {
+    generateContexts: (state, context, action) => {
+      return action.targets.get(state, context).map((target) => ({
+        ...context,
+        sourceID: context.sourceID,
+        targetIDs: [target.target.ID],
+      }))
+    },
+    compute: (state, context) => {
+      return (
+        1000 -
+        (mapActor(state, context.targetIDs[0], (a) => a.state.damage) ?? 1000)
+      )
+    },
+  },
   resolve: (state, context) => {
     const source = getActor(state, context.sourceID)!
     const sChance = getSourceChance(100, 0, source)

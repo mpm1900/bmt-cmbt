@@ -14,9 +14,19 @@ type ActionTargetGenerator<T, A> = {
   unique: boolean
 }
 
+type ActionAI<T, A> = {
+  generateContexts: (
+    state: T,
+    context: DeltaPositionContext,
+    action: Action<T, A>
+  ) => Array<DeltaPositionContext>
+  compute: (state: T, context: DeltaPositionContext) => number
+}
+
 type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
   name: string
   targets: ActionTargetGenerator<T, A>
+  ai?: ActionAI<T, A>
 }
 
 type ActionQueueItem<T, A> = {

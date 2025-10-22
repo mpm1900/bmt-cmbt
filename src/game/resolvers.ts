@@ -1,4 +1,10 @@
-import type { Delta, DeltaContext } from '@/game/types/delta'
+import type {
+  Delta,
+  DeltaContext,
+  DeltaPositionContext,
+  DeltaQueueItem,
+  DeltaResolver,
+} from '@/game/types/delta'
 import type { SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
@@ -15,7 +21,20 @@ import {
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
-import { findActor, getActor } from './access'
+import { convertPositionToTargetContext, findActor, getActor } from './access'
+
+function resolveAction(
+  state: State,
+  context: DeltaPositionContext,
+  resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>
+): DeltaQueueItem<State, DeltaContext>[] {
+  if (!resolver.validate(state, context)) {
+    console.error('resolver validation failed', resolver, state, context)
+    return []
+  }
+  const resolverContext = convertPositionToTargetContext(state, context)
+  return resolver.resolve(state, resolverContext).flatMap((m) => m)
+}
 
 function costResolver(
   context: DeltaContext,
@@ -122,7 +141,7 @@ function activateActorResolver(
         })
 
         state = pushLogs(state, [
-          `Activated ${findActor(state, actorID)?.name}`,
+          `${findActor(state, actorID)?.name} joined the battle.`,
         ])
         state = handleTrigger(state, context, 'onActorActivate')
         return state
@@ -271,6 +290,7 @@ function emptyResolver(context: DeltaContext): SMutation {
 
 export {
   emptyResolver,
+  resolveAction,
   costResolver,
   pushLogResolver,
   mutatePlayerResolver,

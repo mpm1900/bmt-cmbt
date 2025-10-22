@@ -21,8 +21,9 @@ function BattleViewGrid() {
 
   const disabled = (v: typeof view) =>
     v === 'dialog'
-      ? state.battle?.phase !== 'planning'
-      : state.battle?.phase !== 'planning' && view !== 'dialog'
+      ? state.battle && state.battle?.phase !== 'planning'
+      : !state.battle ||
+        (state.battle.phase !== 'planning' && view !== 'dialog')
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
       <Button

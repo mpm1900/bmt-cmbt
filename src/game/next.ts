@@ -1,33 +1,18 @@
-import { convertPositionToTargetContext, mapActor } from './access'
+import { findActor, mapActor } from './access'
 import {
   handleTrigger,
   newContext,
+  pushAction,
   pushLogs,
+  resolvePrompt,
   sortActionQueue,
   validateState,
   withPhase,
 } from './mutations'
 import { pop, push } from './queue'
+import { resolveAction } from './resolvers'
 import type { State, Battle } from './state'
-import type {
-  DeltaContext,
-  DeltaPositionContext,
-  DeltaQueueItem,
-  DeltaResolver,
-} from './types/delta'
-
-function resolveAction(
-  resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>,
-  state: State,
-  context: DeltaPositionContext
-): DeltaQueueItem<State, DeltaContext>[] {
-  if (!resolver.validate(state, context)) {
-    console.error('resolver validation failed', resolver, state, context)
-    return []
-  }
-  const resolverContext = convertPositionToTargetContext(state, context)
-  return resolver.resolve(state, resolverContext).flatMap((m) => m)
-}
+import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
 function resolveTrigger(
   resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
@@ -47,7 +32,7 @@ function nextAction(state: State): State {
   state = pushLogs(state, [
     `${mapActor(state, item.context.sourceID, (a) => a.name)} uses ${item.action.name}.`,
   ])
-  const mutations = resolveAction(item.action, state, item.context)
+  const mutations = resolveAction(state, item.context, item.action)
   const mutationQueue = push(state.mutationQueue, mutations)
   const actionQueue = pop(state.actionQueue)
   return {
@@ -116,10 +101,48 @@ function nextTurnPhase(state: State): State {
     state = handleTrigger(state, newContext({}), 'onTurnStart')
   }
 
+  if (phase === 'planning') {
+    // TODO: hard-coded player ID
+    const player = state.players.find((p) => p.ID === '__ai__')!
+    player.activeActorIDs.forEach((id) => {
+      if (!id) return
+
+      const aiActions = findActor(state, id)?.actions.filter((a) => a.ai) ?? []
+      const context = newContext({ playerID: player.ID, sourceID: id })
+      const ratedActions = aiActions.map((a) => {
+        const contexts = a
+          .ai!.generateContexts(state, context, a)
+          .map((c) => [c, a.ai!.compute(state, c)] as const)
+          .sort((a, b) => b[1] - a[1])
+
+        return [a, contexts[0][0], contexts[0][1]] as const
+      })
+      console.log(ratedActions)
+      if (ratedActions[0]) {
+        state = pushAction(state, ratedActions[0][1], ratedActions[0][0])
+      }
+    })
+  }
+
   if (phase === 'end') {
     state = handleTrigger(state, newContext({}), 'onTurnEnd')
   }
 
+  return state
+}
+
+function nextAiPrompt(state: State): State {
+  if (!state.promptQueue[0]) return state
+
+  const { action, context } = state.promptQueue[0]
+  // TODO: hard-coded player ID
+  if (context.playerID !== '__ai__' || !action.ai) return state
+  const contexts = action.ai
+    .generateContexts(state, context, action)
+    .map((c) => [c, action.ai!.compute(state, c)] as const)
+    .sort((a, b) => b[1] - a[1])
+
+  state = resolvePrompt(state, contexts[0][0])
   return state
 }
 
@@ -131,7 +154,7 @@ function next(state: State): State {
     return nextMutation(state)
   }
   if (state.promptQueue.length > 0) {
-    return state // pause, wait for input
+    return nextAiPrompt(state)
   }
   // before each action pop, run the validations
   const valid = validateState(state)

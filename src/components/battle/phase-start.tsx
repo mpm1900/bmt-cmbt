@@ -1,10 +1,15 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
+import { useGameUI } from '@/hooks/useGameUI'
 
 function PhaseStart() {
   const { state, resolvePrompt } = useGameState((s) => s)
-  if (state.promptQueue[0]) {
+  const { playerID } = useGameUI((s) => s)
+  if (
+    state.promptQueue[0] &&
+    state.promptQueue[0].context.playerID === playerID
+  ) {
     const action = state.promptQueue[0].action
     const context = state.promptQueue[0].context
     const source = getActor(state, context.sourceID)

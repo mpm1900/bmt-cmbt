@@ -1,4 +1,4 @@
-import { isActive, mapTarget } from '@/game/access'
+import { isActive, mapActor, mapTarget } from '@/game/access'
 import {
   activateActorResolver,
   deactivateActorResolver,
@@ -13,17 +13,27 @@ const Swap: SAction = {
   targets: {
     unique: true,
     max: () => 1,
-    get: (state, context) => {
-      return state.actors
+    get: (state, context) =>
+      state.actors
         .filter(
           (a) =>
             !isActive(state, a.ID) &&
-            a.playerID == context.playerID &&
+            a.playerID === context.playerID &&
             a.state.alive
         )
-        .map((a) => mapTarget(a, 'targetID'))
-    },
+        .map((a) => mapTarget(a, 'targetID')),
     validate: (_state, context) => context.targetIDs.length === 1,
+  },
+  ai: {
+    compute: (state, context) =>
+      mapActor(state, context.targetIDs[0], (a) => 1000 - a.state.damage) ?? 0,
+    generateContexts: (state, context, action) => {
+      const actors = action.targets.get(state, context)
+      return actors.map((a) => ({
+        ...context,
+        targetIDs: [a.target.ID],
+      }))
+    },
   },
   resolve: (_, context) => {
     return [

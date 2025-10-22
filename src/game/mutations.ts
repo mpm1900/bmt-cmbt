@@ -15,7 +15,7 @@ import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Damage } from './types/damage'
 import { SwapWith } from './data/actions/swap'
 import type { Player } from './types/player'
-import { resolveAction } from './next'
+import { resolveAction } from './resolvers'
 
 function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
   return {
@@ -89,7 +89,7 @@ function pushPrompt(
 
 function resolvePrompt(state: State, context: DeltaPositionContext): State {
   if (!state.promptQueue[0]) return state
-  const mutations = resolveAction(state.promptQueue[0].action, state, context)
+  const mutations = resolveAction(state, context, state.promptQueue[0].action)
   const mutationQueue = push(state.mutationQueue, mutations)
   const promptQueue = pop(state.promptQueue)
   return {
