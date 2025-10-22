@@ -225,8 +225,7 @@ function damagesResolver(
           if (damage.type === 'power' && source) {
             if (!damage.success) {
               next = pushLogs(next, [`${source.name}'s attack missed.`])
-            }
-            if (damage.evade) {
+            } else if (damage.evade) {
               const target = getActor(next, ctx.targetIDs[0])
               next = pushLogs(next, [`${target?.name} evaded the attack.`])
             }

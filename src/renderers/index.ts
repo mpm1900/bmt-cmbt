@@ -1,11 +1,11 @@
 import { Fireball } from '@/game/data/actions/fireball'
 import { FireballRenderer } from './actions/fireball'
-import { MagicMissile } from '@/game/data/actions/magic-missile'
-import { MagicMissileRenderer } from './actions/magic-missile'
+import { SprayNPray } from '@/game/data/actions/spray-n-pray'
+import { SprayNPrayRenderer } from './actions/spray-n-pray'
 
 const ACTION_RENDERERS = {
   [Fireball.ID]: FireballRenderer,
-  [MagicMissile.ID]: MagicMissileRenderer,
+  [SprayNPray.ID]: SprayNPrayRenderer,
 }
 
 export { ACTION_RENDERERS }

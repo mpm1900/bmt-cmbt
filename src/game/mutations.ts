@@ -3,6 +3,7 @@ import { findActor, getActor, getTriggers, isActive, mapActor } from './access'
 import { getDamageResult, withDamage } from './actor'
 import { enqueue, pop, push, sort } from './queue'
 import type {
+  Battle,
   SAction,
   SActor,
   SEffect,
@@ -214,10 +215,21 @@ function mutateDamage(
   return state
 }
 
+function withPhase(state: State, phase: Battle['phase']): State {
+  if (!state.battle) return state
+  return {
+    ...state,
+    battle: {
+      ...state.battle,
+      phase,
+    },
+  }
+}
+
 function validateState(state: State): [State, boolean] {
   let valid = true
   state.players.forEach((player) => {
-    const inactiveActors = state.actors.filter(
+    const inactiveLiveActors = state.actors.filter(
       (a) =>
         a.playerID === player.ID &&
         !player.activeActorIDs.includes(a.ID) &&
@@ -225,10 +237,10 @@ function validateState(state: State): [State, boolean] {
     )
     if (
       player.activeActorIDs.some((id) => id === null) &&
-      inactiveActors.length > 0
+      inactiveLiveActors.length > 0
     ) {
       const count = Math.min(
-        inactiveActors.length,
+        inactiveLiveActors.length,
         player.activeActorIDs.filter((a) => a === null).length
       )
       state = pushPrompt(
@@ -238,6 +250,14 @@ function validateState(state: State): [State, boolean] {
         }),
         SwapWith(count)
       )
+      valid = false
+    }
+
+    if (
+      player.activeActorIDs.every((id) => id === null) &&
+      inactiveLiveActors.length === 0
+    ) {
+      state = withPhase(state, 'post')
       valid = false
     }
   })
@@ -259,5 +279,6 @@ export {
   mutateActor,
   mutatePlayer,
   mutateDamage,
+  withPhase,
   validateState,
 }

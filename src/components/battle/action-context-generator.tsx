@@ -247,7 +247,7 @@ function ActionContextGenerator({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{action.name}</CardTitle>
+        <CardTitle>{renderer ? <renderer.Name /> : action.name}</CardTitle>
         {renderer && (
           <CardAction>
             <renderer.Icons />

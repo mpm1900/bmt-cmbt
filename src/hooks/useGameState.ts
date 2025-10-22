@@ -21,6 +21,7 @@ type GameStateStore = {
   next: () => void
   flush: () => void
   nextPhase: () => void
+  deleteBattle: () => void
 }
 
 const Max = createActor('Max', '__player__', {
@@ -166,6 +167,14 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       state: {
         ...nextTurnPhase(state),
         promptQueue: [],
+      },
+    }))
+  },
+  deleteBattle: () => {
+    set(({ state }) => ({
+      state: {
+        ...state,
+        battle: undefined,
       },
     }))
   },

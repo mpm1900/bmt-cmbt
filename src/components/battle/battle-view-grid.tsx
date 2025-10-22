@@ -12,20 +12,23 @@ function BattleViewGrid() {
   const phase = state.battle?.phase
   const actor = getActor(state, activeActorID)
   const variant = (v: typeof view) => {
-    if (phase === 'planning') {
+    if (phase === 'planning' || v === 'dialog') {
       return view === v ? 'default' : 'secondary'
     }
 
     return 'secondary'
   }
 
-  const disabled = phase !== 'planning' && view !== 'dialog'
+  const disabled = (v: typeof view) =>
+    v === 'dialog'
+      ? state.battle?.phase !== 'planning'
+      : state.battle?.phase !== 'planning' && view !== 'dialog'
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
       <Button
-        variant={view === 'dialog' ? 'default' : 'secondary'}
+        variant={variant('dialog')}
         size="icon-lg"
-        disabled={disabled && !state.battle}
+        disabled={disabled('dialog')}
         onClick={() => set({ view: 'dialog' })}
       >
         <MessageSquare />
@@ -34,7 +37,7 @@ function BattleViewGrid() {
         variant={variant('items')}
         size="icon-lg"
         onClick={() => set({ view: 'items' })}
-        disabled={disabled}
+        disabled={disabled('items')}
       >
         <Box />
       </Button>
@@ -47,7 +50,7 @@ function BattleViewGrid() {
             activeActionID: nextAvailableAction(actor, state)?.ID,
           })
         }
-        disabled={disabled}
+        disabled={disabled('actions')}
       >
         <Component />
       </Button>
@@ -55,7 +58,7 @@ function BattleViewGrid() {
         variant={variant('switch')}
         size="icon-lg"
         onClick={() => set({ view: 'switch', activeActionID: Swap.ID })}
-        disabled={disabled}
+        disabled={disabled('switch')}
       >
         <ArrowDownUp />
       </Button>

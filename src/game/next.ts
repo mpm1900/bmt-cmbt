@@ -5,6 +5,7 @@ import {
   pushLogs,
   sortActionQueue,
   validateState,
+  withPhase,
 } from './mutations'
 import { pop, push } from './queue'
 import type { State, Battle } from './state'
@@ -109,14 +110,7 @@ function nextPhase(phase: Battle['phase']): Battle['phase'] {
 function nextTurnPhase(state: State): State {
   if (!state.battle) return state
   const phase = nextPhase(state.battle.phase)
-
-  state = {
-    ...state,
-    battle: {
-      ...state.battle,
-      phase,
-    },
-  }
+  state = withPhase(state, phase)
 
   if (phase === 'start') {
     state = handleTrigger(state, newContext({}), 'onTurnStart')

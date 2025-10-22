@@ -2,7 +2,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { PhaseStart } from './phase-start'
 import { PhasePlanning } from './phase-planning'
 import { PhaseMain } from './phase-main'
-import { Card, CardContent, CardHeader } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
@@ -11,8 +11,10 @@ import { PhaseEnd } from './phase-end'
 import { ScrollArea } from '../ui/scroll-area'
 
 function BattleView() {
-  const { state, next, nextPhase } = useGameState((store) => store)
-  const { view } = useGameUI((s) => s)
+  const { state, next, nextPhase, deleteBattle } = useGameState(
+    (store) => store
+  )
+  const { view, set } = useGameUI((s) => s)
   if (!state.battle) return null
   if (view === 'dialog') return null
 
@@ -25,6 +27,23 @@ function BattleView() {
           {state.battle.phase === 'main' && <PhaseMain />}
           {state.battle.phase === 'end' && <PhaseEnd />}
           {state.battle.phase === 'pre' && <PhaseEnd />}
+          {state.battle.phase === 'post' && (
+            <Card className="w-172">
+              <CardHeader>
+                <CardTitle>The battle is over</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={() => {
+                    set({ view: 'dialog' })
+                    deleteBattle()
+                  }}
+                >
+                  continue
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
         <div className="flex-1 max-w-80 h-108">
           <Card className="h-full">
