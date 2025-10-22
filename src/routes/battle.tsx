@@ -1,7 +1,6 @@
 import { Actor, EnemyActor } from '@/components/battle/actor'
 import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
-import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
@@ -13,7 +12,7 @@ import { BattlePhases } from '@/game/state'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { BattleView } from '@/components/battle/battle-view'
-import { nextAvailableAction } from '@/game/access'
+import { nextAvailableAction, withStatEffects } from '@/game/access'
 import { DialogView } from '@/components/dialog/dialog-view'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +22,9 @@ export const Route = createFileRoute('/battle')({
 
 function RouteComponent() {
   const { state } = useGameState((store) => store)
-  const actors = state.actors.map((actor) => withEffects(actor, state.effects))
+  const actors = state.actors.map((actor) =>
+    withStatEffects(actor, state.effects)
+  )
   const {
     activeActorID,
     activeActionID,

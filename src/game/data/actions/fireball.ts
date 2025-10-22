@@ -51,8 +51,11 @@ const Fireball: SAction = {
     },
     compute: (state, context) => {
       return (
-        1000 -
-        (mapActor(state, context.targetIDs[0], (a) => a.state.damage) ?? 1000)
+        mapActor(
+          state,
+          context.targetIDs[0],
+          (a) => a.stats.health - a.state.damage
+        ) ?? 0
       )
     },
   },

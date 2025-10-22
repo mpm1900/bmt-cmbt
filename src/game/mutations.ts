@@ -195,7 +195,8 @@ function mutateDamage(
       if (!a || !b) return ac
       const damageAmount = getDamageResult(a, b, damage)
       committed += damageAmount
-      return withDamage(ac, ac.state.damage + damageAmount)
+      const newDamage = ac.state.damage + damageAmount
+      return withDamage(ac, newDamage, newDamage < a.stats.health ? 1 : 0)
     },
   })
 

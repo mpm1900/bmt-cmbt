@@ -4,10 +4,6 @@ import type { ChanceEvent, Damage, PowerDamage } from './types/damage'
 import type { ActorState, ActorStats } from './types/actor'
 import { chance } from '@/lib/chance'
 
-function getHealth(actor: SActor): number {
-  return actor.stats.body
-}
-
 function withState(actor: SActor, state: Partial<ActorState>): SActor {
   return {
     ...actor,
@@ -128,8 +124,11 @@ function getDamageResult(
   return 0
 }
 
-function withDamage(actor: SActor, damage: number): SActor {
-  return withState(actor, { damage, alive: getHealth(actor) > damage ? 1 : 0 })
+function withDamage(actor: SActor, damage: number, alive: 0 | 1): SActor {
+  return withState(actor, {
+    damage,
+    alive,
+  })
 }
 
 function withEffects(
@@ -176,7 +175,7 @@ function getStats(actor: SActor): ActorStats {
     actor.stats
 
   const accuracyModifier = reflexes
-  const evasionModifier = reflexes
+  const evasionModifier = 0
   const healthModifier = body
 
   return {
@@ -191,7 +190,6 @@ function getStats(actor: SActor): ActorStats {
 }
 
 export {
-  getHealth,
   withState,
   withStats,
   withDamage,

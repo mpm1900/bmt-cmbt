@@ -2,7 +2,6 @@ import type { SActor } from '@/game/state'
 import { Atom } from 'lucide-react'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
-import { getHealth } from '@/game/actor'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 
@@ -46,7 +45,8 @@ function Actor({
           <ItemTitle>{actor.name}</ItemTitle>
           <Progress
             value={
-              ((getHealth(actor) - actor.state.damage) * 100) / getHealth(actor)
+              ((actor.stats.health - actor.state.damage) * 100) /
+              actor.stats.health
             }
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
@@ -94,12 +94,17 @@ function EnemyActor({
           ))}
         </div>
       </div>
-      <Button variant={active ? 'default' : 'secondary'} className="h-auto">
+      <Button
+        variant={active ? 'default' : 'secondary'}
+        className="h-auto"
+        disabled
+      >
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
           <Progress
             value={
-              ((getHealth(actor) - actor.state.damage) * 100) / getHealth(actor)
+              ((actor.stats.health - actor.state.damage) * 100) /
+              actor.stats.health
             }
             indicator={{ className: cn({ 'bg-background': active }) }}
           />

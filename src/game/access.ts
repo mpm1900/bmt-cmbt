@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
-import { withEffects } from './actor'
+import { getStats, withEffects } from './actor'
 import { getActorID, getPosition } from './player'
-import type { SAction, SActor, State, STrigger } from './state'
+import type { SAction, SActor, SEffectItem, State, STrigger } from './state'
 import type { ActionTarget } from './types/action'
 import type { DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Position } from './types/player'
@@ -19,6 +19,17 @@ function findActor(
   return state.actors.find((a) => a.ID === actorID)
 }
 
+function withStatEffects(actor: SActor, effects: Array<SEffectItem>) {
+  const [a, e] = withEffects(actor, effects)
+  return [
+    {
+      ...a,
+      stats: getStats(a),
+    },
+    e,
+  ] as const
+}
+
 function getActor(
   state: State,
   sourceID: string | undefined
@@ -27,7 +38,8 @@ function getActor(
   if (!source) return undefined
 
   const effects = [...state.effects, ...(state.battle?.effects ?? [])]
-  return withEffects(source, effects)[0]
+  let actor = withStatEffects(source, effects)[0]
+  return actor
 }
 
 function mapActor<T = unknown>(
@@ -112,6 +124,7 @@ function convertPositionToTargetContext(
 export {
   getTriggers,
   findActor,
+  withStatEffects,
   getActor,
   mapTarget,
   mapActor,
