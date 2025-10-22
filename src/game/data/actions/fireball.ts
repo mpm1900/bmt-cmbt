@@ -10,6 +10,7 @@ import {
   newDamage,
   withChanceEvents,
 } from '@/game/actor'
+import { getPosition } from '@/game/player'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50

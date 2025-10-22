@@ -185,4 +185,8 @@ function useGameState<T = unknown>(selector: Selector<T>) {
   return useStore(gameStateStore, useShallow(selector))
 }
 
-export { useGameState, gameStateStore }
+function useGamePhase() {
+  return useGameState((s) => s.state.battle?.phase)
+}
+
+export { useGameState, gameStateStore, useGamePhase }

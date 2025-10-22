@@ -1,7 +1,7 @@
 import { Actor, EnemyActor } from '@/components/battle/actor'
 import { PhaseController } from '@/components/battle/phase-controller'
 import { Button } from '@/components/ui/button'
-import { useGameState } from '@/hooks/useGameState'
+import { useGamePhase, useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
 import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
@@ -22,6 +22,8 @@ export const Route = createFileRoute('/battle')({
 
 function RouteComponent() {
   const { state } = useGameState((store) => store)
+  const phase = useGamePhase()
+
   const actors = state.actors.map((actor) =>
     withStatEffects(actor, state.effects)
   )
@@ -51,17 +53,15 @@ function RouteComponent() {
             <Badge variant="secondary">Turn {state.battle.turn}</Badge>
             <Separator orientation="vertical" />
             {BattlePhases.filter((p) => p !== 'pre' && p !== 'post').map(
-              (phase) => (
+              (p) => (
                 <Badge
-                  key={phase}
-                  variant={
-                    state.battle?.phase === phase ? 'secondary' : 'outline'
-                  }
+                  key={p}
+                  variant={p === phase ? 'secondary' : 'outline'}
                   className={cn({
-                    'text-muted-foreground': state.battle?.phase !== phase,
+                    'text-muted-foreground': p !== phase,
                   })}
                 >
-                  {phase}
+                  {p}
                 </Badge>
               )
             )}
@@ -94,10 +94,7 @@ function RouteComponent() {
                 key={actorID}
                 actor={actor}
                 effects={effectIDs}
-                active={
-                  state.battle?.phase === 'planning' &&
-                  activeActorID === actorID
-                }
+                active={phase === 'planning' && activeActorID === actorID}
                 onClick={() => {
                   setUI({
                     activeActionID: nextAvailableAction(actor, state)?.ID,
@@ -135,24 +132,21 @@ function RouteComponent() {
                 )
               const afx = actors.find((a) => a[0].ID === actorID)!
               const [actor, effectIDs] = afx
-              const planning = state.battle?.phase === 'planning'
-              const active = planning && activeActorID === actorID
+              const planning = phase === 'planning'
+              // const active = planning && activeActorID === actorID
               const done = !!state.actionQueue.find(
                 (a) => a.context.sourceID === actor.ID
               )
-              const status = active ? 'active' : done ? '...' : 'select action'
+              const status = done ? '...' : 'select action'
               return (
                 <Actor
                   key={actorID}
                   actor={actor}
                   effects={effectIDs}
                   status={planning ? status : '...'}
-                  active={
-                    state.battle?.phase === 'planning' &&
-                    activeActorID === actorID
-                  }
+                  active={phase === 'planning' && activeActorID === actorID}
                   disabled={
-                    state.battle?.phase !== 'planning' ||
+                    phase !== 'planning' ||
                     !!state.actionQueue.find(
                       (a) => a.context.sourceID === actor.ID
                     )
