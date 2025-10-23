@@ -5,7 +5,7 @@ import type {
   DeltaQueueItem,
   DeltaResolver,
 } from '@/game/types/delta'
-import type { SActor, SEffect, SMutation, State } from '@/game/state'
+import type { SAction, SActor, SEffect, SMutation, State } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import {
@@ -29,7 +29,12 @@ function resolveAction(
   resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>
 ): DeltaQueueItem<State, DeltaContext>[] {
   if (!resolver.validate(state, context)) {
+    // likely an AI action
     console.error('resolver validation failed', resolver, state, context)
+    const action = resolver as SAction
+    if (action.name) {
+      return [pushLogResolver(context, () => `${action.name} failed.`)]
+    }
     return []
   }
   const resolverContext = convertPositionToTargetContext(state, context)

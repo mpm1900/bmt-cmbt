@@ -44,7 +44,7 @@ const Katie = createActor('Katie', '__player__', {
 })
 const Hank = createActor('Hank', '__player__', {
   accuracy: 0,
-  body: 80,
+  body: 180,
   evasion: 100,
   health: 0,
   intelligence: 100,

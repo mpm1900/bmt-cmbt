@@ -46,7 +46,7 @@ function MainPhaseController({ next }: { next: () => void }) {
   useEffect(() => {
     const interval = setInterval(() => {
       next()
-    }, 500)
+    }, 100)
 
     return () => clearInterval(interval)
   }, [])

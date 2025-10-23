@@ -17,7 +17,8 @@ const SprayNPrayRenderer: ActionRenderer = {
   DescriptionShort: () => (
     <div>
       Deals {SprayNPrayDamage.element} damage {SPrayNPrayCount} times. Testing
-      out a much longer description name to see how lines break, hopefully well.
+      out a much longer description name to see how the lines break, hopefully
+      well.
     </div>
   ),
   Icons: () => (
@@ -35,13 +36,14 @@ const SprayNPrayRenderer: ActionRenderer = {
       </span>
     </div>
   ),
+  /*
   Critical: () => (
     <div>
       <span className="text-muted-foreground/80 text-xs">
         (x{SprayNPrayDamage.criticalModifier * 100}%) {SprayNPrayCritChance}%
       </span>
     </div>
-  ),
+  ),*/
 }
 
 export { SprayNPrayRenderer }
