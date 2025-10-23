@@ -20,7 +20,7 @@ type GameUIStore = GameUIState & {
 const gameUIStore = createStore<GameUIStore>((set, get) => {
   return {
     playerID: '__player__',
-    view: 'actions',
+    view: 'dialog',
     activeActorID: undefined,
     activeActionID: undefined,
     stagingContext: undefined,

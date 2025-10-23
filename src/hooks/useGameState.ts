@@ -78,7 +78,7 @@ const computer: Player = {
 
 const initialState: State = {
   players: [computer, player],
-  combat: createCombat(),
+  combat: undefined, //createCombat(),
   actors: [Max, Katie, Hank, Milo, Criminal],
   effects: [
     {

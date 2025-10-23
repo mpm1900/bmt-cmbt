@@ -8,7 +8,7 @@ import { v4 } from 'uuid'
 
 const Swap: SAction = {
   ID: v4(),
-  name: 'Activate',
+  name: 'Activate Actor',
   validate: () => true,
   targets: {
     unique: true,

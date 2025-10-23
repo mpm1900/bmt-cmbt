@@ -9,17 +9,26 @@ import { Button } from '../ui/button'
 import { useGameUI } from '@/hooks/useGameUI'
 import { PhaseEnd } from './phase-end'
 import { ScrollArea } from '../ui/scroll-area'
+import { PhasePre } from './phase-pre'
+import { useEffect, useRef, useState } from 'react'
 
 function CombatView() {
   const { state, next, nextPhase, deleteCombat } = useGameState(
     (store) => store
   )
   const { view, set } = useGameUI((s) => s)
+  const combatLogRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState('debug')
+
+  useEffect(() => {
+    if (combatLogRef.current) {
+      combatLogRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [state.combatLog.length, activeTab])
+
   if (!state.combat) return null
   if (view === 'dialog') return null
   const phase = state.combat.phase
-
-  if (phase === 'post') console.log('post', state)
 
   return (
     <div className="flex-1 flex items-center justify-center px-16">
@@ -29,7 +38,7 @@ function CombatView() {
           {phase === 'planning' && <PhasePlanning />}
           {phase === 'main' && <PhaseMain />}
           {phase === 'end' && <PhaseEnd />}
-          {phase === 'pre' && <PhaseEnd />}
+          {phase === 'pre' && <PhasePre />}
           {phase === 'post' && (
             <Card className="w-172">
               <CardHeader>
@@ -50,7 +59,7 @@ function CombatView() {
         </div>
         <div className="flex-1 max-w-80 h-108">
           <Card className="h-full">
-            <Tabs defaultValue="debug">
+            <Tabs defaultValue="debug" onValueChange={setActiveTab}>
               <CardHeader>
                 <TabsList>
                   <TabsTrigger value="debug">Debug</TabsTrigger>
@@ -78,6 +87,7 @@ function CombatView() {
                       {state.combatLog.map((log, index) => (
                         <li key={index}>{log}</li>
                       ))}
+                      <div ref={combatLogRef} />
                     </ul>
                   </ScrollArea>
                 </TabsContent>
