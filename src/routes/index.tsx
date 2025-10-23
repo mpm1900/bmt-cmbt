@@ -17,7 +17,7 @@ function App() {
 
   return (
     <div className="flex gap-4">
-      <Link to="/battle">to battle</Link>
+      <Link to="/battle">to battle d460048e-1012-42a7-a630-74620254ab07</Link>
     </div>
   )
 }

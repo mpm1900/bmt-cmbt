@@ -14,27 +14,28 @@ function DialogView() {
     <div className="flex-1 flex items-center justify-center px-16">
       <div className="flex flex-1 gap-4 items-center justify-center max-w-252">
         <Card>
-          <CardContent>
+          <CardContent className="flex flex-col gap-2">
             {messageLog.map((message) => (
               <p key={message.ID}>{message.text}</p>
             ))}
             <Separator />
             {activeNode && (
-              <div>
+              <div className="flex flex-col gap-2">
                 {activeNode.messages(state, context).map((message) => (
                   <p key={message.ID}>{message.text}</p>
                 ))}
                 <Separator />
-                {activeNode.options(state, context).map((option) => (
+                {activeNode.options(state, context).map((option, i) => (
                   <Button
                     key={option.ID}
+                    variant="secondary"
+                    className="w-full justify-start"
                     disabled={state.mutationQueue.length > 0}
                     onClick={() => resolveDialogOption(option)}
                   >
-                    {option.text}
+                    {i + 1}) {option.text}
                   </Button>
                 ))}
-                <Separator />
               </div>
             )}
           </CardContent>

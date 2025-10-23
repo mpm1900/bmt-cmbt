@@ -296,11 +296,11 @@ function startCombatResolver(combat: Combat, actors: Array<SActor>): SMutation {
     context: newContext({}),
     delta: {
       apply: (state, _context) => {
-        console.log('starting combat', state.actors.concat(actors))
         return {
           ...state,
-          combat,
           actors: state.actors.concat(actors),
+          combat,
+          combatLog: ['Combat started.'],
         }
       },
     },
