@@ -1,18 +1,14 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { flush, next, nextTurnPhase } from '@/game/next'
-import type { SAction, State } from '@/game/state'
+import { createCombat, type SAction, type State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
-import { newContext, pushAction, resolvePrompt } from '@/game/mutations'
+import { addActionToQueue, newContext, resolvePrompt } from '@/game/mutations'
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
-import {
-  HANDLE_DEATH,
-  HANDLE_TURN_END,
-  HANDLE_TURN_START,
-} from '@/game/data/effects/_system'
+import { withState } from '@/game/actor'
 
 type GameStateStore = {
   state: State
@@ -21,7 +17,8 @@ type GameStateStore = {
   next: () => void
   flush: () => void
   nextPhase: () => void
-  deleteBattle: () => void
+  createCombat: () => void
+  deleteCombat: () => void
 }
 
 const Max = createActor('Max', '__player__', {
@@ -81,27 +78,7 @@ const computer: Player = {
 
 const initialState: State = {
   players: [computer, player],
-  battle: {
-    turn: 0,
-    phase: 'pre',
-    effects: [
-      {
-        ID: v4(),
-        effect: HANDLE_DEATH,
-        context: newContext({}),
-      },
-      {
-        ID: v4(),
-        effect: HANDLE_TURN_START,
-        context: newContext({}),
-      },
-      {
-        ID: v4(),
-        effect: HANDLE_TURN_END,
-        context: newContext({}),
-      },
-    ],
-  },
+  combat: createCombat(),
   actors: [Max, Katie, Hank, Milo, Criminal],
   effects: [
     {
@@ -123,28 +100,9 @@ const initialState: State = {
 const gameStateStore = createStore<GameStateStore>((set) => ({
   state: initialState,
   pushAction: (action, context) => {
-    set(({ state }) => {
-      const existing = state.actionQueue.find(
-        (i) => i.context.sourceID === context.sourceID
-      )
-      if (!!existing) {
-        return { state }
-      }
-
-      state = pushAction(state, context, action)
-      const maxLength = state.players.reduce(
-        (len, player) => len + player.activeActorIDs.filter(Boolean).length,
-        0
-      )
-
-      if (state.actionQueue.length === maxLength) {
-        state = nextTurnPhase(state)
-      }
-
-      return {
-        state,
-      }
-    })
+    set(({ state }) => ({
+      state: addActionToQueue(state, context, action),
+    }))
   },
   resolvePrompt: (context) => {
     set(({ state }) => {
@@ -170,11 +128,26 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       },
     }))
   },
-  deleteBattle: () => {
+  createCombat: () => {
+    set(({ state }) => ({
+      state: next({
+        ...state,
+        combat: createCombat(),
+        players: state.players.map((p) => ({
+          ...p,
+          activeActorIDs: p.activeActorIDs.map((_) => null),
+        })),
+        actors: state.actors.map((a) =>
+          a.ID === Criminal.ID ? withState(a, { damage: 0, alive: 1 }) : a
+        ),
+      }),
+    }))
+  },
+  deleteCombat: () => {
     set(({ state }) => ({
       state: {
         ...state,
-        battle: undefined,
+        combat: undefined,
       },
     }))
   },
@@ -186,7 +159,7 @@ function useGameState<T = unknown>(selector: Selector<T>) {
 }
 
 function useGamePhase() {
-  return useGameState((s) => s.state.battle?.phase)
+  return useGameState((s) => s.state.combat?.phase)
 }
 
 export { useGameState, gameStateStore, useGamePhase }

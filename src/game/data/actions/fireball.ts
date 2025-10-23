@@ -1,7 +1,13 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-import { getActor, isActive, mapActor, mapTarget } from '@/game/access'
+import {
+  getActor,
+  isActive,
+  mapActor,
+  mapActorPosition,
+  mapTarget,
+} from '@/game/access'
 import { costResolver, damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 import {
@@ -10,6 +16,7 @@ import {
   newDamage,
   withChanceEvents,
 } from '@/game/actor'
+import { getPosition } from '@/game/player'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50
@@ -43,17 +50,20 @@ const Fireball: SAction = {
   },
   ai: {
     generateContexts: (state, context, action) => {
-      return action.targets.get(state, context).map((target) => ({
-        ...context,
-        sourceID: context.sourceID,
-        targetIDs: [target.target.ID],
-      }))
+      return action.targets.get(state, context).map((target) => {
+        const position = getPosition(state, target.target.ID)
+        return {
+          ...context,
+          sourceID: context.sourceID,
+          positions: position ? [position] : [],
+        }
+      })
     },
     compute: (state, context) => {
       return (
-        mapActor(
+        mapActorPosition(
           state,
-          context.targetIDs[0],
+          context.positions[0],
           (a) => a.stats.health - a.state.damage
         ) ?? 0
       )

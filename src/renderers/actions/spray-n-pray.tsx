@@ -3,7 +3,6 @@ import {
   SprayNPray,
   SprayNPrayAccuracy,
   SPrayNPrayCount,
-  SprayNPrayCritChance,
   SprayNPrayDamage,
 } from '@/game/data/actions/spray-n-pray'
 import { ELEMENT_ICONS, MAIN_STAT_ICONS } from '../icons'

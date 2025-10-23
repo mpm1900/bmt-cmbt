@@ -1,17 +1,17 @@
-import { Actor, EnemyActor } from '@/components/battle/actor'
-import { PhaseController } from '@/components/battle/phase-controller'
+import { Actor, EnemyActor } from '@/components/combat/actor'
+import { PhaseController } from '@/components/combat/phase-controller'
 import { Button } from '@/components/ui/button'
 import { useGamePhase, useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { createFileRoute } from '@tanstack/react-router'
-import { ActorSelectorGrid } from '@/components/battle/actor-selector-grid'
-import { BattleViewGrid } from '@/components/battle/battle-view-grid'
+import { ActorSelectorGrid } from '@/components/combat/actor-selector-grid'
+import { ViewSelector } from '@/components/view-selector'
 import { getStatus } from '@/game/next'
 import { Badge } from '@/components/ui/badge'
-import { BattlePhases } from '@/game/state'
+import { CombatPhases } from '@/game/state'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
-import { BattleView } from '@/components/battle/battle-view'
+import { CombatView } from '@/components/combat/combat-view'
 import { nextAvailableAction, withStatEffects } from '@/game/access'
 import { DialogView } from '@/components/dialog/dialog-view'
 import { cn } from '@/lib/utils'
@@ -47,12 +47,12 @@ function RouteComponent() {
           Dialog
         </Badge>
         <Badge variant="secondary">Combat</Badge>
-        {state.battle && (
+        {state.combat && (
           <>
             <Separator orientation="vertical" />
-            <Badge variant="secondary">Turn {state.battle.turn}</Badge>
+            <Badge variant="secondary">Turn {state.combat.turn}</Badge>
             <Separator orientation="vertical" />
-            {BattlePhases.filter((p) => p !== 'pre' && p !== 'post').map(
+            {CombatPhases.filter((p) => p !== 'pre' && p !== 'post').map(
               (p) => (
                 <Badge
                   key={p}
@@ -107,7 +107,7 @@ function RouteComponent() {
         </div>
       )}
 
-      {state.battle && <BattleView />}
+      {state.combat && <CombatView />}
       {view === 'dialog' && <DialogView />}
       {view === 'dialog' && <div className="flex-1 h-full" />}
 
@@ -166,7 +166,7 @@ function RouteComponent() {
           </div>
         </div>
         <div className="flex flex-col items-center justify-end px-4 gap-1">
-          <BattleViewGrid />
+          <ViewSelector />
           <span className="uppercase font-bold text-xs text-muted-foreground">
             Views
           </span>

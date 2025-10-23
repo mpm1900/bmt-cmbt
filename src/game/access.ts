@@ -8,7 +8,7 @@ import type { Position } from './types/player'
 import { newContext } from './mutations'
 
 function getTriggers(state: State): Array<STrigger> {
-  const effects = [...state.effects, ...(state.battle?.effects ?? [])]
+  const effects = [...state.effects, ...(state.combat?.effects ?? [])]
   return effects.flatMap(({ effect, context }) => effect.triggers(context))
 }
 
@@ -37,20 +37,29 @@ function getActor(
   const source = findActor(state, sourceID)
   if (!source) return undefined
 
-  const effects = [...state.effects, ...(state.battle?.effects ?? [])]
+  const effects = [...state.effects, ...(state.combat?.effects ?? [])]
   let actor = withStatEffects(source, effects)[0]
   return actor
 }
 
 function mapActor<T = unknown>(
   state: State,
-  sourceID: string,
+  actorID: string,
   fn: (a: SActor) => T
 ): T | undefined {
-  const source = getActor(state, sourceID)
-  if (!source) return undefined
+  const actor = getActor(state, actorID)
+  if (!actor) return undefined
 
-  return fn(source)
+  return fn(actor)
+}
+
+function mapActorPosition<T = unknown>(
+  state: State,
+  position: Position,
+  fn: (a: SActor) => T
+): T | undefined {
+  const actorID = getActorID(state, position)
+  return actorID ? mapActor(state, actorID, fn) : undefined
 }
 
 function mapTarget(
@@ -128,6 +137,7 @@ export {
   getActor,
   mapTarget,
   mapActor,
+  mapActorPosition,
   isActive,
   isValid,
   nextAvailableAction,

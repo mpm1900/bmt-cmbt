@@ -10,24 +10,27 @@ import { useGameUI } from '@/hooks/useGameUI'
 import { PhaseEnd } from './phase-end'
 import { ScrollArea } from '../ui/scroll-area'
 
-function BattleView() {
-  const { state, next, nextPhase, deleteBattle } = useGameState(
+function CombatView() {
+  const { state, next, nextPhase, deleteCombat } = useGameState(
     (store) => store
   )
   const { view, set } = useGameUI((s) => s)
-  if (!state.battle) return null
+  if (!state.combat) return null
   if (view === 'dialog') return null
+  const phase = state.combat.phase
+
+  if (phase === 'post') console.log('post', state)
 
   return (
     <div className="flex-1 flex items-center justify-center px-16">
       <div className="flex flex-1 gap-4 items-center justify-end max-w-252">
         <div>
-          {state.battle.phase === 'start' && <PhaseStart />}
-          {state.battle.phase === 'planning' && <PhasePlanning />}
-          {state.battle.phase === 'main' && <PhaseMain />}
-          {state.battle.phase === 'end' && <PhaseEnd />}
-          {state.battle.phase === 'pre' && <PhaseEnd />}
-          {state.battle.phase === 'post' && (
+          {phase === 'start' && <PhaseStart />}
+          {phase === 'planning' && <PhasePlanning />}
+          {phase === 'main' && <PhaseMain />}
+          {phase === 'end' && <PhaseEnd />}
+          {phase === 'pre' && <PhaseEnd />}
+          {phase === 'post' && (
             <Card className="w-172">
               <CardHeader>
                 <CardTitle>The battle is over</CardTitle>
@@ -36,7 +39,7 @@ function BattleView() {
                 <Button
                   onClick={() => {
                     set({ view: 'dialog' })
-                    deleteBattle()
+                    deleteCombat()
                   }}
                 >
                   continue
@@ -87,4 +90,4 @@ function BattleView() {
   )
 }
 
-export { BattleView }
+export { CombatView }

@@ -270,12 +270,12 @@ function nextTurnResolver(context: DeltaContext): SMutation {
     context,
     delta: {
       apply: (state: State, _context: DeltaContext) => {
-        if (!state.battle) return state
+        if (!state.combat) return state
         return {
           ...state,
-          battle: {
-            ...state.battle,
-            turn: state.battle.turn + 1,
+          combat: {
+            ...state.combat,
+            turn: state.combat.turn + 1,
           },
         }
       },

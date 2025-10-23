@@ -3,7 +3,7 @@ import { useGameUI } from '@/hooks/useGameUI'
 import { useEffect } from 'react'
 
 function PhaseController() {
-  const phase = useGameState((s) => s.state.battle?.phase)
+  const phase = useGameState((s) => s.state.combat?.phase)
   const next = useGameState((s) => s.next)
 
   switch (phase) {

@@ -1,49 +1,38 @@
 import { ArrowDownUp, Box, Component, MessageSquare } from 'lucide-react'
-import { ButtonGrid } from '../button-grid'
-import { Button } from '../ui/button'
+import { ButtonGrid } from './button-grid'
+import { Button } from './ui/button'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/swap'
 import { useGameState } from '@/hooks/useGameState'
 import { getActor, nextAvailableAction } from '@/game/access'
 
-function BattleViewGrid() {
+function ViewSelector() {
   const { set, view, activeActorID } = useGameUI((s) => s)
   const state = useGameState((s) => s.state)
-  const phase = state.battle?.phase
+  const phase = state.combat?.phase
   const actor = getActor(state, activeActorID)
-  const variant = (v: typeof view) => {
-    if (phase === 'planning' || v === 'dialog') {
-      return view === v ? 'default' : 'secondary'
-    }
+  const isPlanning = phase === 'planning'
 
-    return 'secondary'
-  }
-
-  const disabled = (v: typeof view) =>
-    v === 'dialog'
-      ? state.battle && state.battle?.phase !== 'planning'
-      : !state.battle ||
-        (state.battle.phase !== 'planning' && view !== 'dialog')
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
       <Button
-        variant={variant('dialog')}
+        variant={view === 'dialog' ? 'default' : 'secondary'}
         size="icon-lg"
-        disabled={disabled('dialog')}
+        disabled={!!state.combat}
         onClick={() => set({ view: 'dialog' })}
       >
         <MessageSquare />
       </Button>
       <Button
-        variant={variant('items')}
+        variant={view === 'items' ? 'default' : 'secondary'}
         size="icon-lg"
         onClick={() => set({ view: 'items' })}
-        disabled={disabled('items')}
+        disabled={!isPlanning}
       >
         <Box />
       </Button>
       <Button
-        variant={variant('actions')}
+        variant={view === 'actions' ? 'default' : 'secondary'}
         size="icon-lg"
         onClick={() =>
           set({
@@ -51,15 +40,15 @@ function BattleViewGrid() {
             activeActionID: nextAvailableAction(actor, state)?.ID,
           })
         }
-        disabled={disabled('actions')}
+        disabled={!isPlanning}
       >
         <Component />
       </Button>
       <Button
-        variant={variant('switch')}
+        variant={view === 'switch' ? 'default' : 'secondary'}
         size="icon-lg"
         onClick={() => set({ view: 'switch', activeActionID: Swap.ID })}
-        disabled={disabled('switch')}
+        disabled={!isPlanning}
       >
         <ArrowDownUp />
       </Button>
@@ -67,4 +56,4 @@ function BattleViewGrid() {
   )
 }
 
-export { BattleViewGrid }
+export { ViewSelector }

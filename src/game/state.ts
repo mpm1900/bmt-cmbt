@@ -12,6 +12,14 @@ import type { Actor } from './types/actor'
 import type { Modifier } from './types/modifier'
 import type { Player } from './types/player'
 
+import {
+  HANDLE_DEATH,
+  HANDLE_TURN_END,
+  HANDLE_TURN_START,
+} from './data/effects/_system'
+import { newContext } from './mutations'
+import { v4 } from 'uuid'
+
 type SActor = Actor<State>
 type SAction = Action<State, SActor>
 type SEffect = Effect<State, SActor>
@@ -22,7 +30,7 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 
-const BattlePhases = [
+const CombatPhases = [
   'pre',
   'start',
   'planning',
@@ -30,16 +38,17 @@ const BattlePhases = [
   'end',
   'post',
 ] as const
-type Battle = {
+
+type Combat = {
   turn: number
-  phase: (typeof BattlePhases)[number]
+  phase: (typeof CombatPhases)[number]
   effects: Array<SEffectItem>
 }
 
 type CombatLogItem = string
 
 type State = {
-  battle: Battle | undefined
+  combat: Combat | undefined
   players: Array<Player>
   actors: Array<SActor>
   effects: Array<SEffectItem>
@@ -50,9 +59,33 @@ type State = {
   combatLog: CombatLogItem[]
 }
 
-export { BattlePhases }
+function createCombat(): Combat {
+  return {
+    turn: 0,
+    phase: 'pre',
+    effects: [
+      {
+        ID: v4(),
+        effect: HANDLE_DEATH,
+        context: newContext({}),
+      },
+      {
+        ID: v4(),
+        effect: HANDLE_TURN_START,
+        context: newContext({}),
+      },
+      {
+        ID: v4(),
+        effect: HANDLE_TURN_END,
+        context: newContext({}),
+      },
+    ],
+  }
+}
+
+export { CombatPhases, createCombat }
 export type {
-  Battle,
+  Combat,
   State,
   SActor,
   SAction,

@@ -11,7 +11,7 @@ import {
 } from './mutations'
 import { pop, push } from './queue'
 import { resolveAction } from './resolvers'
-import type { State, Battle } from './state'
+import type { State, Combat } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
 function resolveTrigger(
@@ -75,7 +75,7 @@ function nextMutation(state: State): State {
   }
 }
 
-function nextPhase(phase: Battle['phase']): Battle['phase'] {
+function nextPhase(phase: Combat['phase']): Combat['phase'] {
   switch (phase) {
     case 'pre':
       return 'start'
@@ -93,8 +93,8 @@ function nextPhase(phase: Battle['phase']): Battle['phase'] {
 }
 
 function nextTurnPhase(state: State): State {
-  if (!state.battle) return state
-  const phase = nextPhase(state.battle.phase)
+  if (!state.combat) return state
+  const phase = nextPhase(state.combat.phase)
   state = withPhase(state, phase)
 
   if (phase === 'start') {
@@ -167,7 +167,7 @@ function next(state: State): State {
     return nextAction(state)
   }
 
-  if (state.battle) {
+  if (state.combat) {
     return nextTurnPhase(state)
   }
 
@@ -183,7 +183,7 @@ function hasNext(state: State): boolean {
 }
 
 function getStatus(state: State): 'pending' | 'running' | 'idle' {
-  if (state.battle?.phase === 'planning') {
+  if (state.combat?.phase === 'planning') {
     return 'pending'
   }
   if (hasNext(state)) {

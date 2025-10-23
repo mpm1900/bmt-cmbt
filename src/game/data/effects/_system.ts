@@ -47,7 +47,7 @@ const HANDLE_TURN_START: SEffect = {
           nextTurnResolver(tcontext),
           pushLogResolver(
             tcontext,
-            (state) => `Turn ${state.battle?.turn} started`
+            (state) => `Turn ${state.combat?.turn} started`
           ),
         ]
       },
@@ -71,7 +71,7 @@ const HANDLE_TURN_END: SEffect = {
           decrementEffectsResolver(),
           pushLogResolver(
             tcontext,
-            (state) => `Turn ${state.battle?.turn} ended`
+            (state) => `Turn ${state.combat?.turn} ended`
           ),
         ]
       },

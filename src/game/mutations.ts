@@ -3,7 +3,7 @@ import { findActor, getActor, getTriggers, isActive, mapActor } from './access'
 import { getDamageResult, withDamage } from './actor'
 import { enqueue, pop, push, sort } from './queue'
 import type {
-  Battle,
+  Combat,
   SAction,
   SActor,
   SEffect,
@@ -16,6 +16,7 @@ import type { Damage } from './types/damage'
 import { SwapWith } from './data/actions/swap'
 import type { Player } from './types/player'
 import { resolveAction } from './resolvers'
+import { nextTurnPhase } from './next'
 
 function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
   return {
@@ -67,6 +68,31 @@ function pushAction(
     ...state,
     actionQueue,
   }
+}
+
+function addActionToQueue(
+  state: State,
+  context: DeltaPositionContext,
+  action: SAction
+): State {
+  const existing = state.actionQueue.find(
+    (i) => i.context.sourceID === context.sourceID
+  )
+  if (!!existing) {
+    return state
+  }
+
+  state = pushAction(state, context, action)
+  const maxLength = state.players.reduce(
+    (len, player) => len + player.activeActorIDs.filter(Boolean).length,
+    0
+  )
+
+  if (state.actionQueue.length === maxLength) {
+    state = nextTurnPhase(state)
+  }
+
+  return state
 }
 
 function pushPrompt(
@@ -216,12 +242,12 @@ function mutateDamage(
   return state
 }
 
-function withPhase(state: State, phase: Battle['phase']): State {
-  if (!state.battle) return state
+function withPhase(state: State, phase: Combat['phase']): State {
+  if (!state.combat) return state
   return {
     ...state,
-    battle: {
-      ...state.battle,
+    combat: {
+      ...state.combat,
       phase,
     },
   }
@@ -272,6 +298,7 @@ export {
   decrementEffectItem,
   pushLogs,
   pushAction,
+  addActionToQueue,
   pushPrompt,
   resolvePrompt,
   handleTrigger,
