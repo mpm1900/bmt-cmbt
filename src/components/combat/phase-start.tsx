@@ -30,7 +30,7 @@ function PhaseStart() {
     )
   }
 
-  return null
+  return <div className="w-172" />
 }
 
 export { PhaseStart }
