@@ -2,7 +2,7 @@ import { ArrowDownUp, Box, Component, MessageSquare } from 'lucide-react'
 import { ButtonGrid } from './button-grid'
 import { Button } from './ui/button'
 import { useGameUI } from '@/hooks/useGameUI'
-import { Swap } from '@/game/data/actions/swap'
+import { Swap } from '@/game/data/actions/_system/swap'
 import { useGameState } from '@/hooks/useGameState'
 import { getActor, nextAvailableAction } from '@/game/access'
 

@@ -1,23 +1,28 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { flush, next, nextTurnPhase } from '@/game/next'
-import { createCombat, type SAction, type State } from '@/game/state'
+import type { SAction, SDialogOption, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { v4 } from 'uuid'
-import { addActionToQueue, newContext, resolvePrompt } from '@/game/mutations'
+import {
+  addActionToQueue,
+  newContext,
+  resolveDialogOption,
+  resolvePrompt,
+} from '@/game/mutations'
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
-import { withState } from '@/game/actor'
+import { IntroDialog } from '@/game/data/dialogs/intro'
 
 type GameStateStore = {
   state: State
   pushAction: (action: SAction, context: DeltaPositionContext) => void
   resolvePrompt: (context: DeltaPositionContext) => void
+  resolveDialogOption: (option: SDialogOption) => void
   next: () => void
   flush: () => void
   nextPhase: () => void
-  createCombat: () => void
   deleteCombat: () => void
 }
 
@@ -57,15 +62,6 @@ const Milo = createActor('Milo', '__player__', {
   reflexes: 100,
   speed: 100,
 })
-const Criminal = createActor('Criminal', '__ai__', {
-  accuracy: 0,
-  body: 100,
-  evasion: 0,
-  health: 0,
-  intelligence: 100,
-  reflexes: 100,
-  speed: 100,
-})
 
 const player: Player = {
   ID: '__player__',
@@ -79,7 +75,8 @@ const computer: Player = {
 const initialState: State = {
   players: [computer, player],
   combat: undefined, //createCombat(),
-  actors: [Max, Katie, Hank, Milo, Criminal],
+  dialog: IntroDialog,
+  actors: [Max, Katie, Hank, Milo],
   effects: [
     {
       ID: v4(),
@@ -95,6 +92,7 @@ const initialState: State = {
   triggerQueue: [],
   mutationQueue: [],
   combatLog: ['Combat started'],
+  messageLog: [],
 }
 
 const gameStateStore = createStore<GameStateStore>((set) => ({
@@ -128,26 +126,21 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       },
     }))
   },
-  createCombat: () => {
-    set(({ state }) => ({
-      state: next({
-        ...state,
-        combat: createCombat(),
-        players: state.players.map((p) => ({
-          ...p,
-          activeActorIDs: p.activeActorIDs.map((_) => null),
-        })),
-        actors: state.actors.map((a) =>
-          a.ID === Criminal.ID ? withState(a, { damage: 0, alive: 1 }) : a
-        ),
-      }),
-    }))
+  resolveDialogOption: (option) => {
+    set(({ state }) => {
+      state = resolveDialogOption(state, option.context, option)
+      return { state }
+    })
   },
   deleteCombat: () => {
     set(({ state }) => ({
       state: {
         ...state,
         combat: undefined,
+        // TODO: hard-coded ai player ID
+        actors: state.actors.filter(
+          (a) => a.playerID !== '__ai__' && a.state.alive
+        ),
       },
     }))
   },

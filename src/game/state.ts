@@ -19,6 +19,13 @@ import {
 } from './data/effects/_system'
 import { newContext } from './mutations'
 import { v4 } from 'uuid'
+import type {
+  Dialog,
+  DialogCheck,
+  DialogMessage,
+  DialogNode,
+  DialogOption,
+} from './types/dialog'
 
 type SActor = Actor<State>
 type SAction = Action<State, SActor>
@@ -29,6 +36,11 @@ type SMutation = DeltaQueueItem<State, DeltaContext>
 type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
+type SDialog = Dialog<State, SActor>
+type SDialogNode = DialogNode<State, SActor>
+type SDialogOption = DialogOption<State, SActor>
+type SDialogMessage = DialogMessage
+type SDialogCheck = DialogCheck<State>
 
 const CombatPhases = [
   'pre',
@@ -49,6 +61,7 @@ type CombatLogItem = string
 
 type State = {
   combat: Combat | undefined
+  dialog: SDialog
   players: Array<Player>
   actors: Array<SActor>
   effects: Array<SEffectItem>
@@ -56,7 +69,8 @@ type State = {
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State, DeltaContext>
-  combatLog: CombatLogItem[]
+  combatLog: Array<CombatLogItem>
+  messageLog: Array<SDialogMessage>
 }
 
 function createCombat(): Combat {
@@ -97,4 +111,9 @@ export type {
   STrigger,
   STriggerItem,
   CombatLogItem,
+  SDialog,
+  SDialogNode,
+  SDialogOption,
+  SDialogMessage,
+  SDialogCheck,
 }

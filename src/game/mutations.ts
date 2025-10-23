@@ -6,6 +6,7 @@ import type {
   Combat,
   SAction,
   SActor,
+  SDialogOption,
   SEffect,
   SEffectItem,
   State,
@@ -13,7 +14,7 @@ import type {
 } from './state'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Damage } from './types/damage'
-import { SwapWith } from './data/actions/swap'
+import { SwapWith } from './data/actions/_system/swap'
 import type { Player } from './types/player'
 import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
@@ -292,6 +293,19 @@ function validateState(state: State): [State, boolean] {
   return [state, valid]
 }
 
+function resolveDialogOption(
+  state: State,
+  context: DeltaPositionContext,
+  option: SDialogOption
+) {
+  const mutations = resolveAction(state, context, option.action)
+  const mutationQueue = push(state.mutationQueue, mutations)
+  return {
+    ...state,
+    mutationQueue,
+  }
+}
+
 export {
   newContext,
   decrementEffect,
@@ -309,4 +323,5 @@ export {
   mutateDamage,
   withPhase,
   validateState,
+  resolveDialogOption,
 }

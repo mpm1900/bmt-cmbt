@@ -15,6 +15,7 @@ import { CombatView } from '@/components/combat/combat-view'
 import { nextAvailableAction, withStatEffects } from '@/game/access'
 import { DialogView } from '@/components/dialog/dialog-view'
 import { cn } from '@/lib/utils'
+import { DialogController } from '@/components/dialog/dialog-controller'
 
 export const Route = createFileRoute('/battle')({
   component: RouteComponent,
@@ -71,6 +72,7 @@ function RouteComponent() {
         {getStatus(state) === 'running' && <Spinner />}
       </div>
       <PhaseController />
+      <DialogController />
       {ai && (
         <div className="w-full flex flex-row-reverse justify-start items-end p-4 gap-2">
           {ai.activeActorIDs.map((actorID, i) => {

@@ -5,7 +5,14 @@ import type {
   DeltaQueueItem,
   DeltaResolver,
 } from '@/game/types/delta'
-import type { SAction, SActor, SEffect, SMutation, State } from '@/game/state'
+import type {
+  Combat,
+  SAction,
+  SActor,
+  SEffect,
+  SMutation,
+  State,
+} from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
 import {
@@ -269,7 +276,7 @@ function nextTurnResolver(context: DeltaContext): SMutation {
     ID: v4(),
     context,
     delta: {
-      apply: (state: State, _context: DeltaContext) => {
+      apply: (state, _context) => {
         if (!state.combat) return state
         return {
           ...state,
@@ -277,6 +284,23 @@ function nextTurnResolver(context: DeltaContext): SMutation {
             ...state.combat,
             turn: state.combat.turn + 1,
           },
+        }
+      },
+    },
+  }
+}
+
+function startCombatResolver(combat: Combat, actors: Array<SActor>): SMutation {
+  return {
+    ID: v4(),
+    context: newContext({}),
+    delta: {
+      apply: (state, _context) => {
+        console.log('starting combat', state.actors.concat(actors))
+        return {
+          ...state,
+          combat,
+          actors: state.actors.concat(actors),
         }
       },
     },
@@ -306,4 +330,5 @@ export {
   nextTurnResolver,
   activateActorResolver,
   deactivateActorResolver,
+  startCombatResolver,
 }

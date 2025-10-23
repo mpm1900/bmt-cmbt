@@ -26,6 +26,10 @@ function CombatView() {
     }
   }, [state.combatLog.length, activeTab])
 
+  useEffect(() => {
+    set({ view: 'actions' })
+  }, [])
+
   if (!state.combat) return null
   if (view === 'dialog') return null
   const phase = state.combat.phase

@@ -3,7 +3,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { ActionPlanningBreadcrumbs } from './action-planning-breadcrumbs'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
-import { Swap } from '@/game/data/actions/swap'
+import { Swap } from '@/game/data/actions/_system/swap'
 
 function PhasePlanning() {
   const { state, pushAction } = useGameState((store) => store)
