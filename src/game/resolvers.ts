@@ -9,6 +9,7 @@ import type {
   Combat,
   SAction,
   SActor,
+  SDialogMessage,
   SEffect,
   SMutation,
   State,
@@ -73,6 +74,24 @@ function pushLogResolver(
 ): SMutation {
   const delta: Delta<State> = {
     apply: (state, context) => pushLogs(state, [logFn(state, context)]),
+  }
+
+  return {
+    ID: v4(),
+    delta,
+    context,
+  }
+}
+
+function pushMessagesResolver(
+  context: DeltaContext,
+  messages: SDialogMessage[]
+): SMutation {
+  const delta: Delta<State> = {
+    apply: (state, context) => ({
+      ...state,
+      messageLog: state.messageLog.concat(messages),
+    }),
   }
 
   return {
@@ -307,6 +326,28 @@ function startCombatResolver(combat: Combat, actors: Array<SActor>): SMutation {
   }
 }
 
+function navigateDialogResolver(
+  nodeID: string,
+  messages: SDialogMessage[]
+): SMutation {
+  return {
+    ID: v4(),
+    context: newContext({}),
+    delta: {
+      apply: (state, _context) => {
+        return {
+          ...state,
+          messageLog: state.messageLog.concat(messages),
+          dialog: {
+            ...state.dialog,
+            activeNodeID: nodeID,
+          },
+        }
+      },
+    },
+  }
+}
+
 function emptyResolver(context: DeltaContext): SMutation {
   return {
     ID: v4(),
@@ -321,6 +362,7 @@ export {
   emptyResolver,
   resolveAction,
   costResolver,
+  pushMessagesResolver,
   pushLogResolver,
   mutatePlayerResolver,
   mutateActorResolver,
@@ -331,4 +373,5 @@ export {
   activateActorResolver,
   deactivateActorResolver,
   startCombatResolver,
+  navigateDialogResolver,
 }

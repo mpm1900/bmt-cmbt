@@ -45,7 +45,7 @@ function DialogOptionDynamic({
                 'text-foreground': open,
               })}
             >
-              Select Action Targets
+              Select Action Target
             </InputGroupAddon>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">

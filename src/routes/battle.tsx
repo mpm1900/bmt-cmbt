@@ -111,7 +111,6 @@ function RouteComponent() {
 
       {state.combat && <CombatView />}
       {view === 'dialog' && <DialogView />}
-      {view === 'dialog' && <div className="flex-1 h-full" />}
 
       <div className="flex justify-start gap-2 m-2">
         <div className="flex flex-col items-center px-4 gap-1">

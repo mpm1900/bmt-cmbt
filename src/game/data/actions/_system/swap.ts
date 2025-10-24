@@ -16,7 +16,9 @@ const Swap: SAction = {
   name: 'Activate Actor',
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
-    return hasActiveActorSpace(state, context.playerID) && targets.length > 0
+    const hasSpace =
+      !!context.sourceID || hasActiveActorSpace(state, context.playerID)
+    return hasSpace && targets.length > 0
   },
   targets: {
     unique: true,

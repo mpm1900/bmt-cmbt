@@ -1,4 +1,4 @@
-import type { Action } from './action'
+import type { ActionQueueItem } from './action'
 import type { DeltaPositionContext, DeltaQueueItem } from './delta'
 
 type DialogCheck<T> = {
@@ -14,26 +14,20 @@ type DialogMessage = {
   text: string
 }
 
-type StaticDialogOption<T, A> = {
-  ID: string
+type StaticDialogOption<T, A> = ActionQueueItem<T, A> & {
   type: 'static'
   text: string
   icons: string
-  action: Action<T, A>
-  context: DeltaPositionContext
 }
 
 type DynamicDialogOptionContext = DeltaPositionContext & {
   text: string
 }
 
-type DynamicDialogOption<T, A> = {
-  ID: string
+type DynamicDialogOption<T, A> = ActionQueueItem<T, A> & {
   type: 'dynamic'
   text: string
   icons: string
-  action: Action<T, A>
-  context: DeltaPositionContext
   options: Array<DynamicDialogOptionContext>
 }
 

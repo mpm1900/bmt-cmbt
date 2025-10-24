@@ -5,6 +5,7 @@ import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Swap } from '../actions/_system/swap'
 import { getAliveInactiveActors } from '@/game/access'
+import { NavigateDialog } from '../actions/_system/navigate-dialog'
 
 const Criminal = () =>
   createActor('Criminal', '__ai__', {
@@ -58,13 +59,52 @@ const IntroNode0: SDialogNode = {
         }
       }),
     },
+    {
+      ID: v4(),
+      type: 'static',
+      text: 'Go to other node',
+      icons: '',
+      context,
+      action: NavigateDialog(
+        IntroNode1.ID,
+        IntroNode0.messages(state, context)
+      ),
+    },
+  ],
+  post: () => [],
+}
+
+const IntroNode1: SDialogNode = {
+  ID: v4(),
+  status: 'pre',
+  pre: () => [],
+  messages: () => [
+    {
+      ID: v4(),
+      type: '',
+      actorID: '',
+      text: 'This is a second dialog node!',
+    },
+  ],
+  options: (state, context) => [
+    {
+      ID: v4(),
+      type: 'static',
+      text: 'Go back',
+      icons: '',
+      context,
+      action: NavigateDialog(
+        IntroNode0.ID,
+        IntroNode1.messages(state, context)
+      ),
+    },
   ],
   post: () => [],
 }
 
 const IntroDialog: SDialog = {
   ID: v4(),
-  nodes: [IntroNode0],
+  nodes: [IntroNode0, IntroNode1],
   activeNodeID: IntroNode0.ID,
 }
 

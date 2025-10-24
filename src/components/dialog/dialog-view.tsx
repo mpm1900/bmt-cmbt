@@ -5,6 +5,7 @@ import { newContext } from '@/game/mutations'
 import { DialogOptionStatic } from './dialog-option-static'
 import { DialogOptionDynamic } from './dialog-option-dynamic'
 import { useGameUI } from '@/hooks/useGameUI'
+import { ScrollArea } from '../ui/scroll-area'
 
 function DialogView() {
   const { state } = useGameState((s) => s)
@@ -16,11 +17,13 @@ function DialogView() {
   return (
     <div className="flex-1 flex items-center justify-center px-16">
       <div className="flex flex-1 gap-4 items-center justify-center max-w-252">
-        <Card>
+        <Card className="h-108">
           <CardContent className="flex flex-col gap-2">
-            {messageLog.map((message) => (
-              <p key={message.ID}>{message.text}</p>
-            ))}
+            <ScrollArea className="flex-1 max-h-50">
+              {messageLog.map((message) => (
+                <p key={message.ID}>{message.text}</p>
+              ))}
+            </ScrollArea>
             <Separator />
             {activeNode && (
               <div className="flex flex-col gap-2">
