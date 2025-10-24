@@ -1,5 +1,12 @@
 import { v4 } from 'uuid'
-import { findActor, getActor, getTriggers, isActive, mapActor } from './access'
+import {
+  findActor,
+  getActor,
+  getAliveInactiveActors,
+  getTriggers,
+  isActive,
+  mapActor,
+} from './access'
 import { getDamageResult, withDamage } from './actor'
 import { enqueue, pop, push, sort } from './queue'
 import type {
@@ -217,13 +224,13 @@ function mutateDamage(
   state = mutateActor(state, context, {
     filter: (ac) => context.targetIDs.includes(ac.ID),
     apply: (ac) => {
-      const a = getActor(state, context.sourceID)
-      const b = getActor(state, ac.ID)
-      if (!a || !b) return ac
-      const damageAmount = getDamageResult(a, b, damage)
+      const source = getActor(state, context.sourceID)
+      const target = getActor(state, ac.ID)
+      if (!source || !target) return ac
+      const damageAmount = getDamageResult(source, target, damage)
       committed += damageAmount
       const newDamage = ac.state.damage + damageAmount
-      return withDamage(ac, newDamage, newDamage < a.stats.health ? 1 : 0)
+      return withDamage(ac, newDamage, newDamage < target.stats.health ? 1 : 0)
     },
   })
 
@@ -257,11 +264,9 @@ function withPhase(state: State, phase: Combat['phase']): State {
 function validateState(state: State): [State, boolean] {
   let valid = true
   state.players.forEach((player) => {
-    const inactiveLiveActors = state.actors.filter(
-      (a) =>
-        a.playerID === player.ID &&
-        !player.activeActorIDs.includes(a.ID) &&
-        a.state.alive
+    const inactiveLiveActors = getAliveInactiveActors(
+      state,
+      newContext({ playerID: player.ID })
     )
     if (
       player.activeActorIDs.some((id) => id === null) &&

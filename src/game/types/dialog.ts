@@ -14,13 +14,30 @@ type DialogMessage = {
   text: string
 }
 
-type DialogOption<T, A> = {
+type StaticDialogOption<T, A> = {
   ID: string
+  type: 'static'
   text: string
   icons: string
   action: Action<T, A>
   context: DeltaPositionContext
 }
+
+type DynamicDialogOptionContext = DeltaPositionContext & {
+  text: string
+}
+
+type DynamicDialogOption<T, A> = {
+  ID: string
+  type: 'dynamic'
+  text: string
+  icons: string
+  action: Action<T, A>
+  context: DeltaPositionContext
+  options: Array<DynamicDialogOptionContext>
+}
+
+type DialogOption<T, A> = StaticDialogOption<T, A> | DynamicDialogOption<T, A>
 
 type DialogNode<T, A> = {
   ID: string
@@ -40,4 +57,11 @@ type Dialog<T, A> = {
   activeNodeID: string | undefined
 }
 
-export type { DialogCheck, DialogMessage, DialogOption, DialogNode, Dialog }
+export type {
+  DialogCheck,
+  DialogMessage,
+  DynamicDialogOption,
+  DialogOption,
+  DialogNode,
+  Dialog,
+}

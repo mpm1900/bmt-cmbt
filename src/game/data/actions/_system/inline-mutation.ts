@@ -1,7 +1,10 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-function InlineMutation(mutation: SAction['resolve']): SAction {
+function InlineMutation(
+  resolve: SAction['resolve'],
+  validate: SAction['validate'] = () => true
+): SAction {
   return {
     ID: v4(),
     name: '',
@@ -11,8 +14,8 @@ function InlineMutation(mutation: SAction['resolve']): SAction {
       validate: () => true,
       unique: false,
     },
-    validate: () => true,
-    resolve: mutation,
+    validate,
+    resolve,
   }
 }
 

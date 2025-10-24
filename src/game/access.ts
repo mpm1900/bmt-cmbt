@@ -77,6 +77,34 @@ function isActive(state: State, actorID: string) {
   return state.players.some((player) => player.activeActorIDs.includes(actorID))
 }
 
+function getAliveInactiveActors(
+  state: State,
+  context: DeltaContext,
+  fn?: (actor: SActor) => boolean
+): Array<SActor> {
+  return state.actors.filter(
+    (actor) =>
+      context.playerID === actor.playerID &&
+      !isActive(state, actor.ID) &&
+      actor.state.alive &&
+      (fn ? fn(actor) : true)
+  )
+}
+
+function getAliveActiveActors(
+  state: State,
+  context: DeltaContext,
+  fn?: (actor: SActor) => boolean
+): Array<SActor> {
+  return state.actors.filter(
+    (actor) =>
+      context.playerID === actor.playerID &&
+      isActive(state, actor.ID) &&
+      actor.state.alive &&
+      (fn ? fn(actor) : true)
+  )
+}
+
 function isValid(
   action: SAction | undefined,
   state: State,
@@ -93,6 +121,20 @@ function nextAvailableAction(
   return actor?.actions.find((a) =>
     isValid(a, state, newContext({ sourceID: actor.ID }))
   )
+}
+
+function getActiveActorIDs(
+  state: State,
+  playerID: string
+): Array<string | null> {
+  return (
+    state.players.find((player) => player.ID === playerID)?.activeActorIDs || []
+  )
+}
+
+function hasActiveActorSpace(state: State, playerID: string): boolean {
+  const activeActorIDs = getActiveActorIDs(state, playerID)
+  return activeActorIDs.some((id) => id === null)
 }
 
 function convertTargetToPositionContext(
@@ -134,6 +176,8 @@ export {
   getTriggers,
   findActor,
   withStatEffects,
+  getAliveInactiveActors,
+  getAliveActiveActors,
   getActor,
   mapTarget,
   mapActor,
@@ -141,6 +185,8 @@ export {
   isActive,
   isValid,
   nextAvailableAction,
+  getActiveActorIDs,
+  hasActiveActorSpace,
   convertPositionToTargetContext,
   convertTargetToPositionContext,
 }

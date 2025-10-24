@@ -60,7 +60,9 @@ function Actor({
               }),
             }}
           />
-          <pre>{actor.stats.body}</pre>
+          <pre>
+            ({actor.stats.health - actor.state.damage}/{actor.stats.health})
+          </pre>
         </ItemContent>
       </Button>
       <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center">
@@ -108,6 +110,9 @@ function EnemyActor({
             }
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
+          <pre>
+            ({actor.stats.health - actor.state.damage}/{actor.stats.health})
+          </pre>
         </ItemContent>
       </Button>
     </div>
