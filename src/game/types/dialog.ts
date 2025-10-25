@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { ActionQueueItem } from './action'
 import type { DeltaPositionContext, DeltaQueueItem } from './delta'
 
@@ -9,15 +10,14 @@ type DialogCheck<T> = {
 
 type DialogMessage = {
   ID: string
-  type: ''
   actorID: string | undefined
-  text: string
+  text: ReactNode
 }
 
 type StaticDialogOption<T, A> = ActionQueueItem<T, A> & {
   type: 'static'
-  text: string
-  icons: string
+  text: ReactNode
+  icons: ReactNode
 }
 
 type DynamicDialogOptionContext = DeltaPositionContext & {
@@ -26,8 +26,8 @@ type DynamicDialogOptionContext = DeltaPositionContext & {
 
 type DynamicDialogOption<T, A> = ActionQueueItem<T, A> & {
   type: 'dynamic'
-  text: string
-  icons: string
+  text: ReactNode
+  icons: ReactNode
   options: Array<DynamicDialogOptionContext>
 }
 
@@ -55,6 +55,7 @@ export type {
   DialogCheck,
   DialogMessage,
   DynamicDialogOption,
+  StaticDialogOption,
   DialogOption,
   DialogNode,
   Dialog,

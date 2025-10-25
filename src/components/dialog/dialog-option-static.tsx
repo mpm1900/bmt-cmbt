@@ -34,7 +34,7 @@ function DialogOptionStatic({
         )}
         {...props}
       >
-        <InputGroupAddon>{index + 1})</InputGroupAddon>
+        <InputGroupAddon>{index + 1}</InputGroupAddon>
         <InputGroupAddon
           className={cn({ 'group-hover:text-foreground': !disabled })}
         >

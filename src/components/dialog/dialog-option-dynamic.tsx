@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { InputGroup, InputGroupAddon } from '../ui/input-group'
-import { ArrowBigRight } from 'lucide-react'
 import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 
@@ -25,6 +24,7 @@ function DialogOptionDynamic({
   disabled: boolean
   option: DynamicDialogOption<State, SActor>
 }) {
+  const state = useGameState((s) => s.state)
   const [open, setOpen] = useState(false)
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
   return (
@@ -36,7 +36,7 @@ function DialogOptionDynamic({
     >
       <InputGroup
         className={cn(
-          'group justify-start px-0 border-none',
+          'group justify-start px-0 border-none w-full',
           {
             'dark:hover:bg-input/50 select-none [&>*]:cursor-default':
               !disabled,
@@ -48,13 +48,14 @@ function DialogOptionDynamic({
         )}
         {...props}
       >
-        <InputGroupAddon>{index + 1})</InputGroupAddon>
+        <InputGroupAddon>{index + 1}</InputGroupAddon>
         <InputGroupAddon>{option.text}</InputGroupAddon>
         {!disabled && (
           <InputGroupAddon>
             <MdDoubleArrow />
           </InputGroupAddon>
         )}
+
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
             {!disabled && (
@@ -84,6 +85,9 @@ function DialogOptionDynamic({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <InputGroupAddon className="hidden group-hover:block absolute right-3 opacity-50">
+          (0 / {option.action.targets.max(state, option.context)})
+        </InputGroupAddon>
       </InputGroup>
     </Button>
   )

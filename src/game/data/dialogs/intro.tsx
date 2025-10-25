@@ -6,6 +6,7 @@ import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
 import { getAliveActiveActors, getAliveInactiveActors } from '@/game/access'
 import { NavigateDialog } from '../actions/_system/navigate-dialog'
+import { createStaticNavigationOption } from '@/game/dialog'
 
 const Criminal = () =>
   createActor('Criminal', '__ai__', {
@@ -25,13 +26,11 @@ const IntroNode0: SDialogNode = {
   messages: () => [
     {
       ID: v4(),
-      type: '',
       actorID: '',
       text: 'Game start.',
     },
     {
       ID: v4(),
-      type: '',
       actorID: '',
       text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
     },
@@ -40,7 +39,7 @@ const IntroNode0: SDialogNode = {
     {
       ID: v4(),
       type: 'static',
-      text: 'Start Combat',
+      text: <em className="font-light">Start Combat</em>,
       icons: '',
       context,
       action: InlineMutation(() => [
@@ -52,7 +51,7 @@ const IntroNode0: SDialogNode = {
     {
       ID: v4(),
       type: 'dynamic',
-      text: 'Activate Actor',
+      text: <em className="font-light">Activate Actor</em>,
       icons: '',
       context,
       action: Activate,
@@ -70,7 +69,7 @@ const IntroNode0: SDialogNode = {
     {
       ID: v4(),
       type: 'dynamic',
-      text: 'Deactivate Actor',
+      text: <em className="font-light">Deactivate Actor</em>,
       icons: '',
       context,
       action: Deactivate,
@@ -85,24 +84,22 @@ const IntroNode0: SDialogNode = {
         }
       }),
     },
-    {
-      ID: v4(),
-      type: 'static',
-      text: 'Go to other node',
-      icons: '',
-      context,
-      action: NavigateDialog(
-        IntroNode1.ID,
-        IntroNode0.messages(state, context).concat([
-          {
-            ID: v4(),
-            type: '',
-            actorID: '',
-            text: 'Go to other node',
-          },
-        ])
-      ),
-    },
+    createStaticNavigationOption(
+      {
+        text: <em className="font-light">Go to other node</em>,
+      },
+      IntroNode1.ID,
+      IntroNode0.messages(state, context)
+    ),
+    createStaticNavigationOption(
+      {
+        text: (
+          <span className="font-semibold">"Go to other node but a quote"</span>
+        ),
+      },
+      IntroNode1.ID,
+      IntroNode0.messages(state, context)
+    ),
   ],
   post: () => [],
 }
@@ -123,7 +120,7 @@ const IntroNode1: SDialogNode = {
     {
       ID: v4(),
       type: 'static',
-      text: 'Go back',
+      text: <em>Go back</em>,
       icons: '',
       context,
       action: NavigateDialog(
@@ -131,9 +128,8 @@ const IntroNode1: SDialogNode = {
         IntroNode1.messages(state, context).concat([
           {
             ID: v4(),
-            type: '',
             actorID: '',
-            text: 'Go back',
+            text: <em>Go back</em>,
           },
         ])
       ),
