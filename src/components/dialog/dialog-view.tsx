@@ -1,8 +1,8 @@
 import { useGameState } from '@/hooks/useGameState'
 import { Card, CardContent } from '../ui/card'
 import { newContext } from '@/game/mutations'
-import { DialogOptionStatic } from './dialog-option-static'
-import { DialogOptionDynamic } from './dialog-option-dynamic'
+import { DialogOptionNoTarget } from './dialog-option-no-target'
+import { DialogOptionSingleTarget } from './dialog-option-single-target'
 import { useGameUI } from '@/hooks/useGameUI'
 import { ScrollArea } from '../ui/scroll-area'
 import { ButtonGroup } from '../ui/button-group'
@@ -45,15 +45,15 @@ function DialogView() {
                   {activeNode
                     .options(state, context)
                     .map((option, i) =>
-                      option.type === 'static' ? (
-                        <DialogOptionStatic
+                      option.type === 'no-target' ? (
+                        <DialogOptionNoTarget
                           key={option.ID}
                           index={i}
                           option={option}
                           disabled={!option.action.validate(state, context)}
                         />
                       ) : (
-                        <DialogOptionDynamic
+                        <DialogOptionSingleTarget
                           key={option.ID}
                           index={i}
                           option={option}

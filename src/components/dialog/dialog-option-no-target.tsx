@@ -5,7 +5,7 @@ import { useGameState } from '@/hooks/useGameState'
 import type { SDialogOption } from '@/game/state'
 import { InputGroup, InputGroupAddon } from '../ui/input-group'
 
-function DialogOptionStatic({
+function DialogOptionNoTarget({
   className,
   index,
   disabled,
@@ -45,4 +45,4 @@ function DialogOptionStatic({
   )
 }
 
-export { DialogOptionStatic }
+export { DialogOptionNoTarget }

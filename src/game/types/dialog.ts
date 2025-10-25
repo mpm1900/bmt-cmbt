@@ -14,24 +14,26 @@ type DialogMessage = {
   text: ReactNode
 }
 
-type StaticDialogOption<T, A> = ActionQueueItem<T, A> & {
-  type: 'static'
+type NoTargetDialogOption<T, A> = ActionQueueItem<T, A> & {
+  type: 'no-target'
   text: ReactNode
   icons: ReactNode
 }
 
-type DynamicDialogOptionContext = DeltaPositionContext & {
+type DialogOptionContext = DeltaPositionContext & {
   text: string
 }
 
-type DynamicDialogOption<T, A> = ActionQueueItem<T, A> & {
-  type: 'dynamic'
+type SingleTargetDialogOption<T, A> = ActionQueueItem<T, A> & {
+  type: 'single-target'
   text: ReactNode
   icons: ReactNode
-  options: Array<DynamicDialogOptionContext>
+  options: Array<DialogOptionContext>
 }
 
-type DialogOption<T, A> = StaticDialogOption<T, A> | DynamicDialogOption<T, A>
+type DialogOption<T, A> =
+  | NoTargetDialogOption<T, A>
+  | SingleTargetDialogOption<T, A>
 
 type DialogNode<T, A> = {
   ID: string
@@ -54,8 +56,8 @@ type Dialog<T, A> = {
 export type {
   DialogCheck,
   DialogMessage,
-  DynamicDialogOption,
-  StaticDialogOption,
+  SingleTargetDialogOption,
+  NoTargetDialogOption,
   DialogOption,
   DialogNode,
   Dialog,

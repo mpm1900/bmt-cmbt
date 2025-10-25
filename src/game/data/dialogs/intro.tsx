@@ -4,7 +4,7 @@ import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
-import { getAliveActiveActors, getAliveInactiveActors } from '@/game/access'
+import { getAliveInactiveActors } from '@/game/access'
 import { NavigateDialog } from '../actions/_system/navigate-dialog'
 import { createStaticNavigationOption } from '@/game/dialog'
 
@@ -38,7 +38,7 @@ const IntroNode0: SDialogNode = {
   options: (state, context) => [
     {
       ID: v4(),
-      type: 'static',
+      type: 'no-target',
       text: <em className="font-light">Start Combat</em>,
       icons: '',
       context,
@@ -50,7 +50,7 @@ const IntroNode0: SDialogNode = {
     },
     {
       ID: v4(),
-      type: 'dynamic',
+      type: 'single-target',
       text: <em className="font-light">Activate Actor</em>,
       icons: '',
       context,
@@ -68,18 +68,18 @@ const IntroNode0: SDialogNode = {
     },
     {
       ID: v4(),
-      type: 'dynamic',
+      type: 'single-target',
       text: <em className="font-light">Deactivate Actor</em>,
       icons: '',
       context,
       action: Deactivate,
-      options: getAliveActiveActors(state, context).map((a) => {
+      options: Deactivate.targets.get(state, context).map(({ target }) => {
         return {
-          ID: a.ID,
-          text: a.name,
-          playerID: a.playerID,
+          ID: target.ID,
+          text: target.name,
+          playerID: target.playerID,
           sourceID: '',
-          targetIDs: [a.ID],
+          targetIDs: [target.ID],
           positions: [],
         }
       }),
@@ -119,7 +119,7 @@ const IntroNode1: SDialogNode = {
   options: (state, context) => [
     {
       ID: v4(),
-      type: 'static',
+      type: 'no-target',
       text: <em>Go back</em>,
       icons: '',
       context,

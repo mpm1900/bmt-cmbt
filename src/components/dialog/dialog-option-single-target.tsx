@@ -1,7 +1,7 @@
 import { useState, type ComponentProps } from 'react'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
-import type { DynamicDialogOption } from '@/game/types/dialog'
+import type { SingleTargetDialogOption } from '@/game/types/dialog'
 import type { SActor, State } from '@/game/state'
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import { InputGroup, InputGroupAddon } from '../ui/input-group'
 import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 
-function DialogOptionDynamic({
+function DialogOptionSingleTarget({
   className,
   index,
   disabled,
@@ -22,7 +22,7 @@ function DialogOptionDynamic({
 }: Partial<ComponentProps<'div'>> & {
   index: number
   disabled: boolean
-  option: DynamicDialogOption<State, SActor>
+  option: SingleTargetDialogOption<State, SActor>
 }) {
   const state = useGameState((s) => s.state)
   const [open, setOpen] = useState(false)
@@ -86,11 +86,11 @@ function DialogOptionDynamic({
           </DropdownMenuContent>
         </DropdownMenu>
         <InputGroupAddon className="hidden group-hover:block absolute right-3 opacity-50">
-          (0 / {option.action.targets.max(state, option.context)})
+          (0/{option.action.targets.max(state, option.context)})
         </InputGroupAddon>
       </InputGroup>
     </Button>
   )
 }
 
-export { DialogOptionDynamic }
+export { DialogOptionSingleTarget }

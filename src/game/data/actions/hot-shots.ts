@@ -1,9 +1,22 @@
-import { isActive, mapTarget } from '@/game/access'
-import { newDamage } from '@/game/actor'
+import { getActor, isActive, mapTarget } from '@/game/access'
+import {
+  getSourceChance,
+  getTargetChance,
+  newDamage,
+  withChanceEvents,
+} from '@/game/actor'
 import { damagesResolver } from '@/game/resolvers'
 import type { SAction, SMutation } from '@/game/state'
+import type { Damage } from '@/game/types/damage'
 import { chance } from '@/lib/chance'
 import { v4 } from 'uuid'
+
+const HotShotsDamage: Damage = newDamage({
+  offenseStat: 'reflexes',
+  defenseStat: 'reflexes',
+  element: 'fire',
+  power: 10,
+})
 
 const HotShots: SAction = {
   ID: v4(),
@@ -18,25 +31,18 @@ const HotShots: SAction = {
         .map((a) => mapTarget(a, 'position')),
     validate: (_, context) => context.positions.length === 1,
   },
-  resolve: (_, context) => {
+  resolve: (state, context) => {
+    const source = getActor(state, context.sourceID)!
+    const sChance = getSourceChance(100, 0, source)
+    const target = getActor(state, context.targetIDs[0])!
+    const tChance = getTargetChance(target)
+    const damage = withChanceEvents(HotShotsDamage, sChance, tChance)
+
     const deltas: Array<SMutation> = []
     let result = chance(80)
     const results = [result[1]]
     while (result[0]) {
-      deltas.push(
-        damagesResolver(
-          context,
-          [
-            newDamage({
-              offenseStat: 'reflexes',
-              defenseStat: 'reflexes',
-              element: 'fire',
-              power: 20,
-            }),
-          ],
-          [context]
-        )
-      )
+      deltas.push(damagesResolver(context, [damage], [context]))
       result = chance(80)
       results.push(result[1])
     }
