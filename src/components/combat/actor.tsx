@@ -23,6 +23,7 @@ function Actor({
   status: string
   onClick: () => void
 }) {
+  const [health, maxHealth] = getHealth(actor)
   return (
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
       <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
@@ -46,10 +47,7 @@ function Actor({
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
           <Progress
-            value={
-              ((actor.stats.health - actor.state.damage) * 100) /
-              actor.stats.health
-            }
+            value={(health * 100) / maxHealth}
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
           <Progress
@@ -125,7 +123,6 @@ function EnemyActor({
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
         </ItemContent>
-        {health} {maxHealth}
       </Button>
     </div>
   )

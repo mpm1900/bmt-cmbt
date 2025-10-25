@@ -7,7 +7,7 @@ import { addEffectResolver, pushLogResolver } from '@/game/resolvers'
 const Goku: SEffect = {
   ID: v4(),
   delay: 0,
-  duration: undefined,
+  duration: 1,
   priority: 0,
   modifiers: BodyUp.modifiers,
   triggers: (econtext) => [

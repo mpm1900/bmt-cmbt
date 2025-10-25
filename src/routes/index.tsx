@@ -44,10 +44,18 @@ function RouteComponent() {
     <div className="h-screen w-screen flex flex-col items-between  bg-cover bg-no-repeat">
       <div className="flex items-center justify-start gap-2 p-1">
         <Separator orientation="vertical" />
-        <Badge variant="outline" className="text-muted-foreground">
+        <Badge
+          variant={state.combat ? 'outline' : 'secondary'}
+          className={state.combat ? 'text-muted-foreground' : ''}
+        >
           Dialog
         </Badge>
-        <Badge variant="secondary">Combat</Badge>
+        <Badge
+          variant={state.combat ? 'secondary' : 'outline'}
+          className={!state.combat ? 'text-muted-foreground' : ''}
+        >
+          Combat
+        </Badge>
         {state.combat && (
           <>
             <Separator orientation="vertical" />

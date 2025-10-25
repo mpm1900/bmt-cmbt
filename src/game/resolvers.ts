@@ -335,18 +335,18 @@ function startCombatResolver(
   }
 }
 
-function navigateDialogResolver(
-  nodeID: string,
-  messages: SDialogMessage[]
-): SMutation {
+function navigateDialogResolver(nodeID: string): SMutation {
   return {
     ID: v4(),
     context: newContext({}),
     delta: {
-      apply: (state, _context) => {
+      apply: (state, context) => {
+        const newActive = state.dialog.nodes.find((node) => node.ID === nodeID)!
         return {
           ...state,
-          messageLog: state.messageLog.concat(messages),
+          messageLog: state.messageLog.concat(
+            newActive.messages(state, newContext(context))
+          ),
           dialog: {
             ...state.dialog,
             activeNodeID: nodeID,

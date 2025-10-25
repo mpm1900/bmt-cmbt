@@ -14,9 +14,11 @@ import {
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
 import { IntroDialog } from '@/game/data/dialogs/intro'
+import { navigateDialogResolver } from '@/game/resolvers'
 
 type GameStateStore = {
   state: State
+  setActiveDialogNodeID: (activeNodeID: string) => void
   pushAction: (action: SAction, context: DeltaPositionContext) => void
   resolvePrompt: (context: DeltaPositionContext) => void
   resolveDialogOption: (option: SDialogOption) => void
@@ -97,6 +99,13 @@ const initialState: State = {
 
 const gameStateStore = createStore<GameStateStore>((set) => ({
   state: initialState,
+  setActiveDialogNodeID: (activeNodeID: string) => {
+    set(({ state }) => {
+      const mutation = navigateDialogResolver(activeNodeID)
+      const next = mutation.delta.apply(state, mutation.context)
+      return { state: next }
+    })
+  },
   pushAction: (action, context) => {
     set(({ state }) => ({
       state: addActionToQueue(state, context, action),

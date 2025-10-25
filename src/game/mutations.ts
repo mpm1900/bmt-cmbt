@@ -25,6 +25,7 @@ import { ActivateX } from './data/actions/_system/swap'
 import type { Player } from './types/player'
 import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
+import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 
 function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
   return {
@@ -33,6 +34,19 @@ function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
     targetIDs: [],
     positions: [],
     ...context,
+  }
+}
+
+function startDialog(state: State): State {
+  const mutations = resolveAction(
+    state,
+    newContext({}),
+    NavigateDialog(state.dialog.startNodeID, [])
+  )
+
+  return {
+    ...state,
+    mutationQueue: push(state.mutationQueue, mutations),
   }
 }
 
@@ -313,6 +327,7 @@ function resolveDialogOption(
 
 export {
   newContext,
+  startDialog,
   decrementEffect,
   decrementEffectItem,
   pushLogs,

@@ -51,6 +51,7 @@ type DialogNode<T, A> = {
 type Dialog<T, A> = {
   ID: string
   nodes: Array<DialogNode<T, A>>
+  startNodeID: string
   activeNodeID: string | undefined
 }
 

@@ -123,7 +123,6 @@ const Deactivate: SAction = {
     },
   },
   resolve: (_, context) => {
-    console.log(context)
     return [
       deactivateActorResolver(context.playerID, context.targetIDs[0], context),
     ]

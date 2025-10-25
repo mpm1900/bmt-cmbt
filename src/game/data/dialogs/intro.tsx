@@ -4,7 +4,6 @@ import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
-import { NavigateDialog } from '../actions/_system/navigate-dialog'
 import { createStaticNavigationOption, newMessage } from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
 import { findActor } from '@/game/access'
@@ -96,7 +95,7 @@ const IntroNode0: SDialogNode = {
         text: <em className="font-light">Go to other node</em>,
       },
       IntroNode1.ID,
-      IntroNode0.messages(state, context)
+      []
     ),
     createStaticNavigationOption(
       {
@@ -105,7 +104,7 @@ const IntroNode0: SDialogNode = {
         ),
       },
       IntroNode1.ID,
-      IntroNode0.messages(state, context)
+      []
     ),
   ],
   post: () => [],
@@ -123,24 +122,14 @@ const IntroNode1: SDialogNode = {
       text: 'This is a second dialog node!',
     },
   ],
-  options: (state, context) => [
-    {
-      ID: v4(),
-      type: 'no-target',
-      text: <em>Go back</em>,
-      icons: '',
-      context,
-      action: NavigateDialog(
-        IntroNode0.ID,
-        IntroNode1.messages(state, context).concat([
-          {
-            ID: v4(),
-            actorID: '',
-            text: <em>Go back</em>,
-          },
-        ])
-      ),
-    },
+  options: (_state, _context) => [
+    createStaticNavigationOption(
+      {
+        text: <em className="font-light">Go back</em>,
+      },
+      IntroNode0.ID,
+      []
+    ),
   ],
   post: () => [],
 }
@@ -148,7 +137,8 @@ const IntroNode1: SDialogNode = {
 const IntroDialog: SDialog = {
   ID: v4(),
   nodes: [IntroNode0, IntroNode1],
-  activeNodeID: IntroNode0.ID,
+  startNodeID: IntroNode0.ID,
+  activeNodeID: undefined,
 }
 
 export { IntroDialog }

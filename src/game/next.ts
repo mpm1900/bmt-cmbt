@@ -6,6 +6,7 @@ import {
   pushLogs,
   resolvePrompt,
   sortActionQueue,
+  startDialog,
   validateState,
   withPhase,
 } from './mutations'
@@ -155,19 +156,24 @@ function next(state: State): State {
   if (state.promptQueue.length > 0) {
     return nextAiPrompt(state)
   }
-  // before each action pop, run the validations
-  const valid = validateState(state)
-  state = valid[0]
-
-  // if there was a valication response, wait again
-  if (!valid[1]) return state
-
-  if (state.actionQueue.length > 0) {
-    return nextAction(state)
-  }
 
   if (state.combat) {
+    // before each action pop, run the validations
+    const valid = validateState(state)
+    state = valid[0]
+
+    // if there was a valication response, wait again
+    if (!valid[1]) return state
+
+    if (state.actionQueue.length > 0) {
+      return nextAction(state)
+    }
+
     return nextTurnPhase(state)
+  }
+
+  if (!state.dialog.activeNodeID) {
+    state = startDialog(state)
   }
 
   return state
@@ -175,6 +181,7 @@ function next(state: State): State {
 
 function hasNext(state: State): boolean {
   return (
+    state.dialog.activeNodeID === undefined ||
     state.mutationQueue.length > 0 ||
     state.triggerQueue.length > 0 ||
     (state.actionQueue.length > 0 && state.promptQueue.length === 0)
