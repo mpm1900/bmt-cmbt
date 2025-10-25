@@ -1,6 +1,5 @@
 import { useGameState } from '@/hooks/useGameState'
 import { Card, CardContent } from '../ui/card'
-import { Separator } from '../ui/separator'
 import { newContext } from '@/game/mutations'
 import { DialogOptionStatic } from './dialog-option-static'
 import { DialogOptionDynamic } from './dialog-option-dynamic'
@@ -23,19 +22,21 @@ function DialogView() {
     <div className="flex-1 flex items-center justify-center px-16">
       <div className="flex flex-1 gap-4 items-center justify-center max-w-252">
         <Card className="h-108">
-          <CardContent className="flex flex-col gap-2">
-            <ScrollArea className="flex-1 max-h-38">
+          <CardContent className="flex flex-1 flex-col gap-2 justify-between">
+            <ScrollArea className="h-38 text-xs">
               {messageLog.map((message) => (
                 <p key={message.ID}>{message.text}</p>
               ))}
             </ScrollArea>
-            <Separator />
             {activeNode && (
-              <>
-                {activeNode.messages(state, context).map((message) => (
-                  <p key={message.ID}>{message.text}</p>
-                ))}
-                <Separator />
+              <div className="flex flex-1 flex-col justify-between">
+                <div>
+                  {activeNode.messages(state, context).map((message) => (
+                    <p key={message.ID} className="text-sm">
+                      {message.text}
+                    </p>
+                  ))}
+                </div>
 
                 <ButtonGroup
                   orientation="vertical"
@@ -61,7 +62,7 @@ function DialogView() {
                       )
                     )}
                 </ButtonGroup>
-              </>
+              </div>
             )}
           </CardContent>
         </Card>

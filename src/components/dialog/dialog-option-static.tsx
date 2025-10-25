@@ -21,6 +21,7 @@ function DialogOptionStatic({
     <Button
       asChild
       disabled={disabled}
+      size="sm"
       onClick={() => resolveDialogOption(option)}
     >
       <InputGroup

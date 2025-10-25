@@ -27,7 +27,12 @@ function DialogOptionDynamic({
   const [open, setOpen] = useState(false)
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
   return (
-    <Button asChild disabled={disabled} onClick={() => setOpen((o) => !o)}>
+    <Button
+      asChild
+      size="sm"
+      disabled={disabled}
+      onClick={() => setOpen((o) => !o)}
+    >
       <InputGroup
         className={cn(
           'group justify-start px-0 border-none',

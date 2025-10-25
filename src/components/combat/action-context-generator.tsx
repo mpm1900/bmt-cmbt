@@ -254,7 +254,7 @@ function ActionContextGenerator({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3">
         <div className="flex flex-col items-center justify-center gap-4">
           {!action.targets.unique && (
             <DuplicateTargetGenerator
