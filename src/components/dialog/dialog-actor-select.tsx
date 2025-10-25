@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from 'react'
+import { useState, type ComponentProps, type ReactNode } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,13 +29,14 @@ function DialogActorSelect({
   options: Array<DialogOptionContext>
   onOptionChange: (option: SingleTargetDialogOption<State, SActor>) => void
 }) {
+  const [open, setOpen] = useState(false)
   return (
-    <DropdownMenu {...props}>
-      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+    <DropdownMenu {...props} open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
         {!disabled && (
           <InputGroupAddon
-            className={cn('group-hover:text-foreground italic opacity-60', {
-              'text-foreground opacity-90': props.open,
+            className={cn('hover:text-foreground italic opacity-60', {
+              'text-foreground opacity-90': open,
             })}
           >
             {value || placeholder}
@@ -46,7 +47,6 @@ function DialogActorSelect({
         {options.map((context, i) => (
           <DropdownMenuItem
             key={i}
-            className="cursor-pointer"
             onSelect={() => {
               onOptionChange({
                 ...option,

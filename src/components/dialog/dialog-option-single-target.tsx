@@ -3,7 +3,11 @@ import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import type { SingleTargetDialogOption } from '@/game/types/dialog'
 import type { SActor, State } from '@/game/state'
-import { InputGroup, InputGroupAddon } from '../ui/input-group'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+} from '../ui/input-group'
 import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 import { DialogActorSelect } from './dialog-actor-select'
@@ -11,6 +15,7 @@ import { validateSingleTargetDialogOption, withContext } from '@/game/dialog'
 import { useGameUI } from '@/hooks/useGameUI'
 import { findActor } from '@/game/access'
 import { newContext } from '@/game/mutations'
+import { ArrowRight } from 'lucide-react'
 
 function DialogOptionSingleTarget({
   className,
@@ -58,11 +63,8 @@ function DialogOptionSingleTarget({
                   ...option.context,
                   sourceID: next.context.sourceID,
                 })
-                if (validateSingleTargetDialogOption(state, next)) {
-                  resolveDialogOption(next)
-                } else {
-                  setContext(next.context)
-                }
+
+                setContext(next.context)
               }}
             />
             {!disabled && (
@@ -93,14 +95,25 @@ function DialogOptionSingleTarget({
                   targetIDs: next.context.targetIDs,
                 })
 
-                if (validateSingleTargetDialogOption(state, next)) {
-                  resolveDialogOption(next)
-                } else {
-                  setContext(next.context)
-                }
+                setContext(next.context)
               }}
             />
           </>
+        )}
+        {validateSingleTargetDialogOption(state, option) && !disabled && (
+          <InputGroupAddon className="pl-8">
+            <InputGroupButton
+              size="xs"
+              variant="default"
+              className="cursor-pointer"
+              onClick={() => {
+                resolveDialogOption(option)
+              }}
+            >
+              Confirm
+              <ArrowRight />
+            </InputGroupButton>
+          </InputGroupAddon>
         )}
         <InputGroupAddon className="hidden group-hover:block absolute right-3 opacity-50">
           (0/{option.action.targets.max(state, option.context)})

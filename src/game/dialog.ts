@@ -1,17 +1,22 @@
 import { v4 } from 'uuid'
-import { NavigateDialog } from './data/actions/_system/navigate-dialog'
+import {
+  NavigateDialog,
+  NavigateSourceDialog,
+} from './data/actions/_system/navigate-dialog'
 import type { SActor, SDialogMessage, SDialogOption, State } from './state'
 import { newContext } from './mutations'
 import type {
   NoTargetDialogOption,
   SingleTargetDialogOption,
 } from './types/dialog'
+import { getAliveActiveActors } from './access'
 
-function newMessage(text: string): SDialogMessage {
+function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
   return {
     ID: v4(),
     actorID: '',
-    text,
+    text: '',
+    ...partial,
   }
 }
 
@@ -25,15 +30,49 @@ function createStaticNavigationOption(
     type: 'no-target',
     text: null,
     icons: null,
-    context: newContext({}),
+    context: newContext({ playerID: '__player__' }),
     action: NavigateDialog(
       toID,
       messages.concat([
-        {
-          ID: v4(),
-          actorID: '',
+        newMessage({
           text: option.text,
-        },
+        }),
+      ])
+    ),
+    ...option,
+  }
+}
+
+function createSourceNavigationOption(
+  state: State,
+  option: Partial<SingleTargetDialogOption<State, SActor>>,
+  nodeID: string,
+  messages: Array<SDialogMessage>
+): SingleTargetDialogOption<State, SActor> {
+  const { context = newContext({ playerID: '__player__' }) } = option
+  return {
+    ID: v4(),
+    type: 'single-target',
+    text: null,
+    icons: null,
+    context,
+    sourceOptions: getAliveActiveActors(state, context).map((a) => {
+      return {
+        ID: a.ID,
+        text: a.name,
+        playerID: a.playerID,
+        sourceID: a.ID,
+        targetIDs: [],
+        positions: [],
+      }
+    }),
+    targetOptions: [],
+    action: NavigateSourceDialog(
+      nodeID,
+      messages.concat([
+        newMessage({
+          text: option.text,
+        }),
       ])
     ),
     ...option,
@@ -79,6 +118,7 @@ function withContext(
 export {
   newMessage,
   createStaticNavigationOption,
+  createSourceNavigationOption,
   validateSingleTargetDialogOption,
   withContext,
 }

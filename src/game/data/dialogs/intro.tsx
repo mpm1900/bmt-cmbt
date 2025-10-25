@@ -4,7 +4,11 @@ import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
-import { createStaticNavigationOption, newMessage } from '@/game/dialog'
+import {
+  createSourceNavigationOption,
+  createStaticNavigationOption,
+  newMessage,
+} from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
 import { findActor, getAliveActiveActors } from '@/game/access'
 import { Heal } from '../actions/heal'
@@ -59,7 +63,9 @@ const IntroNode0: SDialogNode = {
       icons: '',
       context,
       action: withMessageLogs(Activate, (s, c) => [
-        newMessage(`${findActor(s, c.targetIDs[0])?.name} activated.`),
+        newMessage({
+          text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
+        }),
       ]),
       sourceOptions: [],
       targetOptions: Activate.targets.get(state, context).map((a) => {
@@ -80,7 +86,9 @@ const IntroNode0: SDialogNode = {
       icons: '',
       context,
       action: withMessageLogs(Deactivate, (s, c) => [
-        newMessage(`${findActor(s, c.targetIDs[0])?.name} deactivated.`),
+        newMessage({
+          text: `${findActor(s, c.targetIDs[0])?.name} deactivated.`,
+        }),
       ]),
       sourceOptions: [],
       targetOptions: Deactivate.targets.get(state, context).map((a) => {
@@ -97,11 +105,13 @@ const IntroNode0: SDialogNode = {
     {
       ID: v4(),
       type: 'single-target',
-      text: <em className="font-light">Heals</em>,
+      text: <em className="font-light">casts Heal on</em>,
       icons: '',
       context,
       action: withMessageLogs(Heal, (s, c) => [
-        newMessage(`${findActor(s, c.targetIDs[0])?.name} healed.`),
+        newMessage({
+          text: `${findActor(s, c.targetIDs[0])?.name} healed.`,
+        }),
       ]),
       sourceOptions: getAliveActiveActors(state, context).map((a) => {
         return {
@@ -131,7 +141,8 @@ const IntroNode0: SDialogNode = {
       IntroNode1.ID,
       []
     ),
-    createStaticNavigationOption(
+    createSourceNavigationOption(
+      state,
       {
         text: (
           <span className="font-semibold">"Go to other node but a quote"</span>
