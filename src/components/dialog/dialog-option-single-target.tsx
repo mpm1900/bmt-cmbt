@@ -7,29 +7,29 @@ import { InputGroup, InputGroupAddon } from '../ui/input-group'
 import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 import { DialogActorSelect } from './dialog-actor-select'
-import { validateSingleTargetDialogOption } from '@/game/dialog'
+import { validateSingleTargetDialogOption, withContext } from '@/game/dialog'
+import { useGameUI } from '@/hooks/useGameUI'
+import { findActor } from '@/game/access'
+import { newContext } from '@/game/mutations'
 
 function DialogOptionSingleTarget({
   className,
   index,
-  disabled,
   option,
   ...props
 }: Partial<ComponentProps<'div'>> & {
   index: number
-  disabled: boolean
   option: SingleTargetDialogOption<State, SActor>
 }) {
   const state = useGameState((s) => s.state)
+  const { playerID } = useGameUI((s) => s)
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
-  const [open, setOpen] = useState(false)
+  const [context, setContext] = useState(newContext({ playerID }))
+  option = withContext(option, context)
+  console.log(option)
+  const disabled = !option.action.validate(state, context)
   return (
-    <Button
-      asChild
-      size="sm"
-      disabled={disabled}
-      onClick={() => setOpen((o) => !o)}
-    >
+    <Button asChild size="sm">
       <InputGroup
         className={cn(
           'group justify-start px-0 border-none w-full',
@@ -48,18 +48,20 @@ function DialogOptionSingleTarget({
         {option.sourceOptions.length > 0 && (
           <>
             <DialogActorSelect
-              open={open}
-              onOpenChange={setOpen}
               disabled={disabled}
+              placeholder={<>Select Source</>}
+              value={findActor(state, option.context.sourceID)?.name}
               options={option.sourceOptions}
               option={option}
               onOptionChange={(next) => {
-                next.context = {
+                next = withContext(next, {
                   ...option.context,
                   sourceID: next.context.sourceID,
-                }
+                })
                 if (validateSingleTargetDialogOption(state, next)) {
                   resolveDialogOption(next)
+                } else {
+                  setContext(next.context)
                 }
               }}
             />
@@ -80,18 +82,21 @@ function DialogOptionSingleTarget({
             )}
 
             <DialogActorSelect
-              open={open}
-              onOpenChange={setOpen}
               disabled={disabled}
+              placeholder={<>Select Target</>}
+              value={findActor(state, option.context.targetIDs[0])?.name}
               option={option}
               options={option.targetOptions}
               onOptionChange={(next) => {
-                next.context = {
+                next = withContext(next, {
                   ...option.context,
                   targetIDs: next.context.targetIDs,
-                }
+                })
+
                 if (validateSingleTargetDialogOption(state, next)) {
                   resolveDialogOption(next)
+                } else {
+                  setContext(next.context)
                 }
               }}
             />

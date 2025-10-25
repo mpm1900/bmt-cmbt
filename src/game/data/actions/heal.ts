@@ -1,4 +1,4 @@
-import { mapTarget } from '@/game/access'
+import { getAliveActiveActors, mapTarget } from '@/game/access'
 import { withState } from '@/game/actor'
 import { mutateActorResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
@@ -7,12 +7,12 @@ import { v4 } from 'uuid'
 const Heal: SAction = {
   ID: v4(),
   name: 'Heal',
-  validate: () => true,
+  validate: (state, context) => getAliveActiveActors(state, context).length > 0,
   targets: {
     unique: true,
     max: () => 1,
-    get: (state, _context) => state.actors.map((a) => mapTarget(a, 'position')),
-    validate: (_state, context) => context.positions.length === 1,
+    get: (state, _context) => state.actors.map((a) => mapTarget(a, 'targetID')),
+    validate: (_state, context) => context.targetIDs.length === 1,
   },
   resolve(_, context) {
     return [

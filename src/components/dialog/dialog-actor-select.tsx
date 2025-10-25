@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +15,16 @@ import type { SActor, State } from '@/game/state'
 
 function DialogActorSelect({
   disabled,
+  placeholder,
+  value,
   option,
   options,
   onOptionChange,
   ...props
 }: ComponentProps<typeof DropdownMenu> & {
   disabled: boolean
+  placeholder: ReactNode
+  value: string | undefined
   option: SingleTargetDialogOption<State, SActor>
   options: Array<DialogOptionContext>
   onOptionChange: (option: SingleTargetDialogOption<State, SActor>) => void
@@ -34,7 +38,7 @@ function DialogActorSelect({
               'text-foreground opacity-90': props.open,
             })}
           >
-            Select Target
+            {value || placeholder}
           </InputGroupAddon>
         )}
       </DropdownMenuTrigger>

@@ -1,19 +1,16 @@
 import { useGameState } from '@/hooks/useGameState'
 import { Card, CardContent } from '../ui/card'
-import { newContext } from '@/game/mutations'
 import { DialogOptionNoTarget } from './dialog-option-no-target'
 import { DialogOptionSingleTarget } from './dialog-option-single-target'
-import { useGameUI } from '@/hooks/useGameUI'
 import { ButtonGroup } from '../ui/button-group'
 import { useEffect } from 'react'
 import { DialogHistoryLog } from './dialog-history-log'
+import { newContext } from '@/game/mutations'
 
 function DialogView() {
   const { state } = useGameState((s) => s)
-  const playerID = useGameUI((s) => s.playerID)
   const dialog = state.dialog
   const activeNode = dialog.nodes.find((n) => n.ID === dialog.activeNodeID)
-  const context = newContext({ playerID })
   useEffect(() => {
     // console.log(state)
   }, [state])
@@ -26,7 +23,7 @@ function DialogView() {
             {activeNode && (
               <div className="flex flex-1 flex-col justify-between">
                 <div>
-                  {activeNode.messages(state, context).map((message) => (
+                  {activeNode.messages(state).map((message) => (
                     <p key={message.ID} className="text-sm">
                       {message.text}
                     </p>
@@ -38,21 +35,22 @@ function DialogView() {
                   className="flex flex-col gap-0 w-full"
                 >
                   {activeNode
-                    .options(state, context)
+                    .options(state)
                     .map((option, i) =>
                       option.type === 'no-target' ? (
                         <DialogOptionNoTarget
                           key={option.ID}
                           index={i}
                           option={option}
-                          disabled={!option.action.validate(state, context)}
+                          disabled={
+                            !option.action.validate(state, newContext({}))
+                          }
                         />
                       ) : (
                         <DialogOptionSingleTarget
                           key={option.ID}
                           index={i}
                           option={option}
-                          disabled={!option.action.validate(state, context)}
                         />
                       )
                     )}

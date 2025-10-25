@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
-import type { SActor, SDialogMessage, State } from './state'
+import type { SActor, SDialogMessage, SDialogOption, State } from './state'
 import { newContext } from './mutations'
 import type {
   NoTargetDialogOption,
@@ -63,8 +63,22 @@ function validateSingleTargetDialogOption(
   return true
 }
 
+function withContext(
+  option: SingleTargetDialogOption<State, SActor>,
+  context: SDialogOption['context']
+): SingleTargetDialogOption<State, SActor> {
+  return {
+    ...option,
+    context: {
+      ...option.context,
+      ...context,
+    },
+  }
+}
+
 export {
   newMessage,
   createStaticNavigationOption,
   validateSingleTargetDialogOption,
+  withContext,
 }

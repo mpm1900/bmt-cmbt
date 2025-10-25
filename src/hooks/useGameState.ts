@@ -37,6 +37,7 @@ const Max = createActor('Max', '__player__', {
   intelligence: 100,
   speed: 100,
 })
+Max.state.damage = 20
 const Katie = createActor('Katie', '__player__', {
   accuracy: 0,
   body: 100,

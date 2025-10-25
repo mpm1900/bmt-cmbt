@@ -146,6 +146,16 @@ function nextAiPrompt(state: State): State {
   return state
 }
 
+function nextValidation(state: State): State {
+  const valid = validateState(state)
+  state = valid[0]
+
+  // if there was a valication response, wait again
+  if (!valid[1]) return state
+
+  return state
+}
+
 function next(state: State): State {
   if (state.triggerQueue.length > 0) {
     return nextTrigger(state)
@@ -153,17 +163,13 @@ function next(state: State): State {
   if (state.mutationQueue.length > 0) {
     return nextMutation(state)
   }
-  if (state.promptQueue.length > 0) {
-    return nextAiPrompt(state)
-  }
 
   if (state.combat) {
-    // before each action pop, run the validations
-    const valid = validateState(state)
-    state = valid[0]
+    if (state.promptQueue.length > 0) {
+      return nextAiPrompt(state)
+    }
 
-    // if there was a valication response, wait again
-    if (!valid[1]) return state
+    state = nextValidation(state)
 
     if (state.actionQueue.length > 0) {
       return nextAction(state)

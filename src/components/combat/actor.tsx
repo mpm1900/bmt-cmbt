@@ -76,7 +76,7 @@ function Actor({
           </div>
         </ItemContent>
       </Button>
-      <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center">
+      <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center mt-1">
         {status}
       </span>
     </div>

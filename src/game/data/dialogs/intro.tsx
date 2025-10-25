@@ -6,7 +6,11 @@ import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
 import { createStaticNavigationOption, newMessage } from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
-import { findActor } from '@/game/access'
+import { findActor, getAliveActiveActors } from '@/game/access'
+import { Heal } from '../actions/heal'
+import { newContext } from '@/game/mutations'
+
+const context = newContext({ playerID: '__player__' })
 
 const Criminal = () =>
   createActor('Criminal', '__ai__', {
@@ -35,7 +39,7 @@ const IntroNode0: SDialogNode = {
       text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
     },
   ],
-  options: (state, context) => [
+  options: (state) => [
     {
       ID: v4(),
       type: 'no-target',
@@ -90,6 +94,36 @@ const IntroNode0: SDialogNode = {
         }
       }),
     },
+    {
+      ID: v4(),
+      type: 'single-target',
+      text: <em className="font-light">Heals</em>,
+      icons: '',
+      context,
+      action: withMessageLogs(Heal, (s, c) => [
+        newMessage(`${findActor(s, c.targetIDs[0])?.name} healed.`),
+      ]),
+      sourceOptions: getAliveActiveActors(state, context).map((a) => {
+        return {
+          ID: a.ID,
+          text: a.name,
+          playerID: a.playerID,
+          sourceID: a.ID,
+          targetIDs: [],
+          positions: [],
+        }
+      }),
+      targetOptions: Heal.targets.get(state, context).map((a) => {
+        return {
+          ID: a.ID,
+          text: a.target.name,
+          playerID: a.target.playerID,
+          sourceID: '',
+          targetIDs: [a.target.ID],
+          positions: [],
+        }
+      }),
+    },
     createStaticNavigationOption(
       {
         text: <em className="font-light">Go to other node</em>,
@@ -122,7 +156,7 @@ const IntroNode1: SDialogNode = {
       text: 'This is a second dialog node!',
     },
   ],
-  options: (_state, _context) => [
+  options: (_state) => [
     createStaticNavigationOption(
       {
         text: <em className="font-light">Go back</em>,

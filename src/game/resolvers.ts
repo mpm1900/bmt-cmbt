@@ -340,13 +340,11 @@ function navigateDialogResolver(nodeID: string): SMutation {
     ID: v4(),
     context: newContext({}),
     delta: {
-      apply: (state, context) => {
+      apply: (state, _context) => {
         const newActive = state.dialog.nodes.find((node) => node.ID === nodeID)!
         return {
           ...state,
-          messageLog: state.messageLog.concat(
-            newActive.messages(state, newContext(context))
-          ),
+          messageLog: state.messageLog.concat(newActive.messages(state)),
           dialog: {
             ...state.dialog,
             activeNodeID: nodeID,

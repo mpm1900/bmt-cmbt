@@ -39,13 +39,10 @@ type DialogOption<T, A> =
 type DialogNode<T, A> = {
   ID: string
   status: 'pre' | 'main' | 'post'
-  pre: (state: T, context: DeltaPositionContext) => Array<DialogCheck<T>>
-  messages: (state: T, context: DeltaPositionContext) => Array<DialogMessage>
-  options: (
-    state: T,
-    context: DeltaPositionContext
-  ) => Array<DialogOption<T, A>>
-  post: (state: T, context: DeltaPositionContext) => Array<DialogCheck<T>>
+  pre: (state: T) => Array<DialogCheck<T>>
+  messages: (state: T) => Array<DialogMessage>
+  options: (state: T) => Array<DialogOption<T, A>>
+  post: (state: T) => Array<DialogCheck<T>>
 }
 
 type Dialog<T, A> = {
