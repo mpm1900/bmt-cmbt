@@ -28,7 +28,8 @@ type SingleTargetDialogOption<T, A> = ActionQueueItem<T, A> & {
   type: 'single-target'
   text: ReactNode
   icons: ReactNode
-  options: Array<DialogOptionContext>
+  sourceOptions: Array<DialogOptionContext>
+  targetOptions: Array<DialogOptionContext>
 }
 
 type DialogOption<T, A> =
@@ -56,6 +57,7 @@ type Dialog<T, A> = {
 export type {
   DialogCheck,
   DialogMessage,
+  DialogOptionContext,
   SingleTargetDialogOption,
   NoTargetDialogOption,
   DialogOption,

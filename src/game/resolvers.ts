@@ -174,7 +174,7 @@ function activateActorResolver(
         state = pushLogs(state, [
           `${findActor(state, actorID)?.name} joined the battle.`,
         ])
-        state = handleTrigger(state, context, 'onActorActivate')
+        state = handleTrigger(state, context, 'on-actor-activate')
         return state
       },
     },
@@ -212,7 +212,7 @@ function deactivateActorResolver(
         })
 
         state = filterActionQueue(state, actorID)
-        state = handleTrigger(state, context, 'onActorDeactivate')
+        state = handleTrigger(state, context, 'on-actor-deactivate')
         return state
       },
     },

@@ -16,7 +16,7 @@ const HANDLE_DEATH: SEffect = {
   triggers: () => [
     {
       ID: v4(),
-      type: 'onDeath',
+      type: 'on-death',
       validate: () => true,
       resolve: (state, tcontext) => {
         return tcontext.targetIDs.flatMap((targetID) => {
@@ -40,7 +40,7 @@ const HANDLE_TURN_START: SEffect = {
   triggers: () => [
     {
       ID: v4(),
-      type: 'onTurnStart',
+      type: 'on-turn-start',
       validate: () => true,
       resolve: (_state, tcontext) => {
         return [
@@ -64,7 +64,7 @@ const HANDLE_TURN_END: SEffect = {
   triggers: () => [
     {
       ID: v4(),
-      type: 'onTurnEnd',
+      type: 'on-turn-end',
       validate: () => true,
       resolve: (_state, tcontext) => {
         return [

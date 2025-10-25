@@ -235,12 +235,12 @@ function mutateDamage(
   const dead = isActive(state, targetID) && !target?.state.alive
 
   if (committed > 0) {
-    state = handleTrigger(state, context, 'onDamage')
+    state = handleTrigger(state, context, 'on-damage')
     state = pushLogs(state, [`${target?.name} took ${committed} damage.`])
   }
 
   if (dead) {
-    state = handleTrigger(state, context, 'onDeath')
+    state = handleTrigger(state, context, 'on-death')
   }
 
   return state

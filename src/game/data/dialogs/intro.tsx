@@ -4,9 +4,10 @@ import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Activate, Deactivate } from '../actions/_system/swap'
-import { getAliveInactiveActors } from '@/game/access'
 import { NavigateDialog } from '../actions/_system/navigate-dialog'
-import { createStaticNavigationOption } from '@/game/dialog'
+import { createStaticNavigationOption, newMessage } from '@/game/dialog'
+import { withMessageLogs } from '../actions/_system/with-message-logs'
+import { findActor } from '@/game/access'
 
 const Criminal = () =>
   createActor('Criminal', '__ai__', {
@@ -54,14 +55,17 @@ const IntroNode0: SDialogNode = {
       text: <em className="font-light">Activate Actor</em>,
       icons: '',
       context,
-      action: Activate,
-      options: getAliveInactiveActors(state, context).map((a) => {
+      action: withMessageLogs(Activate, (s, c) => [
+        newMessage(`${findActor(s, c.targetIDs[0])?.name} activated.`),
+      ]),
+      sourceOptions: [],
+      targetOptions: Activate.targets.get(state, context).map((a) => {
         return {
           ID: a.ID,
-          text: a.name,
-          playerID: a.playerID,
+          text: a.target.name,
+          playerID: a.target.playerID,
           sourceID: '',
-          targetIDs: [a.ID],
+          targetIDs: [a.target.ID],
           positions: [],
         }
       }),
@@ -72,14 +76,17 @@ const IntroNode0: SDialogNode = {
       text: <em className="font-light">Deactivate Actor</em>,
       icons: '',
       context,
-      action: Deactivate,
-      options: Deactivate.targets.get(state, context).map(({ target }) => {
+      action: withMessageLogs(Deactivate, (s, c) => [
+        newMessage(`${findActor(s, c.targetIDs[0])?.name} deactivated.`),
+      ]),
+      sourceOptions: [],
+      targetOptions: Deactivate.targets.get(state, context).map((a) => {
         return {
-          ID: target.ID,
-          text: target.name,
-          playerID: target.playerID,
+          ID: a.ID,
+          text: a.target.name,
+          playerID: a.target.playerID,
           sourceID: '',
-          targetIDs: [target.ID],
+          targetIDs: [a.target.ID],
           positions: [],
         }
       }),

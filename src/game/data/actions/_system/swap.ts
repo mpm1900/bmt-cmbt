@@ -14,7 +14,7 @@ import { v4 } from 'uuid'
 
 const Swap: SAction = {
   ID: v4(),
-  name: 'Activate Actor',
+  name: 'Swap Actors',
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
     const valid = context.sourceID
@@ -68,6 +68,7 @@ function SwapWith(count: number): SAction {
 const Activate: SAction = {
   ...Swap,
   ID: v4(),
+  name: 'Activate Actor',
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
 

@@ -189,6 +189,13 @@ function getStats(actor: SActor): ActorStats {
   }
 }
 
+function getHealth(actor: SActor): [number, number] {
+  const { health } = actor.stats
+  const { damage } = actor.state
+
+  return [health - damage, health]
+}
+
 export {
   withState,
   withStats,
@@ -200,4 +207,5 @@ export {
   getDamageResult,
   withEffects,
   getStats,
+  getHealth,
 }

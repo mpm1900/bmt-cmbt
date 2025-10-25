@@ -4,14 +4,13 @@ import { newContext } from '@/game/mutations'
 import { DialogOptionNoTarget } from './dialog-option-no-target'
 import { DialogOptionSingleTarget } from './dialog-option-single-target'
 import { useGameUI } from '@/hooks/useGameUI'
-import { ScrollArea } from '../ui/scroll-area'
 import { ButtonGroup } from '../ui/button-group'
 import { useEffect } from 'react'
+import { DialogHistoryLog } from './dialog-history-log'
 
 function DialogView() {
   const { state } = useGameState((s) => s)
   const playerID = useGameUI((s) => s.playerID)
-  const messageLog = state.messageLog
   const dialog = state.dialog
   const activeNode = dialog.nodes.find((n) => n.ID === dialog.activeNodeID)
   const context = newContext({ playerID })
@@ -23,11 +22,7 @@ function DialogView() {
       <div className="flex flex-1 gap-4 items-center justify-center ">
         <Card className="h-140 w-172">
           <CardContent className="flex flex-1 flex-col gap-2 justify-between">
-            <ScrollArea className="max-h-50 text-xs text-muted-foreground">
-              {messageLog.map((message) => (
-                <p key={message.ID}>{message.text}</p>
-              ))}
-            </ScrollArea>
+            <DialogHistoryLog />
             {activeNode && (
               <div className="flex flex-1 flex-col justify-between">
                 <div>

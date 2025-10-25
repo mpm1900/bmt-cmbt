@@ -98,7 +98,7 @@ function nextTurnPhase(state: State): State {
   state = withPhase(state, phase)
 
   if (phase === 'start') {
-    state = handleTrigger(state, newContext({}), 'onTurnStart')
+    state = handleTrigger(state, newContext({}), 'on-turn-start')
   }
 
   if (phase === 'planning') {
@@ -124,7 +124,7 @@ function nextTurnPhase(state: State): State {
   }
 
   if (phase === 'end') {
-    state = handleTrigger(state, newContext({}), 'onTurnEnd')
+    state = handleTrigger(state, newContext({}), 'on-turn-end')
   }
 
   return state

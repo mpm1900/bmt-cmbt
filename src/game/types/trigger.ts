@@ -3,12 +3,12 @@ import { type Queue } from './queue'
 
 type Trigger<T> = DeltaResolver<T, DeltaContext, DeltaContext> & {
   type:
-    | 'onActorActivate'
-    | 'onActorDeactivate'
-    | 'onDamage'
-    | 'onDeath'
-    | 'onTurnStart'
-    | 'onTurnEnd'
+    | 'on-actor-activate'
+    | 'on-actor-deactivate'
+    | 'on-damage'
+    | 'on-death'
+    | 'on-turn-start'
+    | 'on-turn-end'
 }
 
 type TriggerQueueItem<T> = ContextItem<DeltaContext> & {

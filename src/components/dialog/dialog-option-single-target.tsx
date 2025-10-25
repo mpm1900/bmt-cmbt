@@ -3,15 +3,11 @@ import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import type { SingleTargetDialogOption } from '@/game/types/dialog'
 import type { SActor, State } from '@/game/state'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
 import { InputGroup, InputGroupAddon } from '../ui/input-group'
 import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
+import { DialogActorSelect } from './dialog-actor-select'
+import { validateSingleTargetDialogOption } from '@/game/dialog'
 
 function DialogOptionSingleTarget({
   className,
@@ -25,8 +21,8 @@ function DialogOptionSingleTarget({
   option: SingleTargetDialogOption<State, SActor>
 }) {
   const state = useGameState((s) => s.state)
-  const [open, setOpen] = useState(false)
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
+  const [open, setOpen] = useState(false)
   return (
     <Button
       asChild
@@ -49,42 +45,58 @@ function DialogOptionSingleTarget({
         {...props}
       >
         <InputGroupAddon>{index + 1}</InputGroupAddon>
-        <InputGroupAddon>{option.text}</InputGroupAddon>
-        {!disabled && (
-          <InputGroupAddon>
-            <MdDoubleArrow />
-          </InputGroupAddon>
-        )}
-
-        <DropdownMenu open={open} onOpenChange={setOpen}>
-          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        {option.sourceOptions.length > 0 && (
+          <>
+            <DialogActorSelect
+              open={open}
+              onOpenChange={setOpen}
+              disabled={disabled}
+              options={option.sourceOptions}
+              option={option}
+              onOptionChange={(next) => {
+                next.context = {
+                  ...option.context,
+                  sourceID: next.context.sourceID,
+                }
+                if (validateSingleTargetDialogOption(state, next)) {
+                  resolveDialogOption(next)
+                }
+              }}
+            />
             {!disabled && (
-              <InputGroupAddon
-                className={cn('group-hover:text-foreground italic opacity-60', {
-                  'text-foreground opacity-90': open,
-                })}
-              >
-                Select Target
+              <InputGroupAddon>
+                <MdDoubleArrow />
               </InputGroupAddon>
             )}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            {option.options.map((context, i) => (
-              <DropdownMenuItem
-                key={i}
-                className="cursor-pointer"
-                onSelect={() => {
-                  resolveDialogOption({
-                    ...option,
-                    context,
-                  })
-                }}
-              >
-                {context.text}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </>
+        )}
+        <InputGroupAddon>{option.text}</InputGroupAddon>
+        {option.targetOptions.length > 0 && (
+          <>
+            {!disabled && (
+              <InputGroupAddon>
+                <MdDoubleArrow />
+              </InputGroupAddon>
+            )}
+
+            <DialogActorSelect
+              open={open}
+              onOpenChange={setOpen}
+              disabled={disabled}
+              option={option}
+              options={option.targetOptions}
+              onOptionChange={(next) => {
+                next.context = {
+                  ...option.context,
+                  targetIDs: next.context.targetIDs,
+                }
+                if (validateSingleTargetDialogOption(state, next)) {
+                  resolveDialogOption(next)
+                }
+              }}
+            />
+          </>
+        )}
         <InputGroupAddon className="hidden group-hover:block absolute right-3 opacity-50">
           (0/{option.action.targets.max(state, option.context)})
         </InputGroupAddon>

@@ -5,6 +5,7 @@ import { Progress } from '../ui/progress'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { MAIN_STAT_ICONS } from '@/renderers/icons'
+import { getHealth } from '@/game/actor'
 
 function Actor({
   actor,
@@ -24,7 +25,7 @@ function Actor({
 }) {
   return (
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
-      <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
+      <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
           {effects.map((effect) => (
             <div
@@ -96,6 +97,7 @@ function EnemyActor({
   active: boolean
   onClick: () => void
 }) {
+  const [health, maxHealth] = getHealth(actor)
   return (
     <div className="group relative flex flex-col justify-end w-48" {...rest}>
       <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
@@ -119,13 +121,11 @@ function EnemyActor({
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
           <Progress
-            value={
-              ((actor.stats.health - actor.state.damage) * 100) /
-              actor.stats.health
-            }
+            value={(health * 100) / maxHealth}
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
         </ItemContent>
+        {health} {maxHealth}
       </Button>
     </div>
   )

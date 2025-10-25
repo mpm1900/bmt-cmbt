@@ -123,7 +123,7 @@ function RouteComponent() {
                     <Button
                       disabled
                       variant="outline"
-                      className="h-20 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                      className="h-20 mt-8 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
                     >
                       inactive
                     </Button>
