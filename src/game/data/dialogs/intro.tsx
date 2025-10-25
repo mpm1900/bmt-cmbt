@@ -25,12 +25,12 @@ const IntroNode0: SDialogNode = {
   pre: () => [],
   messages: () => [
     {
-      ID: v4(),
+      ID: 'IntroNode0-0',
       actorID: '',
       text: 'Game start.',
     },
     {
-      ID: v4(),
+      ID: 'IntroNode0-1',
       actorID: '',
       text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
     },
@@ -116,7 +116,7 @@ const IntroNode1: SDialogNode = {
   pre: () => [],
   messages: () => [
     {
-      ID: v4(),
+      ID: 'IntroNode1-0',
       type: '',
       actorID: '',
       text: 'This is a second dialog node!',
