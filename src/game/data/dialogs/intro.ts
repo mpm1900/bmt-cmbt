@@ -93,7 +93,14 @@ const IntroNode0: SDialogNode = {
       context,
       action: NavigateDialog(
         IntroNode1.ID,
-        IntroNode0.messages(state, context)
+        IntroNode0.messages(state, context).concat([
+          {
+            ID: v4(),
+            type: '',
+            actorID: '',
+            text: 'Go to other node',
+          },
+        ])
       ),
     },
   ],
@@ -121,7 +128,14 @@ const IntroNode1: SDialogNode = {
       context,
       action: NavigateDialog(
         IntroNode0.ID,
-        IntroNode1.messages(state, context)
+        IntroNode1.messages(state, context).concat([
+          {
+            ID: v4(),
+            type: '',
+            actorID: '',
+            text: 'Go back',
+          },
+        ])
       ),
     },
   ],

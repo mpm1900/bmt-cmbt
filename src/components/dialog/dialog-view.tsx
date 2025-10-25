@@ -23,7 +23,7 @@ function DialogView() {
       <div className="flex flex-1 gap-4 items-center justify-center ">
         <Card className="h-140 w-172">
           <CardContent className="flex flex-1 flex-col gap-2 justify-between">
-            <ScrollArea className="h-44 text-xs">
+            <ScrollArea className="max-h-50 text-xs text-muted-foreground">
               {messageLog.map((message) => (
                 <p key={message.ID}>{message.text}</p>
               ))}

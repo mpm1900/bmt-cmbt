@@ -11,6 +11,7 @@ import {
 } from '../ui/dropdown-menu'
 import { InputGroup, InputGroupAddon } from '../ui/input-group'
 import { ArrowBigRight } from 'lucide-react'
+import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 
 function DialogOptionDynamic({
@@ -51,15 +52,15 @@ function DialogOptionDynamic({
         <InputGroupAddon>{option.text}</InputGroupAddon>
         {!disabled && (
           <InputGroupAddon>
-            <ArrowBigRight />
+            <MdDoubleArrow />
           </InputGroupAddon>
         )}
         <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
             {!disabled && (
               <InputGroupAddon
-                className={cn('group-hover:text-foreground', {
-                  'text-foreground': open,
+                className={cn('group-hover:text-foreground italic opacity-60', {
+                  'text-foreground opacity-90': open,
                 })}
               >
                 Select Target
