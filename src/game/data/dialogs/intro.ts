@@ -44,7 +44,9 @@ const IntroNode0: SDialogNode = {
       icons: '',
       context,
       action: InlineMutation(() => [
-        startCombatResolver(createCombat(), [Criminal(), Criminal()]),
+        startCombatResolver(createCombat(), {
+          actors: [Criminal(), Criminal()],
+        }),
       ]),
     },
     {

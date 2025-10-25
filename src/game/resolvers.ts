@@ -309,17 +309,26 @@ function nextTurnResolver(context: DeltaContext): SMutation {
   }
 }
 
-function startCombatResolver(combat: Combat, actors: Array<SActor>): SMutation {
+function startCombatResolver(
+  combat: Combat,
+  preState: Partial<State>
+): SMutation {
   return {
     ID: v4(),
     context: newContext({}),
     delta: {
       apply: (state, _context) => {
+        const { actors = [], ...rest } = preState
         return {
           ...state,
+          actionQueue: [],
+          triggerQueue: [],
+          mutationQueue: [],
+          promptQueue: [],
           actors: state.actors.concat(actors),
           combat,
           combatLog: ['Combat started.'],
+          ...rest,
         }
       },
     },

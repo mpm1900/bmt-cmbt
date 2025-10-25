@@ -70,6 +70,7 @@ function DialogOptionDynamic({
             {option.options.map((context, i) => (
               <DropdownMenuItem
                 key={i}
+                className="cursor-pointer"
                 onSelect={() => {
                   resolveDialogOption({
                     ...option,

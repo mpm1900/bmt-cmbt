@@ -27,7 +27,7 @@ function DialogOptionStatic({
       <InputGroup
         className={cn(
           {
-            'group justify-start px-0 dark:hover:bg-input/50 select-none [&>*]:cursor-default border-none':
+            'group justify-start px-0 dark:hover:bg-input/50 select-none cursor-pointer [&>*]:cursor-pointer border-none':
               !disabled,
           },
           className

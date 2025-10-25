@@ -137,6 +137,10 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       state: {
         ...state,
         combat: undefined,
+        actionQueue: [],
+        triggerQueue: [],
+        mutationQueue: [],
+        promptQueue: [],
         // TODO: hard-coded ai player ID
         actors: state.actors.filter(
           (a) => a.playerID !== '__ai__' && a.state.alive
