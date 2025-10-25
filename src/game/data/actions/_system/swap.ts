@@ -1,4 +1,5 @@
 import {
+  getAliveActiveActors,
   getAliveInactiveActors,
   hasActiveActorSpace,
   mapActor,
@@ -16,9 +17,10 @@ const Swap: SAction = {
   name: 'Activate Actor',
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
-    const hasSpace =
-      !!context.sourceID || hasActiveActorSpace(state, context.playerID)
-    return hasSpace && targets.length > 0
+    const valid = context.sourceID
+      ? true
+      : hasActiveActorSpace(state, context.playerID) && targets.length > 0
+    return valid
   },
   targets: {
     unique: true,
@@ -63,4 +65,68 @@ function SwapWith(count: number): SAction {
   }
 }
 
-export { Swap, SwapWith }
+const Activate: SAction = {
+  ...Swap,
+  ID: v4(),
+  validate: (state, context) => {
+    const targets = getAliveInactiveActors(state, context)
+
+    const valid =
+      targets.length > 0 && hasActiveActorSpace(state, context.playerID)
+    return valid
+  },
+  targets: {
+    unique: true,
+    max: () => 1,
+    get: (state, context) =>
+      getAliveInactiveActors(state, context).map((a) =>
+        mapTarget(a, 'targetID')
+      ),
+    validate: (_state, context) => {
+      return context.targetIDs.length === 1
+    },
+  },
+  resolve: (_, context) => {
+    return context.targetIDs.map((id) =>
+      activateActorResolver(context.playerID, id, context)
+    )
+  },
+}
+
+function ActivateX(x: number): SAction {
+  return {
+    ...Activate,
+    targets: {
+      ...Swap.targets,
+      max: () => x,
+      validate: (_state, context) => context.targetIDs.length === x,
+    },
+  }
+}
+
+const Deactivate: SAction = {
+  ...Swap,
+  ID: v4(),
+  validate: (state, context) => {
+    const targets = getAliveActiveActors(state, context)
+    const valid = targets.length > 0
+    return valid
+  },
+  targets: {
+    unique: true,
+    max: () => 1,
+    get: (state, context) =>
+      getAliveActiveActors(state, context).map((a) => mapTarget(a, 'targetID')),
+    validate: (_state, context) => {
+      return context.targetIDs.length === 1
+    },
+  },
+  resolve: (_, context) => {
+    console.log(context)
+    return [
+      deactivateActorResolver(context.playerID, context.targetIDs[0], context),
+    ]
+  },
+}
+
+export { Swap, SwapWith, Activate, ActivateX, Deactivate }

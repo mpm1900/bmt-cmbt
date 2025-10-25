@@ -21,7 +21,7 @@ import type {
 } from './state'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Damage } from './types/damage'
-import { SwapWith } from './data/actions/_system/swap'
+import { ActivateX } from './data/actions/_system/swap'
 import type { Player } from './types/player'
 import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
@@ -173,10 +173,6 @@ function filterActionQueue(state: State, sourceID: string): State {
     (action) => action.context.sourceID !== sourceID
   )
 
-  console.log('filtering action queue', sourceID)
-  console.log(state.actionQueue)
-  console.log(actionQueue)
-
   return {
     ...state,
     actionQueue,
@@ -263,6 +259,7 @@ function withPhase(state: State, phase: Combat['phase']): State {
 
 function validateState(state: State): [State, boolean] {
   let valid = true
+  if (!state.combat) return [state, valid]
   state.players.forEach((player) => {
     const inactiveLiveActors = getAliveInactiveActors(
       state,
@@ -276,14 +273,17 @@ function validateState(state: State): [State, boolean] {
         inactiveLiveActors.length,
         player.activeActorIDs.filter((a) => a === null).length
       )
-      state = pushPrompt(
-        state,
-        newContext({
-          playerID: player.ID,
-        }),
-        SwapWith(count)
-      )
-      valid = false
+      if (count > 0) {
+        state = pushPrompt(
+          state,
+          newContext({
+            playerID: player.ID,
+          }),
+          ActivateX(count)
+        )
+
+        valid = false
+      }
     }
 
     if (

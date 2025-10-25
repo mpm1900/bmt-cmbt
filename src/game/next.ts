@@ -117,7 +117,6 @@ function nextTurnPhase(state: State): State {
 
         return [a, contexts[0][0], contexts[0][1]] as const
       })
-      console.log(ratedActions)
       if (ratedActions[0]) {
         state = pushAction(state, ratedActions[0][1], ratedActions[0][0])
       }

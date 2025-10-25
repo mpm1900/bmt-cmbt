@@ -6,6 +6,8 @@ import { DialogOptionStatic } from './dialog-option-static'
 import { DialogOptionDynamic } from './dialog-option-dynamic'
 import { useGameUI } from '@/hooks/useGameUI'
 import { ScrollArea } from '../ui/scroll-area'
+import { ButtonGroup } from '../ui/button-group'
+import { useEffect } from 'react'
 
 function DialogView() {
   const { state } = useGameState((s) => s)
@@ -14,42 +16,52 @@ function DialogView() {
   const dialog = state.dialog
   const activeNode = dialog.nodes.find((n) => n.ID === dialog.activeNodeID)
   const context = newContext({ playerID })
+  useEffect(() => {
+    // console.log(state)
+  }, [state])
   return (
     <div className="flex-1 flex items-center justify-center px-16">
       <div className="flex flex-1 gap-4 items-center justify-center max-w-252">
         <Card className="h-108">
           <CardContent className="flex flex-col gap-2">
-            <ScrollArea className="flex-1 max-h-50">
+            <ScrollArea className="flex-1 max-h-38">
               {messageLog.map((message) => (
                 <p key={message.ID}>{message.text}</p>
               ))}
             </ScrollArea>
             <Separator />
             {activeNode && (
-              <div className="flex flex-col gap-2">
+              <>
                 {activeNode.messages(state, context).map((message) => (
                   <p key={message.ID}>{message.text}</p>
                 ))}
                 <Separator />
-                {activeNode
-                  .options(state, context)
-                  .filter((o) => o.action.validate(state, context))
-                  .map((option, i) =>
-                    option.type === 'static' ? (
-                      <DialogOptionStatic
-                        key={option.ID}
-                        index={i}
-                        option={option}
-                      />
-                    ) : (
-                      <DialogOptionDynamic
-                        key={option.ID}
-                        index={i}
-                        option={option}
-                      />
-                    )
-                  )}
-              </div>
+
+                <ButtonGroup
+                  orientation="vertical"
+                  className="flex flex-col gap-0 w-full"
+                >
+                  {activeNode
+                    .options(state, context)
+                    .map((option, i) =>
+                      option.type === 'static' ? (
+                        <DialogOptionStatic
+                          key={option.ID}
+                          index={i}
+                          option={option}
+                          disabled={!option.action.validate(state, context)}
+                        />
+                      ) : (
+                        <DialogOptionDynamic
+                          key={option.ID}
+                          index={i}
+                          option={option}
+                          disabled={!option.action.validate(state, context)}
+                        />
+                      )
+                    )}
+                </ButtonGroup>
+              </>
             )}
           </CardContent>
         </Card>

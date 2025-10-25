@@ -4,6 +4,7 @@ import { ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
+import { MAIN_STAT_ICONS } from '@/renderers/icons'
 
 function Actor({
   actor,
@@ -60,9 +61,20 @@ function Actor({
               }),
             }}
           />
-          <pre>
-            ({actor.stats.health - actor.state.damage}/{actor.stats.health})
-          </pre>
+          <div className="flex gap-3">
+            <div className="flex gap-1 items-center">
+              <MAIN_STAT_ICONS.body />
+              {actor.stats.body}
+            </div>
+            <div className="flex gap-1 items-center">
+              <MAIN_STAT_ICONS.reflexes />
+              {actor.stats.reflexes}
+            </div>
+            <div className="flex gap-1 items-center">
+              <MAIN_STAT_ICONS.intelligence />
+              {actor.stats.intelligence}
+            </div>
+          </div>
         </ItemContent>
       </Button>
       <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center">
@@ -76,11 +88,13 @@ function EnemyActor({
   actor,
   effects,
   active,
+  onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
   actor: SActor
   effects: Array<string>
   active: boolean
+  onClick: () => void
 }) {
   return (
     <div className="group relative flex flex-col justify-end w-48" {...rest}>
@@ -100,6 +114,7 @@ function EnemyActor({
         variant={active ? 'default' : 'secondary'}
         className="h-auto"
         disabled
+        onClick={onClick}
       >
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
@@ -110,9 +125,6 @@ function EnemyActor({
             }
             indicator={{ className: cn({ 'bg-background': active }) }}
           />
-          <pre>
-            ({actor.stats.health - actor.state.damage}/{actor.stats.health})
-          </pre>
         </ItemContent>
       </Button>
     </div>

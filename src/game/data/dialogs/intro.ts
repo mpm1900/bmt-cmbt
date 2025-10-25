@@ -3,8 +3,8 @@ import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
-import { Swap } from '../actions/_system/swap'
-import { getAliveInactiveActors } from '@/game/access'
+import { Activate, Deactivate } from '../actions/_system/swap'
+import { getAliveActiveActors, getAliveInactiveActors } from '@/game/access'
 import { NavigateDialog } from '../actions/_system/navigate-dialog'
 
 const Criminal = () =>
@@ -23,6 +23,12 @@ const IntroNode0: SDialogNode = {
   status: 'pre',
   pre: () => [],
   messages: () => [
+    {
+      ID: v4(),
+      type: '',
+      actorID: '',
+      text: 'Game start.',
+    },
     {
       ID: v4(),
       type: '',
@@ -47,8 +53,26 @@ const IntroNode0: SDialogNode = {
       text: 'Activate Actor',
       icons: '',
       context,
-      action: Swap,
+      action: Activate,
       options: getAliveInactiveActors(state, context).map((a) => {
+        return {
+          ID: a.ID,
+          text: a.name,
+          playerID: a.playerID,
+          sourceID: '',
+          targetIDs: [a.ID],
+          positions: [],
+        }
+      }),
+    },
+    {
+      ID: v4(),
+      type: 'dynamic',
+      text: 'Deactivate Actor',
+      icons: '',
+      context,
+      action: Deactivate,
+      options: getAliveActiveActors(state, context).map((a) => {
         return {
           ID: a.ID,
           text: a.name,

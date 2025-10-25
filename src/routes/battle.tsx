@@ -113,12 +113,12 @@ function RouteComponent() {
       {view === 'dialog' && <DialogView />}
 
       <div className="flex justify-start gap-2 m-2">
-        <div className="flex flex-col items-center px-4 gap-1">
-          <div className="flex self-center justify-self-center justify-center items-end gap-2">
+        <div className="flex flex-col items-center px-4">
+          <div className="flex gap-2 items-end">
             {player.activeActorIDs.map((actorID, i) => {
               if (!actorID)
                 return (
-                  <div key={i} className="flex flex-col gap-1">
+                  <div key={i} className="flex flex-col">
                     <Button
                       disabled
                       variant="outline"
@@ -126,8 +126,8 @@ function RouteComponent() {
                     >
                       inactive
                     </Button>
-                    <span className="uppercase font-bold text-sm text-muted-foreground/40 text-center opacity-0">
-                      -
+                    <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center opacity-0">
+                      ...
                     </span>
                   </div>
                 )

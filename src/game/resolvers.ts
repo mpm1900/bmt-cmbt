@@ -88,7 +88,7 @@ function pushMessagesResolver(
   messages: SDialogMessage[]
 ): SMutation {
   const delta: Delta<State> = {
-    apply: (state, context) => ({
+    apply: (state, _context) => ({
       ...state,
       messageLog: state.messageLog.concat(messages),
     }),
