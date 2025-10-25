@@ -1,0 +1,1 @@
+import{j as t,L as a}from"./index-BFfozIRP.js";function n(){return t.jsx("div",{className:"flex gap-4",children:t.jsx(a,{to:"/battle",children:"to battle d460048e-1012-42a7-a630-74620254ab07"})})}export{n as component};
