@@ -11,7 +11,6 @@ import {
   type NoTargetDialogOption,
   type SingleTargetDialogOption,
 } from './types/dialog'
-import { getAliveActiveActors } from './access'
 
 function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
   return {
@@ -46,7 +45,6 @@ function createStaticNavigationOption(
 }
 
 function createSourceNavigationOption(
-  state: State,
   option: Partial<SingleTargetDialogOption<State, SActor>>,
   nodeID: string,
   messages: Array<SDialogMessage>
@@ -64,17 +62,6 @@ function createSourceNavigationOption(
     text: null,
     icons: null,
     context: context as DialogOptionContext,
-    sourceOptions: getAliveActiveActors(state, context).map((a) => {
-      return {
-        ID: a.ID,
-        text: a.name,
-        playerID: a.playerID,
-        sourceID: a.ID,
-        targetIDs: [],
-        positions: [],
-      }
-    }),
-    targetOptions: [],
     action: NavigateSourceDialog(
       nodeID,
       messages.concat([
@@ -96,13 +83,16 @@ function validateSingleTargetDialogOption(
     return false
   }
   if (
-    option.targetOptions.length > 0 &&
+    option.action.targets.get(state, option.context).length > 0 &&
     option.context.targetIDs.length === 0
   ) {
     console.error('should have targets in context')
     return false
   }
-  if (option.sourceOptions.length > 0 && option.context.sourceID === '') {
+  if (
+    option.action.sources(state, option.context).length > 0 &&
+    option.context.sourceID === ''
+  ) {
     console.error('should have source in context')
     return false
   }

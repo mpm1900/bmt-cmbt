@@ -146,7 +146,6 @@ const IntroNode0: SDialogNode = {
       []
     ),
     createSourceNavigationOption(
-      state,
       {
         text: (
           <span className="font-semibold">"Go to other node but a quote"</span>

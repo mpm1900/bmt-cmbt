@@ -7,7 +7,7 @@ import {
 } from '../ui/dropdown-menu'
 import { InputGroupAddon } from '../ui/input-group'
 import { cn } from '@/lib/utils'
-import type { DialogOptionContext } from '@/game/types/dialog'
+import type { SActor } from '@/game/state'
 
 function DialogActorSelect({
   disabled,
@@ -19,33 +19,34 @@ function DialogActorSelect({
 }: ComponentProps<typeof DropdownMenu> & {
   disabled: boolean
   placeholder: ReactNode
-  options: Array<DialogOptionContext>
-  value: DialogOptionContext
-  onValueChange: (value: DialogOptionContext) => void
+  options: Array<SActor>
+  value: string
+  onValueChange: (value: string) => void
 }) {
   const [open, setOpen] = useState(false)
+  const selected = options.find((o) => o.ID === value)
   return (
     <DropdownMenu {...props} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <InputGroupAddon
           className={cn('hover:text-foreground opacity-60 hover:opacity-80', {
             italic: !value,
-            'text-foreground opacity-70': value.text,
+            'text-foreground opacity-70': selected?.name,
             'text-foreground opacity-90': open,
           })}
         >
-          {value.text || placeholder}
+          {selected?.name || placeholder}
         </InputGroupAddon>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        {options.map((context, i) => (
+        {options.map((o, i) => (
           <DropdownMenuItem
             key={i}
             onSelect={() => {
-              onValueChange(context)
+              onValueChange(o.ID)
             }}
           >
-            {context.text}
+            {o.name}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

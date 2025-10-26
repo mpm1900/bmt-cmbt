@@ -1,12 +1,12 @@
 import { pushMessagesResolver } from '@/game/resolvers'
-import type { SAction, State } from '@/game/state'
+import type { SDialogAction, State } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
 import type { DialogMessage } from '@/game/types/dialog'
 
 function withMessageLogs(
-  action: SAction,
+  action: SDialogAction,
   logFn: (state: State, context: DeltaContext) => Array<DialogMessage>
-): SAction {
+): SDialogAction {
   return {
     ...action,
     resolve: (state, context) => {

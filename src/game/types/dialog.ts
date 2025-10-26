@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { ActionQueueItem } from './action'
+import type { ActionQueueItem, DialogAction } from './action'
 import type { DeltaPositionContext, DeltaQueueItem } from './delta'
 
 type DialogCheck<T> = {
@@ -14,7 +14,7 @@ type DialogMessage = {
   text: ReactNode
 }
 
-type NoTargetDialogOption<T, A> = ActionQueueItem<T, A> & {
+type NoTargetDialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   type: 'no-target'
   text: ReactNode
   icons: ReactNode
@@ -26,13 +26,15 @@ type DialogOptionContextMeta = {
 }
 type DialogOptionContext = DeltaPositionContext & DialogOptionContextMeta
 
-type SingleTargetDialogOption<T, A> = ActionQueueItem<T, A> & {
+type SingleTargetDialogOption<T, A> = ActionQueueItem<
+  T,
+  A,
+  DialogAction<T, A>
+> & {
   type: 'single-target'
   text: ReactNode
   icons: ReactNode
   context: DialogOptionContext
-  sourceOptions: Array<DialogOptionContext>
-  targetOptions: Array<DialogOptionContext>
 }
 
 type DialogOption<T, A> =

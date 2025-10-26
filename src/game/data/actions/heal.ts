@@ -1,10 +1,10 @@
 import { getAliveActiveActors, mapTarget } from '@/game/access'
 import { withState } from '@/game/actor'
 import { mutateActorResolver } from '@/game/resolvers'
-import type { SAction } from '@/game/state'
+import type { SDialogAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-const Heal: SAction = {
+const Heal: SDialogAction = {
   ID: v4(),
   name: 'Heal',
   validate: (state, context) => getAliveActiveActors(state, context).length > 0,
@@ -14,6 +14,7 @@ const Heal: SAction = {
     get: (state, _context) => state.actors.map((a) => mapTarget(a, 'targetID')),
     validate: (_state, context) => context.targetIDs.length === 1,
   },
+  sources: (state, context) => getAliveActiveActors(state, context),
   resolve(_, context) {
     return [
       mutateActorResolver(context.targetIDs[0], context, (a) =>

@@ -28,13 +28,12 @@ function ActionSelectionCard({
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
     <Card className="w-172 gap-4">
-      {title ||
-        (breadcrumbs && (
-          <CardHeader>
-            {title && <CardTitle>{title}</CardTitle>}
-            {breadcrumbs}
-          </CardHeader>
-        ))}
+      {(title || breadcrumbs) && (
+        <CardHeader>
+          {title && <CardTitle>{title}</CardTitle>}
+          {breadcrumbs}
+        </CardHeader>
+      )}
       <CardContent className="grid grid-cols-2 gap-3">
         <ScrollArea className="max-h-90 pr-3">
           <div className="flex flex-col gap-2">

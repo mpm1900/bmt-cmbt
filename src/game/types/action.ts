@@ -29,10 +29,14 @@ type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
   ai?: ActionAI<T, A>
 }
 
-type ActionQueueItem<T, A> = {
+type DialogAction<T, A> = Action<T, A> & {
+  sources: (state: T, context: DeltaPositionContext) => Array<A>
+}
+
+type ActionQueueItem<T, A, N extends Action<T, A> = Action<T, A>> = {
   ID: string
   context: DeltaPositionContext
-  action: Action<T, A>
+  action: N
 }
 
 type PromptQueueItem<T, A> = ActionQueueItem<T, A> & {
@@ -44,6 +48,7 @@ type PromptQueue<T, A> = Queue<PromptQueueItem<T, A>>
 
 export type {
   Action,
+  DialogAction,
   ActionTarget,
   ActionTargetGenerator,
   ActionQueueItem,

@@ -9,10 +9,10 @@ import {
   activateActorResolver,
   deactivateActorResolver,
 } from '@/game/resolvers'
-import type { SAction } from '@/game/state'
+import type { SDialogAction } from '@/game/state'
 import { v4 } from 'uuid'
 
-const Swap: SAction = {
+const Swap: SDialogAction = {
   ID: v4(),
   name: 'Swap Actors',
   validate: (state, context) => {
@@ -33,6 +33,7 @@ const Swap: SAction = {
       return context.targetIDs.length === 1
     },
   },
+  sources: (state, context) => getAliveActiveActors(state, context),
   ai: {
     compute: (state, context) =>
       mapActor(state, context.targetIDs[0], (a) => 1000 - a.state.damage) ?? 0,
@@ -54,7 +55,7 @@ const Swap: SAction = {
   },
 }
 
-function SwapWith(count: number): SAction {
+function SwapWith(count: number): SDialogAction {
   return {
     ...Swap,
     targets: {
@@ -65,7 +66,7 @@ function SwapWith(count: number): SAction {
   }
 }
 
-const Activate: SAction = {
+const Activate: SDialogAction = {
   ...Swap,
   ID: v4(),
   name: 'Activate Actor',
@@ -94,7 +95,7 @@ const Activate: SAction = {
   },
 }
 
-function ActivateX(x: number): SAction {
+function ActivateX(x: number): SDialogAction {
   return {
     ...Activate,
     targets: {
@@ -105,7 +106,7 @@ function ActivateX(x: number): SAction {
   }
 }
 
-const Deactivate: SAction = {
+const Deactivate: SDialogAction = {
   ...Swap,
   ID: v4(),
   validate: (state, context) => {
@@ -127,6 +128,7 @@ const Deactivate: SAction = {
       deactivateActorResolver(context.playerID, context.targetIDs[0], context),
     ]
   },
+  sources: () => [],
 }
 
 export { Swap, SwapWith, Activate, ActivateX, Deactivate }

@@ -19,7 +19,6 @@ import { useGameUI } from '@/hooks/useGameUI'
 import { newContext } from '@/game/mutations'
 import { ArrowRight } from 'lucide-react'
 import { v4 } from 'uuid'
-import { findActor } from '@/game/access'
 
 function DialogOptionSingleTarget({
   className,
@@ -39,8 +38,8 @@ function DialogOptionSingleTarget({
   })
   const option = withContext(props.option, context)
   const disabled = !option.action.validate(state, context)
-  const source = findActor(state, context.sourceID)
-  const target = findActor(state, context.targetIDs[0])
+  const sourceOptions = option.action.sources(state, context)
+  const targetOptions = option.action.targets.get(state, context)
   return (
     <Button asChild size="sm">
       <InputGroup
@@ -59,21 +58,17 @@ function DialogOptionSingleTarget({
       >
         <InputGroupAddon>{index + 1}</InputGroupAddon>
 
-        {option.sourceOptions.length > 0 && (
+        {sourceOptions.length > 0 && (
           <>
             <DialogActorSelect
               disabled={disabled}
               placeholder={<>Source</>}
-              options={option.sourceOptions}
-              value={{
-                ...context,
-                text: source?.name ?? context.text,
-              }}
-              onValueChange={(c) =>
+              options={sourceOptions}
+              value={context.sourceID}
+              onValueChange={(sourceID) =>
                 setContext({
                   ...context,
-                  ID: c.ID,
-                  sourceID: c.sourceID,
+                  sourceID,
                 })
               }
             />
@@ -86,7 +81,7 @@ function DialogOptionSingleTarget({
 
         <InputGroupAddon>{option.text}</InputGroupAddon>
 
-        {option.targetOptions.length > 0 && (
+        {targetOptions.length > 0 && (
           <>
             <InputGroupAddon>
               <MdDoubleArrow />
@@ -95,16 +90,12 @@ function DialogOptionSingleTarget({
             <DialogActorSelect
               disabled={disabled}
               placeholder={<>Target</>}
-              options={option.targetOptions}
-              value={{
-                ...context,
-                text: target?.name ?? context.text,
-              }}
-              onValueChange={(c) =>
+              options={targetOptions.map((o) => o.target)}
+              value={context.targetIDs[0]}
+              onValueChange={(targetID) =>
                 setContext({
                   ...context,
-                  ID: c.ID,
-                  targetIDs: c.targetIDs,
+                  targetIDs: [targetID],
                 })
               }
             />

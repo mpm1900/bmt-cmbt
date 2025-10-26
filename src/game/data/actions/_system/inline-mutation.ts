@@ -1,10 +1,10 @@
-import type { SAction } from '@/game/state'
+import type { SDialogAction } from '@/game/state'
 import { v4 } from 'uuid'
 
 function InlineMutation(
-  resolve: SAction['resolve'],
-  validate: SAction['validate'] = () => true
-): SAction {
+  resolve: SDialogAction['resolve'],
+  validate: SDialogAction['validate'] = () => true
+): SDialogAction {
   return {
     ID: v4(),
     name: '',
@@ -14,6 +14,7 @@ function InlineMutation(
       validate: () => true,
       unique: false,
     },
+    sources: () => [],
     validate,
     resolve,
   }
