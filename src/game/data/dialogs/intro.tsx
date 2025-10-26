@@ -14,7 +14,11 @@ import { findActor, getAliveActiveActors } from '@/game/access'
 import { Heal } from '../actions/heal'
 import { newContext } from '@/game/mutations'
 
-const context = newContext({ playerID: '__player__' })
+const context = {
+  ID: v4(),
+  text: '',
+  ...newContext({ playerID: '__player__' }),
+}
 
 const Criminal = () =>
   createActor('Criminal', '__ai__', {
@@ -45,9 +49,9 @@ const IntroNode0: SDialogNode = {
   ],
   options: (state) => [
     {
-      ID: v4(),
+      ID: 'IntroNode0-Start-Combat',
       type: 'no-target',
-      text: <em className="font-light">Start Combat</em>,
+      text: <em>Start Combat</em>,
       icons: '',
       context,
       action: InlineMutation(() => [
@@ -57,9 +61,9 @@ const IntroNode0: SDialogNode = {
       ]),
     },
     {
-      ID: v4(),
+      ID: 'IntroNode0-Activate-Actor',
       type: 'single-target',
-      text: <em className="font-light">Activate Actor</em>,
+      text: <em>Activate Actor</em>,
       icons: '',
       context,
       action: withMessageLogs(Activate, (s, c) => [
@@ -80,9 +84,9 @@ const IntroNode0: SDialogNode = {
       }),
     },
     {
-      ID: v4(),
+      ID: 'IntroNode0-Deactivate-Actor',
       type: 'single-target',
-      text: <em className="font-light">Deactivate Actor</em>,
+      text: <em>Deactivate Actor</em>,
       icons: '',
       context,
       action: withMessageLogs(Deactivate, (s, c) => [
@@ -103,9 +107,9 @@ const IntroNode0: SDialogNode = {
       }),
     },
     {
-      ID: v4(),
+      ID: 'IntroNode0-Heal',
       type: 'single-target',
-      text: <em className="font-light">casts Heal on</em>,
+      text: <em>casts Heal on</em>,
       icons: '',
       context,
       action: withMessageLogs(Heal, (s, c) => [
@@ -136,7 +140,7 @@ const IntroNode0: SDialogNode = {
     },
     createStaticNavigationOption(
       {
-        text: <em className="font-light">Go to other node</em>,
+        text: <em>Go to other node</em>,
       },
       IntroNode1.ID,
       []
@@ -170,7 +174,7 @@ const IntroNode1: SDialogNode = {
   options: (_state) => [
     createStaticNavigationOption(
       {
-        text: <em className="font-light">Go back</em>,
+        text: <em>Go back</em>,
       },
       IntroNode0.ID,
       []

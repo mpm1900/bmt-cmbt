@@ -27,7 +27,9 @@ import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 
-function newContext(context: Partial<DeltaContext>): DeltaPositionContext {
+function newContext<T = {}>(
+  context: Partial<DeltaContext> & T
+): DeltaPositionContext & T {
   return {
     playerID: '',
     sourceID: '',

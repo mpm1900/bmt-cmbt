@@ -5,9 +5,11 @@ import {
 } from './data/actions/_system/navigate-dialog'
 import type { SActor, SDialogMessage, SDialogOption, State } from './state'
 import { newContext } from './mutations'
-import type {
-  NoTargetDialogOption,
-  SingleTargetDialogOption,
+import {
+  type DialogOptionContext,
+  type DialogOptionContextMeta,
+  type NoTargetDialogOption,
+  type SingleTargetDialogOption,
 } from './types/dialog'
 import { getAliveActiveActors } from './access'
 
@@ -49,13 +51,19 @@ function createSourceNavigationOption(
   nodeID: string,
   messages: Array<SDialogMessage>
 ): SingleTargetDialogOption<State, SActor> {
-  const { context = newContext({ playerID: '__player__' }) } = option
+  const {
+    context = newContext<DialogOptionContextMeta>({
+      playerID: '__player__',
+      text: '',
+      ID: '',
+    }),
+  } = option
   return {
     ID: v4(),
     type: 'single-target',
     text: null,
     icons: null,
-    context,
+    context: context as DialogOptionContext,
     sourceOptions: getAliveActiveActors(state, context).map((a) => {
       return {
         ID: a.ID,

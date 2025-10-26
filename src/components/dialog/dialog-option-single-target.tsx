@@ -1,7 +1,10 @@
 import { useState, type ComponentProps } from 'react'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
-import type { SingleTargetDialogOption } from '@/game/types/dialog'
+import {
+  type DialogOptionContextMeta,
+  type SingleTargetDialogOption,
+} from '@/game/types/dialog'
 import type { SActor, State } from '@/game/state'
 import {
   InputGroup,
@@ -13,14 +16,14 @@ import { useGameState } from '@/hooks/useGameState'
 import { DialogActorSelect } from './dialog-actor-select'
 import { validateSingleTargetDialogOption, withContext } from '@/game/dialog'
 import { useGameUI } from '@/hooks/useGameUI'
-import { findActor } from '@/game/access'
 import { newContext } from '@/game/mutations'
 import { ArrowRight } from 'lucide-react'
+import { v4 } from 'uuid'
+import { findActor } from '@/game/access'
 
 function DialogOptionSingleTarget({
   className,
   index,
-  option,
   ...props
 }: Partial<ComponentProps<'div'>> & {
   index: number
@@ -29,10 +32,15 @@ function DialogOptionSingleTarget({
   const state = useGameState((s) => s.state)
   const { playerID } = useGameUI((s) => s)
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
-  const [context, setContext] = useState(newContext({ playerID }))
-  option = withContext(option, context)
-  console.log(option)
+  const [context, setContext] = useState({
+    ...newContext({ playerID }),
+    text: '',
+    ID: v4(),
+  })
+  const option = withContext(props.option, context)
   const disabled = !option.action.validate(state, context)
+  const source = findActor(state, context.sourceID)
+  const target = findActor(state, context.targetIDs[0])
   return (
     <Button asChild size="sm">
       <InputGroup
@@ -50,64 +58,74 @@ function DialogOptionSingleTarget({
         {...props}
       >
         <InputGroupAddon>{index + 1}</InputGroupAddon>
+
         {option.sourceOptions.length > 0 && (
           <>
             <DialogActorSelect
               disabled={disabled}
-              placeholder={<>Select Source</>}
-              value={findActor(state, option.context.sourceID)?.name}
+              placeholder={<>Source</>}
               options={option.sourceOptions}
-              option={option}
-              onOptionChange={(next) => {
-                next = withContext(next, {
-                  ...option.context,
-                  sourceID: next.context.sourceID,
-                })
-
-                setContext(next.context)
+              value={{
+                ...context,
+                text: source?.name ?? context.text,
               }}
+              onValueChange={(c) =>
+                setContext({
+                  ...context,
+                  ID: c.ID,
+                  sourceID: c.sourceID,
+                })
+              }
             />
-            {!disabled && (
-              <InputGroupAddon>
-                <MdDoubleArrow />
-              </InputGroupAddon>
-            )}
+
+            <InputGroupAddon>
+              <MdDoubleArrow />
+            </InputGroupAddon>
           </>
         )}
+
         <InputGroupAddon>{option.text}</InputGroupAddon>
+
         {option.targetOptions.length > 0 && (
           <>
-            {!disabled && (
-              <InputGroupAddon>
-                <MdDoubleArrow />
-              </InputGroupAddon>
-            )}
+            <InputGroupAddon>
+              <MdDoubleArrow />
+            </InputGroupAddon>
 
             <DialogActorSelect
               disabled={disabled}
-              placeholder={<>Select Target</>}
-              value={findActor(state, option.context.targetIDs[0])?.name}
-              option={option}
+              placeholder={<>Target</>}
               options={option.targetOptions}
-              onOptionChange={(next) => {
-                next = withContext(next, {
-                  ...option.context,
-                  targetIDs: next.context.targetIDs,
-                })
-
-                setContext(next.context)
+              value={{
+                ...context,
+                text: target?.name ?? context.text,
               }}
+              onValueChange={(c) =>
+                setContext({
+                  ...context,
+                  ID: c.ID,
+                  targetIDs: c.targetIDs,
+                })
+              }
             />
           </>
         )}
+
         {validateSingleTargetDialogOption(state, option) && !disabled && (
-          <InputGroupAddon className="pl-8">
+          <InputGroupAddon className="pl-8 absolute right-3">
             <InputGroupButton
               size="xs"
               variant="default"
               className="cursor-pointer"
               onClick={() => {
                 resolveDialogOption(option)
+                setContext(
+                  newContext<DialogOptionContextMeta>({
+                    playerID,
+                    text: '',
+                    ID: '',
+                  })
+                )
               }}
             >
               Confirm
@@ -115,9 +133,6 @@ function DialogOptionSingleTarget({
             </InputGroupButton>
           </InputGroupAddon>
         )}
-        <InputGroupAddon className="hidden group-hover:block absolute right-3 opacity-50">
-          (0/{option.action.targets.max(state, option.context)})
-        </InputGroupAddon>
       </InputGroup>
     </Button>
   )
