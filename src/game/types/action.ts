@@ -25,6 +25,7 @@ type ActionAI<T, A> = {
 
 type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
   name: string
+  priority: number
   targets: ActionTargetGenerator<T, A>
   ai?: ActionAI<T, A>
 }

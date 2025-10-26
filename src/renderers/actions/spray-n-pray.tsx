@@ -3,6 +3,7 @@ import {
   SprayNPray,
   SprayNPrayAccuracy,
   SPrayNPrayCount,
+  SprayNPrayCritChance,
   SprayNPrayDamage,
 } from '@/game/data/actions/spray-n-pray'
 import { ELEMENT_ICONS, MAIN_STAT_ICONS } from '../icons'
@@ -15,9 +16,13 @@ const SprayNPrayRenderer: ActionRenderer = {
   Name: () => <div className="">Spray 'n Pray</div>,
   DescriptionShort: () => (
     <div>
-      Deals {SprayNPrayDamage.element} damage {SPrayNPrayCount} times. Testing
-      out a much longer description name to see how the lines break, hopefully
-      well.
+      Deals{' '}
+      <strong className="text-foreground">{SprayNPrayDamage.power}</strong>{' '}
+      power of{' '}
+      <strong className="text-foreground">{SprayNPrayDamage.element}</strong>{' '}
+      damage <strong className="text-foreground">{SPrayNPrayCount}</strong>{' '}
+      times. Testing out a much longer description name to see how the lines
+      break, hopefully well.
     </div>
   ),
   Icons: () => (
@@ -26,23 +31,13 @@ const SprayNPrayRenderer: ActionRenderer = {
       <StatIcon className="size-5" />
     </div>
   ),
-  Damage: () => (
-    <div>
-      <span>
-        (<span className="font-bold">{SprayNPrayDamage.power}</span>{' '}
-        <span className="text-muted-foreground"></span>x {SPrayNPrayCount}){' '}
-        {SprayNPrayAccuracy}%
-      </span>
+  Accuracy: () => `${SprayNPrayAccuracy}%`,
+  Critical: () => (
+    <div className="text-end">
+      <div>{SprayNPrayCritChance}%</div>
+      {/*<div className="text-xs">{SprayNPrayDamage.criticalModifier * 100}%</div>*/}
     </div>
   ),
-  /*
-  Critical: () => (
-    <div>
-      <span className="text-muted-foreground/80 text-xs">
-        (x{SprayNPrayDamage.criticalModifier * 100}%) {SprayNPrayCritChance}%
-      </span>
-    </div>
-  ),*/
 }
 
 export { SprayNPrayRenderer }

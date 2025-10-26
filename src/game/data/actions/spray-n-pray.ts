@@ -24,7 +24,8 @@ const SprayNPrayCritChance = 10
 
 const SprayNPray: SAction = {
   ID: v4(),
-  name: 'Magic Missile',
+  name: "Spray 'n Pray",
+  priority: 0,
   validate: () => true,
   targets: {
     unique: false,

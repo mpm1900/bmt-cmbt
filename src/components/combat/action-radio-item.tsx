@@ -6,6 +6,8 @@ import { Item, ItemActions, ItemContent } from '../ui/item'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
+import { AtSign } from 'lucide-react'
+import { FaDiceD20 } from 'react-icons/fa6'
 
 function ActionRadioItem({
   action,
@@ -34,7 +36,11 @@ function ActionRadioItem({
     >
       <Collapsible open={active}>
         {renderer && (
-          <ItemActions className="flex-col items-end float-right pb-1">
+          <ItemActions
+            className={cn('flex-col items-end float-right pl-3', {
+              'pb-2': active,
+            })}
+          >
             <div
               className={cn({
                 'text-muted-foreground': !active,
@@ -42,9 +48,19 @@ function ActionRadioItem({
             >
               <renderer.Icons />
             </div>
-            <CollapsibleContent className="flex flex-col items-end">
-              {renderer.Damage && <renderer.Damage />}
-              {renderer.Critical && <renderer.Critical />}
+            <CollapsibleContent className="flex flex-col items-end text-muted-foreground font-mono">
+              {renderer.Accuracy && (
+                <div className="flex items-center gap-1 font-black">
+                  <AtSign className="size-3.5" />
+                  <renderer.Accuracy />
+                </div>
+              )}
+              {renderer.Critical && (
+                <div className="flex items-center gap-1 opacity-60">
+                  <FaDiceD20 className="size-3.5" />
+                  <renderer.Critical />
+                </div>
+              )}
             </CollapsibleContent>
           </ItemActions>
         )}

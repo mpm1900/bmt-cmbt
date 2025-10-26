@@ -6,6 +6,7 @@ import { v4 } from 'uuid'
 const DragonDance: SAction = {
   ID: v4(),
   name: 'Dragon Dance',
+  priority: 0,
   validate: () => true,
   targets: {
     unique: true,

@@ -170,8 +170,22 @@ function handleTrigger(
   }
 }
 
+function sortPromptQueue(state: State): State {
+  const promptQueue = sort(state.promptQueue, (a, b) => {
+    return b.action.priority - a.action.priority
+  })
+
+  return {
+    ...state,
+    promptQueue,
+  }
+}
+
 function sortActionQueue(state: State): State {
   const actionQueue = sort(state.actionQueue, (a, b) => {
+    if (a.action.priority !== b.action.priority) {
+      return b.action.priority - a.action.priority
+    }
     const aSpe =
       mapActor(state, a.context.sourceID, (ac) => ac.stats.speed) ?? 0
     const bSpe =
@@ -295,7 +309,11 @@ function validateState(state: State): [State, boolean] {
           newContext({
             playerID: player.ID,
           }),
-          ActivateX(count)
+          {
+            ...ActivateX(count),
+            // TODO: hard-coded ai ID
+            priority: player.ID === '__ai__' ? 1 : 0,
+          }
         )
 
         valid = false
@@ -338,6 +356,7 @@ export {
   pushPrompt,
   resolvePrompt,
   handleTrigger,
+  sortPromptQueue,
   sortActionQueue,
   filterActionQueue,
   mutateActor,

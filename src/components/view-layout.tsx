@@ -9,8 +9,8 @@ function ViewLayout({
 }) {
   return (
     <div {...props} className="flex-1 flex items-center justify-center">
-      <div className="flex flex-1 items-center justify-center gap-4 w-252">
-        <Slot className="w-172">{props.main}</Slot>
+      <div className="flex flex-1 items-center justify-center gap-4 w-260">
+        <Slot className="w-180">{props.main}</Slot>
         <Slot className="w-80">{props.aside}</Slot>
       </div>
     </div>

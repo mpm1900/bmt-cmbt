@@ -8,6 +8,7 @@ function InlineMutation(
   return {
     ID: v4(),
     name: '',
+    priority: 0,
     targets: {
       get: () => [],
       max: () => 0,

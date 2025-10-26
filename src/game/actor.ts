@@ -174,7 +174,7 @@ function getStats(actor: SActor): ActorStats {
   const { accuracy, body, evasion, health, intelligence, reflexes, ...stats } =
     actor.stats
 
-  const accuracyModifier = reflexes
+  const accuracyModifier = 0
   const evasionModifier = 0
   const healthModifier = body
 

@@ -21,6 +21,7 @@ const BrainBlastDamage: PowerDamage = newDamage({
 const BrainBlast: SAction = {
   ID: v4(),
   name: 'Brain Blast',
+  priority: 0,
   validate: () => true,
   targets: {
     unique: true,

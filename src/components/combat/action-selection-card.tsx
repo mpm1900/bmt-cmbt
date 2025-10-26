@@ -27,7 +27,7 @@ function ActionSelectionCard({
 }) {
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card className="w-172 gap-4">
+    <Card className="w-180 gap-4">
       {(title || breadcrumbs) && (
         <CardHeader>
           {title && <CardTitle>{title}</CardTitle>}

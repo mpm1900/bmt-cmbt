@@ -1,5 +1,6 @@
 import {
   Fireball,
+  FireballAccuracy,
   FireballDamage,
   FireballTargetCount,
 } from '@/game/data/actions/fireball'
@@ -14,7 +15,10 @@ const FireballRenderer: ActionRenderer = {
   Name: () => <div className="">Fireball</div>,
   DescriptionShort: () => (
     <div>
-      Deals fire damage to {FireballTargetCount} targets simultaneously.
+      Deals <strong className="text-foreground">{FireballDamage.power}</strong>{' '}
+      power of <strong className="text-orange-300">fire</strong> damage to{' '}
+      <strong className="text-foreground">{FireballTargetCount}</strong> targets
+      simultaneously.
     </div>
   ),
   Icons: () => (
@@ -23,12 +27,8 @@ const FireballRenderer: ActionRenderer = {
       <StatIcon className="size-5" />
     </div>
   ),
-  Damage: () => (
-    <div>
-      <span className="font-bold">{FireballDamage.power}</span>{' '}
-      <span className="text-muted-foreground">@ {FireballTargetCount}</span>
-    </div>
-  ),
+  Accuracy: () => `${FireballAccuracy}%`,
+  Critical: () => `0%`,
 }
 
 export { FireballRenderer }

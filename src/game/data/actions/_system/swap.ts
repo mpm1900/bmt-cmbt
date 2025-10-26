@@ -10,11 +10,13 @@ import {
   deactivateActorResolver,
 } from '@/game/resolvers'
 import type { SDialogAction } from '@/game/state'
+import { getUniqueCombinations } from '@/lib/get-unique-combinations'
 import { v4 } from 'uuid'
 
 const Swap: SDialogAction = {
   ID: v4(),
   name: 'Swap Actors',
+  priority: 5,
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
     const valid = context.sourceID
@@ -103,6 +105,16 @@ function ActivateX(x: number): SDialogAction {
       ...Swap.targets,
       max: () => x,
       validate: (_state, context) => context.targetIDs.length === x,
+    },
+    ai: {
+      compute: Activate.ai!.compute,
+      generateContexts: (s, c, a) => {
+        const actors = a.targets.get(s, c)
+        return getUniqueCombinations(actors, x).map((targets) => ({
+          ...c,
+          targetIDs: targets.map((t) => t.target.ID),
+        }))
+      },
     },
   }
 }

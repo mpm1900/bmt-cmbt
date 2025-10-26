@@ -6,6 +6,7 @@ import {
   pushLogs,
   resolvePrompt,
   sortActionQueue,
+  sortPromptQueue,
   startDialog,
   validateState,
   withPhase,
@@ -132,6 +133,7 @@ function nextTurnPhase(state: State): State {
 }
 
 function nextAiPrompt(state: State): State {
+  state = sortPromptQueue(state)
   if (!state.promptQueue[0]) return state
 
   const { action, context } = state.promptQueue[0]

@@ -20,6 +20,7 @@ import { getPosition } from '@/game/player'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50
+const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
   offenseStat: 'intelligence',
   defenseStat: 'intelligence',
@@ -31,6 +32,7 @@ const FireballDamage: PowerDamage = newDamage({
 const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
+  priority: 0,
   validate: (state, context) =>
     !!mapActor(
       state,
@@ -71,7 +73,7 @@ const Fireball: SAction = {
   },
   resolve: (state, context) => {
     const source = getActor(state, context.sourceID)!
-    const sChance = getSourceChance(100, 0, source)
+    const sChance = getSourceChance(FireballAccuracy, 0, source)
     return [
       costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
       damagesResolver(
@@ -91,4 +93,4 @@ const Fireball: SAction = {
   },
 }
 
-export { Fireball, FireballDamage, FireballTargetCount }
+export { Fireball, FireballDamage, FireballTargetCount, FireballAccuracy }

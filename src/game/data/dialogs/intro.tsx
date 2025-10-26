@@ -109,7 +109,7 @@ const IntroNode0: SDialogNode = {
     {
       ID: 'IntroNode0-Heal',
       type: 'single-target',
-      text: <em>casts Heal on</em>,
+      text: <em>Heal</em>,
       icons: '',
       context,
       action: withMessageLogs(Heal, (s, c) => [
