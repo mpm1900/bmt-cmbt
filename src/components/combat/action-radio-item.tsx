@@ -43,7 +43,7 @@ function ActionRadioItem({
               <renderer.Icons />
             </div>
             <CollapsibleContent className="flex flex-col items-end">
-              <renderer.Damage />
+              {renderer.Damage && <renderer.Damage />}
               {renderer.Critical && <renderer.Critical />}
             </CollapsibleContent>
           </ItemActions>

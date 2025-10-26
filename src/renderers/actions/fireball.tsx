@@ -29,7 +29,6 @@ const FireballRenderer: ActionRenderer = {
       <span className="text-muted-foreground">@ {FireballTargetCount}</span>
     </div>
   ),
-  Critical: () => <></>,
 }
 
 export { FireballRenderer }

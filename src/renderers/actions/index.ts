@@ -5,7 +5,7 @@ type ActionRenderer = {
   Name: ComponentType
   DescriptionShort: ComponentType
   Icons: ComponentType
-  Damage: ComponentType
+  Damage?: ComponentType
   Critical?: ComponentType
 }
 

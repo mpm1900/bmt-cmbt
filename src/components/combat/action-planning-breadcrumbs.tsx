@@ -14,6 +14,13 @@ import {
 import type { SAction, SActor } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
+import {
+  findActor,
+  getAliveActiveActors,
+  nextAvailableAction,
+} from '@/game/access'
+import { newContext } from '@/game/mutations'
+import { Swap } from '@/game/data/actions/_system/swap'
 
 function ActionPlanningBreadcrumbs({
   source,
@@ -22,10 +29,14 @@ function ActionPlanningBreadcrumbs({
   source: SActor
   action: SAction | undefined
 }) {
-  const actors = useGameState((s) =>
-    s.state.actors.filter((a) => a.playerID === source.playerID)
+  const state = useGameState((s) => s.state)
+  const { set, view, playerID, activeActorID } = useGameUI((s) => s)
+  const active = findActor(state, activeActorID)
+  const actors = getAliveActiveActors(
+    state,
+    newContext({ playerID }),
+    (a) => a.ID !== activeActorID
   )
-  const { set, view } = useGameUI((s) => s)
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -38,7 +49,15 @@ function ActionPlanningBreadcrumbs({
               {actors.map((actor) => (
                 <DropdownMenuItem
                   key={actor.ID}
-                  onSelect={() => set({ activeActorID: actor.ID })}
+                  onSelect={() =>
+                    set({
+                      activeActorID: actor.ID,
+                      activeActionID:
+                        view === 'actions'
+                          ? nextAvailableAction(actor, state)?.ID
+                          : Swap.ID,
+                    })
+                  }
                 >
                   {actor.name}
                 </DropdownMenuItem>
@@ -58,10 +77,21 @@ function ActionPlanningBreadcrumbs({
               <DropdownMenuItem onSelect={() => set({ view: 'items' })}>
                 Items
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => set({ view: 'actions' })}>
+              <DropdownMenuItem
+                onSelect={() =>
+                  set({
+                    view: 'actions',
+                    activeActionID: nextAvailableAction(active, state)?.ID,
+                  })
+                }
+              >
                 Actions
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => set({ view: 'switch' })}>
+              <DropdownMenuItem
+                onSelect={() =>
+                  set({ view: 'switch', activeActionID: Swap.ID })
+                }
+              >
                 Switch
               </DropdownMenuItem>
             </DropdownMenuContent>
