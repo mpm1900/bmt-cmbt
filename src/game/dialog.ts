@@ -11,6 +11,7 @@ import {
   type NoTargetDialogOption,
   type SingleTargetDialogOption,
 } from './types/dialog'
+import type { DeltaPositionContext } from './types/delta'
 
 function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
   return {
@@ -23,7 +24,8 @@ function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
 
 function createStaticNavigationOption(
   option: Partial<NoTargetDialogOption<State, SActor>>,
-  toID: string,
+  context: DeltaPositionContext,
+  nodeID: string,
   messages: Array<SDialogMessage>
 ): NoTargetDialogOption<State, SActor> {
   return {
@@ -31,9 +33,9 @@ function createStaticNavigationOption(
     type: 'no-target',
     text: null,
     icons: null,
-    context: newContext({ playerID: '__player__' }),
+    context,
     action: NavigateDialog(
-      toID,
+      nodeID,
       messages.concat([
         newMessage({
           text: option.text,
@@ -79,7 +81,6 @@ function validateSingleTargetDialogOption(
   option: SingleTargetDialogOption<State, SActor>
 ): boolean {
   if (!option.action.targets.validate(state, option.context)) {
-    console.log('action validation failed', option.action, option.context)
     return false
   }
   if (

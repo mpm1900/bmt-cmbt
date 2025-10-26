@@ -1,15 +1,17 @@
-import { findActor, nextAvailableAction } from '@/game/access'
+import {
+  findActor,
+  getActiveActorIDs,
+  nextAvailableAction,
+} from '@/game/access'
 import type { State } from '@/game/state'
-import type { DeltaPositionContext } from '@/game/types/delta'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
+import { playerStore } from './usePlayer'
 
 type GameUIState = {
-  playerID: string
   view: 'actions' | 'items' | 'switch' | 'dialog'
   activeActorID: string | undefined
   activeActionID: string | undefined
-  stagingContext: DeltaPositionContext | undefined
 }
 
 type GameUIStore = GameUIState & {
@@ -17,32 +19,26 @@ type GameUIStore = GameUIState & {
   resetActive: (game: State) => void
 }
 
-const gameUIStore = createStore<GameUIStore>((set, get) => {
+const gameUIStore = createStore<GameUIStore>((set) => {
   return {
-    playerID: '__player__',
     view: 'dialog',
     activeActorID: undefined,
     activeActionID: undefined,
-    stagingContext: undefined,
     set: (state: Partial<GameUIState>) => set(state),
     resetActive: (game: State) => {
-      const state = get()
-      const playerID = state.playerID
-      const player = game.players.find((p) => p.ID === playerID)!
-      const nextActorID = player.activeActorIDs.find(
+      const nextActorID = getActiveActorIDs(
+        game,
+        playerStore.getState().playerID
+      ).find(
         (a) =>
           a !== null && !game.actionQueue.find((q) => q.context.sourceID === a)
       )
-      if (nextActorID) {
-        set({
-          activeActorID: nextActorID,
-          activeActionID: nextAvailableAction(
-            findActor(game, nextActorID),
-            game
-          )?.ID,
-          stagingContext: undefined,
-        })
-      }
+      if (!nextActorID) return
+      set({
+        activeActorID: nextActorID,
+        activeActionID: nextAvailableAction(findActor(game, nextActorID), game)
+          ?.ID,
+      })
     },
   }
 })

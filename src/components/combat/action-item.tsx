@@ -5,21 +5,23 @@ import { ACTION_RENDERERS } from '@/renderers'
 import { Item, ItemActions, ItemContent } from '../ui/item'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { useGameState } from '@/hooks/useGameState'
-import { useGameUI } from '@/hooks/useGameUI'
 import { AtSign } from 'lucide-react'
 import { FaDiceD20 } from 'react-icons/fa6'
+import type { DeltaPositionContext } from '@/game/types/delta'
 
-function ActionRadioItem({
+function ActionItem({
   action,
+  context,
   active,
   onActiveChange,
 }: {
   action: SAction
+  context: DeltaPositionContext
   active: boolean
   onActiveChange: (active: boolean) => void
 }) {
   const state = useGameState((s) => s.state)
-  const context = useGameUI((s) => s.stagingContext)
+
   const disabled = context && !action.validate(state, context)
   const renderer = ACTION_RENDERERS[action.ID]
   return (
@@ -84,4 +86,4 @@ function ActionRadioItem({
   )
 }
 
-export { ActionRadioItem }
+export { ActionItem }

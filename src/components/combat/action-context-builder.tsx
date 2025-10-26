@@ -13,7 +13,6 @@ import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { useGameUI } from '@/hooks/useGameUI'
 import { ACTION_RENDERERS } from '@/renderers'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
@@ -208,40 +207,39 @@ function UniqueTargetGenerator({
   )
 }
 
-function ActionContextGenerator({
+function ActionContextBuilder({
   playerID,
   action,
   sourceID,
+  context,
+  onContextChange,
   onContextConfirm,
 }: {
   playerID: string
   action: SAction
   sourceID: string | undefined
+  context: DeltaPositionContext
+  onContextChange: (context: DeltaPositionContext) => void
   onContextConfirm: (context: DeltaPositionContext) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { stagingContext, set: setUI } = useGameUI((s) => s)
 
   useEffect(() => {
-    setUI({
-      stagingContext: {
-        playerID,
-        sourceID: sourceID ?? '',
-        positions: [],
-        targetIDs: [],
-      },
+    onContextChange({
+      playerID,
+      sourceID: sourceID ?? '',
+      positions: [],
+      targetIDs: [],
     })
   }, [sourceID, action.ID])
 
-  if (!stagingContext) return null
-
   const renderer = ACTION_RENDERERS[action.ID]
-  const max = action.targets.max(state, stagingContext)
+  const max = action.targets.max(state, context)
   const maxP = !action.targets.unique
     ? max
-    : Math.min(max, action.targets.get(state, stagingContext).length)
-  const ready = action.targets.validate(state, stagingContext)
-  const selectedTargets = getSelectedCount(stagingContext)
+    : Math.min(max, action.targets.get(state, context).length)
+  const ready = action.targets.validate(state, context)
+  const selectedTargets = getSelectedCount(context)
   const done = max === selectedTargets
 
   return (
@@ -260,16 +258,16 @@ function ActionContextGenerator({
             <DuplicateTargetGenerator
               action={action}
               state={state}
-              context={stagingContext}
-              onContextChange={(c) => setUI({ stagingContext: c })}
+              context={context}
+              onContextChange={onContextChange}
             />
           )}
           {action.targets.unique && (
             <UniqueTargetGenerator
               action={action}
               state={state}
-              context={stagingContext}
-              onContextChange={(c) => setUI({ stagingContext: c })}
+              context={context}
+              onContextChange={onContextChange}
             />
           )}
         </div>
@@ -290,7 +288,7 @@ function ActionContextGenerator({
         {ready && (
           <Button
             variant={done ? 'default' : 'secondary'}
-            onClick={() => onContextConfirm(stagingContext)}
+            onClick={() => onContextConfirm(context)}
           >
             Confirm
             <ArrowRight />
@@ -301,4 +299,4 @@ function ActionContextGenerator({
   )
 }
 
-export { getSelectedCount, ActionContextGenerator }
+export { getSelectedCount, ActionContextBuilder }

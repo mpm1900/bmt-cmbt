@@ -4,6 +4,7 @@ import { ActionPlanningBreadcrumbs } from './action-planning-breadcrumbs'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
+import { CardHeader } from '../ui/card'
 
 function PhasePlanning() {
   const { state, pushAction } = useGameState((store) => store)
@@ -31,13 +32,14 @@ function PhasePlanning() {
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => pushAction(action, context)}
-          breadcrumbs={
+        >
+          <CardHeader>
             <ActionPlanningBreadcrumbs
               source={activeActor}
               action={activeAction}
             />
-          }
-        />
+          </CardHeader>
+        </ActionSelectionCard>
       )}
       {view === 'switch' && (
         <ActionSelectionCard
@@ -51,13 +53,14 @@ function PhasePlanning() {
             setUI({ view: 'actions' })
             resetActive(state)
           }}
-          breadcrumbs={
+        >
+          <CardHeader>
             <ActionPlanningBreadcrumbs
               source={activeActor}
               action={activeAction}
             />
-          }
-        />
+          </CardHeader>
+        </ActionSelectionCard>
       )}
     </>
   )

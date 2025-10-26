@@ -15,10 +15,10 @@ import { MdDoubleArrow } from 'react-icons/md'
 import { useGameState } from '@/hooks/useGameState'
 import { DialogActorSelect } from './dialog-actor-select'
 import { validateSingleTargetDialogOption, withContext } from '@/game/dialog'
-import { useGameUI } from '@/hooks/useGameUI'
 import { newContext } from '@/game/mutations'
 import { ArrowRight } from 'lucide-react'
 import { v4 } from 'uuid'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function DialogOptionSingleTarget({
   className,
@@ -29,7 +29,7 @@ function DialogOptionSingleTarget({
   option: SingleTargetDialogOption<State, SActor>
 }) {
   const state = useGameState((s) => s.state)
-  const { playerID } = useGameUI((s) => s)
+  const playerID = usePlayerID()
   const resolveDialogOption = useGameState((s) => s.resolveDialogOption)
   const [context, setContext] = useState({
     ...newContext({ playerID }),

@@ -15,13 +15,12 @@ function DialogNextController() {
   const next = useGameState((s) => s.next)
   const run = hasNext(state)
   useEffect(() => {
-    if (run) {
-      const interval = setInterval(() => {
-        next()
-      }, 0)
+    if (!run) return
+    const interval = setInterval(() => {
+      next()
+    }, 0)
 
-      return () => clearInterval(interval)
-    }
+    return () => clearInterval(interval)
   }, [run])
   return null
 }

@@ -4,7 +4,7 @@ import { Button } from '../ui/button'
 import { Circle, Target } from 'lucide-react'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import type { SAction, State } from '@/game/state'
-import { getSelectedCount } from './action-context-generator'
+import { getSelectedCount } from './action-context-builder'
 
 function ActionRepeatPages({
   state,

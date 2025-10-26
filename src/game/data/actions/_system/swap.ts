@@ -71,7 +71,7 @@ function SwapWith(count: number): SDialogAction {
 const Activate: SDialogAction = {
   ...Swap,
   ID: v4(),
-  name: 'Activate Actor',
+  name: 'Activate',
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
 

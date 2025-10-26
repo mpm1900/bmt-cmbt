@@ -16,6 +16,7 @@ import { nextAvailableAction, withStatEffects } from '@/game/access'
 import { DialogView } from '@/components/dialog/dialog-view'
 import { cn } from '@/lib/utils'
 import { DialogController } from '@/components/dialog/dialog-controller'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -31,11 +32,11 @@ function RouteComponent() {
   const {
     activeActorID,
     activeActionID,
-    playerID,
     view,
     set: setUI,
   } = useGameUI((s) => s)
 
+  const playerID = usePlayerID()
   const player = state.players.find((p) => p.ID === playerID)!
   const ai = state.players.find((p) => p.ID !== playerID)!
 
@@ -118,8 +119,7 @@ function RouteComponent() {
       )}
 
       {state.combat && <CombatView />}
-      {view === 'dialog' && <DialogView />}
-      {!state.combat && view !== 'dialog' && <div className="flex-1" />}
+      {!state.combat && <DialogView />}
 
       <div className="flex justify-start gap-2 m-2">
         <div className="flex flex-col items-center px-4">

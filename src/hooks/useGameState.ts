@@ -1,6 +1,6 @@
 import { Goku } from '@/game/data/effects/Goku'
 import type { DeltaPositionContext } from '@/game/types/delta'
-import { flush, next, nextTurnPhase } from '@/game/next'
+import { next, nextTurnPhase } from '@/game/next'
 import type { SAction, SDialogOption, State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
@@ -14,21 +14,30 @@ import {
 import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
 import { IntroDialog } from '@/game/data/dialogs/intro'
-import { navigateDialogResolver } from '@/game/resolvers'
+import { playerStore } from './usePlayer'
 
 type GameStateStore = {
   state: State
-  setActiveDialogNodeID: (activeNodeID: string) => void
   pushAction: (action: SAction, context: DeltaPositionContext) => void
   resolvePrompt: (context: DeltaPositionContext) => void
   resolveDialogOption: (option: SDialogOption) => void
   next: () => void
-  flush: () => void
   nextPhase: () => void
-  deleteCombat: () => void
+  deleteCombat: (encounterID: string) => void
 }
 
-const Max = createActor('Max', '__player__', {
+const player: Player = {
+  ID: playerStore.getState().playerID,
+  activeActorIDs: [null, null, null],
+  items: [
+    {
+      ID: v4(),
+      name: 'Gun',
+    },
+  ],
+}
+
+const Max = createActor('Max', player.ID, {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -38,7 +47,7 @@ const Max = createActor('Max', '__player__', {
   speed: 100,
 })
 Max.state.damage = 20
-const Katie = createActor('Katie', '__player__', {
+const Katie = createActor('Katie', player.ID, {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -47,7 +56,7 @@ const Katie = createActor('Katie', '__player__', {
   intelligence: 180,
   speed: 70,
 })
-const Hank = createActor('Hank', '__player__', {
+const Hank = createActor('Hank', player.ID, {
   accuracy: 0,
   body: 180,
   evasion: 100,
@@ -56,7 +65,7 @@ const Hank = createActor('Hank', '__player__', {
   reflexes: 150,
   speed: 150,
 })
-const Milo = createActor('Milo', '__player__', {
+const Milo = createActor('Milo', player.ID, {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -66,17 +75,8 @@ const Milo = createActor('Milo', '__player__', {
   speed: 100,
 })
 
-const player: Player = {
-  ID: '__player__',
-  activeActorIDs: [null, null, null],
-}
-const computer: Player = {
-  ID: '__ai__',
-  activeActorIDs: [null, null, null],
-}
-
 const initialState: State = {
-  players: [computer, player],
+  players: [player],
   combat: undefined, //createCombat(),
   dialog: IntroDialog,
   actors: [Max, Katie, Hank, Milo],
@@ -100,32 +100,19 @@ const initialState: State = {
 
 const gameStateStore = createStore<GameStateStore>((set) => ({
   state: initialState,
-  setActiveDialogNodeID: (activeNodeID: string) => {
-    set(({ state }) => {
-      const mutation = navigateDialogResolver(activeNodeID)
-      const next = mutation.delta.apply(state, mutation.context)
-      return { state: next }
-    })
-  },
   pushAction: (action, context) => {
     set(({ state }) => ({
       state: addActionToQueue(state, context, action),
     }))
   },
   resolvePrompt: (context) => {
-    set(({ state }) => {
-      state = resolvePrompt(state, context)
-      return { state }
-    })
+    set(({ state }) => ({
+      state: resolvePrompt(state, context),
+    }))
   },
   next: () => {
     set(({ state }) => ({
       state: next(state),
-    }))
-  },
-  flush: () => {
-    set(({ state }) => ({
-      state: flush(state),
     }))
   },
   nextPhase: () => {
@@ -142,7 +129,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       return { state }
     })
   },
-  deleteCombat: () => {
+  deleteCombat: (encounterID: string) => {
     set(({ state }) => ({
       state: {
         ...state,
@@ -151,9 +138,9 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
         triggerQueue: [],
         mutationQueue: [],
         promptQueue: [],
-        // TODO: hard-coded ai player ID
+        players: state.players.filter((p) => p.ID !== encounterID),
         actors: state.actors.filter(
-          (a) => a.playerID !== '__ai__' && a.state.alive
+          (a) => a.playerID !== encounterID && a.state.alive
         ),
       },
     }))

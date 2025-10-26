@@ -21,6 +21,7 @@ import {
 } from '@/game/access'
 import { newContext } from '@/game/mutations'
 import { Swap } from '@/game/data/actions/_system/swap'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function ActionPlanningBreadcrumbs({
   source,
@@ -30,7 +31,8 @@ function ActionPlanningBreadcrumbs({
   action: SAction | undefined
 }) {
   const state = useGameState((s) => s.state)
-  const { set, view, playerID, activeActorID } = useGameUI((s) => s)
+  const { set, view, activeActorID } = useGameUI((s) => s)
+  const playerID = usePlayerID()
   const active = findActor(state, activeActorID)
   const actors = getAliveActiveActors(
     state,

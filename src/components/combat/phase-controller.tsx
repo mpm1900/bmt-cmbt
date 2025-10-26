@@ -4,24 +4,25 @@ import { useEffect } from 'react'
 
 function PhaseController() {
   const phase = useGameState((s) => s.state.combat?.phase)
-  const next = useGameState((s) => s.next)
 
   switch (phase) {
     case 'start':
-      return <StartPhaseController next={next} />
+      return <StartPhaseController />
     case 'planning':
       return <PlanningPhaseController />
     case 'main':
-      return <MainPhaseController next={next} />
+      return <MainPhaseController />
     case 'end':
     case 'pre':
-      return <EndPhaseController next={next} />
+      return <EndPhaseController />
     default:
       return null
   }
 }
 
-function StartPhaseController({ next }: { next: () => void }) {
+function StartPhaseController() {
+  const next = useGameState((s) => s.next)
+
   useEffect(() => {
     const interval = setInterval(() => {
       next()
@@ -42,7 +43,9 @@ function PlanningPhaseController() {
   return null
 }
 
-function MainPhaseController({ next }: { next: () => void }) {
+function MainPhaseController() {
+  const next = useGameState((s) => s.next)
+
   useEffect(() => {
     const interval = setInterval(() => {
       next()
@@ -53,7 +56,9 @@ function MainPhaseController({ next }: { next: () => void }) {
   return null
 }
 
-function EndPhaseController({ next }: { next: () => void }) {
+function EndPhaseController() {
+  const next = useGameState((s) => s.next)
+
   useEffect(() => {
     const interval = setInterval(() => {
       next()

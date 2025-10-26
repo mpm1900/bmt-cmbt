@@ -27,7 +27,7 @@ function ViewSelector() {
         variant={view === 'items' ? 'default' : 'secondary'}
         size="icon-lg"
         onClick={() => set({ view: 'items' })}
-        disabled={!isPlanning}
+        disabled={state.combat && !isPlanning}
       >
         <Box />
       </Button>

@@ -1,7 +1,7 @@
 import type { SAction, SActor, State } from '@/game/state'
 import type { ActionTarget } from '@/game/types/action'
 import type { DeltaPositionContext } from '@/game/types/delta'
-import { getSelectedCount } from './action-context-generator'
+import { getSelectedCount } from './action-context-builder'
 import { getPosition, positionEquals } from '@/game/player'
 import { Button } from '../ui/button'
 import { Target } from 'lucide-react'

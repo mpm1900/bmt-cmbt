@@ -318,13 +318,14 @@ function startCombatResolver(
     context: newContext({}),
     delta: {
       apply: (state, _context) => {
-        const { actors = [], ...rest } = preState
+        const { actors = [], players = [], ...rest } = preState
         return {
           ...state,
           actionQueue: [],
           triggerQueue: [],
           mutationQueue: [],
           promptQueue: [],
+          players: state.players.concat(players),
           actors: state.actors.concat(actors),
           combat,
           combatLog: ['Combat started.'],

@@ -311,8 +311,7 @@ function validateState(state: State): [State, boolean] {
           }),
           {
             ...ActivateX(count),
-            // TODO: hard-coded ai ID
-            priority: player.ID === '__ai__' ? 1 : 0,
+            priority: player.ID === state.dialog.activeNodeID ? 1 : 0,
           }
         )
 

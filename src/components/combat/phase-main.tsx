@@ -2,14 +2,18 @@ import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
 import { usePrevious } from '@uidotdev/usehooks'
+import { CardHeader, CardTitle } from '../ui/card'
 
 function PhaseMain() {
   const { state, resolvePrompt } = useGameState((s) => s)
-  const prev = usePrevious(state.actionQueue[0])
-  const aitem = prev ?? state.actionQueue[0]
-  if (state.promptQueue[0]) {
-    const action = state.promptQueue[0].action
-    const context = state.promptQueue[0].context
+  const action = state.actionQueue[0]
+  const prompt = state.promptQueue[0]
+  const prev = usePrevious(action)
+  const aitem = prev ?? action
+
+  if (prompt) {
+    const action = prompt.action
+    const context = prompt.context
     const source = getActor(state, context.sourceID)
     // TODO: Action cannot change
     return (
@@ -22,9 +26,11 @@ function PhaseMain() {
         onActionConfirm={(_action, context) => {
           resolvePrompt(context)
         }}
-        title="Select a character to activate"
-        breadcrumbs={<></>}
-      />
+      >
+        <CardHeader>
+          <CardTitle>Select Character(s)</CardTitle>
+        </CardHeader>
+      </ActionSelectionCard>
     )
   }
 

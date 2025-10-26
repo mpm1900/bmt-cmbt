@@ -3,7 +3,7 @@ import type { ActionTarget } from '@/game/types/action'
 import { Button } from '../ui/button'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { getPosition, positionEquals } from '@/game/player'
-import { getSelectedCount } from './action-context-generator'
+import { getSelectedCount } from './action-context-builder'
 
 function ActionUniqueTargetButton({
   state,

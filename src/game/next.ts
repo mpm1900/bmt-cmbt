@@ -104,8 +104,9 @@ function nextTurnPhase(state: State): State {
   }
 
   if (phase === 'planning') {
-    // TODO: hard-coded player ID
-    const player = state.players.find((p) => p.ID === '__ai__')!
+    const player = state.players.find(
+      (p) => p.ID === state.dialog.activeNodeID
+    )!
     player.activeActorIDs.forEach((id) => {
       if (!id) return
 
@@ -137,8 +138,7 @@ function nextAiPrompt(state: State): State {
   if (!state.promptQueue[0]) return state
 
   const { action, context } = state.promptQueue[0]
-  // TODO: hard-coded player ID
-  if (context.playerID !== '__ai__' || !action.ai) return state
+  if (context.playerID !== state.dialog.activeNodeID || !action.ai) return state
   const contexts = action.ai
     .generateContexts(state, context, action)
     .map((c) => [c, action.ai!.compute(state, c)] as const)
@@ -186,7 +186,8 @@ function hasNext(state: State): boolean {
     state.dialog.activeNodeID === undefined ||
     state.mutationQueue.length > 0 ||
     state.triggerQueue.length > 0 ||
-    (state.actionQueue.length > 0 && state.promptQueue.length === 0)
+    (state.actionQueue.length > 0 && state.promptQueue.length === 0) ||
+    state.promptQueue[0]?.context.playerID === state.dialog.activeNodeID
   )
 }
 

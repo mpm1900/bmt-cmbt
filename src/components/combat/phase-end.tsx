@@ -1,21 +1,21 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
-import { useGameUI } from '@/hooks/useGameUI'
+import { CardHeader, CardTitle } from '../ui/card'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function PhaseEnd() {
   const { state, resolvePrompt } = useGameState((s) => s)
-  const { playerID } = useGameUI((s) => s)
-  if (
-    state.promptQueue[0] &&
-    state.promptQueue[0].context.playerID === playerID
-  ) {
-    const action = state.promptQueue[0].action
-    const context = state.promptQueue[0].context
+  const playerID = usePlayerID()
+  const prompt = state.promptQueue[0]
+
+  if (prompt && prompt.context.playerID === playerID) {
+    const action = prompt.action
+    const context = prompt.context
     const source = getActor(state, context.sourceID)
     return (
       <ActionSelectionCard
-        key={state.promptQueue[0].ID}
+        key={prompt.ID}
         playerID={context.playerID}
         source={source}
         actions={[action]}
@@ -24,9 +24,11 @@ function PhaseEnd() {
         onActionConfirm={(_action, context) => {
           resolvePrompt(context)
         }}
-        title="Select character(s) to activate"
-        breadcrumbs={<></>}
-      />
+      >
+        <CardHeader>
+          <CardTitle>Select Character(s)</CardTitle>
+        </CardHeader>
+      </ActionSelectionCard>
     )
   }
 

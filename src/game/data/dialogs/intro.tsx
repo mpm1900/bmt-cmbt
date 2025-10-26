@@ -10,18 +10,21 @@ import {
   newMessage,
 } from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
-import { findActor, getAliveActiveActors } from '@/game/access'
+import { findActor } from '@/game/access'
 import { Heal } from '../actions/heal'
 import { newContext } from '@/game/mutations'
+import { playerStore } from '@/hooks/usePlayer'
+
+const playerID = playerStore.getState().playerID
 
 const context = {
   ID: v4(),
   text: '',
-  ...newContext({ playerID: '__player__' }),
+  ...newContext({ playerID }),
 }
 
-const Criminal = () =>
-  createActor('Criminal', '__ai__', {
+const Criminal = (aiID: string) =>
+  createActor('Criminal', aiID, {
     accuracy: 0,
     body: 100,
     evasion: 0,
@@ -31,10 +34,9 @@ const Criminal = () =>
     speed: 100,
   })
 
+const IntroNode0ID = v4()
 const IntroNode0: SDialogNode = {
-  ID: v4(),
-  status: 'pre',
-  pre: () => [],
+  ID: IntroNode0ID,
   messages: () => [
     {
       ID: 'IntroNode0-0',
@@ -47,7 +49,7 @@ const IntroNode0: SDialogNode = {
       text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
     },
   ],
-  options: (state) => [
+  options: () => [
     {
       ID: 'IntroNode0-Start-Combat',
       type: 'no-target',
@@ -56,14 +58,21 @@ const IntroNode0: SDialogNode = {
       context,
       action: InlineMutation(() => [
         startCombatResolver(createCombat(), {
-          actors: [Criminal(), Criminal()],
+          players: [
+            {
+              ID: IntroNode0ID,
+              activeActorIDs: [null, null, null],
+              items: [],
+            },
+          ],
+          actors: [Criminal(IntroNode0ID), Criminal(IntroNode0ID)],
         }),
       ]),
     },
     {
       ID: 'IntroNode0-Activate-Actor',
       type: 'single-target',
-      text: <em>Activate Actor</em>,
+      text: <em>Activate</em>,
       icons: '',
       context,
       action: withMessageLogs(Activate, (s, c) => [
@@ -71,22 +80,11 @@ const IntroNode0: SDialogNode = {
           text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
         }),
       ]),
-      sourceOptions: [],
-      targetOptions: Activate.targets.get(state, context).map((a) => {
-        return {
-          ID: a.ID,
-          text: a.target.name,
-          playerID: a.target.playerID,
-          sourceID: '',
-          targetIDs: [a.target.ID],
-          positions: [],
-        }
-      }),
     },
     {
       ID: 'IntroNode0-Deactivate-Actor',
       type: 'single-target',
-      text: <em>Deactivate Actor</em>,
+      text: <em>Deactivate</em>,
       icons: '',
       context,
       action: withMessageLogs(Deactivate, (s, c) => [
@@ -94,17 +92,6 @@ const IntroNode0: SDialogNode = {
           text: `${findActor(s, c.targetIDs[0])?.name} deactivated.`,
         }),
       ]),
-      sourceOptions: [],
-      targetOptions: Deactivate.targets.get(state, context).map((a) => {
-        return {
-          ID: a.ID,
-          text: a.target.name,
-          playerID: a.target.playerID,
-          sourceID: '',
-          targetIDs: [a.target.ID],
-          positions: [],
-        }
-      }),
     },
     {
       ID: 'IntroNode0-Heal',
@@ -117,31 +104,12 @@ const IntroNode0: SDialogNode = {
           text: `${findActor(s, c.targetIDs[0])?.name} healed.`,
         }),
       ]),
-      sourceOptions: getAliveActiveActors(state, context).map((a) => {
-        return {
-          ID: a.ID,
-          text: a.name,
-          playerID: a.playerID,
-          sourceID: a.ID,
-          targetIDs: [],
-          positions: [],
-        }
-      }),
-      targetOptions: Heal.targets.get(state, context).map((a) => {
-        return {
-          ID: a.ID,
-          text: a.target.name,
-          playerID: a.target.playerID,
-          sourceID: '',
-          targetIDs: [a.target.ID],
-          positions: [],
-        }
-      }),
     },
     createStaticNavigationOption(
       {
         text: <em>Go to other node</em>,
       },
+      context,
       IntroNode1.ID,
       []
     ),
@@ -155,13 +123,10 @@ const IntroNode0: SDialogNode = {
       []
     ),
   ],
-  post: () => [],
 }
 
 const IntroNode1: SDialogNode = {
   ID: v4(),
-  status: 'pre',
-  pre: () => [],
   messages: () => [
     {
       ID: 'IntroNode1-0',
@@ -175,11 +140,11 @@ const IntroNode1: SDialogNode = {
       {
         text: <em>Go back</em>,
       },
+      context,
       IntroNode0.ID,
       []
     ),
   ],
-  post: () => [],
 }
 
 const IntroDialog: SDialog = {
