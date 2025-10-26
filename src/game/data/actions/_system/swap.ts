@@ -88,6 +88,7 @@ const Activate: SDialogAction = {
       return context.targetIDs.length === 1
     },
   },
+  sources: () => [],
   resolve: (_, context) => {
     return context.targetIDs.map((id) =>
       activateActorResolver(context.playerID, id, context)
