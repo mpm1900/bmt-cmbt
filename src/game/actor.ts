@@ -96,7 +96,7 @@ function getTargetChance(target: SActor): ChanceEvent {
 }
 
 function getDamageResult(
-  source: SActor,
+  source: SActor | undefined,
   target: SActor,
   damage: Damage
 ): number {
@@ -105,6 +105,7 @@ function getDamageResult(
   }
 
   if (damage.type === 'power') {
+    if (!source) return 0
     const sourceStat = source.stats[damage.offenseStat]
     const targetStat = target.stats[damage.defenseStat]
     const ratio = sourceStat / targetStat

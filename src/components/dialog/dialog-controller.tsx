@@ -18,7 +18,7 @@ function DialogNextController() {
     if (!run) return
     const interval = setInterval(() => {
       next()
-    }, 0)
+    }, 100)
 
     return () => clearInterval(interval)
   }, [run])

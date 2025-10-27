@@ -27,6 +27,7 @@ import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { getMissingActorCount } from './player'
+import { playerStore } from '@/hooks/usePlayer'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -43,7 +44,9 @@ function newContext<T = {}>(
 function startDialog(state: State): State {
   const mutations = resolveAction(
     state,
-    newContext({}),
+    newContext({
+      playerID: playerStore.getState().playerID,
+    }),
     NavigateDialog(state.dialog.startNodeID, [])
   )
 
@@ -253,7 +256,7 @@ function mutateDamage(
     apply: (ac) => {
       const source = getActor(state, context.sourceID)
       const target = getActor(state, ac.ID)
-      if (!source || !target) return ac
+      if ((damage.type === 'power' && !source) || !target) return ac
       const damageAmount = getDamageResult(source, target, damage)
       committed += damageAmount
       const newDamage = ac.state.damage + damageAmount

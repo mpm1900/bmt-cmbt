@@ -1,7 +1,11 @@
 import { createCombat, type SDialog, type SDialogNode } from '@/game/state'
 import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
-import { startCombatResolver } from '@/game/resolvers'
+import {
+  damagesResolver,
+  pushMessagesResolver,
+  startCombatResolver,
+} from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
 import {
@@ -12,17 +16,7 @@ import {
 import { withMessageLogs } from '../actions/_system/with-message-logs'
 import { findActor } from '@/game/access'
 import { Heal } from '../actions/heal'
-import { newContext } from '@/game/mutations'
-import { playerStore } from '@/hooks/usePlayer'
 import { getMissingActorCount } from '@/game/player'
-
-const playerID = playerStore.getState().playerID
-
-const context = {
-  ID: v4(),
-  text: '',
-  ...newContext({ playerID }),
-}
 
 const Criminal = (aiID: string) =>
   createActor('Criminal', aiID, {
@@ -38,19 +32,46 @@ const Criminal = (aiID: string) =>
 const IntroNode0ID = v4()
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
-  messages: () => [
+  checks: (state, context) => [
     {
-      ID: 'IntroNode0-0',
-      actorID: '',
-      text: 'Game start.',
-    },
-    {
-      ID: 'IntroNode0-1',
-      actorID: '',
-      text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
+      chance: 50,
+      success: (roll) => [
+        pushMessagesResolver(context, [
+          newMessage({ text: `random roll: success! (${roll.toFixed(0)})` }),
+        ]),
+      ],
+      failure: (roll) => [
+        pushMessagesResolver(context, [
+          newMessage({ text: `random roll: failure! (${roll.toFixed(0)})` }),
+        ]),
+        ...state.actors
+          .filter((a) => a.playerID === context.playerID)
+          .map((a) =>
+            damagesResolver(
+              { ...context, targetIDs: [a.ID] },
+              [
+                {
+                  type: 'raw',
+                  raw: 10,
+                },
+              ],
+              [{ ...context, targetIDs: [a.ID] }]
+            )
+          ),
+      ],
     },
   ],
-  options: (state) => [
+  messages: () => [
+    newMessage({
+      ID: 'IntroNode0-0',
+      text: 'Game start.',
+    }),
+    newMessage({
+      ID: 'IntroNode0-1',
+      text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
+    }),
+  ],
+  options: (state, context) => [
     {
       ID: 'IntroNode0-Start-Combat',
       type: 'no-target',
@@ -89,7 +110,7 @@ const IntroNode0: SDialogNode = {
       icons: '',
       context,
       action: withMessageLogs(
-        ActivateX(getMissingActorCount(state, playerID)),
+        ActivateX(getMissingActorCount(state, context.playerID)),
         (s, c) => [
           newMessage({
             text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
@@ -143,6 +164,7 @@ const IntroNode0: SDialogNode = {
 
 const IntroNode1: SDialogNode = {
   ID: v4(),
+  checks: () => [],
   messages: () => [
     {
       ID: 'IntroNode1-0',
@@ -151,7 +173,7 @@ const IntroNode1: SDialogNode = {
       text: 'This is a second dialog node!',
     },
   ],
-  options: (_state) => [
+  options: (_state, context) => [
     createStaticNavigationOption(
       {
         text: <em>Go back</em>,

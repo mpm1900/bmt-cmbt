@@ -30,6 +30,7 @@ import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
 import { convertPositionToTargetContext, findActor, getActor } from './access'
+import { chance } from '@/lib/chance'
 
 function resolveAction(
   state: State,
@@ -268,6 +269,7 @@ function damagesResolver(
     context,
     delta: {
       apply: (state: State, dcontext: DeltaContext) => {
+        console.log('damages resolver', dcontext, damages)
         state = damages.reduce((next, damage, index) => {
           const ctx = contexts[index] ?? dcontext
           const source = getActor(next, ctx.sourceID)
@@ -336,16 +338,30 @@ function startCombatResolver(
   }
 }
 
-function navigateDialogResolver(nodeID: string): SMutation {
+function navigateDialogResolver(
+  nodeID: string,
+  context: DeltaContext
+): SMutation {
   return {
     ID: v4(),
-    context: newContext({}),
+    context,
     delta: {
-      apply: (state, _context) => {
-        const newActive = state.dialog.nodes.find((node) => node.ID === nodeID)!
+      apply: (state, context) => {
+        const active = state.dialog.nodes.find((node) => node.ID === nodeID)!
+        active.checks(state, context).forEach((check) => {
+          const [success, roll] = chance(check.chance)
+
+          if (success && check.success) {
+            state.mutationQueue.push(...check.success(roll))
+          }
+          if (!success && check.failure) {
+            state.mutationQueue.push(...check.failure(roll))
+          }
+        })
+
         return {
           ...state,
-          messageLog: state.messageLog.concat(newActive.messages(state)),
+          messageLog: state.messageLog.concat(active.messages(state, context)),
           dialog: {
             ...state.dialog,
             activeNodeID: nodeID,

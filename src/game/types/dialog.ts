@@ -1,11 +1,15 @@
 import type { ReactNode } from 'react'
 import type { ActionQueueItem, DialogAction } from './action'
-import type { DeltaPositionContext, DeltaQueueItem } from './delta'
+import type {
+  DeltaContext,
+  DeltaPositionContext,
+  DeltaQueueItem,
+} from './delta'
 
 type DialogCheck<T> = {
   chance: number
-  success?: Array<DeltaQueueItem<T, DeltaPositionContext>>
-  failure?: Array<DeltaQueueItem<T, DeltaPositionContext>>
+  success?: (roll: number) => Array<DeltaQueueItem<T, DeltaContext>>
+  failure?: (roll: number) => Array<DeltaQueueItem<T, DeltaContext>>
 }
 
 type DialogMessage = {
@@ -22,8 +26,12 @@ type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
 
 type DialogNode<T, A> = {
   ID: string
-  messages: (state: T) => Array<DialogMessage>
-  options: (state: T) => Array<DialogOption<T, A>>
+  checks: (state: T, context: DeltaContext) => Array<DialogCheck<T>>
+  messages: (state: T, context: DeltaContext) => Array<DialogMessage>
+  options: (
+    state: T,
+    context: DeltaPositionContext
+  ) => Array<DialogOption<T, A>>
 }
 
 type Dialog<T, A> = {

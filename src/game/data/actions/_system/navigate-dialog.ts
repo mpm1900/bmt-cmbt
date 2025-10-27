@@ -9,7 +9,7 @@ function NavigateDialog(
 ): SDialogAction {
   return InlineMutation((_state, context) => [
     pushMessagesResolver(context, messages),
-    navigateDialogResolver(nodeID),
+    navigateDialogResolver(nodeID, context),
   ])
 }
 

@@ -16,14 +16,20 @@ import {
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import { useGameState } from '@/hooks/useGameState'
 import type { DeltaPositionContext } from '@/game/types/delta'
+import { hasNext } from '@/game/next'
 
 function DialogOptionContent({
   className,
+  disabled,
   ...props
-}: ComponentProps<typeof InputGroup>) {
+}: ComponentProps<typeof InputGroup> & { disabled: boolean }) {
   return (
     <InputGroup
-      className={cn('dark:hover:bg-input/50', className)}
+      className={cn(
+        'h-8 border-none',
+        { 'dark:hover:bg-input/50': !disabled },
+        className
+      )}
       {...props}
     />
   )
@@ -57,14 +63,16 @@ function DialogOptionSelect({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          {options.map((option) => (
-            <DropdownMenuItem
-              key={option.ID}
-              onSelect={() => onValueChange(option.ID)}
-            >
-              {option.name}
-            </DropdownMenuItem>
-          ))}
+          {options
+            .filter((o) => o.ID !== props.value)
+            .map((option) => (
+              <DropdownMenuItem
+                key={option.ID}
+                onSelect={() => onValueChange(option.ID)}
+              >
+                {option.name}
+              </DropdownMenuItem>
+            ))}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -80,14 +88,26 @@ function DialogOption({
 }) {
   const state = useGameState((s) => s.state)
   const [context, setContext] = useState(option.context)
-  const disabled = !option.action.validate(state, context)
+  const disabled = !option.action.validate(state, context) || hasNext(state)
   const sources = option.action.sources(state, context)
   const targets = option.action.targets.get(state, context)
   const max = option.action.targets.max(state, context)
   const valid = option.action.targets.validate(state, context)
 
+  function getOptions(index: number) {
+    return targets
+      .map((t) => t.target)
+      .filter(
+        (t) =>
+          !context.targetIDs.includes(t.ID) || context.targetIDs[index] === t.ID
+      )
+  }
+
   return (
-    <DialogOptionContent className={cn('group', { 'opacity-50': disabled })}>
+    <DialogOptionContent
+      className={cn('group', { 'opacity-50': disabled })}
+      disabled={disabled}
+    >
       {sources.length > 0 && (
         <InputGroupAddon>
           <DialogOptionSelect
@@ -111,7 +131,7 @@ function DialogOption({
               key={i}
               placeholder="Target"
               disabled={disabled}
-              options={targets.map((t) => t.target)}
+              options={getOptions(i)}
               value={context.targetIDs[i]}
               onValueChange={(targetID) =>
                 setContext((c) => ({
@@ -132,6 +152,7 @@ function DialogOption({
         <InputGroupAddon align="inline-end">
           <InputGroupButton
             className="cursor-pointer rounded-full opacity-70 hover:opacity-100"
+            size="icon-xs"
             variant="default"
             onClick={() => {
               onConfirm(context)
