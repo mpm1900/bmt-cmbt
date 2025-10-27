@@ -1,13 +1,12 @@
 import { useGameState } from '@/hooks/useGameState'
 import { Card, CardContent } from '../ui/card'
-import { DialogOptionNoTarget } from './dialog-option-no-target'
-import { DialogOptionSingleTarget } from './dialog-option-single-target'
 import { ButtonGroup } from '../ui/button-group'
 import { DialogHistoryLog } from './dialog-history-log'
-import { newContext } from '@/game/mutations'
+import { DialogOption } from './dialog-option'
+import { withContext } from '@/game/dialog'
 
 function DialogCard() {
-  const { state } = useGameState((s) => s)
+  const { state, resolveDialogOption } = useGameState((s) => s)
   const dialog = state.dialog
   const activeNode = dialog.nodes.find((n) => n.ID === dialog.activeNodeID)
 
@@ -29,24 +28,15 @@ function DialogCard() {
               orientation="vertical"
               className="flex flex-col gap-0 w-full"
             >
-              {activeNode
-                .options(state)
-                .map((option, i) =>
-                  option.type === 'no-target' ? (
-                    <DialogOptionNoTarget
-                      key={option.ID}
-                      index={i}
-                      option={option}
-                      disabled={!option.action.validate(state, newContext({}))}
-                    />
-                  ) : (
-                    <DialogOptionSingleTarget
-                      key={option.ID}
-                      index={i}
-                      option={option}
-                    />
-                  )
-                )}
+              {activeNode.options(state).map((option) => (
+                <DialogOption
+                  key={option.ID}
+                  option={option}
+                  onConfirm={(context) => {
+                    resolveDialogOption(withContext(option, context))
+                  }}
+                />
+              ))}
             </ButtonGroup>
           </div>
         )}

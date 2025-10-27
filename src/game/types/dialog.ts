@@ -14,32 +14,11 @@ type DialogMessage = {
   text: ReactNode
 }
 
-type NoTargetDialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
-  type: 'no-target'
+type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   text: ReactNode
   icons: ReactNode
+  context: DeltaPositionContext
 }
-
-type DialogOptionContextMeta = {
-  ID: string
-  text: string
-}
-type DialogOptionContext = DeltaPositionContext & DialogOptionContextMeta
-
-type SingleTargetDialogOption<T, A> = ActionQueueItem<
-  T,
-  A,
-  DialogAction<T, A>
-> & {
-  type: 'single-target'
-  text: ReactNode
-  icons: ReactNode
-  context: DialogOptionContext
-}
-
-type DialogOption<T, A> =
-  | NoTargetDialogOption<T, A>
-  | SingleTargetDialogOption<T, A>
 
 type DialogNode<T, A> = {
   ID: string
@@ -54,14 +33,4 @@ type Dialog<T, A> = {
   activeNodeID: string | undefined
 }
 
-export type {
-  DialogCheck,
-  DialogMessage,
-  DialogOptionContextMeta,
-  DialogOptionContext,
-  SingleTargetDialogOption,
-  NoTargetDialogOption,
-  DialogOption,
-  DialogNode,
-  Dialog,
-}
+export type { DialogCheck, DialogMessage, DialogOption, DialogNode, Dialog }

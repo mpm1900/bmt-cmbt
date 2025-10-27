@@ -5,13 +5,9 @@ import {
 } from './data/actions/_system/navigate-dialog'
 import type { SActor, SDialogMessage, SDialogOption, State } from './state'
 import { newContext } from './mutations'
-import {
-  type DialogOptionContext,
-  type DialogOptionContextMeta,
-  type NoTargetDialogOption,
-  type SingleTargetDialogOption,
-} from './types/dialog'
+import { type DialogOption } from './types/dialog'
 import type { DeltaPositionContext } from './types/delta'
+import { playerStore } from '@/hooks/usePlayer'
 
 function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
   return {
@@ -23,14 +19,13 @@ function newMessage(partial: Partial<SDialogMessage>): SDialogMessage {
 }
 
 function createStaticNavigationOption(
-  option: Partial<NoTargetDialogOption<State, SActor>>,
+  option: Partial<DialogOption<State, SActor>>,
   context: DeltaPositionContext,
   nodeID: string,
   messages: Array<SDialogMessage>
-): NoTargetDialogOption<State, SActor> {
+): DialogOption<State, SActor> {
   return {
     ID: v4(),
-    type: 'no-target',
     text: null,
     icons: null,
     context,
@@ -47,23 +42,20 @@ function createStaticNavigationOption(
 }
 
 function createSourceNavigationOption(
-  option: Partial<SingleTargetDialogOption<State, SActor>>,
+  option: Partial<SDialogOption>,
   nodeID: string,
   messages: Array<SDialogMessage>
-): SingleTargetDialogOption<State, SActor> {
+): SDialogOption {
   const {
-    context = newContext<DialogOptionContextMeta>({
-      playerID: '__player__',
-      text: '',
-      ID: '',
+    context = newContext({
+      playerID: playerStore.getState().playerID,
     }),
   } = option
   return {
     ID: v4(),
-    type: 'single-target',
     text: null,
     icons: null,
-    context: context as DialogOptionContext,
+    context: context,
     action: NavigateSourceDialog(
       nodeID,
       messages.concat([
@@ -78,7 +70,7 @@ function createSourceNavigationOption(
 
 function validateSingleTargetDialogOption(
   state: State,
-  option: SingleTargetDialogOption<State, SActor>
+  option: SDialogOption
 ): boolean {
   if (!option.action.targets.validate(state, option.context)) {
     return false
@@ -102,9 +94,9 @@ function validateSingleTargetDialogOption(
 }
 
 function withContext(
-  option: SingleTargetDialogOption<State, SActor>,
+  option: SDialogOption,
   context: SDialogOption['context']
-): SingleTargetDialogOption<State, SActor> {
+): SDialogOption {
   return {
     ...option,
     context: {

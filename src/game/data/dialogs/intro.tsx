@@ -3,7 +3,7 @@ import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { startCombatResolver } from '@/game/resolvers'
 import { createActor } from '@/lib/create-actor'
-import { Activate, Deactivate } from '../actions/_system/swap'
+import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
 import {
   createSourceNavigationOption,
   createStaticNavigationOption,
@@ -14,6 +14,7 @@ import { findActor } from '@/game/access'
 import { Heal } from '../actions/heal'
 import { newContext } from '@/game/mutations'
 import { playerStore } from '@/hooks/usePlayer'
+import { getMissingActorCount } from '@/game/player'
 
 const playerID = playerStore.getState().playerID
 
@@ -49,7 +50,7 @@ const IntroNode0: SDialogNode = {
       text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
     },
   ],
-  options: () => [
+  options: (state) => [
     {
       ID: 'IntroNode0-Start-Combat',
       type: 'no-target',
@@ -80,6 +81,21 @@ const IntroNode0: SDialogNode = {
           text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
         }),
       ]),
+    },
+    {
+      ID: 'IntroNode0-Activate-All-Actors',
+      type: 'single-target',
+      text: <em>Activate All</em>,
+      icons: '',
+      context,
+      action: withMessageLogs(
+        ActivateX(getMissingActorCount(state, playerID)),
+        (s, c) => [
+          newMessage({
+            text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
+          }),
+        ]
+      ),
     },
     {
       ID: 'IntroNode0-Deactivate-Actor',

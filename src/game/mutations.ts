@@ -26,6 +26,7 @@ import type { Player } from './types/player'
 import { resolveAction } from './resolvers'
 import { nextTurnPhase } from './next'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
+import { getMissingActorCount } from './player'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -299,10 +300,7 @@ function validateState(state: State): [State, boolean] {
       player.activeActorIDs.some((id) => id === null) &&
       inactiveLiveActors.length > 0
     ) {
-      const count = Math.min(
-        inactiveLiveActors.length,
-        player.activeActorIDs.filter((a) => a === null).length
-      )
+      const count = getMissingActorCount(state, player.ID)
       if (count > 0) {
         state = pushPrompt(
           state,

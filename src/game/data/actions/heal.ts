@@ -13,7 +13,8 @@ const Heal: SDialogAction = {
     unique: true,
     max: () => 1,
     get: (state, _context) => state.actors.map((a) => mapTarget(a, 'targetID')),
-    validate: (_state, context) => context.targetIDs.length === 1,
+    validate: (_state, context) =>
+      !!context.sourceID && context.targetIDs.length === 1,
   },
   sources: (state, context) => getAliveActiveActors(state, context),
   resolve(_, context) {

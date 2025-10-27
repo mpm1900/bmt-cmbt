@@ -1,6 +1,8 @@
 import { v4 } from 'uuid'
 import type { State } from './state'
 import type { Position } from './types/player'
+import { getAliveInactiveActors } from './access'
+import { newContext } from './mutations'
 
 function getActorID(state: State, position: Position): string | undefined {
   const player = state.players.find((p) => p.ID === position.playerID)
@@ -28,4 +30,24 @@ function newPosition(playerID: string, index: number): Position {
   return { ID: v4(), playerID, index }
 }
 
-export { getActorID, getPosition, positionEquals, newPosition }
+function getMissingActorCount(state: State, playerID: string): number {
+  const player = state.players.find((p) => p.ID === playerID)
+
+  const activeActorIDs = player?.activeActorIDs ?? []
+  const inactiveLiveActors = getAliveInactiveActors(
+    state,
+    newContext({ playerID })
+  )
+  return Math.min(
+    inactiveLiveActors.length,
+    activeActorIDs.filter((a) => a === null).length
+  )
+}
+
+export {
+  getActorID,
+  getPosition,
+  positionEquals,
+  newPosition,
+  getMissingActorCount,
+}
