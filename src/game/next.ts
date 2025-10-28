@@ -14,7 +14,7 @@ import {
 } from './mutations'
 import { pop, push } from './queue'
 import { resolveAction } from './resolvers'
-import type { State, Combat } from './state'
+import type { Combat, State } from './state'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
 function resolveTrigger(
@@ -216,13 +216,13 @@ function flush(state: State): State {
 }
 
 export {
-  resolveAction,
-  nextAction,
-  nextTrigger,
-  nextMutation,
-  nextTurnPhase,
-  next,
-  hasNext,
-  getStatus,
   flush,
+  getStatus,
+  hasNext,
+  next,
+  nextAction,
+  nextMutation,
+  nextTrigger,
+  nextTurnPhase,
+  resolveAction,
 }

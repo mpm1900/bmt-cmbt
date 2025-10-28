@@ -87,7 +87,11 @@ const IntroNode0: SDialogNode = {
               items: [],
             },
           ],
-          actors: [Criminal(IntroNode0ID), Criminal(IntroNode0ID)],
+          actors: [
+            Criminal(IntroNode0ID),
+            Criminal(IntroNode0ID),
+            Criminal(IntroNode0ID),
+          ],
         }),
       ]),
     },

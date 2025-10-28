@@ -4,6 +4,7 @@ import { ViewLayoutContent } from '../view-layout'
 import { useGameUI } from '@/hooks/useGameUI'
 import { DialogCard } from './dialog-card'
 import { DialogItemsCard } from './dialog-items-card'
+import { DialogController } from './dialog-controller'
 
 function DialogView() {
   const { state } = useGameState((s) => s)
@@ -11,11 +12,15 @@ function DialogView() {
   useEffect(() => {
     console.log(state)
   }, [state])
+
   return (
-    <ViewLayoutContent>
-      {view === 'dialog' && <DialogCard />}
-      {view === 'items' && <DialogItemsCard />}
-    </ViewLayoutContent>
+    <>
+      <DialogController />
+      <ViewLayoutContent>
+        {view === 'dialog' && <DialogCard />}
+        {view === 'items' && <DialogItemsCard />}
+      </ViewLayoutContent>
+    </>
   )
 }
 
