@@ -7,6 +7,7 @@ import { newMessage } from '@/game/dialog'
 
 const Goku: SEffect = {
   ID: v4(),
+  name: 'Goku',
   delay: 0,
   duration: 1,
   priority: 0,
@@ -20,7 +21,9 @@ const Goku: SEffect = {
       },
       resolve: (_state: State, tcontext: DeltaContext) => {
         return [
-          pushMessagesResolver(tcontext, [newMessage({ text: '[On Damage]' })]),
+          pushMessagesResolver(tcontext, [
+            newMessage({ text: 'On damage trigger: Goku' }),
+          ]),
           addEffectResolver(BodyUp, econtext),
         ]
       },

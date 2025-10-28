@@ -37,7 +37,8 @@ function getActor(
   const source = findActor(state, sourceID)
   if (!source) return undefined
 
-  const effects = [...state.effects, ...(state.combat?.effects ?? [])]
+  const combatEffects = state.combat?.effects ?? []
+  const effects = [...state.effects, ...combatEffects]
   let actor = withStatEffects(source, effects)[0]
   return actor
 }

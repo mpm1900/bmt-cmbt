@@ -4,6 +4,7 @@ import type { Trigger } from './trigger'
 
 type Effect<T, A> = {
   ID: string
+  name: string
   delay: number
   duration: number | undefined
   priority: number

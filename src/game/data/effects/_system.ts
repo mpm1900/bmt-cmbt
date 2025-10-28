@@ -10,6 +10,7 @@ import { v4 } from 'uuid'
 
 const HANDLE_DEATH: SEffect = {
   ID: v4(),
+  name: '',
   delay: 0,
   duration: undefined,
   priority: 0,
@@ -36,6 +37,7 @@ const HANDLE_DEATH: SEffect = {
 
 const HANDLE_TURN_START: SEffect = {
   ID: v4(),
+  name: '',
   delay: 0,
   duration: undefined,
   priority: 0,
@@ -59,6 +61,7 @@ const HANDLE_TURN_START: SEffect = {
 
 const HANDLE_TURN_END: SEffect = {
   ID: v4(),
+  name: '',
   delay: 0,
   duration: undefined,
   priority: 0,

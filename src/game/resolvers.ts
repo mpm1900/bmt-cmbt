@@ -231,7 +231,7 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
     context,
     delta: {
       apply: (state, context) => {
-        return {
+        state = {
           ...state,
           effects: [
             ...state.effects,
@@ -242,6 +242,14 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
             },
           ],
         }
+
+        state = pushMessages(state, [
+          newMessage({
+            text: `${findActor(state, context.sourceID)!.name} gained ${effect.name}.`,
+          }),
+        ])
+
+        return state
       },
     },
   }

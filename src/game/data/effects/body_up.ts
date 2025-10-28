@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 
 const BodyUp: SEffect = {
   ID: v4(),
+  name: 'Body Up',
   delay: 0,
   duration: undefined,
   priority: 0,
