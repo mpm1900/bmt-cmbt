@@ -88,7 +88,8 @@ function DialogOption({
 }) {
   const state = useGameState((s) => s.state)
   const [context, setContext] = useState(option.context)
-  const disabled = !option.action.validate(state, context) || hasNext(state)
+  const disabled = !option.action.validate(state, context)
+  const loading = hasNext(state)
   const sources = option.action.sources(state, context)
   const targets = option.action.targets.get(state, context)
   const max = option.action.targets.max(state, context)
@@ -103,16 +104,18 @@ function DialogOption({
       )
   }
 
+  if (option.disable === 'hide' && disabled) return null
+
   return (
     <DialogOptionContent
-      className={cn('group', { 'opacity-50': disabled })}
+      className={cn('group', { 'opacity-50': disabled || loading })}
       disabled={disabled}
     >
       {sources.length > 0 && (
         <InputGroupAddon>
           <DialogOptionSelect
             placeholder="Source"
-            disabled={disabled}
+            disabled={disabled || loading}
             options={sources}
             value={context.sourceID}
             onValueChange={(sourceID) =>
@@ -130,7 +133,7 @@ function DialogOption({
             <DialogOptionSelect
               key={i}
               placeholder="Target"
-              disabled={disabled}
+              disabled={disabled || loading}
               options={getOptions(i)}
               value={context.targetIDs[i]}
               onValueChange={(targetID) =>
@@ -148,7 +151,7 @@ function DialogOption({
         </InputGroupAddon>
       )}
       <div className="flex-1" />
-      {valid && !disabled && (
+      {valid && !(disabled || loading) && (
         <InputGroupAddon align="inline-end">
           <InputGroupButton
             className="cursor-pointer rounded-full opacity-70 hover:opacity-100"

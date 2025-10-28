@@ -14,6 +14,7 @@ type DialogCheck<T> = {
 }
 
 type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
+  disable: 'hide' | 'disable'
   text: ReactNode
   icons: ReactNode
   context: DeltaPositionContext

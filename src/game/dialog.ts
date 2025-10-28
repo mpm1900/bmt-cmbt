@@ -1,14 +1,12 @@
-import { playerStore } from '@/hooks/usePlayer'
 import { v4 } from 'uuid'
 import {
   NavigateDialog,
   NavigateSourceDialog,
 } from './data/actions/_system/navigate-dialog'
 import { newContext } from './mutations'
-import type { SActor, SDialogOption, State } from './state'
-import type { DeltaPositionContext } from './types/delta'
-import { type DialogOption } from './types/dialog'
+import type { SDialogOption, State } from './state'
 import type { Message } from './types/message'
+import type { DeltaPositionContext } from './types/delta'
 
 function newMessage(partial: Partial<Message>): Message {
   return {
@@ -19,14 +17,15 @@ function newMessage(partial: Partial<Message>): Message {
   }
 }
 
-function createStaticNavigationOption(
-  option: Partial<DialogOption<State, SActor>>,
+function createDialogOption(
+  option: Partial<SDialogOption>,
   context: DeltaPositionContext,
   nodeID: string,
   messages: Array<Message>
-): DialogOption<State, SActor> {
+): SDialogOption {
   return {
     ID: v4(),
+    disable: 'disable',
     text: null,
     icons: null,
     context,
@@ -42,21 +41,18 @@ function createStaticNavigationOption(
   }
 }
 
-function createSourceNavigationOption(
+function createSourceDialogOption(
   option: Partial<SDialogOption>,
+  context: DeltaPositionContext,
   nodeID: string,
   messages: Array<Message>
 ): SDialogOption {
-  const {
-    context = newContext({
-      playerID: playerStore.getState().playerID,
-    }),
-  } = option
   return {
     ID: v4(),
+    disable: 'disable',
     text: null,
     icons: null,
-    context: context,
+    context,
     action: NavigateSourceDialog(
       nodeID,
       messages.concat([
@@ -131,8 +127,8 @@ function updateDialogOption(
 */
 
 export {
-  createSourceNavigationOption,
-  createStaticNavigationOption,
+  createDialogOption,
+  createSourceDialogOption,
   newMessage,
   validateSingleTargetDialogOption,
   withContext,

@@ -9,8 +9,8 @@ import {
 import { createActor } from '@/lib/create-actor'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
 import {
-  createSourceNavigationOption,
-  createStaticNavigationOption,
+  createDialogOption,
+  createSourceDialogOption,
   newMessage,
 } from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
@@ -74,7 +74,7 @@ const IntroNode0: SDialogNode = {
   options: (state, context) => [
     {
       ID: 'IntroNode0-Start-Combat',
-      type: 'no-target',
+      disable: 'hide',
       text: <em>Start Combat</em>,
       icons: '',
       context,
@@ -91,36 +91,42 @@ const IntroNode0: SDialogNode = {
         }),
       ]),
     },
+
+    {
+      ID: 'IntroNode0-Heal',
+      disable: 'disable',
+      text: <em>Heal</em>,
+      icons: '',
+      context,
+      action: Heal,
+    },
+    createSourceDialogOption(
+      {
+        text: <span className="font-semibold">"Hello over there!"</span>,
+      },
+      context,
+      IntroNode1.ID,
+      []
+    ),
     {
       ID: 'IntroNode0-Activate-Actor',
-      type: 'single-target',
+      disable: 'hide',
       text: <em>Activate</em>,
       icons: '',
       context,
-      action: withMessageLogs(Activate, (s, c) => [
-        newMessage({
-          text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
-        }),
-      ]),
+      action: Activate,
     },
     {
       ID: 'IntroNode0-Activate-All-Actors',
-      type: 'single-target',
+      disable: 'hide',
       text: <em>Activate All</em>,
       icons: '',
       context,
-      action: withMessageLogs(
-        ActivateX(getMissingActorCount(state, context.playerID)),
-        (s, c) => [
-          newMessage({
-            text: `${findActor(s, c.targetIDs[0])?.name} activated.`,
-          }),
-        ]
-      ),
+      action: ActivateX(getMissingActorCount(state, context.playerID)),
     },
     {
       ID: 'IntroNode0-Deactivate-Actor',
-      type: 'single-target',
+      disable: 'hide',
       text: <em>Deactivate</em>,
       icons: '',
       context,
@@ -130,35 +136,6 @@ const IntroNode0: SDialogNode = {
         }),
       ]),
     },
-    {
-      ID: 'IntroNode0-Heal',
-      type: 'single-target',
-      text: <em>Heal</em>,
-      icons: '',
-      context,
-      action: withMessageLogs(Heal, (s, c) => [
-        newMessage({
-          text: `${findActor(s, c.targetIDs[0])?.name} healed.`,
-        }),
-      ]),
-    },
-    createStaticNavigationOption(
-      {
-        text: <em>Go to other node</em>,
-      },
-      context,
-      IntroNode1.ID,
-      []
-    ),
-    createSourceNavigationOption(
-      {
-        text: (
-          <span className="font-semibold">"Go to other node but a quote"</span>
-        ),
-      },
-      IntroNode1.ID,
-      []
-    ),
   ],
 }
 
@@ -172,7 +149,7 @@ const IntroNode1: SDialogNode = {
     }),
   ],
   options: (_state, context) => [
-    createStaticNavigationOption(
+    createDialogOption(
       {
         text: <em>Go back</em>,
       },
