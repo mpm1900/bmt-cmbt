@@ -2,6 +2,12 @@ import { useEffect, useRef, type ComponentProps } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { useGameState } from '@/hooks/useGameState'
+import { newContext } from '@/game/mutations'
+import { playerStore } from '@/hooks/usePlayer'
+
+const context = newContext({
+  playerID: playerStore.getState().playerID,
+})
 
 function DialogHistoryLog({
   className,
@@ -12,7 +18,8 @@ function DialogHistoryLog({
   const activeNode = state.dialog.nodes.find(
     (node) => node.ID === state.dialog.activeNodeID
   )
-  const activeMessages = activeNode?.messages(state).map((m) => m.ID) ?? []
+  const activeMessages =
+    activeNode?.messages(state, context).map((m) => m.ID) ?? []
   const firstMessages = messageLog.slice(0, activeMessages.length * -1)
   const lastMessages = messageLog.slice(activeMessages.length * -1)
   const showLastMessages = !lastMessages.every((m) =>

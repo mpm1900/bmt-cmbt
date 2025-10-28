@@ -9,7 +9,6 @@ import type {
   Combat,
   SAction,
   SActor,
-  SDialogMessage,
   SEffect,
   SMutation,
   State,
@@ -24,13 +23,16 @@ import {
   mutateDamage,
   mutatePlayer,
   newContext,
-  pushLogs,
+  pushMessages,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
 import type { Player } from './types/player'
 import { convertPositionToTargetContext, findActor, getActor } from './access'
 import { chance } from '@/lib/chance'
+import { enqueue } from './queue'
+import type { Message } from './types/message'
+import { newMessage } from './dialog'
 
 function resolveAction(
   state: State,
@@ -42,7 +44,11 @@ function resolveAction(
     console.error('resolver validation failed', resolver, state, context)
     const action = resolver as SAction
     if (action.name) {
-      return [pushLogResolver(context, () => `${action.name} failed.`)]
+      return [
+        pushMessagesResolver(context, [
+          newMessage({ text: `${action.name} failed.` }),
+        ]),
+      ]
     }
     return []
   }
@@ -69,36 +75,16 @@ function costResolver(
   }
 }
 
-function pushLogResolver(
-  context: DeltaContext,
-  logFn: (state: State, context: DeltaContext) => State['combatLog'][number]
-): SMutation {
-  const delta: Delta<State> = {
-    apply: (state, context) => pushLogs(state, [logFn(state, context)]),
-  }
-
-  return {
-    ID: v4(),
-    delta,
-    context,
-  }
-}
-
 function pushMessagesResolver(
   context: DeltaContext,
-  messages: SDialogMessage[]
+  messages: Message[]
 ): SMutation {
-  const delta: Delta<State> = {
-    apply: (state, _context) => ({
-      ...state,
-      messageLog: state.messageLog.concat(messages),
-    }),
-  }
-
   return {
     ID: v4(),
-    delta,
     context,
+    delta: {
+      apply: (state, _context) => pushMessages(state, messages),
+    },
   }
 }
 
@@ -172,8 +158,10 @@ function activateActorResolver(
           }),
         })
 
-        state = pushLogs(state, [
-          `${findActor(state, actorID)?.name} joined the battle.`,
+        state = pushMessages(state, [
+          newMessage({
+            text: `${findActor(state, actorID)?.name} joined the battle.`,
+          }),
         ])
         state = handleTrigger(state, context, 'on-actor-activate')
         return state
@@ -276,10 +264,14 @@ function damagesResolver(
 
           if (damage.type === 'power' && source) {
             if (!damage.success) {
-              next = pushLogs(next, [`${source.name}'s attack missed.`])
+              next = pushMessages(next, [
+                newMessage({ text: `${source.name}'s attack missed.` }),
+              ])
             } else if (damage.evade) {
               const target = getActor(next, ctx.targetIDs[0])
-              next = pushLogs(next, [`${target?.name} evaded the attack.`])
+              next = pushMessages(next, [
+                newMessage({ text: `${target?.name} evaded the attack.` }),
+              ])
             }
           }
 
@@ -330,7 +322,7 @@ function startCombatResolver(
           players: state.players.concat(players),
           actors: state.actors.concat(actors),
           combat,
-          combatLog: ['Combat started.'],
+          combatLog: [],
           ...rest,
         }
       },
@@ -347,21 +339,31 @@ function navigateDialogResolver(
     context,
     delta: {
       apply: (state, context) => {
+        console.log('context', context)
         const active = state.dialog.nodes.find((node) => node.ID === nodeID)!
         active.checks(state, context).forEach((check) => {
           const [success, roll] = chance(check.chance)
 
           if (success && check.success) {
-            state.mutationQueue.push(...check.success(roll))
+            state.mutationQueue = enqueue(
+              state.mutationQueue,
+              check.success(roll)
+            )
           }
           if (!success && check.failure) {
-            state.mutationQueue.push(...check.failure(roll))
+            state.mutationQueue = enqueue(
+              state.mutationQueue,
+              check.failure(roll)
+            )
           }
         })
 
+        state.mutationQueue = enqueue(state.mutationQueue, [
+          pushMessagesResolver(context, active.messages(state, context)),
+        ])
+
         return {
           ...state,
-          messageLog: state.messageLog.concat(active.messages(state, context)),
           dialog: {
             ...state.dialog,
             activeNodeID: nodeID,
@@ -387,7 +389,6 @@ export {
   resolveAction,
   costResolver,
   pushMessagesResolver,
-  pushLogResolver,
   mutatePlayerResolver,
   mutateActorResolver,
   decrementEffectsResolver,

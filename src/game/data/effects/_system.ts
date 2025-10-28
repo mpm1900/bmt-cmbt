@@ -1,8 +1,9 @@
+import { newMessage } from '@/game/dialog'
 import {
   deactivateActorResolver,
   decrementEffectsResolver,
   nextTurnResolver,
-  pushLogResolver,
+  pushMessagesResolver,
 } from '@/game/resolvers'
 import type { SEffect } from '@/game/state'
 import { v4 } from 'uuid'
@@ -22,7 +23,9 @@ const HANDLE_DEATH: SEffect = {
         return tcontext.targetIDs.flatMap((targetID) => {
           const target = state.actors.find((a) => a.ID === targetID)!
           return [
-            pushLogResolver(tcontext, () => `${target.name} died.`),
+            pushMessagesResolver(tcontext, [
+              newMessage({ text: `${target.name} died.` }),
+            ]),
             deactivateActorResolver(target.playerID, targetID, tcontext),
           ]
         })
@@ -42,13 +45,12 @@ const HANDLE_TURN_START: SEffect = {
       ID: v4(),
       type: 'on-turn-start',
       validate: () => true,
-      resolve: (_state, tcontext) => {
+      resolve: (state, tcontext) => {
         return [
           nextTurnResolver(tcontext),
-          pushLogResolver(
-            tcontext,
-            (state) => `Turn ${state.combat?.turn} started`
-          ),
+          pushMessagesResolver(tcontext, [
+            newMessage({ text: `Turn ${state.combat!.turn + 1} started` }),
+          ]),
         ]
       },
     },
@@ -66,13 +68,12 @@ const HANDLE_TURN_END: SEffect = {
       ID: v4(),
       type: 'on-turn-end',
       validate: () => true,
-      resolve: (_state, tcontext) => {
+      resolve: (state, tcontext) => {
         return [
           decrementEffectsResolver(),
-          pushLogResolver(
-            tcontext,
-            (state) => `Turn ${state.combat?.turn} ended`
-          ),
+          pushMessagesResolver(tcontext, [
+            newMessage({ text: `Turn ${state.combat?.turn} ended` }),
+          ]),
         ]
       },
     },

@@ -166,12 +166,10 @@ const IntroNode1: SDialogNode = {
   ID: v4(),
   checks: () => [],
   messages: () => [
-    {
+    newMessage({
       ID: 'IntroNode1-0',
-      type: '',
-      actorID: '',
       text: 'This is a second dialog node!',
-    },
+    }),
   ],
   options: (_state, context) => [
     createStaticNavigationOption(

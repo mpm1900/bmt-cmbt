@@ -1,9 +1,10 @@
 import { findActor, mapActor } from './access'
+import { newMessage } from './dialog'
 import {
   handleTrigger,
   newContext,
   pushAction,
-  pushLogs,
+  pushMessages,
   resolvePrompt,
   sortActionQueue,
   sortPromptQueue,
@@ -31,8 +32,10 @@ function resolveTrigger(
 function nextAction(state: State): State {
   state = sortActionQueue(state)
   const item = state.actionQueue[0]
-  state = pushLogs(state, [
-    `${mapActor(state, item.context.sourceID, (a) => a.name)} uses ${item.action.name}.`,
+  state = pushMessages(state, [
+    newMessage({
+      text: `${mapActor(state, item.context.sourceID, (a) => a.name)} uses ${item.action.name}.`,
+    }),
   ])
   const mutations = resolveAction(state, item.context, item.action)
   const mutationQueue = push(state.mutationQueue, mutations)

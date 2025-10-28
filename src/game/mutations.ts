@@ -28,6 +28,8 @@ import { nextTurnPhase } from './next'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { getMissingActorCount } from './player'
 import { playerStore } from '@/hooks/usePlayer'
+import { newMessage } from './dialog'
+import type { Message } from './types/message'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -70,13 +72,17 @@ function decrementEffectItem(effectItem: SEffectItem): SEffectItem {
   }
 }
 
-function pushLogs(
-  state: State,
-  logs: Array<State['combatLog'][number]>
-): State {
+function pushMessages(state: State, messages: Array<Message>): State {
+  if (state.combat) {
+    return {
+      ...state,
+      combatLog: [...state.combatLog, ...messages],
+    }
+  }
+
   return {
     ...state,
-    combatLog: [...state.combatLog, ...logs],
+    messageLog: [...state.messageLog, ...messages],
   }
 }
 
@@ -270,7 +276,12 @@ function mutateDamage(
 
   if (committed > 0) {
     state = handleTrigger(state, context, 'on-damage')
-    state = pushLogs(state, [`${target?.name} took ${committed} damage.`])
+    state = pushMessages(state, [
+      newMessage({
+        context,
+        text: `${target?.name} took ${committed} damage.`,
+      }),
+    ])
   }
 
   if (dead) {
@@ -350,7 +361,7 @@ export {
   startDialog,
   decrementEffect,
   decrementEffectItem,
-  pushLogs,
+  pushMessages,
   pushAction,
   addActionToQueue,
   pushPrompt,

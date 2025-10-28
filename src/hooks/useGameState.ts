@@ -94,7 +94,7 @@ const initialState: State = {
   promptQueue: [],
   triggerQueue: [],
   mutationQueue: [],
-  combatLog: ['Combat started'],
+  combatLog: [],
   messageLog: [],
 }
 

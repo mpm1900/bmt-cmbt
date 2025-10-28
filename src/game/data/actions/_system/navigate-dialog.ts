@@ -1,11 +1,12 @@
-import type { SDialogAction, SDialogMessage } from '@/game/state'
+import type { SDialogAction } from '@/game/state'
 import { InlineMutation } from './inline-mutation'
 import { navigateDialogResolver, pushMessagesResolver } from '@/game/resolvers'
 import { getAliveActiveActors } from '@/game/access'
+import type { Message } from '@/game/types/message'
 
 function NavigateDialog(
   nodeID: string,
-  messages: Array<SDialogMessage>
+  messages: Array<Message>
 ): SDialogAction {
   return InlineMutation((_state, context) => [
     pushMessagesResolver(context, messages),
@@ -15,7 +16,7 @@ function NavigateDialog(
 
 function NavigateSourceDialog(
   nodeID: string,
-  messages: Array<SDialogMessage>
+  messages: Array<Message>
 ): SDialogAction {
   const { targets, ...base } = NavigateDialog(nodeID, messages)
   return {

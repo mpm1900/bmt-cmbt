@@ -22,10 +22,10 @@ import { v4 } from 'uuid'
 import type {
   Dialog,
   DialogCheck,
-  DialogMessage,
   DialogNode,
   DialogOption,
 } from './types/dialog'
+import type { Message } from './types/message'
 
 type SActor = Actor<State>
 type SAction = Action<State, SActor>
@@ -40,7 +40,6 @@ type STriggerItem = TriggerQueueItem<State>
 type SDialog = Dialog<State, SActor>
 type SDialogNode = DialogNode<State, SActor>
 type SDialogOption = DialogOption<State, SActor>
-type SDialogMessage = DialogMessage
 type SDialogCheck = DialogCheck<State>
 
 const CombatPhases = [
@@ -58,8 +57,6 @@ type Combat = {
   effects: Array<SEffectItem>
 }
 
-type CombatLogItem = string
-
 type State = {
   combat: Combat | undefined
   dialog: SDialog
@@ -70,8 +67,8 @@ type State = {
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State, DeltaContext>
-  combatLog: Array<CombatLogItem>
-  messageLog: Array<SDialogMessage>
+  combatLog: Array<Message>
+  messageLog: Array<Message>
 }
 
 function createCombat(): Combat {
@@ -112,10 +109,8 @@ export type {
   SModifier,
   STrigger,
   STriggerItem,
-  CombatLogItem,
   SDialog,
   SDialogNode,
   SDialogOption,
-  SDialogMessage,
   SDialogCheck,
 }

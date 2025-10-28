@@ -2,7 +2,8 @@ import { v4 } from 'uuid'
 import type { SEffect, State } from '../../state'
 import { BodyUp } from './body_up'
 import type { DeltaContext } from '@/game/types/delta'
-import { addEffectResolver, pushLogResolver } from '@/game/resolvers'
+import { addEffectResolver, pushMessagesResolver } from '@/game/resolvers'
+import { newMessage } from '@/game/dialog'
 
 const Goku: SEffect = {
   ID: v4(),
@@ -19,7 +20,7 @@ const Goku: SEffect = {
       },
       resolve: (_state: State, tcontext: DeltaContext) => {
         return [
-          pushLogResolver(tcontext, () => '[On Damage]'),
+          pushMessagesResolver(tcontext, [newMessage({ text: '[On Damage]' })]),
           addEffectResolver(BodyUp, econtext),
         ]
       },
