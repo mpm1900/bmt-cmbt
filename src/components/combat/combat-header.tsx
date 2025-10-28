@@ -1,8 +1,8 @@
 import { useGamePhase, useGameState } from '@/hooks/useGameState'
 import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
-import { CombatPhases } from '@/game/state'
 import { cn } from '@/lib/utils'
+import { CombatPhases } from '@/game/types/combat'
 
 function CombatHeader() {
   const state = useGameState((s) => s.state)

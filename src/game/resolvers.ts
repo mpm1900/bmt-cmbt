@@ -6,7 +6,7 @@ import type {
   DeltaResolver,
 } from '@/game/types/delta'
 import type {
-  Combat,
+  SCombat,
   SAction,
   SActor,
   SEffect,
@@ -38,7 +38,7 @@ function resolveAction(
   state: State,
   context: DeltaPositionContext,
   resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>
-): DeltaQueueItem<State, DeltaContext>[] {
+): Array<DeltaQueueItem<State, DeltaContext>> {
   if (!resolver.validate(state, context)) {
     // likely an AI action
     console.error('resolver validation failed', resolver, state, context)
@@ -77,7 +77,7 @@ function costResolver(
 
 function pushMessagesResolver(
   context: DeltaContext,
-  messages: Message[]
+  messages: Array<Message>
 ): SMutation {
   return {
     ID: v4(),
@@ -345,7 +345,7 @@ function nextTurnResolver(context: DeltaContext): SMutation {
 }
 
 function startCombatResolver(
-  combat: Combat,
+  combat: SCombat,
   preState: Partial<State>
 ): SMutation {
   return {

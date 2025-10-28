@@ -17,7 +17,6 @@ import { getMissingActorCount } from './player'
 import { enqueue, pop, push, sort } from './queue'
 import { resolveAction } from './resolvers'
 import type {
-  Combat,
   SAction,
   SActor,
   SDialogOption,
@@ -30,6 +29,7 @@ import type { Damage } from './types/damage'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Message } from './types/message'
 import type { Player } from './types/player'
+import type { CombatPhase } from './types/combat'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -291,7 +291,7 @@ function mutateDamage(
   return state
 }
 
-function withPhase(state: State, phase: Combat['phase']): State {
+function withPhase(state: State, phase: CombatPhase): State {
   if (!state.combat) return state
   return {
     ...state,

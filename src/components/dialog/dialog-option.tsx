@@ -53,7 +53,12 @@ function DialogOptionSelect({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <InputGroupButton
-          className={cn('text-muted-foreground', { 'text-foreground': value })}
+          className={cn(
+            'text-muted-foreground shadow-md hover:text-foreground/80',
+            {
+              'text-foreground hover:text-foreground': value,
+            }
+          )}
           disabled={disabled}
           variant="secondary"
         >

@@ -26,6 +26,7 @@ import type {
   DialogOption,
 } from './types/dialog'
 import type { Message } from './types/message'
+import type { Combat } from './types/combat'
 
 type SActor = Actor<State>
 type SAction = Action<State, SActor>
@@ -37,28 +38,14 @@ type SMutation = DeltaQueueItem<State, DeltaContext>
 type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
+type SCombat = Combat<State, SActor>
 type SDialog = Dialog<State, SActor>
 type SDialogNode = DialogNode<State, SActor>
 type SDialogOption = DialogOption<State, SActor>
 type SDialogCheck = DialogCheck<State>
 
-const CombatPhases = [
-  'pre',
-  'start',
-  'planning',
-  'main',
-  'end',
-  'post',
-] as const
-
-type Combat = {
-  turn: number
-  phase: (typeof CombatPhases)[number]
-  effects: Array<SEffectItem>
-}
-
 type State = {
-  combat: Combat | undefined
+  combat: SCombat | undefined
   dialog: SDialog
   players: Array<Player>
   actors: Array<SActor>
@@ -71,7 +58,7 @@ type State = {
   messageLog: Array<Message>
 }
 
-function createCombat(): Combat {
+function createCombat(): SCombat {
   return {
     turn: 0,
     phase: 'pre',
@@ -95,7 +82,7 @@ function createCombat(): Combat {
   }
 }
 
-export { CombatPhases, createCombat }
+export { createCombat }
 export type {
   Combat,
   State,
@@ -109,6 +96,7 @@ export type {
   SModifier,
   STrigger,
   STriggerItem,
+  SCombat,
   SDialog,
   SDialogNode,
   SDialogOption,

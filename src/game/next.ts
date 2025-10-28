@@ -14,14 +14,15 @@ import {
 } from './mutations'
 import { pop, push } from './queue'
 import { resolveAction } from './resolvers'
-import type { Combat, State } from './state'
+import type { State } from './state'
+import type { CombatPhase } from './types/combat'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
 function resolveTrigger(
   resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
   state: State,
   context: DeltaContext
-): DeltaQueueItem<State, DeltaContext>[] {
+): Array<DeltaQueueItem<State, DeltaContext>> {
   if (!resolver.validate(state, context)) {
     console.error('resolver validation failed', resolver, state, context)
     return []
@@ -80,7 +81,7 @@ function nextMutation(state: State): State {
   }
 }
 
-function nextPhase(phase: Combat['phase']): Combat['phase'] {
+function nextPhase(phase: CombatPhase): CombatPhase {
   switch (phase) {
     case 'pre':
       return 'start'
