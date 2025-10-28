@@ -36,11 +36,23 @@ function DialogHistoryLog({
     <ScrollArea className={cn('max-h-50', className)} {...props}>
       <ul className="text-xs text-muted-foreground">
         {firstMessages.map((message, i) => (
-          <li key={i + message.ID}>{message.text}</li>
+          <li
+            key={i + message.ID}
+            style={{
+              paddingLeft: message.depth * 16,
+            }}
+          >
+            {message.text}
+          </li>
         ))}
         {showLastMessages &&
           lastMessages.map((message) => (
-            <li key={message.ID} className="text-xs text-muted-foreground">
+            <li
+              key={message.ID}
+              style={{
+                paddingLeft: message.depth * 16,
+              }}
+            >
               {message.text}
             </li>
           ))}

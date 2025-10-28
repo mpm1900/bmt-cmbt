@@ -30,17 +30,23 @@ function withStatEffects(actor: SActor, effects: Array<SEffectItem>) {
   ] as const
 }
 
-function getActor(
+function getActorWithEffects(
   state: State,
   sourceID: string | undefined
-): SActor | undefined {
+): ReturnType<typeof withStatEffects> | undefined {
   const source = findActor(state, sourceID)
   if (!source) return undefined
 
   const combatEffects = state.combat?.effects ?? []
   const effects = [...state.effects, ...combatEffects]
-  let actor = withStatEffects(source, effects)[0]
-  return actor
+  return withStatEffects(source, effects)
+}
+
+function getActor(
+  state: State,
+  sourceID: string | undefined
+): SActor | undefined {
+  return getActorWithEffects(state, sourceID)?.[0]
 }
 
 function mapActor<T = unknown>(
@@ -149,6 +155,7 @@ function convertTargetToPositionContext(
   return {
     playerID: context.playerID,
     sourceID: context.sourceID,
+    parentID: context.parentID,
     positions: positions_targets
       .filter((pt) => pt[0] !== undefined)
       .map((pt) => pt[0]!),
@@ -167,6 +174,7 @@ function convertPositionToTargetContext(
   return {
     playerID: context.playerID,
     sourceID: context.sourceID,
+    parentID: context.parentID,
     targetIDs: targetIDs
       .filter((id) => id !== undefined)
       .concat(context.targetIDs),
@@ -179,6 +187,7 @@ export {
   withStatEffects,
   getAliveInactiveActors,
   getAliveActiveActors,
+  getActorWithEffects,
   getActor,
   mapTarget,
   mapActor,

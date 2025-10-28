@@ -10,7 +10,7 @@ function DialogView() {
   const { state } = useGameState((s) => s)
   const view = useGameUI((s) => s.view)
   useEffect(() => {
-    console.log(state)
+    // console.log(state)
   }, [state])
 
   return (

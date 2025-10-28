@@ -8,8 +8,9 @@ import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { playerStore } from './usePlayer'
 
+type GameUIView = 'actions' | 'items' | 'switch' | 'dialog'
 type GameUIState = {
-  view: 'actions' | 'items' | 'switch' | 'dialog'
+  view: GameUIView
   activeActorID: string | undefined
   activeActionID: string | undefined
 }
@@ -47,4 +48,5 @@ function useGameUI<T = unknown>(selector: Selector<T>) {
   return useStore(gameUIStore, useShallow(selector))
 }
 
+export type { GameUIView }
 export { useGameUI, gameUIStore }

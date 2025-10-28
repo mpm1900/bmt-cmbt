@@ -13,6 +13,7 @@ function newMessage(partial: Partial<Message>): Message {
     ID: v4(),
     context: newContext({}),
     text: null,
+    depth: 0,
     ...partial,
   }
 }

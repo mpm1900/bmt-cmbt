@@ -98,20 +98,13 @@ const IntroNode0: SDialogNode = {
 
     {
       ID: 'IntroNode0-Heal',
-      disable: 'disable',
+      disable: 'hide',
       text: <em>Heal</em>,
       icons: '',
       context,
       action: Heal,
     },
-    createSourceDialogOption(
-      {
-        text: <span className="font-semibold">"Hello over there!"</span>,
-      },
-      context,
-      IntroNode1.ID,
-      []
-    ),
+
     {
       ID: 'IntroNode0-Activate-Actor',
       disable: 'hide',
@@ -128,18 +121,14 @@ const IntroNode0: SDialogNode = {
       context,
       action: ActivateX(getMissingActorCount(state, context.playerID)),
     },
-    {
-      ID: 'IntroNode0-Deactivate-Actor',
-      disable: 'hide',
-      text: <em>Deactivate</em>,
-      icons: '',
+    createSourceDialogOption(
+      {
+        text: <span className="font-semibold">"Hello over there!"</span>,
+      },
       context,
-      action: withMessageLogs(Deactivate, (s, c) => [
-        newMessage({
-          text: `${findActor(s, c.targetIDs[0])?.name} deactivated.`,
-        }),
-      ]),
-    },
+      IntroNode1.ID,
+      []
+    ),
   ],
 }
 
@@ -161,6 +150,18 @@ const IntroNode1: SDialogNode = {
       IntroNode0.ID,
       []
     ),
+    {
+      ID: 'IntroNode1-Deactivate-Actor',
+      disable: 'hide',
+      text: <em>Deactivate</em>,
+      icons: '',
+      context,
+      action: withMessageLogs(Deactivate, (s, c) => [
+        newMessage({
+          text: `${findActor(s, c.targetIDs[0])?.name} deactivated.`,
+        }),
+      ]),
+    },
   ],
 }
 

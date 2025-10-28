@@ -1,38 +1,61 @@
 import { ArrowDownUp, Box, Component, MessageSquare } from 'lucide-react'
 import { ButtonGrid } from './button-grid'
 import { Button } from './ui/button'
-import { useGameUI } from '@/hooks/useGameUI'
+import { useGameUI, type GameUIView } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
 import { useGameState } from '@/hooks/useGameState'
 import { getActor, nextAvailableAction } from '@/game/access'
+import { hasNext } from '@/game/next'
+import type { CombatPhase } from '@/game/types/combat'
+import type { ComponentProps } from 'react'
+
+function getVariant(
+  target: GameUIView,
+  view: GameUIView,
+  phase: CombatPhase | undefined
+): ComponentProps<typeof Button>['variant'] {
+  if (!phase) {
+    if (target === view) {
+      return 'default'
+    }
+  }
+
+  if (phase === 'planning') {
+    if (target === view) {
+      return 'default'
+    }
+  }
+  return 'secondary'
+}
 
 function ViewSelector() {
   const { set, view, activeActorID } = useGameUI((s) => s)
   const state = useGameState((s) => s.state)
   const phase = state.combat?.phase
   const actor = getActor(state, activeActorID)
-  const isPlanning = phase === 'planning'
+  const planning = phase === 'planning'
+  const running = !planning && hasNext(state)
 
   return (
     <ButtonGrid className="grid grid-cols-2 grid-rows-2">
       <Button
-        variant={view === 'dialog' ? 'default' : 'secondary'}
+        variant={getVariant('dialog', view, phase)}
         size="icon-lg"
-        disabled={!!state.combat}
+        disabled={!!state.combat || running}
         onClick={() => set({ view: 'dialog' })}
       >
         <MessageSquare />
       </Button>
       <Button
-        variant={view === 'items' ? 'default' : 'secondary'}
+        variant={getVariant('items', view, phase)}
         size="icon-lg"
         onClick={() => set({ view: 'items' })}
-        disabled={state.combat && !isPlanning}
+        disabled={(state.combat && !planning) || running}
       >
         <Box />
       </Button>
       <Button
-        variant={view === 'actions' ? 'default' : 'secondary'}
+        variant={getVariant('actions', view, phase)}
         size="icon-lg"
         onClick={() =>
           set({
@@ -40,15 +63,15 @@ function ViewSelector() {
             activeActionID: nextAvailableAction(actor, state)?.ID,
           })
         }
-        disabled={!isPlanning}
+        disabled={!planning || running}
       >
         <Component />
       </Button>
       <Button
-        variant={view === 'switch' ? 'default' : 'secondary'}
+        variant={getVariant('switch', view, phase)}
         size="icon-lg"
         onClick={() => set({ view: 'switch', activeActionID: Swap.ID })}
-        disabled={!isPlanning}
+        disabled={!planning || running}
       >
         <ArrowDownUp />
       </Button>

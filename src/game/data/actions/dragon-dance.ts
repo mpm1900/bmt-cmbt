@@ -1,7 +1,7 @@
-import { withStats } from '@/game/actor'
 import { addEffectResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
+import { BodyUp } from '../effects/body-up'
 
 const DragonDance: SAction = {
   ID: v4(),
@@ -16,28 +16,12 @@ const DragonDance: SAction = {
   },
   resolve: (_, context) => {
     return [
-      addEffectResolver(
-        {
-          ID: v4(),
-          name: 'Body x1.5',
-          delay: 0,
-          duration: undefined,
-          priority: 0,
-          triggers: () => [],
-          modifiers: () => [
-            {
-              ID: v4(),
-              filter: (a, mcontext) => a.ID === mcontext.sourceID,
-              apply: (a) => withStats(a, { body: a.stats.body * 1.5 }),
-            },
-          ],
-        },
-        {
-          playerID: context.playerID,
-          sourceID: context.sourceID,
-          targetIDs: [context.sourceID],
-        }
-      ),
+      addEffectResolver(BodyUp, {
+        ...context,
+        parentID: context.sourceID,
+        sourceID: context.sourceID,
+        targetIDs: [context.sourceID],
+      }),
     ]
   },
 }

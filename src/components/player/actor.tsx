@@ -6,43 +6,63 @@ import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { MAIN_STAT_ICONS } from '@/renderers/icons'
 import { getHealth } from '@/game/actor'
+import { useGameState } from '@/hooks/useGameState'
+import { getActorWithEffects } from '@/game/access'
+import { Badge } from '../ui/badge'
 
 function Actor({
-  actor,
+  actorID,
   active,
   disabled,
-  effects,
   status,
   onClick,
   ...rest
-}: React.ComponentProps<'div'> & {
-  actor: SActor
-  effects: Array<string>
+}: Omit<React.ComponentProps<'div'>, 'onClick'> & {
+  actorID: string | null
   active: boolean
   disabled: boolean
   status: string
-  onClick: () => void
+  onClick: (actor: SActor) => void
 }) {
+  const state = useGameState((s) => s.state)
+  if (!actorID) {
+    return (
+      <Button
+        disabled
+        variant="outline"
+        className="h-20 mb-4.5 mt-8 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+      >
+        inactive
+      </Button>
+    )
+  }
+
+  const [actor, effectIDs] = getActorWithEffects(state, actorID)!
   const [health, maxHealth] = getHealth(actor)
+  const done = !!state.actionQueue.find((a) => a.context.sourceID === actorID)
+
   return (
     <div className="group relative flex flex-col justify-end w-64" {...rest}>
       <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
-          {effects.map((effect) => (
-            <div
-              key={effect}
-              className="size-6 bg-background border-border border rounded-full text-muted-foreground transition-all [&>svg]:size-4 flex items-center justify-center"
-            >
-              <Atom />
-            </div>
-          ))}
+          {effectIDs
+            .map((id) => state.effects.find((e) => e.effect.ID === id)!)
+            .map((effect) => (
+              <Badge
+                key={effect.ID}
+                variant="outline"
+                className="bg-background text-muted-foreground"
+              >
+                {effect.effect.name}
+              </Badge>
+            ))}
         </div>
       </div>
       <Button
         variant={active ? 'default' : 'secondary'}
         disabled={disabled}
         className={cn('h-auto', '')}
-        onClick={() => onClick()}
+        onClick={() => onClick(actor)}
       >
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
@@ -77,7 +97,7 @@ function Actor({
         </ItemContent>
       </Button>
       <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center mt-1">
-        {status}
+        {done ? '...' : status}
       </span>
     </div>
   )

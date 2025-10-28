@@ -42,7 +42,7 @@ const SprayNPray: SAction = {
       context.targetIDs.map((targetID) => {
         const source = getSourceChance(
           SprayNPrayAccuracy,
-          0,
+          SprayNPrayCritChance,
           getActor(state, context.sourceID)!
         )
         const target = getTargetChance(getActor(state, targetID)!)

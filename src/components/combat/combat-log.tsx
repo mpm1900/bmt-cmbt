@@ -14,7 +14,14 @@ function CombatLog({ activeTab }: { activeTab: string }) {
     <ScrollArea className="h-84">
       <ul className="text-sm text-muted-foreground">
         {combatLog.map((log, index) => (
-          <li key={index}>{log.text}</li>
+          <li
+            key={index}
+            style={{
+              paddingLeft: log.depth * 16,
+            }}
+          >
+            {log.text}
+          </li>
         ))}
         <div ref={combatLogRef} />
       </ul>

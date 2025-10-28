@@ -13,7 +13,6 @@ const HANDLE_DEATH: SEffect = {
   name: '',
   delay: 0,
   duration: undefined,
-  priority: 0,
   modifiers: () => [],
   triggers: () => [
     {
@@ -40,7 +39,6 @@ const HANDLE_TURN_START: SEffect = {
   name: '',
   delay: 0,
   duration: undefined,
-  priority: 0,
   modifiers: () => [],
   triggers: () => [
     {
@@ -64,7 +62,6 @@ const HANDLE_TURN_END: SEffect = {
   name: '',
   delay: 0,
   duration: undefined,
-  priority: 0,
   modifiers: () => [],
   triggers: () => [
     {

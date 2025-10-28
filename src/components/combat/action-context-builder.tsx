@@ -18,6 +18,7 @@ import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
 import { ActionRepeatPages } from './action-repeat-pages'
 import { cn } from '@/lib/utils'
+import { newContext } from '@/game/mutations'
 
 function getSelectedCount(context: DeltaPositionContext) {
   return (
@@ -225,12 +226,12 @@ function ActionContextBuilder({
   const state = useGameState((s) => s.state)
 
   useEffect(() => {
-    onContextChange({
-      playerID,
-      sourceID: sourceID ?? '',
-      positions: [],
-      targetIDs: [],
-    })
+    onContextChange(
+      newContext({
+        playerID,
+        sourceID: sourceID ?? '',
+      })
+    )
   }, [sourceID, action.ID])
 
   const renderer = ACTION_RENDERERS[action.ID]

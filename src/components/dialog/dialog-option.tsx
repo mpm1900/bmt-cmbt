@@ -13,10 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { ArrowRight, ChevronDown } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useGameState } from '@/hooks/useGameState'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { hasNext } from '@/game/next'
+import { MiniDropdown } from '../mini-dropdown'
 
 function DialogOptionContent({
   className,
@@ -52,19 +53,14 @@ function DialogOptionSelect({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <InputGroupButton
-          className={cn(
-            'text-muted-foreground shadow-md hover:text-foreground/80',
-            {
-              'text-foreground hover:text-foreground': value,
-            }
-          )}
+        <MiniDropdown
+          className={cn({
+            'text-foreground hover:text-foreground': value,
+          })}
           disabled={disabled}
-          variant="secondary"
         >
           {value?.name || placeholder}
-          <ChevronDown />
-        </InputGroupButton>
+        </MiniDropdown>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
@@ -114,7 +110,7 @@ function DialogOption({
   return (
     <DialogOptionContent
       className={cn('group', { 'opacity-50': disabled || loading })}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
       {sources.length > 0 && (
         <InputGroupAddon>
@@ -129,7 +125,11 @@ function DialogOption({
           />
         </InputGroupAddon>
       )}
-      <InputGroupAddon className="pr-2 group-hover:text-foreground/70">
+      <InputGroupAddon
+        className={cn('pr-2', {
+          'group-hover:text-foreground/70': !(disabled || loading),
+        })}
+      >
         {option.text}
       </InputGroupAddon>
       {max > 0 && targets.length > 0 && (

@@ -37,6 +37,7 @@ function newContext<T = {}>(
   return {
     playerID: '',
     sourceID: '',
+    parentID: '',
     targetIDs: [],
     positions: [],
     ...context,
@@ -170,7 +171,10 @@ function handleTrigger(
   const items = triggers.map((trigger) => ({
     ID: v4(),
     trigger,
-    context,
+    context: {
+      ...context,
+      parentID: '',
+    },
   }))
   const triggerQueue = enqueue(state.triggerQueue, items)
 
@@ -280,6 +284,7 @@ function mutateDamage(
       newMessage({
         context,
         text: `${target?.name} took ${committed} damage.`,
+        depth: 1,
       }),
     ])
   }

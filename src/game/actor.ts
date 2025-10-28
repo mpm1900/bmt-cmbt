@@ -141,20 +141,25 @@ function withEffects(
     return [actor, []]
   }
 
-  const applied: Set<string> = new Set<string>()
+  const applied: Set<string> = new Set<string>(
+    effects
+      .filter((e) => e.context.parentID === actor.ID)
+      //.filter((e) => e.effect.triggers(e.context).length > 0)
+      .map((e) => e.effect.ID)
+  )
   const modifiers = effects
     .flatMap((item) => {
       const { effect, context } = item
       const items = effect.modifiers(context).map((modifier) => ({
         ID: v4(),
-        effect: effect,
+        effect,
         modifier,
         context,
       }))
 
       return items
     })
-    .sort((a, b) => a.effect.priority - b.effect.priority)
+    .sort((a, b) => a.modifier.priority - b.modifier.priority)
 
   actor = modifiers.reduce(
     (next, item) => {

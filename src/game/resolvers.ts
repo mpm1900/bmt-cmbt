@@ -196,7 +196,14 @@ function activateActorResolver(
             text: `${findActor(state, actorID)?.name} joined the battle.`,
           }),
         ])
-        state = handleTrigger(state, context, 'on-actor-activate')
+        state = handleTrigger(
+          state,
+          {
+            ...context,
+            sourceID: actorID,
+          },
+          'on-actor-activate'
+        )
         return state
       },
     },
@@ -278,7 +285,8 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
 
         state = pushMessages(state, [
           newMessage({
-            text: `${findActor(state, context.sourceID)!.name} gained ${effect.name}.`,
+            text: `${findActor(state, context.parentID)!.name} gained ${effect.name}.`,
+            depth: 1,
           }),
         ])
 
@@ -298,25 +306,36 @@ function damagesResolver(
     context,
     delta: {
       apply: (state: State, dcontext: DeltaContext) => {
-        console.log('damages resolver', dcontext, damages)
         state = damages.reduce((next, damage, index) => {
           const ctx = contexts[index] ?? dcontext
           const source = getActor(next, ctx.sourceID)
 
+          next = mutateDamage(next, ctx, damage)
+
           if (damage.type === 'power' && source) {
+            if (damage.critical) {
+              next = pushMessages(next, [
+                newMessage({ text: `Critical hit!`, depth: 1 }),
+              ])
+            }
             if (!damage.success) {
               next = pushMessages(next, [
-                newMessage({ text: `${source.name}'s attack missed.` }),
+                newMessage({
+                  text: `${source.name}'s attack missed.`,
+                  depth: 1,
+                }),
               ])
             } else if (damage.evade) {
               const target = getActor(next, ctx.targetIDs[0])
               next = pushMessages(next, [
-                newMessage({ text: `${target?.name} evaded the attack.` }),
+                newMessage({
+                  text: `${target?.name} evaded the attack.`,
+                  depth: 1,
+                }),
               ])
             }
           }
 
-          next = mutateDamage(next, ctx, damage)
           return next
         }, state)
         return state
@@ -380,7 +399,6 @@ function navigateDialogResolver(
     context,
     delta: {
       apply: (state, context) => {
-        console.log('context', context)
         const active = state.dialog.nodes.find((node) => node.ID === nodeID)!
         active.checks(state, context).forEach((check) => {
           const [success, roll] = chance(check.chance)

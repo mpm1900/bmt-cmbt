@@ -9,6 +9,7 @@ type Delta<T> = {
 type DeltaContext = {
   playerID: string
   sourceID: string
+  parentID: string
   targetIDs: Array<string>
 }
 type DeltaPositionContext = DeltaContext & {

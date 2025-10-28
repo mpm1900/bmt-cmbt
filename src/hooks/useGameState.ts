@@ -1,5 +1,5 @@
 import { IntroDialog } from '@/game/data/dialogs/intro'
-import { Goku } from '@/game/data/effects/Goku'
+import { Goku } from '@/game/data/effects/goku'
 import {
   addActionToQueue,
   newContext,
@@ -15,6 +15,7 @@ import { v4 } from 'uuid'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { playerStore } from './usePlayer'
+import { Intimidate } from '@/game/data/effects/intimidate'
 
 type GameStateStore = {
   state: State
@@ -32,7 +33,7 @@ const player: Player = {
   items: [
     {
       ID: v4(),
-      name: 'Gun',
+      name: 'Data Shard',
     },
   ],
 }
@@ -87,6 +88,16 @@ const initialState: State = {
       context: newContext({
         playerID: player.ID,
         sourceID: Max.ID,
+        parentID: Max.ID,
+      }),
+    },
+    {
+      ID: v4(),
+      effect: Intimidate,
+      context: newContext({
+        playerID: player.ID,
+        sourceID: Max.ID,
+        parentID: Max.ID,
       }),
     },
   ],
