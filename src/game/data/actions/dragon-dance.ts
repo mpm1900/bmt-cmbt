@@ -19,6 +19,7 @@ const DragonDance: SAction = {
       addEffectResolver(
         {
           ID: v4(),
+          name: 'Body x1.5',
           delay: 0,
           duration: undefined,
           priority: 0,

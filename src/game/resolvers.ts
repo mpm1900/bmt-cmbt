@@ -106,6 +106,39 @@ function mutateActorResolver(
   }
 }
 
+function healActorResolver(
+  targetID: string,
+  context: DeltaContext,
+  amount: number
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state: State) => {
+        let healed = 0
+        state = mutateActor(state, context, {
+          filter: (a) => a.ID === targetID,
+          apply: (a) => {
+            const damage = Math.max(a.state.damage - amount, 0)
+            healed += a.state.damage - damage
+            return withState(a, {
+              damage,
+            })
+          },
+        })
+
+        state = pushMessages(state, [
+          newMessage({
+            text: `${findActor(state, targetID)?.name} healed for ${healed} damage.`,
+          }),
+        ])
+        return state
+      },
+    },
+  }
+}
+
 function mutatePlayerResolver(
   playerID: string,
   context: DeltaContext,
@@ -399,6 +432,7 @@ export {
   pushMessagesResolver,
   mutatePlayerResolver,
   mutateActorResolver,
+  healActorResolver,
   decrementEffectsResolver,
   addEffectResolver,
   damagesResolver,

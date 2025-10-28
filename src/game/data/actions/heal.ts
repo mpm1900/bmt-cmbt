@@ -1,6 +1,5 @@
 import { getAliveActiveActors, mapTarget } from '@/game/access'
-import { withState } from '@/game/actor'
-import { mutateActorResolver } from '@/game/resolvers'
+import { healActorResolver } from '@/game/resolvers'
 import type { SDialogAction } from '@/game/state'
 import { v4 } from 'uuid'
 
@@ -18,11 +17,7 @@ const Heal: SDialogAction = {
   },
   sources: (state, context) => getAliveActiveActors(state, context),
   resolve(_, context) {
-    return [
-      mutateActorResolver(context.targetIDs[0], context, (a) =>
-        withState(a, { damage: Math.max(a.state.damage - 20, 0) })
-      ),
-    ]
+    return [healActorResolver(context.targetIDs[0], context, 20)]
   },
 }
 
