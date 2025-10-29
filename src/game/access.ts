@@ -181,6 +181,10 @@ function convertPositionToTargetContext(
   }
 }
 
+function getNodeCount(state: State, nodeID: string): number {
+  return state.dialog.nodeCounts[nodeID] || 0
+}
+
 export {
   getTriggers,
   findActor,
@@ -199,4 +203,5 @@ export {
   hasActiveActorSpace,
   convertPositionToTargetContext,
   convertTargetToPositionContext,
+  getNodeCount,
 }

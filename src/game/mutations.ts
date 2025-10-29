@@ -281,6 +281,7 @@ function mutateDamage(
 
   if (committed > 0) {
     state = handleTrigger(state, context, 'on-damage')
+    state = handleTrigger(state, context, 'on-damage-dealt')
     state = pushMessages(state, [
       newMessage({
         context,
@@ -392,6 +393,19 @@ function updateDialogNodeState<T = unknown>(
   }))
 }
 
+function incrementNodeCount(state: State, nodeID: string): State {
+  return {
+    ...state,
+    dialog: {
+      ...state.dialog,
+      nodeCounts: {
+        ...state.dialog.nodeCounts,
+        [nodeID]: (state.dialog.nodeCounts[nodeID] || 0) + 1,
+      },
+    },
+  }
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -414,4 +428,5 @@ export {
   updateDialogNodeState,
   validateState,
   withPhase,
+  incrementNodeCount,
 }

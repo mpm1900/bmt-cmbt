@@ -36,6 +36,8 @@ type Dialog<T, A> = {
   nodes: Array<DialogNode<T, A>>
   startNodeID: string
   activeNodeID: string | undefined
+  nodeCounts: { [nodeID: string]: number }
+  nodeHistory: Array<string>
 }
 
 export type { DialogCheck, DialogOption, DialogNode, Dialog }

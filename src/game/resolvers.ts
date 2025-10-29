@@ -20,6 +20,7 @@ import {
   decrementEffectItem,
   filterActionQueue,
   handleTrigger,
+  incrementNodeCount,
   mutateActor,
   mutateDamage,
   mutatePlayer,
@@ -417,6 +418,7 @@ function navigateDialogResolver(
           }
         })
 
+        state = incrementNodeCount(state, nodeID)
         state.mutationQueue = enqueue(state.mutationQueue, [
           pushMessagesResolver(context, active.messages(state, context)),
         ])
@@ -426,6 +428,7 @@ function navigateDialogResolver(
           dialog: {
             ...state.dialog,
             activeNodeID: nodeID,
+            nodeHistory: [...state.dialog.nodeHistory, nodeID],
           },
         }
       },

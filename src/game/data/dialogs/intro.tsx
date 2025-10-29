@@ -14,7 +14,7 @@ import {
   newMessage,
 } from '@/game/dialog'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
-import { findActor } from '@/game/access'
+import { findActor, getNodeCount } from '@/game/access'
 import { Heal } from '../actions/heal'
 import { getMissingActorCount } from '@/game/player'
 
@@ -61,16 +61,27 @@ const IntroNode0: SDialogNode = {
       ],
     },
   ],
-  messages: () => [
-    newMessage({
-      ID: 'IntroNode0-0',
-      text: 'Game start.',
-    }),
-    newMessage({
-      ID: 'IntroNode0-1',
-      text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
-    }),
-  ],
+  messages: (state) => {
+    const count = getNodeCount(state, IntroNode0.ID)
+    if (count <= 1) {
+      return [
+        newMessage({
+          ID: 'IntroNode0-0',
+          text: 'Game start.',
+        }),
+        newMessage({
+          ID: 'IntroNode0-1',
+          text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
+        }),
+      ]
+    }
+    return [
+      newMessage({
+        ID: 'IntroNode0-0.b',
+        text: 'Welcome back to this node.',
+      }),
+    ]
+  },
   options: (state, context) => [
     {
       ID: 'IntroNode0-Start-Combat',
@@ -168,9 +179,11 @@ const IntroNode1: SDialogNode = {
 
 const IntroDialog: SDialog = {
   ID: v4(),
-  nodes: [IntroNode0, IntroNode1],
   startNodeID: IntroNode0.ID,
   activeNodeID: undefined,
+  nodes: [IntroNode0, IntroNode1],
+  nodeCounts: {},
+  nodeHistory: [],
 }
 
 export { IntroDialog }
