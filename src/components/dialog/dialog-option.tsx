@@ -17,7 +17,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
-  InputGroupText,
 } from '../ui/input-group'
 
 function DialogOptionContent({
@@ -82,7 +81,6 @@ function DialogOptionSelect({
 }
 
 function DialogOption({
-  index,
   option,
   onConfirm,
 }: {
@@ -115,9 +113,13 @@ function DialogOption({
       className={cn('group', { 'opacity-50': disabled || loading })}
       disabled={disabled || loading}
     >
-      <InputGroupAddon className={cn('pr-2 opacity-50')}>
-        <InputGroupText>{index}.</InputGroupText>
-      </InputGroupAddon>
+      {option.icons && (
+        <InputGroupAddon
+          className={cn('pr-2 opacity-50 flex items-center gap-2')}
+        >
+          {option.icons}
+        </InputGroupAddon>
+      )}
       {sources.length > 0 && (
         <InputGroupAddon>
           <DialogOptionSelect

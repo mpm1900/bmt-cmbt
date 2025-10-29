@@ -1,25 +1,27 @@
-import { createCombat, type SDialog, type SDialogNode } from '@/game/state'
-import { v4 } from 'uuid'
-import { InlineMutation } from '../actions/_system/inline-mutation'
-import {
-  damagesResolver,
-  pushMessagesResolver,
-  startCombatResolver,
-} from '@/game/resolvers'
-import { createActor } from '@/lib/create-actor'
-import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
+import { findActor, getNodeCount } from '@/game/access'
 import {
   createDialogOption,
   createSourceDialogOption,
   newMessage,
 } from '@/game/dialog'
-import { withMessageLogs } from '../actions/_system/with-message-logs'
-import { findActor, getNodeCount } from '@/game/access'
-import { Heal } from '../actions/heal'
 import { getMissingActorCount } from '@/game/player'
+import {
+  damagesResolver,
+  pushMessagesResolver,
+  startCombatResolver,
+} from '@/game/resolvers'
+import { createCombat, type SDialog, type SDialogNode } from '@/game/state'
+import { createActor } from '@/lib/create-actor'
+import { ExternalLink } from 'lucide-react'
+import { FaHeartCirclePlus, FaUserPlus, FaUserMinus } from 'react-icons/fa6'
+import { v4 } from 'uuid'
+import { InlineMutation } from '../actions/_system/inline-mutation'
+import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
+import { withMessageLogs } from '../actions/_system/with-message-logs'
+import { Heal } from '../actions/heal'
 
-const Criminal = (aiID: string) =>
-  createActor('Criminal', aiID, {
+const Criminal = (index: number, aiID: string) =>
+  createActor(`Criminal (${index})`, aiID, {
     accuracy: 0,
     body: 100,
     evasion: 0,
@@ -30,9 +32,9 @@ const Criminal = (aiID: string) =>
   })
 
 const IntroNode0ID = v4()
-const criminal1 = Criminal(IntroNode0ID)
-const criminal2 = Criminal(IntroNode0ID)
-const criminal3 = Criminal(IntroNode0ID)
+const criminal1 = Criminal(1, IntroNode0ID)
+const criminal2 = Criminal(2, IntroNode0ID)
+const criminal3 = Criminal(3, IntroNode0ID)
 
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
@@ -51,16 +53,12 @@ const IntroNode0: SDialogNode = {
         ...state.actors
           .filter((a) => a.playerID === context.playerID)
           .map((a) =>
-            damagesResolver(
-              { ...context, targetIDs: [a.ID] },
-              [
-                {
-                  type: 'raw',
-                  raw: 10,
-                },
-              ],
-              [{ ...context, targetIDs: [a.ID] }]
-            )
+            damagesResolver({ ...context, targetIDs: [a.ID] }, [
+              {
+                type: 'raw',
+                raw: 10,
+              },
+            ])
           ),
       ],
     },
@@ -91,14 +89,18 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Start-Combat',
       disable: 'hide',
       text: <em>Start Combat</em>,
-      icons: null,
+      icons: (
+        <>
+          <ExternalLink />
+        </>
+      ),
       context,
       action: InlineMutation(() => [
         startCombatResolver(createCombat(), {
           players: [
             {
               ID: IntroNode0ID,
-              activeActorIDs: [criminal1.ID, criminal2.ID, criminal3.ID],
+              activeActorIDs: [null, null, null],
               items: [],
             },
           ],
@@ -110,7 +112,11 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Heal',
       disable: 'hide',
       text: <em>Heal</em>,
-      icons: null,
+      icons: (
+        <>
+          <FaHeartCirclePlus />
+        </>
+      ),
       context,
       action: Heal,
     },
@@ -119,7 +125,11 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Activate-Actor',
       disable: 'hide',
       text: <em>Activate</em>,
-      icons: null,
+      icons: (
+        <>
+          <FaUserPlus />
+        </>
+      ),
       context,
       action: Activate,
     },
@@ -127,13 +137,22 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Activate-All-Actors',
       disable: 'hide',
       text: <em>Activate All</em>,
-      icons: null,
+      icons: (
+        <>
+          <FaUserPlus />
+        </>
+      ),
       context,
       action: ActivateX(getMissingActorCount(state, context.playerID)),
     },
     createSourceDialogOption(
       {
         text: <span className="font-semibold">"Hello over there!"</span>,
+        icons: (
+          <>
+            <ExternalLink />
+          </>
+        ),
       },
       context,
       IntroNode1.ID,
@@ -156,6 +175,11 @@ const IntroNode1: SDialogNode = {
     createDialogOption(
       {
         text: <em>Go back</em>,
+        icons: (
+          <>
+            <ExternalLink />
+          </>
+        ),
       },
       context,
       IntroNode0.ID,
@@ -165,7 +189,11 @@ const IntroNode1: SDialogNode = {
       ID: 'IntroNode1-Deactivate-Actor',
       disable: 'hide',
       text: <em>Deactivate</em>,
-      icons: null,
+      icons: (
+        <>
+          <FaUserMinus />
+        </>
+      ),
       context,
       action: withMessageLogs(Deactivate, (s, c) => [
         newMessage({

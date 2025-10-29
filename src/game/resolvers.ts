@@ -300,7 +300,7 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
 function damagesResolver(
   context: DeltaContext,
   damages: Array<Damage>,
-  contexts: Array<DeltaContext>
+  contexts: Array<DeltaContext> = []
 ): SMutation {
   return {
     ID: v4(),
