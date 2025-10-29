@@ -4,6 +4,7 @@ import { Badge } from './ui/badge'
 import { Separator } from './ui/separator'
 import { Spinner } from './ui/spinner'
 import { getStatus } from '@/game/next'
+import { cn } from '@/lib/utils'
 
 function ViewHeader() {
   const state = useGameState((s) => s.state)
@@ -11,13 +12,13 @@ function ViewHeader() {
     <div className="flex items-center justify-start gap-2 p-1">
       <Badge
         variant={state.combat ? 'outline' : 'secondary'}
-        className={state.combat ? 'text-muted-foreground' : ''}
+        className={cn({ 'text-muted-foreground': state.combat })}
       >
         Dialog
       </Badge>
       <Badge
         variant={state.combat ? 'secondary' : 'outline'}
-        className={!state.combat ? 'text-muted-foreground' : ''}
+        className={cn({ 'text-muted-foreground': !state.combat })}
       >
         Combat
       </Badge>

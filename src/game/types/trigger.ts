@@ -5,6 +5,7 @@ type Trigger<T> = DeltaResolver<T, DeltaContext, DeltaContext> & {
   type:
     | 'on-actor-activate'
     | 'on-actor-deactivate'
+    | 'on-combat-start'
     | 'on-damage-dealt'
     | 'on-damage'
     | 'on-death'

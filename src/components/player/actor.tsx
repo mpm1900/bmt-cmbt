@@ -61,7 +61,7 @@ function Actor({
       <Button
         variant={active ? 'default' : 'secondary'}
         disabled={disabled}
-        className={cn('h-auto', '')}
+        className={cn('h-auto')}
         onClick={() => onClick(actor)}
       >
         <ItemContent>

@@ -30,6 +30,10 @@ const Criminal = (aiID: string) =>
   })
 
 const IntroNode0ID = v4()
+const criminal1 = Criminal(IntroNode0ID)
+const criminal2 = Criminal(IntroNode0ID)
+const criminal3 = Criminal(IntroNode0ID)
+
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
   checks: (state, context) => [
@@ -87,22 +91,18 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Start-Combat',
       disable: 'hide',
       text: <em>Start Combat</em>,
-      icons: '',
+      icons: null,
       context,
       action: InlineMutation(() => [
         startCombatResolver(createCombat(), {
           players: [
             {
               ID: IntroNode0ID,
-              activeActorIDs: [null, null, null],
+              activeActorIDs: [criminal1.ID, criminal2.ID, criminal3.ID],
               items: [],
             },
           ],
-          actors: [
-            Criminal(IntroNode0ID),
-            Criminal(IntroNode0ID),
-            Criminal(IntroNode0ID),
-          ],
+          actors: [criminal1, criminal2, criminal3],
         }),
       ]),
     },
@@ -110,7 +110,7 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Heal',
       disable: 'hide',
       text: <em>Heal</em>,
-      icons: '',
+      icons: null,
       context,
       action: Heal,
     },
@@ -119,7 +119,7 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Activate-Actor',
       disable: 'hide',
       text: <em>Activate</em>,
-      icons: '',
+      icons: null,
       context,
       action: Activate,
     },
@@ -127,7 +127,7 @@ const IntroNode0: SDialogNode = {
       ID: 'IntroNode0-Activate-All-Actors',
       disable: 'hide',
       text: <em>Activate All</em>,
-      icons: '',
+      icons: null,
       context,
       action: ActivateX(getMissingActorCount(state, context.playerID)),
     },
@@ -165,7 +165,7 @@ const IntroNode1: SDialogNode = {
       ID: 'IntroNode1-Deactivate-Actor',
       disable: 'hide',
       text: <em>Deactivate</em>,
-      icons: '',
+      icons: null,
       context,
       action: withMessageLogs(Deactivate, (s, c) => [
         newMessage({

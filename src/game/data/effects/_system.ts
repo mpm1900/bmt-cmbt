@@ -49,7 +49,7 @@ const HANDLE_TURN_START: SEffect = {
         return [
           nextTurnResolver(tcontext),
           pushMessagesResolver(tcontext, [
-            newMessage({ text: `Turn ${state.combat!.turn + 1} started` }),
+            newMessage({ text: `Turn ${state.combat!.turn + 1}` }),
           ]),
         ]
       },
@@ -68,12 +68,14 @@ const HANDLE_TURN_END: SEffect = {
       ID: v4(),
       type: 'on-turn-end',
       validate: () => true,
-      resolve: (state, tcontext) => {
+      resolve: (_state, _tcontext) => {
         return [
           decrementEffectsResolver(),
+          /*
           pushMessagesResolver(tcontext, [
             newMessage({ text: `Turn ${state.combat?.turn} ended` }),
           ]),
+          */
         ]
       },
     },

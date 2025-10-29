@@ -17,27 +17,29 @@ const Intimidate: SEffect = {
       ID: v4(),
       type: 'on-actor-activate',
       validate: (_state, tcontext) => {
-        console.log(tcontext)
         return tcontext.sourceID === econtext.sourceID
       },
       resolve: (state, tcontext) => {
         const opponentID = state.dialog.activeNodeID!
+        const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
+          (id) => id !== null
+        )
         return [
           pushMessagesResolver(tcontext, [
-            newMessage({ text: 'Intimidate Trigger:' }),
-          ]),
-          getActiveActorIDs(state, opponentID)
-            .filter((id) => id !== null)
-            .map((id) => {
-              return addEffectResolver(
-                BodyDown,
-                newContext({
-                  playerID: opponentID,
-                  sourceID: tcontext.sourceID,
-                  parentID: id,
-                })
-              )
+            newMessage({
+              text: `Intimidate Trigger (${activeActorIDs.length})`,
             }),
+          ]),
+          activeActorIDs.map((id) => {
+            return addEffectResolver(
+              BodyDown,
+              newContext({
+                playerID: opponentID,
+                sourceID: tcontext.sourceID,
+                parentID: id,
+              })
+            )
+          }),
         ]
       },
     },

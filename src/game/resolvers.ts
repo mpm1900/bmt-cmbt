@@ -372,9 +372,9 @@ function startCombatResolver(
     ID: v4(),
     context: newContext({}),
     delta: {
-      apply: (state, _context) => {
+      apply: (state, context) => {
         const { actors = [], players = [], ...rest } = preState
-        return {
+        state = {
           ...state,
           actionQueue: [],
           triggerQueue: [],
@@ -386,6 +386,9 @@ function startCombatResolver(
           combatLog: [],
           ...rest,
         }
+
+        state = handleTrigger(state, context, 'on-combat-start')
+        return state
       },
     },
   }

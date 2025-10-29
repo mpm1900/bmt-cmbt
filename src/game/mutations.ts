@@ -172,10 +172,7 @@ function handleTrigger(
   const items = triggers.map((trigger) => ({
     ID: v4(),
     trigger,
-    context: {
-      ...context,
-      parentID: '',
-    },
+    context,
   }))
   const triggerQueue = enqueue(state.triggerQueue, items)
 
