@@ -20,7 +20,7 @@ type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   context: DeltaPositionContext
 }
 
-type DialogNode<T, A> = {
+type DialogNode<T, A, S extends Object = {}> = {
   ID: string
   checks: (state: T, context: DeltaContext) => Array<DialogCheck<T>>
   messages: (state: T, context: DeltaContext) => Array<Message>
@@ -28,6 +28,7 @@ type DialogNode<T, A> = {
     state: T,
     context: DeltaPositionContext
   ) => Array<DialogOption<T, A>>
+  state: S
 }
 
 type Dialog<T, A> = {

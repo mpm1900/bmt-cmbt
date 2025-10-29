@@ -1,9 +1,9 @@
-import type { Player as PlayerType } from '@/game/types/player'
+import type { SPlayer } from '@/game/state'
 import { ViewSelector } from '../view-selector'
 import { ActorSelectorGrid } from './actor-selector-grid'
 import { PlayerActors } from './player-actors'
 
-function Player({ player }: { player: PlayerType }) {
+function Player({ player }: { player: SPlayer }) {
   return (
     <div className="flex justify-start gap-2 m-2">
       <PlayerActors player={player} />

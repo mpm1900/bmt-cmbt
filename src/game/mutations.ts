@@ -19,17 +19,18 @@ import { resolveAction } from './resolvers'
 import type {
   SAction,
   SActor,
+  SDialogNode,
   SDialogOption,
   SEffect,
   SEffectItem,
+  SPlayer,
   State,
   STrigger,
 } from './state'
+import type { CombatPhase } from './types/combat'
 import type { Damage } from './types/damage'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Message } from './types/message'
-import type { Player } from './types/player'
-import type { CombatPhase } from './types/combat'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -242,7 +243,7 @@ function mutateActor(
 function mutatePlayer(
   state: State,
   context: DeltaContext,
-  delta: Delta<Player>
+  delta: Delta<SPlayer>
 ): State {
   return {
     ...state,
@@ -361,6 +362,36 @@ function resolveDialogOption(
   }
 }
 
+function updateDialogNode(
+  state: State,
+  nodeID: string,
+  fn: (node: SDialogNode) => SDialogNode
+): State {
+  return {
+    ...state,
+    dialog: {
+      ...state.dialog,
+      nodes: state.dialog.nodes.map((node) =>
+        node.ID === nodeID ? fn(node) : node
+      ),
+    },
+  }
+}
+
+function updateDialogNodeState<T = unknown>(
+  state: State,
+  nodeID: string,
+  fn: (state: T) => Partial<T>
+): State {
+  return updateDialogNode(state, nodeID, (node) => ({
+    ...node,
+    state: {
+      ...node.state,
+      ...fn(node.state as T),
+    },
+  }))
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -379,6 +410,8 @@ export {
   sortActionQueue,
   sortPromptQueue,
   startDialog,
+  updateDialogNode,
+  updateDialogNodeState,
   validateState,
   withPhase,
 }

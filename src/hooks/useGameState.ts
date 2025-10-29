@@ -7,9 +7,8 @@ import {
   resolvePrompt,
 } from '@/game/mutations'
 import { next, nextTurnPhase } from '@/game/next'
-import type { SAction, SDialogOption, State } from '@/game/state'
+import type { SAction, SDialogOption, SPlayer, State } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
-import type { Player } from '@/game/types/player'
 import { createActor } from '@/lib/create-actor'
 import { v4 } from 'uuid'
 import { createStore, useStore } from 'zustand'
@@ -27,13 +26,17 @@ type GameStateStore = {
   deleteCombat: (encounterID: string) => void
 }
 
-const player: Player = {
+const player: SPlayer = {
   ID: playerStore.getState().playerID,
   activeActorIDs: [null, null, null],
   items: [
     {
       ID: v4(),
       name: 'Data Shard',
+      consumable: undefined,
+      use: undefined,
+      actions: undefined,
+      effect: undefined,
     },
   ],
 }

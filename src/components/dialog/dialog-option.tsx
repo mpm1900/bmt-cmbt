@@ -1,11 +1,11 @@
+import { hasNext } from '@/game/next'
 import type { SActor, SDialogOption } from '@/game/state'
-import { useState, type ComponentProps } from 'react'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-} from '../ui/input-group'
+import type { DeltaPositionContext } from '@/game/types/delta'
+import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
+import { ArrowRight } from 'lucide-react'
+import { useState, type ComponentProps } from 'react'
+import { MiniDropdown } from '../mini-dropdown'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +13,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { ArrowRight } from 'lucide-react'
-import { useGameState } from '@/hooks/useGameState'
-import type { DeltaPositionContext } from '@/game/types/delta'
-import { hasNext } from '@/game/next'
-import { MiniDropdown } from '../mini-dropdown'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupText,
+} from '../ui/input-group'
 
 function DialogOptionContent({
   className,
@@ -54,7 +55,7 @@ function DialogOptionSelect({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <MiniDropdown
-          className={cn({
+          className={cn('data-[state=open]:text-foreground', {
             'text-foreground hover:text-foreground': value,
           })}
           disabled={disabled}
@@ -81,9 +82,11 @@ function DialogOptionSelect({
 }
 
 function DialogOption({
+  index,
   option,
   onConfirm,
 }: {
+  index: number
   option: SDialogOption
   onConfirm: (context: DeltaPositionContext) => void
 }) {
@@ -112,6 +115,9 @@ function DialogOption({
       className={cn('group', { 'opacity-50': disabled || loading })}
       disabled={disabled || loading}
     >
+      <InputGroupAddon className={cn('pr-2 opacity-50')}>
+        <InputGroupText>{index}.</InputGroupText>
+      </InputGroupAddon>
       {sources.length > 0 && (
         <InputGroupAddon>
           <DialogOptionSelect

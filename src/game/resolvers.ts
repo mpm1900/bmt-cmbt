@@ -12,6 +12,7 @@ import type {
   SEffect,
   SMutation,
   State,
+  SPlayer,
 } from '@/game/state'
 import { v4 } from 'uuid'
 import { withState } from '@/game/actor'
@@ -27,7 +28,6 @@ import {
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
-import type { Player } from './types/player'
 import { convertPositionToTargetContext, findActor, getActor } from './access'
 import { chance } from '@/lib/chance'
 import { enqueue } from './queue'
@@ -142,7 +142,7 @@ function healActorResolver(
 function mutatePlayerResolver(
   playerID: string,
   context: DeltaContext,
-  fn: (p: Player) => Player
+  fn: (p: SPlayer) => SPlayer
 ): SMutation {
   return {
     ID: v4(),

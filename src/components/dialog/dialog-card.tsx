@@ -32,9 +32,10 @@ function DialogCard() {
               orientation="vertical"
               className="flex flex-col gap-0 w-full"
             >
-              {activeNode.options(state, context).map((option) => (
+              {activeNode.options(state, context).map((option, index) => (
                 <DialogOption
                   key={option.ID}
+                  index={index + 1}
                   option={option}
                   onConfirm={(context) => {
                     resolveDialogOption(withContext(option, context))

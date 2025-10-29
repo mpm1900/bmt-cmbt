@@ -29,6 +29,7 @@ import type { Message } from './types/message'
 import type { Combat } from './types/combat'
 
 type SActor = Actor<State>
+type SPlayer = Player<State, SActor>
 type SAction = Action<State, SActor>
 type SDialogAction = DialogAction<State, SActor>
 type SEffect = Effect<State, SActor>
@@ -40,14 +41,14 @@ type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 type SCombat = Combat<State, SActor>
 type SDialog = Dialog<State, SActor>
-type SDialogNode = DialogNode<State, SActor>
+type SDialogNode<T extends Object = {}> = DialogNode<State, SActor, T>
 type SDialogOption = DialogOption<State, SActor>
 type SDialogCheck = DialogCheck<State>
 
 type State = {
   combat: SCombat | undefined
   dialog: SDialog
-  players: Array<Player>
+  players: Array<SPlayer>
   actors: Array<SActor>
   effects: Array<SEffectItem>
   actionQueue: ActionQueue<State, SActor>
@@ -87,6 +88,7 @@ export type {
   Combat,
   State,
   SActor,
+  SPlayer,
   SAction,
   SDialogAction,
   SEffect,

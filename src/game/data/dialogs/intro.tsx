@@ -95,7 +95,6 @@ const IntroNode0: SDialogNode = {
         }),
       ]),
     },
-
     {
       ID: 'IntroNode0-Heal',
       disable: 'hide',
@@ -130,6 +129,7 @@ const IntroNode0: SDialogNode = {
       []
     ),
   ],
+  state: {},
 }
 
 const IntroNode1: SDialogNode = {
@@ -163,6 +163,7 @@ const IntroNode1: SDialogNode = {
       ]),
     },
   ],
+  state: {},
 }
 
 const IntroDialog: SDialog = {

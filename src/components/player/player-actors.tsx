@@ -1,10 +1,10 @@
-import type { Player } from '@/game/types/player'
 import { Actor } from './actor'
 import { useGameState } from '@/hooks/useGameState'
 import { nextAvailableAction } from '@/game/access'
 import { useGameUI } from '@/hooks/useGameUI'
+import type { SPlayer } from '@/game/state'
 
-function PlayerActors({ player }: { player: Player }) {
+function PlayerActors({ player }: { player: SPlayer }) {
   const state = useGameState((s) => s.state)
   const {
     activeActionID,

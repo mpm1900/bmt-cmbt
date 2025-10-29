@@ -1,11 +1,11 @@
-import type { Player } from '@/game/types/player'
+import { withStatEffects } from '@/game/access'
+import type { SPlayer } from '@/game/state'
+import { useGameState } from '@/hooks/useGameState'
+import { useGameUI } from '@/hooks/useGameUI'
 import { Button } from '../ui/button'
 import { EnemyActor } from './actor'
-import { useGameState } from '@/hooks/useGameState'
-import { withStatEffects } from '@/game/access'
-import { useGameUI } from '@/hooks/useGameUI'
 
-function EncounterActors({ encounter }: { encounter: Player }) {
+function EncounterActors({ encounter }: { encounter: SPlayer }) {
   const state = useGameState((s) => s.state)
   const { activeActorID } = useGameUI((s) => s)
   const phase = state.combat?.phase

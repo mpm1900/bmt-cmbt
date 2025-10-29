@@ -1,9 +1,9 @@
 import type { Item } from './item'
 
-type Player = {
+type Player<T, A> = {
   ID: string
   activeActorIDs: Array<string | null>
-  items: Array<Item>
+  items: Array<Item<T, A>>
 }
 
 type Position = {
