@@ -61,10 +61,13 @@ function DuplicateTargetGenerator({
         onIndexChange={setTargetIndex}
       />
       {players.size > 1 && targets.length > 4 ? (
-        <div className="flex gap-6">
+        <div className="flex w-full justify-around px-4">
           <div className="flex flex-col items-center gap-1">
             <div className="font-semibold text-sm">Ally Targets</div>
-            <ButtonGroup orientation="vertical" className="border rounded-md">
+            <ButtonGroup
+              orientation="vertical"
+              className="border rounded-md w-full"
+            >
               {targets
                 .filter((t) => t.target.playerID === context.playerID)
                 .map(({ target, type }) => {
@@ -108,7 +111,7 @@ function DuplicateTargetGenerator({
           </div>
         </div>
       ) : (
-        <ButtonGroup className="border rounded-md">
+        <ButtonGroup className="border rounded-md w-full">
           {action.targets.get(state, context).map(({ target, type }) => {
             return (
               <ActionRepeatTargetButton
@@ -145,10 +148,13 @@ function UniqueTargetGenerator({
   const players = new Set(targets.map((t) => t.target.playerID))
   if (players.size > 1 && targets.length > 4) {
     return (
-      <div className="flex gap-6">
+      <div className="flex w-full justify-around px-4">
         <div className="flex flex-col items-center gap-1">
           <div className="font-semibold text-sm">Ally Targets</div>
-          <ButtonGroup orientation="vertical" className="border rounded-md">
+          <ButtonGroup
+            orientation="vertical"
+            className="border rounded-md w-full"
+          >
             {targets
               .filter((t) => t.target.playerID === context.playerID)
               .map(({ target, type }) => {
@@ -168,7 +174,10 @@ function UniqueTargetGenerator({
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="font-semibold text-sm">Enemy Targets</div>
-          <ButtonGroup orientation="vertical" className="border rounded-md">
+          <ButtonGroup
+            orientation="vertical"
+            className="border rounded-md w-full"
+          >
             {targets
               .filter((t) => t.target.playerID !== context.playerID)
               .map(({ target, type }) => {

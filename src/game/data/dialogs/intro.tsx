@@ -12,8 +12,14 @@ import {
 } from '@/game/resolvers'
 import { createCombat, type SDialog, type SDialogNode } from '@/game/state'
 import { createActor } from '@/lib/create-actor'
-import { ExternalLink } from 'lucide-react'
-import { FaHeartCirclePlus, FaUserPlus, FaUserMinus } from 'react-icons/fa6'
+import {
+  TbMessage2Share,
+  TbUserPlus,
+  TbUserMinus,
+  TbUsersPlus,
+  TbExternalLink,
+  TbHeartPlus,
+} from 'react-icons/tb'
 import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
@@ -91,7 +97,7 @@ const IntroNode0: SDialogNode = {
       text: <em>Start Combat</em>,
       icons: (
         <>
-          <ExternalLink />
+          <TbExternalLink />
         </>
       ),
       context,
@@ -114,7 +120,7 @@ const IntroNode0: SDialogNode = {
       text: <em>Heal</em>,
       icons: (
         <>
-          <FaHeartCirclePlus />
+          <TbHeartPlus />
         </>
       ),
       context,
@@ -127,7 +133,7 @@ const IntroNode0: SDialogNode = {
       text: <em>Activate</em>,
       icons: (
         <>
-          <FaUserPlus />
+          <TbUserPlus />
         </>
       ),
       context,
@@ -139,7 +145,7 @@ const IntroNode0: SDialogNode = {
       text: <em>Activate All</em>,
       icons: (
         <>
-          <FaUserPlus />
+          <TbUsersPlus />
         </>
       ),
       context,
@@ -150,7 +156,7 @@ const IntroNode0: SDialogNode = {
         text: <span className="font-semibold">"Hello over there!"</span>,
         icons: (
           <>
-            <ExternalLink />
+            <TbMessage2Share />
           </>
         ),
       },
@@ -177,7 +183,7 @@ const IntroNode1: SDialogNode = {
         text: <em>Go back</em>,
         icons: (
           <>
-            <ExternalLink />
+            <TbExternalLink />
           </>
         ),
       },
@@ -191,7 +197,7 @@ const IntroNode1: SDialogNode = {
       text: <em>Deactivate</em>,
       icons: (
         <>
-          <FaUserMinus />
+          <TbUserMinus />
         </>
       ),
       context,
