@@ -32,7 +32,7 @@ function ActionSelectionCard({
     <Card className="w-180 gap-4">
       {children}
       <CardContent className="grid grid-cols-2 gap-3">
-        <ScrollArea className="max-h-90 pr-3">
+        <ScrollArea className="max-h-108 pr-3">
           <div className="flex flex-col gap-2">
             {actions.map((action) => (
               <ActionItem
@@ -48,7 +48,7 @@ function ActionSelectionCard({
           </div>
         </ScrollArea>
         {activeAction && (
-          <ScrollArea className="max-h-90">
+          <ScrollArea className="max-h-108">
             <ActionContextBuilder
               playerID={playerID}
               action={activeAction}

@@ -1,5 +1,4 @@
 import type { SActor } from '@/game/state'
-import { Atom } from 'lucide-react'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { Progress } from '../ui/progress'
 import { Button } from '../ui/button'
@@ -90,8 +89,8 @@ function Actor({
               {actor.stats.reflexes}
             </div>
             <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.intelligence />
-              {actor.stats.intelligence}
+              <MAIN_STAT_ICONS.mind />
+              {actor.stats.mind}
             </div>
           </div>
         </ItemContent>
@@ -105,34 +104,23 @@ function Actor({
 
 function EnemyActor({
   actor,
-  effects,
+  effectIDs,
   active,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
   actor: SActor
-  effects: Array<string>
+  effectIDs: Array<string>
   active: boolean
   onClick: () => void
 }) {
+  const state = useGameState((s) => s.state)
   const [health, maxHealth] = getHealth(actor)
   return (
-    <div className="group relative flex flex-col justify-end w-48" {...rest}>
-      <div className="flex transition-all justify-between -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
-        <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
-          {effects.map((effect) => (
-            <div
-              key={effect}
-              className="size-6 bg-background border-border border rounded-full text-muted-foreground transition-all [&>svg]:size-4 flex items-center justify-center"
-            >
-              <Atom />
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="group flex flex-col w-48" {...rest}>
       <Button
         variant={active ? 'default' : 'secondary'}
-        className="h-auto"
+        className="h-14 pb-3"
         disabled
         onClick={onClick}
       >
@@ -144,6 +132,21 @@ function EnemyActor({
           />
         </ItemContent>
       </Button>
+      <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 z-10">
+        <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
+          {effectIDs
+            .map((id) => state.effects.find((e) => e.effect.ID === id)!)
+            .map((effect) => (
+              <Badge
+                key={effect.ID}
+                variant="outline"
+                className="bg-background text-muted-foreground"
+              >
+                {effect.effect.name}
+              </Badge>
+            ))}
+        </div>
+      </div>
     </div>
   )
 }

@@ -10,7 +10,7 @@ type DeltaContext = {
   playerID: string
   sourceID: string
   parentID: string
-  targetIDs: Array<string>
+  targetIDs: Array<string | undefined>
 }
 type DeltaPositionContext = DeltaContext & {
   positions: Array<Position>

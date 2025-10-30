@@ -36,6 +36,7 @@ import type { Message } from './types/message'
 import { newMessage } from './dialog'
 import {
   ActorActivated,
+  CriticalHit,
   ParentEffect,
   SourceMissed,
   TargetEvade,
@@ -115,7 +116,7 @@ function mutateActorResolver(
 }
 
 function healActorResolver(
-  targetID: string,
+  targetID: string | undefined,
   context: DeltaContext,
   amount: number
 ): SMutation {
@@ -168,7 +169,7 @@ function mutatePlayerResolver(
 
 function activateActorResolver(
   playerID: string,
-  actorID: string,
+  actorID: string | undefined,
   context: DeltaContext
 ): SMutation {
   return {
@@ -176,6 +177,7 @@ function activateActorResolver(
     context,
     delta: {
       apply: (state: State) => {
+        if (!actorID) return state
         const player = state.players.find((p) => p.ID === playerID)!
         const index = player.activeActorIDs.indexOf(null)
         const aindex = player.activeActorIDs.indexOf(actorID)
@@ -221,7 +223,7 @@ function activateActorResolver(
 
 function deactivateActorResolver(
   playerID: string,
-  actorID: string,
+  actorID: string | undefined,
   context: DeltaContext
 ): SMutation {
   return {
@@ -229,6 +231,7 @@ function deactivateActorResolver(
     context,
     delta: {
       apply: (state: State) => {
+        if (!actorID) return state
         const player = state.players.find((p) => p.ID === playerID)!
         const index = player.activeActorIDs.indexOf(actorID)
         if (index === -1) {
@@ -323,16 +326,17 @@ function damagesResolver(
         state = damages.reduce((next, damage, index) => {
           const ctx = contexts[index] ?? dcontext
           const source = getActor(next, ctx.sourceID)
+          const target = getActor(next, ctx.targetIDs[0])
 
           next = mutateDamage(next, ctx, damage, depth)
 
           if (damage.type === 'power' && source) {
-            if (damage.critical) {
+            if (damage.critical && target?.state.alive) {
               next = pushMessages(next, [
-                newMessage({ text: `Critical hit!`, depth: 1 }),
+                newMessage({ text: CriticalHit(), depth: 1 }),
               ])
             }
-            if (!damage.success) {
+            if (!damage.success && target?.state.alive) {
               next = pushMessages(next, [
                 newMessage({
                   text: SourceMissed(source),
@@ -340,7 +344,6 @@ function damagesResolver(
                 }),
               ])
             } else if (damage.evade) {
-              const target = getActor(next, ctx.targetIDs[0])
               next = pushMessages(next, [
                 newMessage({
                   text: TargetEvade(target),

@@ -13,7 +13,7 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
     .filter((a) => a.playerID === encounter.ID)
     .map((actor) => withStatEffects(actor, state.effects))
   return (
-    <div className="w-full flex flex-row-reverse justify-start items-end p-4 gap-2">
+    <div className="w-full flex flex-row-reverse justify-start items-start p-4 pt-0 gap-2">
       {encounter.activeActorIDs.map((actorID, i) => {
         if (!actorID)
           return (
@@ -21,7 +21,7 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
               <Button
                 disabled
                 variant="outline"
-                className="h-12 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
+                className="h-14 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
               >
                 inactive
               </Button>
@@ -34,7 +34,7 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
           <EnemyActor
             key={actorID}
             actor={actor}
-            effects={effectIDs}
+            effectIDs={effectIDs}
             active={phase === 'planning' && activeActorID === actorID}
             onClick={() => {}}
           />

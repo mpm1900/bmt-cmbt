@@ -18,7 +18,7 @@ const ELEMENT_ICONS: Record<Element, IconType> = {
 
 const MAIN_STAT_ICONS: Record<MainStat, IconType> = {
   body: LuBicepsFlexed,
-  intelligence: LuBrain,
+  mind: LuBrain,
   reflexes: FaGun,
 }
 

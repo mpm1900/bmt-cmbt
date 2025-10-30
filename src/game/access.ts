@@ -51,7 +51,7 @@ function getActor(
 
 function mapActor<T = unknown>(
   state: State,
-  actorID: string,
+  actorID: string | undefined,
   fn: (a: SActor) => T
 ): T | undefined {
   const actor = getActor(state, actorID)
@@ -80,8 +80,10 @@ function mapTarget(
   }
 }
 
-function isActive(state: State, actorID: string) {
-  return state.players.some((player) => player.activeActorIDs.includes(actorID))
+function isActive(state: State, actorID: string | undefined) {
+  return state.players.some(
+    (player) => actorID && player.activeActorIDs.includes(actorID)
+  )
 }
 
 function getAliveInactiveActors(
@@ -169,15 +171,15 @@ function convertPositionToTargetContext(
   state: State,
   context: DeltaPositionContext
 ): DeltaContext {
-  const targetIDs = context.positions.map((p) => getActorID(state, p))
+  const targetIDs: Array<string | undefined> = context.positions.map((p) =>
+    getActorID(state, p)
+  )
 
   return {
     playerID: context.playerID,
     sourceID: context.sourceID,
     parentID: context.parentID,
-    targetIDs: targetIDs
-      .filter((id) => id !== undefined)
-      .concat(context.targetIDs),
+    targetIDs: targetIDs.concat(context.targetIDs),
   }
 }
 

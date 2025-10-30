@@ -18,9 +18,9 @@ const SprayNPrayDamage: PowerDamage = newDamage({
   power: 8,
   criticalModifier: 1.5,
 })
-const SprayNPrayAccuracy = 50
+const SprayNPrayAccuracy = 90
 const SPrayNPrayCount = 8
-const SprayNPrayCritChance = 10
+const SprayNPrayCritChance = 70
 
 const SprayNPray: SAction = {
   ID: v4(),

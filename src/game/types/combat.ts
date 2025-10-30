@@ -15,6 +15,7 @@ type Combat<T, A> = {
   turn: number
   phase: CombatPhase
   effects: Array<EffectItem<T, A>>
+  exitNodeID: string
 }
 
 export { CombatPhases }

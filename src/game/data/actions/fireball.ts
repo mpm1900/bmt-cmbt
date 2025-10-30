@@ -22,8 +22,8 @@ const FireballTargetCount = 2
 const FireballManaCost = 50
 const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
-  offenseStat: 'intelligence',
-  defenseStat: 'intelligence',
+  offenseStat: 'mind',
+  defenseStat: 'mind',
   element: 'fire',
   power: 50,
   criticalModifier: 1.5,
@@ -74,17 +74,18 @@ const Fireball: SAction = {
   resolve: (state, context) => {
     const source = getActor(state, context.sourceID)!
     const sChance = getSourceChance(FireballAccuracy, 0, source)
+    const targetIDs = context.targetIDs.filter(Boolean)
     return [
       costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
       damagesResolver(
         context,
-        context.targetIDs.map((targetID) => {
+        targetIDs.map((targetID) => {
           const target = getActor(state, targetID)!
           const tChance = getTargetChance(target)
           const damage = withChanceEvents(FireballDamage, sChance, tChance)
           return damage
         }),
-        context.targetIDs.map((targetID) => ({
+        targetIDs.map((targetID) => ({
           ...context,
           targetIDs: [targetID],
         })),

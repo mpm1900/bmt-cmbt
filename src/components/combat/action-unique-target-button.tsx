@@ -67,7 +67,7 @@ function ActionTargetIdButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'secondary' : 'ghost'}
+      variant={active ? 'default' : 'secondary'}
       disabled={disabled && !active}
       onClick={() => {
         if (active) {
@@ -106,7 +106,7 @@ function ActionPositionButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'secondary' : 'ghost'}
+      variant={active ? 'default' : 'secondary'}
       disabled={disabled && !active}
       onClick={() => {
         if (!position) return

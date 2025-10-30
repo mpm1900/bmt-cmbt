@@ -15,7 +15,7 @@ import { newMessage } from './dialog'
 import { nextTurnPhase, resolveActionItem } from './next'
 import { getMissingActorCount } from './player'
 import { enqueue, pop, push, sort } from './queue'
-import { resolveAction } from './resolvers'
+import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
   SAction,
   SActor,
@@ -276,7 +276,7 @@ function mutateDamage(
 
   const targetID = context.targetIDs[0] // this line could be problematic, but probs not
   const target = findActor(state, targetID)
-  const dead = isActive(state, targetID) && !target?.state.alive
+  const dead = !target?.state.alive
 
   if (committed > 0) {
     state = handleTrigger(state, context, 'on-damage')
@@ -404,14 +404,31 @@ function incrementNodeCount(state: State, nodeID: string): State {
   }
 }
 
+function remapTargetIDs(
+  state: State,
+  context: DeltaContext
+): Array<string | undefined> {
+  return context.targetIDs.map((targetID) => {
+    if (targetID === undefined) {
+      return state.actors.find(
+        (a) => a.playerID !== context.playerID && isActive(state, a.ID)
+      )?.ID
+    }
+    return targetID
+  })
+}
+
 function endCombat(state: State, encounterID: string): State {
-  state = pushMessages(state, [newMessage({ text: 'Combat ended.' })])
+  state = pushMessages(state, [
+    newMessage({ text: messages.SeporatorBottom('Combat ended.') }),
+  ])
+  const exitNodeID = state.combat!.exitNodeID
   state = {
     ...state,
     combat: undefined,
     actionQueue: [],
     triggerQueue: [],
-    mutationQueue: [],
+    mutationQueue: [navigateDialogResolver(exitNodeID, newContext({}))],
     promptQueue: [],
     players: state.players.filter((p) => p.ID !== encounterID),
     actors: state.actors.filter(
@@ -444,5 +461,6 @@ export {
   validateState,
   withPhase,
   incrementNodeCount,
+  remapTargetIDs,
   endCombat,
 }

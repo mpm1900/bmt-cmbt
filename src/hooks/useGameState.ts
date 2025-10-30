@@ -16,6 +16,11 @@ import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { playerStore } from './usePlayer'
 import { Intimidate } from '@/game/data/effects/intimidate'
+import {
+  HANDLE_DEATH,
+  HANDLE_TURN_END,
+  HANDLE_TURN_START,
+} from '@/game/data/effects/_system'
 
 type GameStateStore = {
   state: State
@@ -48,7 +53,7 @@ const Max = createActor('Max', player.ID, {
   evasion: 0,
   health: 0,
   reflexes: 100,
-  intelligence: 100,
+  mind: 100,
   speed: 100,
 })
 Max.state.damage = 20
@@ -58,7 +63,7 @@ const Katie = createActor('Katie', player.ID, {
   evasion: 0,
   health: 0,
   reflexes: 100,
-  intelligence: 180,
+  mind: 180,
   speed: 70,
 })
 const Hank = createActor('Hank', player.ID, {
@@ -66,7 +71,7 @@ const Hank = createActor('Hank', player.ID, {
   body: 180,
   evasion: 100,
   health: 0,
-  intelligence: 100,
+  mind: 100,
   reflexes: 150,
   speed: 150,
 })
@@ -75,7 +80,7 @@ const Milo = createActor('Milo', player.ID, {
   body: 100,
   evasion: 0,
   health: 0,
-  intelligence: 100,
+  mind: 100,
   reflexes: 100,
   speed: 100,
 })
@@ -86,6 +91,21 @@ const initialState: State = {
   dialog: IntroDialog,
   actors: [Max, Katie, Hank, Milo],
   effects: [
+    {
+      ID: v4(),
+      effect: HANDLE_DEATH,
+      context: newContext({}),
+    },
+    {
+      ID: v4(),
+      effect: HANDLE_TURN_START,
+      context: newContext({}),
+    },
+    {
+      ID: v4(),
+      effect: HANDLE_TURN_END,
+      context: newContext({}),
+    },
     {
       ID: v4(),
       effect: Goku,

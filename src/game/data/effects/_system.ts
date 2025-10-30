@@ -7,13 +7,14 @@ import {
 } from '@/game/resolvers'
 import type { SEffect } from '@/game/state'
 import { v4 } from 'uuid'
-import { ActorDied } from '../messages'
+import { ActorDied, TurnStart } from '../messages'
 
 const HANDLE_DEATH: SEffect = {
   ID: v4(),
   name: '',
   delay: 0,
   duration: undefined,
+  persist: true,
   modifiers: () => [],
   triggers: () => [
     {
@@ -25,9 +26,9 @@ const HANDLE_DEATH: SEffect = {
           const target = state.actors.find((a) => a.ID === targetID)!
           return [
             pushMessagesResolver(tcontext, [
-              newMessage({ text: ActorDied(target) }),
+              newMessage({ text: ActorDied(target), depth: 1 }),
             ]),
-            deactivateActorResolver(target.playerID, targetID, tcontext),
+            deactivateActorResolver(target.playerID, targetID!, tcontext),
           ]
         })
       },
@@ -40,6 +41,7 @@ const HANDLE_TURN_START: SEffect = {
   name: '',
   delay: 0,
   duration: undefined,
+  persist: true,
   modifiers: () => [],
   triggers: () => [
     {
@@ -50,7 +52,7 @@ const HANDLE_TURN_START: SEffect = {
         return [
           nextTurnResolver(tcontext),
           pushMessagesResolver(tcontext, [
-            newMessage({ text: `Turn ${state.combat!.turn + 1}` }),
+            newMessage({ text: TurnStart(state.combat?.turn!) }),
           ]),
         ]
       },
@@ -63,6 +65,7 @@ const HANDLE_TURN_END: SEffect = {
   name: '',
   delay: 0,
   duration: undefined,
+  persist: true,
   modifiers: () => [],
   triggers: () => [
     {

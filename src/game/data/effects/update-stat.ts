@@ -18,6 +18,7 @@ function UpdateStat(fn: (a: SActor) => Partial<ActorStats>): SEffect {
     name: '__Update-Stat__',
     delay: 0,
     duration: 0,
+    persist: false,
     triggers: () => [],
     modifiers: () => [UpdateStatModifier(fn)],
   }

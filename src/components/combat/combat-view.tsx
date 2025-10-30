@@ -40,7 +40,7 @@ function CombatView() {
           </div>
         }
         aside={
-          <Card className="h-108">
+          <Card className="h-120">
             <Tabs defaultValue="combat-log" onValueChange={setActiveTab}>
               <CardHeader>
                 <TabsList>

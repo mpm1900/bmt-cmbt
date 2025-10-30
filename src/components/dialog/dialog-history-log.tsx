@@ -39,6 +39,7 @@ function DialogHistoryLog({
           <li
             key={i + message.ID}
             style={{
+              opacity: message.depth > 0 ? 0.7 : 1,
               paddingLeft: message.depth * 16,
             }}
           >
@@ -50,6 +51,7 @@ function DialogHistoryLog({
             <li
               key={message.ID}
               style={{
+                opacity: message.depth > 0 ? 0.7 : 1,
                 paddingLeft: message.depth * 16,
               }}
             >

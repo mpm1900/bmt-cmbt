@@ -8,6 +8,8 @@ import { BodyUp } from '@/game/data/effects/body-up'
 import { BodyUpRenderer } from './effects/body-up'
 import { Goku } from '@/game/data/effects/goku'
 import { GokuRenderer } from './effects/goku'
+import { BodyDown } from '@/game/data/effects/body-down'
+import { BodyDownRenderer } from './effects/body-down'
 
 const ACTION_RENDERERS = {
   [Activate.ID]: ActivateRenderer,
@@ -18,6 +20,7 @@ const ACTION_RENDERERS = {
 }
 
 const EFFECT_RENDERERS = {
+  [BodyDown.ID]: BodyDownRenderer,
   [BodyUp.ID]: BodyUpRenderer,
   [Goku.ID]: GokuRenderer,
 }

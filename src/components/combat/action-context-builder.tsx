@@ -4,11 +4,11 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '../ui/card'
-import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState } from 'react'
@@ -17,7 +17,6 @@ import { ACTION_RENDERERS } from '@/renderers'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
 import { ActionRepeatPages } from './action-repeat-pages'
-import { cn } from '@/lib/utils'
 import { newContext } from '@/game/mutations'
 
 function getSelectedCount(context: DeltaPositionContext) {
@@ -61,13 +60,12 @@ function DuplicateTargetGenerator({
         onIndexChange={setTargetIndex}
       />
       {players.size > 1 && targets.length > 4 ? (
-        <div className="flex w-full justify-around px-4">
-          <div className="flex flex-col items-center gap-1">
-            <div className="font-semibold text-sm">Ally Targets</div>
-            <ButtonGroup
-              orientation="vertical"
-              className="border rounded-md w-full"
-            >
+        <div className="flex flex-col w-full justify-around px-4 gap-4">
+          <div className="flex flex-col gap-1">
+            <div className="font-semibold text-sm text-muted-foreground">
+              Ally Targets
+            </div>
+            <div className="flex flex-wrap gap-2 w-full">
               {targets
                 .filter((t) => t.target.playerID === context.playerID)
                 .map(({ target, type }) => {
@@ -85,11 +83,13 @@ function DuplicateTargetGenerator({
                     />
                   )
                 })}
-            </ButtonGroup>
+            </div>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <div className="font-semibold text-sm">Enemy Targets</div>
-            <ButtonGroup orientation="vertical" className="border rounded-md">
+          <div className="flex flex-col gap-1">
+            <div className="font-semibold text-sm text-muted-foreground">
+              Enemy Targets
+            </div>
+            <div className="flex flex-wrap gap-2 w-full">
               {targets
                 .filter((t) => t.target.playerID !== context.playerID)
                 .map(({ target, type }) => {
@@ -107,11 +107,11 @@ function DuplicateTargetGenerator({
                     />
                   )
                 })}
-            </ButtonGroup>
+            </div>
           </div>
         </div>
       ) : (
-        <ButtonGroup orientation="vertical" className="border rounded-md">
+        <div className="flex justify-center flex-wrap gap-2 w-full">
           {action.targets.get(state, context).map(({ target, type }) => {
             return (
               <ActionRepeatTargetButton
@@ -127,7 +127,7 @@ function DuplicateTargetGenerator({
               />
             )
           })}
-        </ButtonGroup>
+        </div>
       )}
     </>
   )
@@ -148,13 +148,12 @@ function UniqueTargetGenerator({
   const players = new Set(targets.map((t) => t.target.playerID))
   if (players.size > 1 && targets.length > 4) {
     return (
-      <div className="flex w-full justify-around px-4">
-        <div className="flex flex-col items-center gap-1">
-          <div className="font-semibold text-sm">Ally Targets</div>
-          <ButtonGroup
-            orientation="vertical"
-            className="border rounded-md w-full"
-          >
+      <div className="flex flex-col w-full justify-around px-4 gap-4">
+        <div className="flex flex-col gap-1">
+          <div className="font-semibold text-sm text-muted-foreground">
+            Ally Targets
+          </div>
+          <div className="flex flex-wrap gap-2 w-full">
             {targets
               .filter((t) => t.target.playerID === context.playerID)
               .map(({ target, type }) => {
@@ -170,14 +169,13 @@ function UniqueTargetGenerator({
                   />
                 )
               })}
-          </ButtonGroup>
+          </div>
         </div>
-        <div className="flex flex-col items-center gap-1">
-          <div className="font-semibold text-sm">Enemy Targets</div>
-          <ButtonGroup
-            orientation="vertical"
-            className="border rounded-md w-full"
-          >
+        <div className="flex flex-col gap-1">
+          <div className="font-semibold text-sm text-muted-foreground">
+            Enemy Targets
+          </div>
+          <div className="flex flex-wrap gap-2 w-full">
             {targets
               .filter((t) => t.target.playerID !== context.playerID)
               .map(({ target, type }) => {
@@ -193,16 +191,13 @@ function UniqueTargetGenerator({
                   />
                 )
               })}
-          </ButtonGroup>
+          </div>
         </div>
       </div>
     )
   }
   return (
-    <ButtonGroup
-      orientation="vertical"
-      className={cn('border rounded-md flex-wrap')}
-    >
+    <div className="flex justify-center flex-wrap gap-2 w-full">
       {targets.map(({ target, type }) => {
         return (
           <ActionUniqueTargetButton
@@ -216,7 +211,7 @@ function UniqueTargetGenerator({
           />
         )
       })}
-    </ButtonGroup>
+    </div>
   )
 }
 
@@ -259,6 +254,15 @@ function ActionContextBuilder({
     <Card>
       <CardHeader>
         <CardTitle className="text-sm">Select Targets</CardTitle>
+        <CardDescription className="text-xs">
+          {max > 0 ? (
+            <span>
+              {selectedTargets} of {maxP} Targets selected.
+            </span>
+          ) : (
+            <span>No selection required.</span>
+          )}
+        </CardDescription>
         {renderer && (
           <CardAction>
             <renderer.Icons />
@@ -287,23 +291,12 @@ function ActionContextBuilder({
       </CardContent>
 
       <CardFooter className="justify-end items-center gap-4">
-        {
-          <div className="text-muted-foreground text-sm text-end">
-            {max > 0 ? (
-              <span>
-                {selectedTargets}/{maxP} Targets selected.
-              </span>
-            ) : (
-              <span>No selection required.</span>
-            )}
-          </div>
-        }
         {ready && (
           <Button
             variant={done ? 'default' : 'secondary'}
             onClick={() => onContextConfirm(context)}
           >
-            Confirm
+            Confirm {maxP > 1 && `(${selectedTargets}/${maxP})`}
             <ArrowRight />
           </Button>
         )}

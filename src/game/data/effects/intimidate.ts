@@ -1,5 +1,5 @@
 import { addEffectResolver, pushMessagesResolver } from '@/game/resolvers'
-import type { SEffect } from '@/game/state'
+import type { SEffect, SMutation } from '@/game/state'
 import { v4 } from 'uuid'
 import { BodyDown } from './body-down'
 import { getActiveActorIDs } from '@/game/access'
@@ -14,6 +14,7 @@ const Intimidate: SEffect = {
   name,
   delay: 0,
   duration: undefined,
+  persist: true,
   modifiers: () => [],
   triggers: (econtext) => [
     {
@@ -27,14 +28,19 @@ const Intimidate: SEffect = {
         const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
           (id) => id !== null
         )
-        return [
-          pushMessagesResolver(tcontext, [
-            newMessage({
-              text: EffectTrigger({ ID: IntimidateID, name }),
-              depth: 1,
-            }),
-          ]),
-          activeActorIDs.map((id) => {
+        const deltas: Array<SMutation> = []
+        if (activeActorIDs.length > 0) {
+          deltas.push(
+            pushMessagesResolver(tcontext, [
+              newMessage({
+                text: EffectTrigger({ ID: IntimidateID, name }),
+                depth: 1,
+              }),
+            ])
+          )
+        }
+        deltas.push(
+          ...activeActorIDs.map((id) => {
             return addEffectResolver(
               BodyDown,
               newContext({
@@ -42,10 +48,11 @@ const Intimidate: SEffect = {
                 sourceID: tcontext.sourceID,
                 parentID: id,
               }),
-              0
+              1
             )
-          }),
-        ]
+          })
+        )
+        return deltas
       },
     },
   ],

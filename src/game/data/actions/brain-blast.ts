@@ -11,8 +11,8 @@ import type { PowerDamage } from '@/game/types/damage'
 import { v4 } from 'uuid'
 
 const BrainBlastDamage: PowerDamage = newDamage({
-  offenseStat: 'intelligence',
-  defenseStat: 'intelligence',
+  offenseStat: 'mind',
+  defenseStat: 'mind',
   element: 'psy',
   power: 30,
   criticalModifier: 1.5,

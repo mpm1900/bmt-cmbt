@@ -5,6 +5,7 @@ import type { DeltaContext } from '@/game/types/delta'
 import { addEffectResolver, pushMessagesResolver } from '@/game/resolvers'
 import { newMessage } from '@/game/dialog'
 import { EffectTrigger } from '../messages'
+import { findActor } from '@/game/access'
 
 const GokuID = v4()
 const name = 'Goku'
@@ -13,13 +14,17 @@ const Goku: SEffect = {
   name,
   delay: 0,
   duration: 1,
+  persist: true,
   modifiers: BodyUp.modifiers,
   triggers: (econtext) => [
     {
       ID: v4(),
       type: 'on-damage',
-      validate: (_state: State, tcontext: DeltaContext) => {
-        return tcontext.targetIDs.includes(econtext.sourceID)
+      validate: (state: State, tcontext: DeltaContext) => {
+        return (
+          !!findActor(state, econtext.sourceID)?.state.alive &&
+          tcontext.targetIDs.includes(econtext.sourceID)
+        )
       },
       resolve: (_state: State, tcontext: DeltaContext) => {
         return [

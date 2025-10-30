@@ -4,7 +4,7 @@ import type { DeltaPositionContext } from '@/game/types/delta'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
-import { useState, type ComponentProps } from 'react'
+import { useEffect, useState, type ComponentProps } from 'react'
 import { MiniDropdown } from '../mini-dropdown'
 import {
   DropdownMenu,
@@ -50,6 +50,13 @@ function DialogOptionSelect({
   onValueChange: (value: string) => void
 }) {
   const value = options.find((option) => option.ID === props.value)
+
+  useEffect(() => {
+    if (options.length === 1 && !value && !disabled) {
+      onValueChange(options[0].ID)
+    }
+  }, [options.length, disabled])
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -12,13 +12,6 @@ import type { Actor } from './types/actor'
 import type { Modifier } from './types/modifier'
 import type { Player } from './types/player'
 
-import {
-  HANDLE_DEATH,
-  HANDLE_TURN_END,
-  HANDLE_TURN_START,
-} from './data/effects/_system'
-import { newContext } from './mutations'
-import { v4 } from 'uuid'
 import type {
   Dialog,
   DialogCheck,
@@ -59,27 +52,12 @@ type State = {
   messageLog: Array<Message>
 }
 
-function createCombat(): SCombat {
+function createCombat(exitNodeID: string, effects: SEffectItem[]): SCombat {
   return {
+    exitNodeID,
     turn: 0,
     phase: 'pre',
-    effects: [
-      {
-        ID: v4(),
-        effect: HANDLE_DEATH,
-        context: newContext({}),
-      },
-      {
-        ID: v4(),
-        effect: HANDLE_TURN_START,
-        context: newContext({}),
-      },
-      {
-        ID: v4(),
-        effect: HANDLE_TURN_END,
-        context: newContext({}),
-      },
-    ],
+    effects,
   }
 }
 

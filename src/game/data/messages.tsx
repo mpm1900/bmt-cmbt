@@ -6,6 +6,16 @@ import { EffectTooltip } from '@/components/tooltips/effect-tooltip'
 
 const playerID = playerStore.getState().playerID
 
+function SeporatorBottom(children: ReactNode) {
+  return <span className="border-b w-full inline-block mb-1">{children}</span>
+}
+function SeporatorTop(children: ReactNode) {
+  return <span className="border-t w-full inline-block mt-1">{children}</span>
+}
+function TurnStart(turn: number) {
+  return SeporatorTop(<>Turn {turn + 1}</>)
+}
+
 function Actor(actor: SActor | undefined, after: ReactNode) {
   return (
     <span className="actor">
@@ -78,8 +88,14 @@ function SourceAction(source: SActor | undefined, action: SAction) {
 function SourceMissed(source: SActor | undefined) {
   return Actor(source, <>missed.</>)
 }
+function CriticalHit() {
+  return <span className="text-yellow-200/60">Critical hit!</span>
+}
 
 export {
+  SeporatorBottom,
+  SeporatorTop,
+  TurnStart,
   Actor,
   ActorActivated,
   ActorDied,
@@ -91,4 +107,5 @@ export {
   ParentEffect,
   SourceAction,
   SourceMissed,
+  CriticalHit,
 }

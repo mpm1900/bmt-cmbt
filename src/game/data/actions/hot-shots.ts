@@ -15,7 +15,7 @@ const HotShotsDamage: Damage = newDamage({
   offenseStat: 'reflexes',
   defenseStat: 'reflexes',
   element: 'fire',
-  power: 10,
+  power: 1,
 })
 
 const HotShots: SAction = {
@@ -40,13 +40,14 @@ const HotShots: SAction = {
     const damage = withChanceEvents(HotShotsDamage, sChance, tChance)
 
     const deltas: Array<SMutation> = []
-    let result = chance(80)
+    let result = chance(92)
     const results = [result[1]]
     while (result[0]) {
       deltas.push(damagesResolver(context, [damage], [context], 0))
-      result = chance(80)
+      result = chance(92)
       results.push(result[1])
     }
+    console.log(results)
     return deltas
   },
 }

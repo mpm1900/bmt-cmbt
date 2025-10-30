@@ -20,7 +20,7 @@ function EffectTooltip({
   if (!renderer) return props.children
 
   return (
-    <HoverCard openDelay={50}>
+    <HoverCard openDelay={100} closeDelay={50}>
       <HoverCardTrigger
         className={cn('data-[state=open]:underline cursor-default', className)}
         {...props}
@@ -31,7 +31,7 @@ function EffectTooltip({
         side={side}
         sideOffset={8}
       >
-        <p className="font-bold">
+        <p className="font-bold mb-2">
           <renderer.Name />
         </p>
         <p className="text-xs">

@@ -177,7 +177,7 @@ function withEffects(
 }
 
 function getStats(actor: SActor): ActorStats {
-  const { accuracy, body, evasion, health, intelligence, reflexes, ...stats } =
+  const { accuracy, body, evasion, health, mind, reflexes, ...stats } =
     actor.stats
 
   const accuracyModifier = 0
@@ -190,7 +190,7 @@ function getStats(actor: SActor): ActorStats {
     body,
     evasion: evasion + evasionModifier,
     health: health + healthModifier,
-    intelligence,
+    mind,
     reflexes,
   }
 }
