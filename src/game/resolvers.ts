@@ -34,6 +34,13 @@ import { chance } from '@/lib/chance'
 import { enqueue } from './queue'
 import type { Message } from './types/message'
 import { newMessage } from './dialog'
+import {
+  ActorActivated,
+  ParentEffect,
+  SourceMissed,
+  TargetEvade,
+  TargetHeal,
+} from './data/messages'
 
 function resolveAction(
   state: State,
@@ -131,7 +138,8 @@ function healActorResolver(
 
         state = pushMessages(state, [
           newMessage({
-            text: `${findActor(state, targetID)?.name} healed for ${healed} damage.`,
+            text: TargetHeal(findActor(state, targetID), healed),
+            depth: 1,
           }),
         ])
         return state
@@ -194,7 +202,7 @@ function activateActorResolver(
 
         state = pushMessages(state, [
           newMessage({
-            text: `${findActor(state, actorID)?.name} joined the battle.`,
+            text: ActorActivated(findActor(state, actorID)),
           }),
         ])
         state = handleTrigger(
@@ -266,7 +274,11 @@ function decrementEffectsResolver(): SMutation {
   }
 }
 
-function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
+function addEffectResolver(
+  effect: SEffect,
+  context: DeltaContext,
+  depth: number
+): SMutation {
   return {
     ID: v4(),
     context,
@@ -286,8 +298,8 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
 
         state = pushMessages(state, [
           newMessage({
-            text: `${findActor(state, context.parentID)!.name} gained ${effect.name}.`,
-            depth: 1,
+            text: ParentEffect(findActor(state, context.parentID), effect),
+            depth: depth + 1,
           }),
         ])
 
@@ -300,7 +312,8 @@ function addEffectResolver(effect: SEffect, context: DeltaContext): SMutation {
 function damagesResolver(
   context: DeltaContext,
   damages: Array<Damage>,
-  contexts: Array<DeltaContext> = []
+  contexts: Array<DeltaContext> = [],
+  depth: number
 ): SMutation {
   return {
     ID: v4(),
@@ -311,7 +324,7 @@ function damagesResolver(
           const ctx = contexts[index] ?? dcontext
           const source = getActor(next, ctx.sourceID)
 
-          next = mutateDamage(next, ctx, damage)
+          next = mutateDamage(next, ctx, damage, depth)
 
           if (damage.type === 'power' && source) {
             if (damage.critical) {
@@ -322,7 +335,7 @@ function damagesResolver(
             if (!damage.success) {
               next = pushMessages(next, [
                 newMessage({
-                  text: `${source.name}'s attack missed.`,
+                  text: SourceMissed(source),
                   depth: 1,
                 }),
               ])
@@ -330,7 +343,7 @@ function damagesResolver(
               const target = getActor(next, ctx.targetIDs[0])
               next = pushMessages(next, [
                 newMessage({
-                  text: `${target?.name} evaded the attack.`,
+                  text: TargetEvade(target),
                   depth: 1,
                 }),
               ])
@@ -364,6 +377,22 @@ function nextTurnResolver(context: DeltaContext): SMutation {
   }
 }
 
+function addPlayerResolver(player: SPlayer): SMutation {
+  return {
+    ID: v4(),
+    context: newContext({}),
+    delta: {
+      apply: (state, _context) => {
+        if (!!state.players.find((p) => p.ID === player.ID)) return state
+        return {
+          ...state,
+          players: [...state.players, player],
+        }
+      },
+    },
+  }
+}
+
 function startCombatResolver(
   combat: SCombat,
   preState: Partial<State>
@@ -373,7 +402,18 @@ function startCombatResolver(
     context: newContext({}),
     delta: {
       apply: (state, context) => {
-        const { actors = [], players = [], ...rest } = preState
+        let { actors = [], players = [], ...rest } = preState
+        state = pushMessages(state, [
+          newMessage({ text: `Combat started!`, depth: 0 }),
+        ])
+
+        actors = actors.filter(
+          (a) => !state.actors.find((sa) => sa.ID === a.ID)
+        )
+        players = players.filter(
+          (p) => !state.players.find((sp) => sp.ID === p.ID)
+        )
+
         state = {
           ...state,
           actionQueue: [],
@@ -463,6 +503,7 @@ export {
   nextTurnResolver,
   activateActorResolver,
   deactivateActorResolver,
+  addPlayerResolver,
   startCombatResolver,
   navigateDialogResolver,
 }

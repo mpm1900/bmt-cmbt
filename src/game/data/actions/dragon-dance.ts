@@ -16,12 +16,16 @@ const DragonDance: SAction = {
   },
   resolve: (_, context) => {
     return [
-      addEffectResolver(BodyUp, {
-        ...context,
-        parentID: context.sourceID,
-        sourceID: context.sourceID,
-        targetIDs: [context.sourceID],
-      }),
+      addEffectResolver(
+        BodyUp,
+        {
+          ...context,
+          parentID: context.sourceID,
+          sourceID: context.sourceID,
+          targetIDs: [context.sourceID],
+        },
+        0
+      ),
     ]
   },
 }

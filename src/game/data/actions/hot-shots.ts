@@ -43,7 +43,7 @@ const HotShots: SAction = {
     let result = chance(80)
     const results = [result[1]]
     while (result[0]) {
-      deltas.push(damagesResolver(context, [damage], [context]))
+      deltas.push(damagesResolver(context, [damage], [context], 0))
       result = chance(80)
       results.push(result[1])
     }

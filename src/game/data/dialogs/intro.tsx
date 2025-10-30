@@ -10,7 +10,12 @@ import {
   pushMessagesResolver,
   startCombatResolver,
 } from '@/game/resolvers'
-import { createCombat, type SDialog, type SDialogNode } from '@/game/state'
+import {
+  createCombat,
+  type SDialog,
+  type SDialogNode,
+  type SPlayer,
+} from '@/game/state'
 import { createActor } from '@/lib/create-actor'
 import {
   TbMessage2Share,
@@ -38,9 +43,14 @@ const Criminal = (index: number, aiID: string) =>
   })
 
 const IntroNode0ID = v4()
-const criminal1 = Criminal(1, IntroNode0ID)
-const criminal2 = Criminal(2, IntroNode0ID)
-const criminal3 = Criminal(3, IntroNode0ID)
+const encounterPlayer: SPlayer = {
+  ID: IntroNode0ID,
+  activeActorIDs: [null, null, null],
+  items: [],
+}
+const criminal1 = Criminal(1, encounterPlayer.ID)
+const criminal2 = Criminal(2, encounterPlayer.ID)
+const criminal3 = Criminal(3, encounterPlayer.ID)
 
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
@@ -59,12 +69,17 @@ const IntroNode0: SDialogNode = {
         ...state.actors
           .filter((a) => a.playerID === context.playerID)
           .map((a) =>
-            damagesResolver({ ...context, targetIDs: [a.ID] }, [
-              {
-                type: 'raw',
-                raw: 10,
-              },
-            ])
+            damagesResolver(
+              { ...context, targetIDs: [a.ID] },
+              [
+                {
+                  type: 'raw',
+                  raw: 10,
+                },
+              ],
+              [],
+              0
+            )
           ),
       ],
     },
@@ -103,17 +118,21 @@ const IntroNode0: SDialogNode = {
       context,
       action: InlineMutation(() => [
         startCombatResolver(createCombat(), {
-          players: [
-            {
-              ID: IntroNode0ID,
-              activeActorIDs: [null, null, null],
-              items: [],
-            },
-          ],
+          players: [encounterPlayer],
           actors: [criminal1, criminal2, criminal3],
         }),
       ]),
     },
+    /*
+    {
+      ID: 'IntroNode-AddPlayer',
+      disable: 'hide',
+      text: <em>Add Player</em>,
+      icons: <></>,
+      context,
+      action: InlineMutation(() => [addPlayerResolver(encounterPlayer)]),
+    },
+    */
     {
       ID: 'IntroNode0-Heal',
       disable: 'hide',

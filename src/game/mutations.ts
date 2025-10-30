@@ -12,7 +12,7 @@ import { getDamageResult, withDamage } from './actor'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './dialog'
-import { nextTurnPhase } from './next'
+import { nextTurnPhase, resolveActionItem } from './next'
 import { getMissingActorCount } from './player'
 import { enqueue, pop, push, sort } from './queue'
 import { resolveAction } from './resolvers'
@@ -31,6 +31,7 @@ import type { CombatPhase } from './types/combat'
 import type { Damage } from './types/damage'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Message } from './types/message'
+import * as messages from './data/messages'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -76,7 +77,7 @@ function decrementEffectItem(effectItem: SEffectItem): SEffectItem {
 
 function pushMessages(state: State, messages: Array<Message>): State {
   if (state.combat) {
-    return {
+    state = {
       ...state,
       combatLog: [...state.combatLog, ...messages],
     }
@@ -256,7 +257,8 @@ function mutatePlayer(
 function mutateDamage(
   state: State,
   context: DeltaContext,
-  damage: Damage
+  damage: Damage,
+  depth: number
 ): State {
   let committed = 0
   state = mutateActor(state, context, {
@@ -282,8 +284,8 @@ function mutateDamage(
     state = pushMessages(state, [
       newMessage({
         context,
-        text: `${target?.name} took ${committed} damage.`,
-        depth: 1,
+        text: messages.TargetDamage(target, committed),
+        depth: depth + 1,
       }),
     ])
   }
@@ -352,12 +354,11 @@ function resolveDialogOption(
   context: DeltaPositionContext,
   option: SDialogOption
 ) {
-  const mutations = resolveAction(state, context, option.action)
-  const mutationQueue = push(state.mutationQueue, mutations)
-  return {
-    ...state,
-    mutationQueue,
-  }
+  return resolveActionItem(state, {
+    ID: '',
+    context,
+    action: option.action,
+  })
 }
 
 function updateDialogNode(
@@ -403,6 +404,23 @@ function incrementNodeCount(state: State, nodeID: string): State {
   }
 }
 
+function endCombat(state: State, encounterID: string): State {
+  state = pushMessages(state, [newMessage({ text: 'Combat ended.' })])
+  state = {
+    ...state,
+    combat: undefined,
+    actionQueue: [],
+    triggerQueue: [],
+    mutationQueue: [],
+    promptQueue: [],
+    players: state.players.filter((p) => p.ID !== encounterID),
+    actors: state.actors.filter(
+      (a) => a.playerID !== encounterID && a.state.alive
+    ),
+  }
+  return state
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -426,4 +444,5 @@ export {
   validateState,
   withPhase,
   incrementNodeCount,
+  endCombat,
 }

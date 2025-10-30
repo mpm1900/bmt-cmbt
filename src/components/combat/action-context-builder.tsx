@@ -111,7 +111,7 @@ function DuplicateTargetGenerator({
           </div>
         </div>
       ) : (
-        <ButtonGroup className="border rounded-md w-full">
+        <ButtonGroup orientation="vertical" className="border rounded-md">
           {action.targets.get(state, context).map(({ target, type }) => {
             return (
               <ActionRepeatTargetButton
@@ -199,7 +199,10 @@ function UniqueTargetGenerator({
     )
   }
   return (
-    <ButtonGroup className={cn('border rounded-md flex-wrap')}>
+    <ButtonGroup
+      orientation="vertical"
+      className={cn('border rounded-md flex-wrap')}
+    >
       {targets.map(({ target, type }) => {
         return (
           <ActionUniqueTargetButton

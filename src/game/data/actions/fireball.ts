@@ -87,7 +87,8 @@ const Fireball: SAction = {
         context.targetIDs.map((targetID) => ({
           ...context,
           targetIDs: [targetID],
-        }))
+        })),
+        0
       ),
     ]
   },

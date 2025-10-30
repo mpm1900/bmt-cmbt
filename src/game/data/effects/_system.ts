@@ -7,6 +7,7 @@ import {
 } from '@/game/resolvers'
 import type { SEffect } from '@/game/state'
 import { v4 } from 'uuid'
+import { ActorDied } from '../messages'
 
 const HANDLE_DEATH: SEffect = {
   ID: v4(),
@@ -24,7 +25,7 @@ const HANDLE_DEATH: SEffect = {
           const target = state.actors.find((a) => a.ID === targetID)!
           return [
             pushMessagesResolver(tcontext, [
-              newMessage({ text: `${target.name} died.` }),
+              newMessage({ text: ActorDied(target) }),
             ]),
             deactivateActorResolver(target.playerID, targetID, tcontext),
           ]

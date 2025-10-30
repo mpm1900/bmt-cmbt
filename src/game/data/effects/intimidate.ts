@@ -37,7 +37,8 @@ const Intimidate: SEffect = {
                 playerID: opponentID,
                 sourceID: tcontext.sourceID,
                 parentID: id,
-              })
+              }),
+              0
             )
           }),
         ]

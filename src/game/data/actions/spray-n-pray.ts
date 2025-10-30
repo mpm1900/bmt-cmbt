@@ -48,7 +48,7 @@ const SprayNPray: SAction = {
         const target = getTargetChance(getActor(state, targetID)!)
         const damage = withChanceEvents(SprayNPrayDamage, source, target)
         const ctx = { ...context, targetIDs: [targetID] }
-        return damagesResolver(ctx, [damage], [ctx])
+        return damagesResolver(ctx, [damage], [ctx], 0)
       }),
     ]
   },

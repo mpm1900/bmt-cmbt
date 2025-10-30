@@ -2,6 +2,7 @@ import { IntroDialog } from '@/game/data/dialogs/intro'
 import { Goku } from '@/game/data/effects/goku'
 import {
   addActionToQueue,
+  endCombat,
   newContext,
   resolveDialogOption,
   resolvePrompt,
@@ -145,18 +146,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   },
   deleteCombat: (encounterID: string) => {
     set(({ state }) => ({
-      state: {
-        ...state,
-        combat: undefined,
-        actionQueue: [],
-        triggerQueue: [],
-        mutationQueue: [],
-        promptQueue: [],
-        players: state.players.filter((p) => p.ID !== encounterID),
-        actors: state.actors.filter(
-          (a) => a.playerID !== encounterID && a.state.alive
-        ),
-      },
+      state: endCombat(state, encounterID),
     }))
   },
 }))

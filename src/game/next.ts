@@ -1,4 +1,5 @@
-import { findActor, mapActor } from './access'
+import { findActor } from './access'
+import { SourceAction } from './data/messages'
 import { newMessage } from './dialog'
 import {
   handleTrigger,
@@ -14,7 +15,8 @@ import {
 } from './mutations'
 import { pop, push } from './queue'
 import { resolveAction } from './resolvers'
-import type { State } from './state'
+import type { SActor, State } from './state'
+import type { ActionQueueItem } from './types/action'
 import type { CombatPhase } from './types/combat'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 
@@ -30,21 +32,36 @@ function resolveTrigger(
   return resolver.resolve(state, context).flatMap((m) => m)
 }
 
+function resolveActionItem(
+  state: State,
+  item: ActionQueueItem<State, SActor>
+): State {
+  const source = findActor(state, item.context.sourceID)
+  // TODO: better log condition here item.action.name is flimsy
+  if (source && item.action.name) {
+    state = pushMessages(state, [
+      newMessage({
+        text: SourceAction(source, item.action),
+      }),
+    ])
+  }
+  const mutations = resolveAction(state, item.context, item.action)
+  const mutationQueue = push(state.mutationQueue, mutations)
+  return {
+    ...state,
+    mutationQueue,
+  }
+}
+
 function nextAction(state: State): State {
   state = sortActionQueue(state)
   const item = state.actionQueue[0]
-  state = pushMessages(state, [
-    newMessage({
-      text: `${mapActor(state, item.context.sourceID, (a) => a.name)} uses ${item.action.name}.`,
-    }),
-  ])
-  const mutations = resolveAction(state, item.context, item.action)
-  const mutationQueue = push(state.mutationQueue, mutations)
+
+  state = resolveActionItem(state, item)
   const actionQueue = pop(state.actionQueue)
   return {
     ...state,
     actionQueue,
-    mutationQueue,
   }
 }
 
@@ -224,6 +241,7 @@ export {
   nextAction,
   nextMutation,
   nextTrigger,
+  resolveActionItem,
   nextTurnPhase,
   resolveAction,
 }
