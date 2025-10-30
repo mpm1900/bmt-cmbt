@@ -54,7 +54,7 @@ function Effect(effect: SlimEffect) {
     <EffectTooltip
       effectID={effect.ID}
       side="right"
-      className="text-foreground/80"
+      className="text-foreground font-semibold"
     >
       {effect.name}
     </EffectTooltip>

@@ -5,10 +5,13 @@ import { BodyDown } from './body-down'
 import { getActiveActorIDs } from '@/game/access'
 import { newContext } from '@/game/mutations'
 import { newMessage } from '@/game/dialog'
+import { EffectTrigger } from '../messages'
 
+const IntimidateID = v4()
+const name = 'Intimidate'
 const Intimidate: SEffect = {
-  ID: v4(),
-  name: 'Intimidate',
+  ID: IntimidateID,
+  name,
   delay: 0,
   duration: undefined,
   modifiers: () => [],
@@ -27,7 +30,8 @@ const Intimidate: SEffect = {
         return [
           pushMessagesResolver(tcontext, [
             newMessage({
-              text: `Intimidate Trigger (${activeActorIDs.length})`,
+              text: EffectTrigger({ ID: IntimidateID, name }),
+              depth: 1,
             }),
           ]),
           activeActorIDs.map((id) => {

@@ -25,6 +25,9 @@ code {
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
+  --tooltip: oklch(1 0 0);
+  --tooltip-border: oklch(0.92 0.004 286.32);
+  --tooltip-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.21 0.006 285.885);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.967 0.001 286.375);
@@ -59,11 +62,11 @@ code {
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.141 0.005 285.823);
   --card-foreground: oklch(0.985 0 0);
-  /*
   --popover: oklch(0.141 0.005 285.823);
-  */
-  --popover: oklch(0.274 0.006 286.033);
   --popover-foreground: oklch(0.985 0 0);
+  --tooltip: oklch(0.274 0.006 286.033);
+  --tooltip-border: oklch(0.442 0.017 285.786);
+  --tooltip-foreground: oklch(0.985 0 0);
   --primary: oklch(0.985 0 0);
   --primary-foreground: oklch(0.21 0.006 285.885);
   --secondary: oklch(0.274 0.006 286.033);
@@ -99,6 +102,9 @@ code {
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-tooltip: var(--tooltip);
+  --color-tooltip-border: var(--tooltip-border);
+  --color-tooltip-foreground: var(--tooltip-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);

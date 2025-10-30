@@ -25,11 +25,16 @@ function EffectTooltip({
         className={cn('data-[state=open]:underline cursor-default', className)}
         {...props}
       />
-      <HoverCardContent align={align} alignOffset={alignOffset} side={side}>
+      <HoverCardContent
+        align={align}
+        alignOffset={alignOffset}
+        side={side}
+        sideOffset={8}
+      >
         <p className="font-bold">
           <renderer.Name />
         </p>
-        <p className="font-xs">
+        <p className="text-xs">
           <renderer.Description />
         </p>
       </HoverCardContent>
