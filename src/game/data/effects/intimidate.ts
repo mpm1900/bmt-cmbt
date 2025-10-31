@@ -20,6 +20,7 @@ const Intimidate: SEffect = {
     {
       ID: v4(),
       type: 'on-actor-activate',
+      priority: 0,
       validate: (_state, tcontext) => {
         return tcontext.sourceID === econtext.sourceID
       },

@@ -21,6 +21,8 @@ import {
   HANDLE_TURN_END,
   HANDLE_TURN_START,
 } from '@/game/data/effects/_system'
+import { Heal } from '@/game/data/actions/heal'
+import { Fireball } from '@/game/data/actions/fireball'
 
 type GameStateStore = {
   state: State
@@ -38,10 +40,18 @@ const player: SPlayer = {
   items: [
     {
       ID: v4(),
-      name: 'Data Shard',
+      name: 'Potion',
+      consumable: undefined,
+      use: Heal,
+      actions: undefined,
+      effect: undefined,
+    },
+    {
+      ID: v4(),
+      name: 'Fireball Wand',
       consumable: undefined,
       use: undefined,
-      actions: undefined,
+      actions: [Fireball],
       effect: undefined,
     },
   ],
@@ -56,7 +66,7 @@ const Max = createActor('Max', player.ID, {
   mind: 100,
   speed: 100,
 })
-Max.state.damage = 20
+Max.state.damage = 80
 const Katie = createActor('Katie', player.ID, {
   accuracy: 0,
   body: 100,

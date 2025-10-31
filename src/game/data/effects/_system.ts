@@ -20,6 +20,7 @@ const HANDLE_DEATH: SEffect = {
     {
       ID: v4(),
       type: 'on-death',
+      priority: 0,
       validate: () => true,
       resolve: (state, tcontext) => {
         return tcontext.targetIDs.flatMap((targetID) => {
@@ -47,6 +48,7 @@ const HANDLE_TURN_START: SEffect = {
     {
       ID: v4(),
       type: 'on-turn-start',
+      priority: 0,
       validate: () => true,
       resolve: (state, tcontext) => {
         return [
@@ -71,16 +73,10 @@ const HANDLE_TURN_END: SEffect = {
     {
       ID: v4(),
       type: 'on-turn-end',
+      priority: 0,
       validate: () => true,
       resolve: (_state, _tcontext) => {
-        return [
-          decrementEffectsResolver(),
-          /*
-          pushMessagesResolver(tcontext, [
-            newMessage({ text: `Turn ${state.combat?.turn} ended` }),
-          ]),
-          */
-        ]
+        return [decrementEffectsResolver()]
       },
     },
   ],

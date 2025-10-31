@@ -10,6 +10,7 @@ function ViewHeader() {
   const state = useGameState((s) => s.state)
   return (
     <div className="flex items-center justify-start gap-2 p-1">
+      <Badge variant="outline">Effects: {state.effects.length}</Badge>
       <Badge
         variant={state.combat ? 'outline' : 'secondary'}
         className={cn({ 'text-muted-foreground': state.combat })}

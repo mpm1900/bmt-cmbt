@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 function MiniDropdown({
+  value,
   variant = 'secondary',
   size = 'xs',
   className,
@@ -16,12 +17,13 @@ function MiniDropdown({
       size={size}
       className={cn(
         'text-muted-foreground hover:text-foreground/70',
+        { '!opacity-100': !!value },
         className
       )}
       {...props}
     >
       {children}
-      <ChevronDown />
+      {!props.disabled && <ChevronDown />}
     </Button>
   )
 }

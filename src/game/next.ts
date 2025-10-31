@@ -9,6 +9,7 @@ import {
   resolvePrompt,
   sortActionQueue,
   sortPromptQueue,
+  sortTriggerQueue,
   startDialog,
   validateState,
   withPhase,
@@ -66,13 +67,11 @@ function nextAction(state: State): State {
 }
 
 function nextTrigger(state: State): State {
-  if (!state.triggerQueue[0]) return state
+  state = sortTriggerQueue(state)
+  const item = state.triggerQueue[0]
+  if (!item) return state
 
-  const mutations = resolveTrigger(
-    state.triggerQueue[0].trigger,
-    state,
-    state.triggerQueue[0].context
-  )
+  const mutations = resolveTrigger(item.trigger, state, item.context)
   const triggerQueue = pop(state.triggerQueue)
   const mutationQueue = push(state.mutationQueue, mutations)
   return {

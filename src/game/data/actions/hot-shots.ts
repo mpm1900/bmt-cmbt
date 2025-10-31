@@ -36,9 +36,10 @@ const HotShots: SAction = {
     const source = getActor(state, context.sourceID)!
     const sChance = getSourceChance(100, 0, source)
     const target = getActor(state, context.targetIDs[0])!
+    if (!target) return []
+
     const tChance = getTargetChance(target)
     const damage = withChanceEvents(HotShotsDamage, sChance, tChance)
-
     const deltas: Array<SMutation> = []
     let result = chance(92)
     const results = [result[1]]
@@ -47,7 +48,6 @@ const HotShots: SAction = {
       result = chance(92)
       results.push(result[1])
     }
-    console.log(results)
     return deltas
   },
 }

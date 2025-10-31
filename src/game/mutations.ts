@@ -211,6 +211,17 @@ function sortActionQueue(state: State): State {
   }
 }
 
+function sortTriggerQueue(state: State): State {
+  const triggerQueue = sort(state.triggerQueue, (a, b) => {
+    return b.trigger.priority - a.trigger.priority
+  })
+
+  return {
+    ...state,
+    triggerQueue,
+  }
+}
+
 function filterActionQueue(state: State, sourceID: string): State {
   const actionQueue = state.actionQueue.filter(
     (action) => action.context.sourceID !== sourceID
@@ -219,6 +230,15 @@ function filterActionQueue(state: State, sourceID: string): State {
   return {
     ...state,
     actionQueue,
+  }
+}
+
+function removeParentEffects(state: State, context: DeltaContext): State {
+  return {
+    ...state,
+    effects: state.effects.filter(
+      (i) => i.context.parentID !== context.parentID || i.effect.persist
+    ),
   }
 }
 
@@ -425,6 +445,9 @@ function endCombat(state: State, encounterID: string): State {
   const exitNodeID = state.combat!.exitNodeID
   state = {
     ...state,
+    effects: state.effects
+      .filter((e) => e.effect.persist)
+      .filter((e) => e.context.playerID !== encounterID),
     combat: undefined,
     actionQueue: [],
     triggerQueue: [],
@@ -443,6 +466,7 @@ export {
   decrementEffect,
   decrementEffectItem,
   filterActionQueue,
+  removeParentEffects,
   handleTrigger,
   mutateActor,
   mutateDamage,
@@ -455,6 +479,7 @@ export {
   resolvePrompt,
   sortActionQueue,
   sortPromptQueue,
+  sortTriggerQueue,
   startDialog,
   updateDialogNode,
   updateDialogNodeState,

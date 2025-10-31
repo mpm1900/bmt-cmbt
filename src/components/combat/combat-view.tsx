@@ -2,7 +2,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { PhaseStart } from './phase-start'
 import { PhasePlanning } from './phase-planning'
 import { PhaseMain } from './phase-main'
-import { Card, CardContent, CardHeader } from '../ui/card'
+import { Card, CardAction, CardContent, CardHeader } from '../ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { useGameUI } from '@/hooks/useGameUI'
 import { PhaseEnd } from './phase-end'
@@ -13,9 +13,12 @@ import { PhasePost } from './phase-post'
 import { CombatLog } from './combat-log'
 import { CombatDebug } from './combat-debug'
 import { PhaseController } from './phase-controller'
+import { GiNextButton } from 'react-icons/gi'
+import { Button } from '../ui/button'
 
 function CombatView() {
   const phase = useGameState((store) => store.state.combat?.phase)
+  const next = useGameState((store) => store.nextPhase)
   const { set } = useGameUI((s) => s)
   const [activeTab, setActiveTab] = useState('debug')
 
@@ -47,6 +50,11 @@ function CombatView() {
                   <TabsTrigger value="debug">Debug</TabsTrigger>
                   <TabsTrigger value="combat-log">Combat Log</TabsTrigger>
                 </TabsList>
+                <CardAction>
+                  <Button variant="secondary" onClick={next}>
+                    <GiNextButton />
+                  </Button>
+                </CardAction>
               </CardHeader>
               <CardContent className="w-full">
                 <TabsContent value="debug">

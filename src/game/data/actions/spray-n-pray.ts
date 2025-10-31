@@ -38,8 +38,9 @@ const SprayNPray: SAction = {
       context.positions.filter((id) => !!id).length === SPrayNPrayCount,
   },
   resolve: (state, context) => {
+    const targetIDs = context.targetIDs.filter(Boolean)
     return [
-      context.targetIDs.map((targetID) => {
+      targetIDs.map((targetID) => {
         const source = getSourceChance(
           SprayNPrayAccuracy,
           SprayNPrayCritChance,

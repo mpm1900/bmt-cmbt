@@ -2,6 +2,7 @@ import type { ContextItem, DeltaContext, DeltaResolver } from './delta'
 import { type Queue } from './queue'
 
 type Trigger<T> = DeltaResolver<T, DeltaContext, DeltaContext> & {
+  priority: number
   type:
     | 'on-actor-activate'
     | 'on-actor-deactivate'

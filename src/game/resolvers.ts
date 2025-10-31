@@ -26,6 +26,7 @@ import {
   mutatePlayer,
   newContext,
   pushMessages,
+  removeParentEffects,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
@@ -253,6 +254,7 @@ function deactivateActorResolver(
         })
 
         state = filterActionQueue(state, actorID)
+        state = removeParentEffects(state, newContext({ parentID: actorID }))
         state = handleTrigger(state, context, 'on-actor-deactivate')
         return state
       },

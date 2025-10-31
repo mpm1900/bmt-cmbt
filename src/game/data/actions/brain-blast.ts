@@ -34,8 +34,9 @@ const BrainBlast: SAction = {
       0 < context.positions.length && context.positions.length <= 2,
   },
   resolve: (state, context) => {
+    const targetIDs = context.targetIDs.filter(Boolean)
     return [
-      context.targetIDs.map((targetID) => {
+      targetIDs.map((targetID) => {
         const source = getSourceChance(
           100,
           0,

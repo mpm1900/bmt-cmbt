@@ -20,6 +20,7 @@ const Goku: SEffect = {
     {
       ID: v4(),
       type: 'on-damage',
+      priority: 0,
       validate: (state: State, tcontext: DeltaContext) => {
         return (
           !!findActor(state, econtext.sourceID)?.state.alive &&

@@ -29,7 +29,7 @@ import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
 import { withMessageLogs } from '../actions/_system/with-message-logs'
-import { Heal } from '../actions/heal'
+import { Heal, SelfHealSource } from '../actions/heal'
 
 const Criminal = (index: number, aiID: string) =>
   createActor(`Criminal (${index})`, aiID, {
@@ -59,13 +59,17 @@ const IntroNode0: SDialogNode = {
       chance: 50,
       success: (roll) => [
         pushMessagesResolver(context, [
-          newMessage({ text: `random roll: success! (${roll.toFixed(0)})` }),
+          newMessage({
+            text: `random roll: success! (50 > ${roll.toFixed(0)})`,
+          }),
           newMessage({ text: `Your crew avoided the trap!` }),
         ]),
       ],
       failure: (roll) => [
         pushMessagesResolver(context, [
-          newMessage({ text: `random roll: failure! (${roll.toFixed(0)})` }),
+          newMessage({
+            text: `random roll: failure! (50 > ${roll.toFixed(0)})`,
+          }),
           newMessage({ text: `Your crew triggered a shock trap!` }),
         ]),
         ...state.actors
@@ -147,7 +151,18 @@ const IntroNode0: SDialogNode = {
       context,
       action: Heal,
     },
-
+    {
+      ID: v4(),
+      disable: 'hide',
+      text: <em>Self Heal</em>,
+      icons: (
+        <>
+          <TbHeartPlus />
+        </>
+      ),
+      context,
+      action: SelfHealSource,
+    },
     {
       ID: 'IntroNode0-Activate-Actor',
       disable: 'hide',

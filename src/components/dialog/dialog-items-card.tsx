@@ -35,8 +35,10 @@ function DialogItemsCard() {
               <TableRow key={item.ID}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell className="flex justify-end gap-1">
-                  <MiniDropdown>Use</MiniDropdown>/
-                  <MiniDropdown>Equip</MiniDropdown>
+                  {(item.use || item.consumable) && (
+                    <MiniDropdown>Use</MiniDropdown>
+                  )}
+                  {item.actions && <MiniDropdown>Equip</MiniDropdown>}
                 </TableCell>
               </TableRow>
             ))}

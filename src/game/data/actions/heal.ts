@@ -21,4 +21,35 @@ const Heal: SDialogAction = {
   },
 }
 
-export { Heal }
+const SelfHealTarget: SDialogAction = {
+  ...Heal,
+  ID: v4(),
+  name: 'Self Heal',
+  targets: {
+    ...Heal.targets,
+    get: (state, context) =>
+      getAliveActiveActors(state, context).map((a) => mapTarget(a, 'targetID')),
+    validate: (_state, context) => context.targetIDs.length === 1,
+  },
+  resolve: (state, context) => {
+    return Heal.resolve(state, { ...context, sourceID: context.targetIDs[0]! })
+  },
+  sources: () => [],
+}
+
+const SelfHealSource: SDialogAction = {
+  ...Heal,
+  ID: v4(),
+  name: 'Self Heal',
+  targets: {
+    unique: true,
+    max: () => 0,
+    get: () => [],
+    validate: () => true,
+  },
+  resolve: (state, context) => {
+    return Heal.resolve(state, { ...context, targetIDs: [context.sourceID] })
+  },
+}
+
+export { Heal, SelfHealTarget, SelfHealSource }

@@ -50,6 +50,7 @@ function DialogOptionSelect({
   onValueChange: (value: string) => void
 }) {
   const value = options.find((option) => option.ID === props.value)
+  const selectOptions = options.filter((o) => o.ID !== props.value)
 
   useEffect(() => {
     if (options.length === 1 && !value && !disabled) {
@@ -64,23 +65,22 @@ function DialogOptionSelect({
           className={cn('data-[state=open]:text-foreground', {
             'text-foreground hover:text-foreground': value,
           })}
-          disabled={disabled}
+          value={value?.ID}
+          disabled={disabled || selectOptions.length === 0}
         >
           {value?.name || placeholder}
         </MiniDropdown>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          {options
-            .filter((o) => o.ID !== props.value)
-            .map((option) => (
-              <DropdownMenuItem
-                key={option.ID}
-                onSelect={() => onValueChange(option.ID)}
-              >
-                {option.name}
-              </DropdownMenuItem>
-            ))}
+          {selectOptions.map((option) => (
+            <DropdownMenuItem
+              key={option.ID}
+              onSelect={() => onValueChange(option.ID)}
+            >
+              {option.name}
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
