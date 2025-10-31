@@ -438,25 +438,29 @@ function remapTargetIDs(
   })
 }
 
+function removePlayer(state: State, playerID: string): State {
+  return {
+    ...state,
+    players: state.players.filter((p) => p.ID !== playerID),
+    actors: state.actors.filter((a) => a.playerID !== playerID),
+    effects: state.effects.filter((e) => e.context.playerID !== playerID),
+  }
+}
+
 function endCombat(state: State, encounterID: string): State {
   state = pushMessages(state, [
     newMessage({ text: messages.SeporatorBottom('Combat ended.') }),
   ])
+  state = removePlayer(state, encounterID)
   const exitNodeID = state.combat!.exitNodeID
   state = {
     ...state,
-    effects: state.effects
-      .filter((e) => e.effect.persist)
-      .filter((e) => e.context.playerID !== encounterID),
+    effects: state.effects.filter((e) => e.effect.persist),
     combat: undefined,
     actionQueue: [],
     triggerQueue: [],
     mutationQueue: [navigateDialogResolver(exitNodeID, newContext({}))],
     promptQueue: [],
-    players: state.players.filter((p) => p.ID !== encounterID),
-    actors: state.actors.filter(
-      (a) => a.playerID !== encounterID && a.state.alive
-    ),
   }
   return state
 }
@@ -487,5 +491,6 @@ export {
   withPhase,
   incrementNodeCount,
   remapTargetIDs,
+  removePlayer,
   endCombat,
 }

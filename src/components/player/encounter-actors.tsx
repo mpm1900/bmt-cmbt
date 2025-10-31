@@ -28,13 +28,13 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
             </div>
           )
         const afx = actors.find((a) => a[0].ID === actorID)!
-        const [actor, effectIDs] = afx
+        const [actor, effects] = afx
 
         return (
           <EnemyActor
             key={actorID}
             actor={actor}
-            effectIDs={effectIDs}
+            effects={effects}
             active={phase === 'planning' && activeActorID === actorID}
             onClick={() => {}}
           />

@@ -8,6 +8,8 @@ import { getHealth } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { getActorWithEffects } from '@/game/access'
 import { Badge } from '../ui/badge'
+import { EffectTooltip } from '../tooltips/effect-tooltip'
+import { useState } from 'react'
 
 function Actor({
   actorID,
@@ -24,6 +26,8 @@ function Actor({
   onClick: (actor: SActor) => void
 }) {
   const state = useGameState((s) => s.state)
+  const [openTooltipCount, setOpenTooltipCount] = useState(0)
+
   if (!actorID) {
     return (
       <Button
@@ -36,24 +40,41 @@ function Actor({
     )
   }
 
-  const [actor, effectIDs] = getActorWithEffects(state, actorID)!
+  const [actor, effects] = getActorWithEffects(state, actorID)!
   const [health, maxHealth] = getHealth(actor)
   const done = !!state.actionQueue.find((a) => a.context.sourceID === actorID)
 
   return (
-    <div className="group relative flex flex-col justify-end w-64" {...rest}>
-      <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 z-10">
-        <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
-          {effectIDs
-            .map((id) => state.effects.find((e) => e.effect.ID === id)!)
-            .map((effect) => (
-              <Badge
+    <div
+      className="group relative flex flex-col justify-end w-64"
+      data-state={openTooltipCount > 0 ? 'open' : 'closed'}
+      {...rest}
+    >
+      <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">
+        <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
+          {Object.entries(effects)
+            .map(
+              ([id, count]) =>
+                [state.effects.find((e) => e.effect.ID === id)!, count] as const
+            )
+            .map(([effect, count]) => (
+              <EffectTooltip
                 key={effect.ID}
-                variant="outline"
-                className="bg-background text-muted-foreground"
+                effectID={effect.effect.ID}
+                side="top"
+                asChild
+                onOpenChange={(open) => {
+                  setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
+                }}
               >
-                {effect.effect.name}
-              </Badge>
+                <Badge
+                  variant="outline"
+                  className="bg-background text-muted-foreground"
+                >
+                  {effect.effect.name}
+                  {count > 1 ? `(${count})` : ''}
+                </Badge>
+              </EffectTooltip>
             ))}
         </div>
       </div>
@@ -104,20 +125,26 @@ function Actor({
 
 function EnemyActor({
   actor,
-  effectIDs,
+  effects,
   active,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
   actor: SActor
-  effectIDs: Array<string>
+  effects: { [key: string]: number }
   active: boolean
   onClick: () => void
 }) {
   const state = useGameState((s) => s.state)
   const [health, maxHealth] = getHealth(actor)
+  const [openTooltipCount, setOpenTooltipCount] = useState(0)
+
   return (
-    <div className="group flex flex-col w-48" {...rest}>
+    <div
+      className="group flex flex-col w-48"
+      {...rest}
+      data-state={openTooltipCount > 0 ? 'open' : 'closed'}
+    >
       <Button
         variant={active ? 'default' : 'secondary'}
         className="h-14 pb-3"
@@ -132,18 +159,32 @@ function EnemyActor({
           />
         </ItemContent>
       </Button>
-      <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 z-10">
-        <div className="flex -space-x-3 group-hover:space-x-1 transition-all flex-wrap">
-          {effectIDs
-            .map((id) => state.effects.find((e) => e.effect.ID === id)!)
-            .map((effect) => (
-              <Badge
+      <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">
+        <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
+          {Object.entries(effects)
+            .map(
+              ([id, count]) =>
+                [state.effects.find((e) => e.effect.ID === id)!, count] as const
+            )
+            .map(([effect, count]) => (
+              <EffectTooltip
                 key={effect.ID}
-                variant="outline"
-                className="bg-background text-muted-foreground"
+                effectID={effect.effect.ID}
+                side="bottom"
+                asChild
+                onOpenChange={(open) => {
+                  setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
+                }}
               >
-                {effect.effect.name}
-              </Badge>
+                <Badge
+                  key={effect.ID}
+                  variant="outline"
+                  className="bg-background text-muted-foreground"
+                >
+                  {effect.effect.name}
+                  {count > 1 ? `(${count})` : ''}
+                </Badge>
+              </EffectTooltip>
             ))}
         </div>
       </div>

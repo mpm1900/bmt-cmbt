@@ -135,18 +135,23 @@ function withDamage(actor: SActor, damage: number, alive: 0 | 1): SActor {
 function withEffects(
   actor: SActor,
   effects: Array<SEffectItem>
-): [SActor, Array<string>] {
+): [SActor, { [key: string]: number }] {
   if (actor.modified) {
     console.error('already modified', actor, effects)
-    return [actor, []]
+    return [actor, {}]
   }
 
-  const applied: Set<string> = new Set<string>(
-    effects
-      .filter((e) => e.context.parentID === actor.ID)
-      //.filter((e) => e.effect.triggers(e.context).length > 0)
-      .map((e) => e.effect.ID)
-  )
+  const applied: { [key: string]: number } = effects
+    .filter((e) => e.context.parentID === actor.ID)
+    .map((e) => e.effect.ID)
+    .reduce(
+      (acc, id) => {
+        acc[id] = (acc[id] || 0) + 1
+        return acc
+      },
+      {} as { [key: string]: number }
+    )
+  const apply = (key: string) => (applied[key] = (applied[key] || 0) + 1)
   const modifiers = effects
     .flatMap((item) => {
       const { effect, context } = item
@@ -166,14 +171,14 @@ function withEffects(
       const { modifier, context, effect } = item
       if (modifier.filter && !modifier.filter(next, context)) return next
 
-      applied.add(effect.ID)
+      apply(effect.ID)
       return modifier.apply(next, context)
     },
     { ...actor }
   )
 
   actor.modified = true
-  return [actor, Array.from(applied)]
+  return [actor, applied]
 }
 
 function getStats(actor: SActor): ActorStats {

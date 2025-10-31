@@ -27,6 +27,7 @@ function DialogItemsCard() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead className="text-end">...</TableHead>
             </TableRow>
           </TableHeader>
@@ -34,6 +35,9 @@ function DialogItemsCard() {
             {player.items.map((item) => (
               <TableRow key={item.ID}>
                 <TableCell>{item.name}</TableCell>
+                <TableCell>
+                  The quick brown fox jumps over the lazy dog.
+                </TableCell>
                 <TableCell className="flex justify-end gap-1">
                   {(item.use || item.consumable) && (
                     <MiniDropdown>Use</MiniDropdown>
