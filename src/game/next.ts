@@ -211,6 +211,16 @@ function hasNext(state: State): boolean {
   )
 }
 
+function getNextType(
+  state: State
+): 'trigger' | 'mutation' | 'prompt' | 'action' | 'other' {
+  if (state.triggerQueue.length > 0) return 'trigger'
+  if (state.mutationQueue.length > 0) return 'mutation'
+  if (state.promptQueue.length > 0) return 'prompt'
+  if (state.actionQueue.length > 0) return 'action'
+  return 'other'
+}
+
 function getStatus(state: State): 'pending' | 'running' | 'idle' {
   if (state.combat?.phase === 'planning') {
     return 'pending'
@@ -236,6 +246,7 @@ export {
   flush,
   getStatus,
   hasNext,
+  getNextType,
   next,
   nextAction,
   nextMutation,

@@ -18,6 +18,7 @@ import {
   InputGroupAddon,
   InputGroupButton,
 } from '../ui/input-group'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function DialogOptionContent({
   className,
@@ -49,6 +50,7 @@ function DialogOptionSelect({
   value: string | undefined
   onValueChange: (value: string) => void
 }) {
+  const playerID = usePlayerID()
   const value = options.find((option) => option.ID === props.value)
   const selectOptions = options.filter((o) => o.ID !== props.value)
 
@@ -64,6 +66,8 @@ function DialogOptionSelect({
         <MiniDropdown
           className={cn('data-[state=open]:text-foreground', {
             'text-foreground hover:text-foreground': value,
+            'bg-slate-800': value && value.playerID === playerID,
+            'bg-stone-800': value && value.playerID !== playerID,
           })}
           value={value?.ID}
           disabled={disabled || selectOptions.length === 0}

@@ -51,7 +51,7 @@ const Swap: SDialogAction = {
     return [
       deactivateActorResolver(context.playerID, context.sourceID, context),
       context.targetIDs.map((targetID) =>
-        activateActorResolver(context.playerID, targetID, context)
+        activateActorResolver(context.playerID, targetID, context, 1)
       ),
     ]
   },
@@ -93,7 +93,7 @@ const Activate: SDialogAction = {
   sources: () => [],
   resolve: (_, context) => {
     return context.targetIDs.map((id) =>
-      activateActorResolver(context.playerID, id, context)
+      activateActorResolver(context.playerID, id, context, 0)
     )
   },
 }
@@ -138,7 +138,12 @@ const Deactivate: SDialogAction = {
   },
   resolve: (_, context) => {
     return [
-      deactivateActorResolver(context.playerID, context.targetIDs[0], context),
+      deactivateActorResolver(
+        context.playerID,
+        context.targetIDs[0],
+        context,
+        0
+      ),
     ]
   },
   sources: () => [],

@@ -30,15 +30,23 @@ import {
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
-import { convertPositionToTargetContext, findActor, getActor } from './access'
+import {
+  convertPositionToTargetContext,
+  findActor,
+  getActor,
+  isActive,
+} from './access'
 import { chance } from '@/lib/chance'
 import { enqueue } from './queue'
 import type { Message } from './types/message'
 import { newMessage } from './dialog'
 import {
   ActorActivated,
+  ActorDeactivated,
+  ActorDied,
   CriticalHit,
   ParentEffect,
+  SeporatorTop,
   SourceMissed,
   TargetEvade,
   TargetHeal,
@@ -171,7 +179,8 @@ function mutatePlayerResolver(
 function activateActorResolver(
   playerID: string,
   actorID: string | undefined,
-  context: DeltaContext
+  context: DeltaContext,
+  depth: number
 ): SMutation {
   return {
     ID: v4(),
@@ -206,6 +215,7 @@ function activateActorResolver(
         state = pushMessages(state, [
           newMessage({
             text: ActorActivated(findActor(state, actorID)),
+            depth,
           }),
         ])
         state = handleTrigger(
@@ -225,7 +235,8 @@ function activateActorResolver(
 function deactivateActorResolver(
   playerID: string,
   actorID: string | undefined,
-  context: DeltaContext
+  context: DeltaContext,
+  depth = 1
 ): SMutation {
   return {
     ID: v4(),
@@ -233,6 +244,25 @@ function deactivateActorResolver(
     delta: {
       apply: (state: State) => {
         if (!actorID) return state
+        if (state.combat && !isActive(state, actorID)) return state
+
+        const actor = findActor(state, actorID)!
+        if (actor.state.alive === 0) {
+          state = pushMessages(state, [
+            newMessage({ text: ActorDied(actor), depth }),
+          ])
+        } else {
+          state = pushMessages(state, [
+            newMessage({ text: ActorDeactivated(actor), depth }),
+          ])
+        }
+
+        if (!isActive(state, actorID)) {
+          console.log(
+            'cannot deactivate inactive actor. Likely killed while inactive.'
+          )
+          return state
+        }
         const player = state.players.find((p) => p.ID === playerID)!
         const index = player.activeActorIDs.indexOf(actorID)
         if (index === -1) {
@@ -256,6 +286,7 @@ function deactivateActorResolver(
         state = filterActionQueue(state, actorID)
         state = removeParentEffects(state, newContext({ parentID: actorID }))
         state = handleTrigger(state, context, 'on-actor-deactivate')
+
         return state
       },
     },
@@ -409,7 +440,7 @@ function startCombatResolver(
       apply: (state, context) => {
         let { actors = [], players = [], ...rest } = preState
         state = pushMessages(state, [
-          newMessage({ text: `Combat started!`, depth: 0 }),
+          newMessage({ text: SeporatorTop(`Combat started!`), depth: 0 }),
         ])
 
         actors = actors.filter(

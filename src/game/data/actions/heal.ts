@@ -45,7 +45,7 @@ const SelfHealSource: SDialogAction = {
     unique: true,
     max: () => 0,
     get: () => [],
-    validate: () => true,
+    validate: (_, context) => !!context.sourceID,
   },
   resolve: (state, context) => {
     return Heal.resolve(state, { ...context, targetIDs: [context.sourceID] })

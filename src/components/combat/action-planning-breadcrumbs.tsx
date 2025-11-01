@@ -76,26 +76,32 @@ function ActionPlanningBreadcrumbs({
               {view} <ChevronDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onSelect={() => set({ view: 'items' })}>
-                Items
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() =>
-                  set({
-                    view: 'actions',
-                    activeActionID: nextAvailableAction(active, state)?.ID,
-                  })
-                }
-              >
-                Actions
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() =>
-                  set({ view: 'switch', activeActionID: Swap.ID })
-                }
-              >
-                Switch
-              </DropdownMenuItem>
+              {view !== 'actions' && (
+                <DropdownMenuItem
+                  onSelect={() =>
+                    set({
+                      view: 'actions',
+                      activeActionID: nextAvailableAction(active, state)?.ID,
+                    })
+                  }
+                >
+                  Actions
+                </DropdownMenuItem>
+              )}
+              {view !== 'switch' && (
+                <DropdownMenuItem
+                  onSelect={() =>
+                    set({ view: 'switch', activeActionID: Swap.ID })
+                  }
+                >
+                  Switch
+                </DropdownMenuItem>
+              )}
+              {view !== 'items' && (
+                <DropdownMenuItem onSelect={() => set({ view: 'items' })}>
+                  Items
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </BreadcrumbItem>

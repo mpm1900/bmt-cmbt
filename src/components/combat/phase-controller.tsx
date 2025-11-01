@@ -1,17 +1,38 @@
+import { getNextType } from '@/game/next'
+import type { CombatPhase } from '@/game/types/combat'
 import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { useEffect } from 'react'
 
+function getTickRate(type: ReturnType<typeof getNextType>, phase: CombatPhase) {
+  switch (type) {
+    case 'action':
+      return 1000
+    case 'trigger': {
+      if (phase === 'main') return 500
+      return 100
+    }
+    default:
+      return 100
+  }
+}
+
 function useTickNext() {
   const next = useGameState((s) => s.next)
+  const state = useGameState((s) => s.state)
+  const nextType = getNextType(state)
+  const view = state.combat!.phase
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      next()
-    }, 100)
+    const interval = setInterval(
+      () => {
+        next()
+      },
+      getTickRate(nextType, view)
+    )
 
     return () => clearInterval(interval)
-  }, [])
+  }, [nextType, view])
 }
 
 function PhaseController() {

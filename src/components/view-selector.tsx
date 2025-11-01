@@ -1,17 +1,18 @@
-import { ArrowDownUp, Box, Component, MessageSquare } from 'lucide-react'
+import { Box, Component, MessageSquare } from 'lucide-react'
 import { ButtonGrid } from './button-grid'
 import { Button } from './ui/button'
-import { useGameUI, type GameUIView } from '@/hooks/useGameUI'
+import { useGameUI, GameUIViews } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
 import { useGameState } from '@/hooks/useGameState'
 import { getActor, nextAvailableAction } from '@/game/access'
 import { hasNext } from '@/game/next'
 import type { CombatPhase } from '@/game/types/combat'
 import type { ComponentProps } from 'react'
+import { AiOutlineUserSwitch } from 'react-icons/ai'
 
 function getVariant(
-  target: GameUIView,
-  view: GameUIView,
+  target: (typeof GameUIViews)[number],
+  view: (typeof GameUIViews)[number],
   phase: CombatPhase | undefined
 ): ComponentProps<typeof Button>['variant'] {
   if (!phase) {
@@ -25,7 +26,7 @@ function getVariant(
       return 'default'
     }
   }
-  return 'secondary'
+  return 'ghost'
 }
 
 function ViewSelector() {
@@ -73,7 +74,7 @@ function ViewSelector() {
         onClick={() => set({ view: 'switch', activeActionID: Swap.ID })}
         disabled={!planning || running}
       >
-        <ArrowDownUp />
+        <AiOutlineUserSwitch className="size-5" />
       </Button>
     </ButtonGrid>
   )

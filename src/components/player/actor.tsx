@@ -1,6 +1,5 @@
 import type { SActor } from '@/game/state'
 import { ItemContent, ItemTitle } from '../ui/item'
-import { Progress } from '../ui/progress'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { MAIN_STAT_ICONS } from '@/renderers/icons'
@@ -10,6 +9,7 @@ import { getActorWithEffects } from '@/game/access'
 import { Badge } from '../ui/badge'
 import { EffectTooltip } from '../tooltips/effect-tooltip'
 import { useState } from 'react'
+import { ActorHealth } from './actor-health'
 
 function Actor({
   actorID,
@@ -32,11 +32,9 @@ function Actor({
     return (
       <Button
         disabled
-        variant="outline"
-        className="h-20 mb-4.5 mt-8 w-64 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
-      >
-        inactive
-      </Button>
+        variant="slate-inactive"
+        className="h-20 mb-4.5 mt-8 w-64 flex items-center justify-center border border-foreground/10 border-dashed"
+      ></Button>
     )
   }
 
@@ -79,27 +77,15 @@ function Actor({
         </div>
       </div>
       <Button
-        variant={active ? 'default' : 'secondary'}
+        variant={active ? 'slate-active' : 'slate'}
         disabled={disabled}
-        className={cn('h-auto')}
+        className={cn('h-auto p-2 pb-1')}
         onClick={() => onClick(actor)}
       >
         <ItemContent>
-          <ItemTitle>{actor.name}</ItemTitle>
-          <Progress
-            value={(health * 100) / maxHealth}
-            indicator={{ className: cn({ 'bg-background': active }) }}
-          />
-          <Progress
-            value={100}
-            className="h-1"
-            indicator={{
-              className: cn({
-                'bg-blue-800/60': active,
-                'bg-blue-300': !active,
-              }),
-            }}
-          />
+          <ItemTitle className="font-semibold">{actor.name}</ItemTitle>
+          <ActorHealth active={active} value={(health * 100) / maxHealth} />
+
           <div className="flex gap-3">
             <div className="flex gap-1 items-center">
               <MAIN_STAT_ICONS.body />
@@ -146,17 +132,14 @@ function EnemyActor({
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
     >
       <Button
-        variant={active ? 'default' : 'secondary'}
-        className="h-14 pb-3"
+        variant={active ? 'default' : 'stone'}
+        className="min-h-14 h-auto py-1 px-2"
         disabled
         onClick={onClick}
       >
         <ItemContent>
           <ItemTitle>{actor.name}</ItemTitle>
-          <Progress
-            value={(health * 100) / maxHealth}
-            indicator={{ className: cn({ 'bg-background': active }) }}
-          />
+          <ActorHealth active={active} value={(health * 100) / maxHealth} />
         </ItemContent>
       </Button>
       <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">

@@ -7,7 +7,7 @@ import {
 } from '@/game/resolvers'
 import type { SEffect } from '@/game/state'
 import { v4 } from 'uuid'
-import { ActorDied, TurnStart } from '../messages'
+import { TurnStart } from '../messages'
 
 const HANDLE_DEATH: SEffect = {
   ID: v4(),
@@ -23,14 +23,10 @@ const HANDLE_DEATH: SEffect = {
       priority: 0,
       validate: () => true,
       resolve: (state, tcontext) => {
+        console.log('on death!', tcontext)
         return tcontext.targetIDs.flatMap((targetID) => {
           const target = state.actors.find((a) => a.ID === targetID)!
-          return [
-            pushMessagesResolver(tcontext, [
-              newMessage({ text: ActorDied(target), depth: 1 }),
-            ]),
-            deactivateActorResolver(target.playerID, targetID!, tcontext),
-          ]
+          return [deactivateActorResolver(target.playerID, targetID!, tcontext)]
         })
       },
     },

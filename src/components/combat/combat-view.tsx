@@ -13,8 +13,8 @@ import { PhasePost } from './phase-post'
 import { CombatLog } from './combat-log'
 import { CombatDebug } from './combat-debug'
 import { PhaseController } from './phase-controller'
-import { GiNextButton } from 'react-icons/gi'
 import { Button } from '../ui/button'
+import { SkipForward } from 'lucide-react'
 
 function CombatView() {
   const phase = useGameState((store) => store.state.combat?.phase)
@@ -52,7 +52,7 @@ function CombatView() {
                 </TabsList>
                 <CardAction>
                   <Button variant="secondary" onClick={next}>
-                    <GiNextButton />
+                    <SkipForward />
                   </Button>
                 </CardAction>
               </CardHeader>

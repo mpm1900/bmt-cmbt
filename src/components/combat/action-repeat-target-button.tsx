@@ -12,6 +12,7 @@ function ActionRepeatTargetButton({
   target,
   type,
   index,
+  allied,
   context,
   onContextChange,
   next,
@@ -21,6 +22,7 @@ function ActionRepeatTargetButton({
   target: SActor
   type: ActionTarget<SActor>['type']
   index: number
+  allied: boolean
   context: DeltaPositionContext
   onContextChange: (context: DeltaPositionContext) => void
   next: () => void
@@ -31,6 +33,7 @@ function ActionRepeatTargetButton({
   if (type === 'targetID') {
     return (
       <ActionTargetIdButton
+        allied={allied}
         target={target}
         disabled={true}
         index={index}
@@ -46,6 +49,7 @@ function ActionRepeatTargetButton({
     return (
       <ActionPositionButton
         state={state}
+        allied={allied}
         target={target}
         disabled={true}
         index={index}
@@ -63,12 +67,14 @@ function ActionTargetIdButton({
   target,
   index,
   disabled,
+  allied,
   context,
   onContextChange,
 }: {
   target: SActor
   disabled: boolean
   index: number
+  allied: boolean
   context: DeltaPositionContext
   onContextChange: (context: Partial<DeltaPositionContext>) => void
 }) {
@@ -77,7 +83,15 @@ function ActionTargetIdButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'default' : 'secondary'}
+      variant={
+        active
+          ? allied
+            ? 'default-slate'
+            : 'default-stone'
+          : allied
+            ? 'slate'
+            : 'stone'
+      }
       disabled={disabled && active}
       onClick={() => {
         if (active) return
@@ -98,6 +112,7 @@ function ActionPositionButton({
   state,
   target,
   disabled,
+  allied,
   index,
   context,
   onContextChange,
@@ -105,6 +120,7 @@ function ActionPositionButton({
   state: State
   target: SActor
   disabled: boolean
+  allied: boolean
   index: number
   context: DeltaPositionContext
   onContextChange: (context: Partial<DeltaPositionContext>) => void
@@ -116,7 +132,15 @@ function ActionPositionButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'default' : 'secondary'}
+      variant={
+        active
+          ? allied
+            ? 'default-slate'
+            : 'default-stone'
+          : allied
+            ? 'slate'
+            : 'stone'
+      }
       disabled={disabled && active}
       onClick={() => {
         if (!targetPosition) return

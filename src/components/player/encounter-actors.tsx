@@ -14,32 +14,35 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
     .map((actor) => withStatEffects(actor, state.effects))
   return (
     <div className="w-full flex flex-row-reverse justify-start items-start p-4 pt-0 gap-2">
-      {encounter.activeActorIDs.map((actorID, i) => {
-        if (!actorID)
-          return (
-            <div key={i} className="flex flex-col gap-1">
-              <Button
-                disabled
-                variant="outline"
-                className="h-14 w-48 flex items-center justify-center text-muted-foreground border-dashed bg-muted/40"
-              >
-                inactive
-              </Button>
-            </div>
-          )
-        const afx = actors.find((a) => a[0].ID === actorID)!
-        const [actor, effects] = afx
+      {encounter.activeActorIDs
+        .slice()
+        .reverse()
+        .map((actorID, i) => {
+          if (!actorID)
+            return (
+              <div key={i} className="flex flex-col gap-1">
+                <Button
+                  disabled
+                  variant="stone-inactive"
+                  className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed"
+                >
+                  inactive
+                </Button>
+              </div>
+            )
+          const afx = actors.find((a) => a[0].ID === actorID)!
+          const [actor, effects] = afx
 
-        return (
-          <EnemyActor
-            key={actorID}
-            actor={actor}
-            effects={effects}
-            active={phase === 'planning' && activeActorID === actorID}
-            onClick={() => {}}
-          />
-        )
-      })}
+          return (
+            <EnemyActor
+              key={actorID}
+              actor={actor}
+              effects={effects}
+              active={phase === 'planning' && activeActorID === actorID}
+              onClick={() => {}}
+            />
+          )
+        })}
     </div>
   )
 }

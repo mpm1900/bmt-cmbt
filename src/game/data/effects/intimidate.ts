@@ -2,10 +2,10 @@ import { addEffectResolver, pushMessagesResolver } from '@/game/resolvers'
 import type { SEffect, SMutation } from '@/game/state'
 import { v4 } from 'uuid'
 import { BodyDown } from './body-down'
-import { getActiveActorIDs } from '@/game/access'
+import { findActor, getActiveActorIDs } from '@/game/access'
 import { newContext } from '@/game/mutations'
 import { newMessage } from '@/game/dialog'
-import { EffectTrigger } from '../messages'
+import { EffectSourceTrigger } from '../messages'
 
 const IntimidateID = v4()
 const name = 'Intimidate'
@@ -34,7 +34,10 @@ const Intimidate: SEffect = {
           deltas.push(
             pushMessagesResolver(tcontext, [
               newMessage({
-                text: EffectTrigger({ ID: IntimidateID, name }),
+                text: EffectSourceTrigger(
+                  { ID: IntimidateID, name },
+                  findActor(state, tcontext.sourceID)
+                ),
                 depth: 1,
               }),
             ])
@@ -50,6 +53,50 @@ const Intimidate: SEffect = {
                 parentID: id,
               }),
               1
+            )
+          })
+        )
+        return deltas
+      },
+    },
+    {
+      ID: v4(),
+      type: 'on-turn-start',
+      priority: 0,
+      validate: (state, _tcontext) => {
+        return state.combat?.turn === 0
+      },
+      resolve: (state, tcontext) => {
+        // TODO factor in only doing one or the other
+        return []
+        const opponentID = state.dialog.activeNodeID!
+        const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
+          (id) => id !== null
+        )
+        const deltas: Array<SMutation> = []
+        if (activeActorIDs.length > 0) {
+          deltas.push(
+            pushMessagesResolver(tcontext, [
+              newMessage({
+                text: EffectSourceTrigger(
+                  { ID: IntimidateID, name },
+                  findActor(state, econtext.sourceID)
+                ),
+                depth: 0,
+              }),
+            ])
+          )
+        }
+        deltas.push(
+          ...activeActorIDs.map((id) => {
+            return addEffectResolver(
+              BodyDown,
+              newContext({
+                playerID: opponentID,
+                sourceID: tcontext.sourceID,
+                parentID: id,
+              }),
+              0
             )
           })
         )

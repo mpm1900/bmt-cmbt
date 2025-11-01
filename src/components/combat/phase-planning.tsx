@@ -5,9 +5,12 @@ import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
 import { CardHeader } from '../ui/card'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function PhasePlanning() {
+  const playerID = usePlayerID()
   const { state, pushAction } = useGameState((store) => store)
+  const player = state.players.find((p) => p.ID === playerID)!
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
   const {
     activeActionID,
@@ -46,6 +49,30 @@ function PhasePlanning() {
           playerID={activeActor.playerID}
           source={activeActor}
           actions={[Swap]}
+          activeActionID={activeActionID}
+          onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
+          onActionConfirm={(action, context) => {
+            pushAction(action, context)
+            setUI({ view: 'actions' })
+            resetActive(state)
+          }}
+        >
+          <CardHeader>
+            <ActionPlanningBreadcrumbs
+              source={activeActor}
+              action={activeAction}
+            />
+          </CardHeader>
+        </ActionSelectionCard>
+      )}
+      {view === 'items' && (
+        <ActionSelectionCard
+          playerID={activeActor.playerID}
+          source={activeActor}
+          actions={player.items
+            .filter((i) => i.use || i.consumable)
+            // TODO: factor in renderers here
+            .map((i) => ({ ...(i.use || i.consumable)!, name: i.name }))}
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => {

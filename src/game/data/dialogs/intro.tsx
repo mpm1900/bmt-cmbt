@@ -1,4 +1,4 @@
-import { findActor, getNodeCount } from '@/game/access'
+import { getNodeCount } from '@/game/access'
 import {
   createDialogOption,
   createSourceDialogOption,
@@ -24,11 +24,11 @@ import {
   TbUsersPlus,
   TbExternalLink,
   TbHeartPlus,
+  TbSwords,
 } from 'react-icons/tb'
 import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
-import { withMessageLogs } from '../actions/_system/with-message-logs'
 import { Heal, SelfHealSource } from '../actions/heal'
 
 const Criminal = (index: number, aiID: string) =>
@@ -118,7 +118,7 @@ const IntroNode0: SDialogNode = {
       text: <em>Start Combat</em>,
       icons: (
         <>
-          <TbExternalLink />
+          <TbSwords />
         </>
       ),
       context,
@@ -237,11 +237,7 @@ const IntroNode1: SDialogNode = {
         </>
       ),
       context,
-      action: withMessageLogs(Deactivate, (s, c) => [
-        newMessage({
-          text: `${findActor(s, c.targetIDs[0])?.name} deactivated.`,
-        }),
-      ]),
+      action: Deactivate,
     },
   ],
   state: {},

@@ -146,12 +146,14 @@ function withEffects(
     .map((e) => e.effect.ID)
     .reduce(
       (acc, id) => {
-        acc[id] = (acc[id] || 0) + 1
+        acc[id] = acc[id] || 0
         return acc
       },
       {} as { [key: string]: number }
     )
-  const apply = (key: string) => (applied[key] = (applied[key] || 0) + 1)
+  const apply = (key: string) => {
+    return (applied[key] = (applied[key] || 0) + 1)
+  }
   const modifiers = effects
     .flatMap((item) => {
       const { effect, context } = item

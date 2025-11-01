@@ -10,6 +10,7 @@ function ActionUniqueTargetButton({
   action,
   target,
   type,
+  allied,
   context,
   onContextChange,
 }: {
@@ -17,6 +18,7 @@ function ActionUniqueTargetButton({
   action: SAction
   target: SActor
   type: ActionTarget<SActor>['type']
+  allied: boolean
   context: DeltaPositionContext
   onContextChange: (context: DeltaPositionContext) => void
 }) {
@@ -31,6 +33,7 @@ function ActionUniqueTargetButton({
           target={target}
           disabled={done && ready}
           context={context}
+          allied={allied}
           onContextChange={(c) => onContextChange({ ...context, ...c })}
         />
       )}
@@ -39,6 +42,7 @@ function ActionUniqueTargetButton({
           state={state}
           target={target}
           disabled={done && ready}
+          allied={allied}
           context={context}
           onContextChange={(c) =>
             onContextChange({
@@ -56,10 +60,12 @@ function ActionTargetIdButton({
   target,
   context,
   disabled,
+  allied,
   onContextChange,
 }: {
   target: SActor
   disabled: boolean
+  allied: boolean
   context: DeltaPositionContext
   onContextChange: (context: Partial<DeltaPositionContext>) => void
 }) {
@@ -67,7 +73,15 @@ function ActionTargetIdButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'default' : 'secondary'}
+      variant={
+        active
+          ? allied
+            ? 'default-slate'
+            : 'default-stone'
+          : allied
+            ? 'slate'
+            : 'stone'
+      }
       disabled={disabled && !active}
       onClick={() => {
         if (active) {
@@ -90,12 +104,14 @@ function ActionPositionButton({
   state,
   target,
   disabled,
+  allied,
   context,
   onContextChange,
 }: {
   state: State
   target: SActor
   disabled: boolean
+  allied: boolean
   context: DeltaPositionContext
   onContextChange: (context: Partial<DeltaPositionContext>) => void
 }) {
@@ -106,7 +122,15 @@ function ActionPositionButton({
   return (
     <Button
       size="sm"
-      variant={active ? 'default' : 'secondary'}
+      variant={
+        active
+          ? allied
+            ? 'default-slate'
+            : 'default-stone'
+          : allied
+            ? 'slate'
+            : 'stone'
+      }
       disabled={disabled && !active}
       onClick={() => {
         if (!position) return

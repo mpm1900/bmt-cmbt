@@ -10,6 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        ['default-slate']: 'bg-primary text-slate-700 hover:bg-primary/90',
+        ['default-stone']: 'bg-primary text-stone-700 hover:bg-primary/90',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
@@ -21,6 +23,14 @@ const buttonVariants = cva(
         ghost:
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
+        slate: 'bg-slate-700 text-secondary-foreground hover:bg-slate-700/80',
+        ['slate-active']: 'bg-slate-300 text-slate-700 hover:bg-slate-300/90',
+        ['slate-inactive']:
+          'bg-slate-900/30 text-slate-300/60 hover:bg-slate-900/80',
+        stone: 'bg-stone-700 text-secondary-foreground hover:bg-stone-700/80',
+        ['stone-active']: 'bg-stone-300 text-stone-700 hover:bg-stone-300/90',
+        ['stone-inactive']:
+          'bg-stone-900/30 text-stone-300/60 hover:bg-stone-900/80',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

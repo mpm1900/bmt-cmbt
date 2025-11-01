@@ -296,6 +296,7 @@ function mutateDamage(
 
   const targetID = context.targetIDs[0] // this line could be problematic, but probs not
   const target = findActor(state, targetID)
+  console.log('damage', target)
   const dead = !target?.state.alive
 
   if (committed > 0) {
