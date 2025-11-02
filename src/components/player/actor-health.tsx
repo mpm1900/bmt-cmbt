@@ -6,11 +6,17 @@ import { cn } from '@/lib/utils'
 function ActorHealth({
   active,
   className,
-  value,
+  showHealthNumbers,
+  health,
+  maxHealth,
   ...props
-}: React.ComponentProps<typeof ProgressPrimitive.Root> & {
+}: Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, 'value'> & {
   active: boolean
+  showHealthNumbers: boolean
+  health: number
+  maxHealth: number
 }) {
+  const value = (health * 100) / maxHealth
   const [after, setAfter] = React.useState(value)
   React.useEffect(() => {
     const timeout = setTimeout(() => setAfter(value), 300)
@@ -20,7 +26,7 @@ function ActorHealth({
     <ProgressPrimitive.Root
       data-slot="progress"
       className={cn(
-        'bg-background/50 border border-background/50 relative h-4 rounded-[3px] overflow-hidden',
+        'bg-background/50 border border-background/50 relative h-5 rounded-[3px] overflow-hidden',
         className
       )}
       {...props}
@@ -40,6 +46,11 @@ function ActorHealth({
         )}
         style={{ transform: `translateX(-${100 - (after || 0)}%)` }}
       />
+      {showHealthNumbers && (
+        <div className="absolute top-0 right-1 z-10 text-xs leading-5 font-black text-foreground/80 text-shadow-md">
+          {health}/{maxHealth}
+        </div>
+      )}
     </ProgressPrimitive.Root>
   )
 }

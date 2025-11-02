@@ -30,7 +30,7 @@ const buttonVariants = cva(
         stone: 'bg-stone-700 text-secondary-foreground hover:bg-stone-700/80',
         ['stone-active']: 'bg-stone-300 text-stone-700 hover:bg-stone-300/90',
         ['stone-inactive']:
-          'bg-stone-900/30 text-stone-300/60 hover:bg-stone-900/80',
+          'bg-stone-800/50 text-stone-300/80 hover:bg-stone-900/80',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

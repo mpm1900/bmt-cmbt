@@ -19,6 +19,7 @@ import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
   SAction,
   SActor,
+  SDialog,
   SDialogNode,
   SDialogOption,
   SEffect,
@@ -466,6 +467,14 @@ function endCombat(state: State, encounterID: string): State {
   return state
 }
 
+function setDialog(state: State, dialog: SDialog | undefined): State {
+  if (!dialog) return state
+  return {
+    ...state,
+    dialog,
+  }
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -494,4 +503,5 @@ export {
   remapTargetIDs,
   removePlayer,
   endCombat,
+  setDialog,
 }

@@ -5,9 +5,9 @@ import { ACTION_RENDERERS } from '@/renderers'
 import { Item, ItemActions, ItemContent } from '../ui/item'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { useGameState } from '@/hooks/useGameState'
-import { AtSign } from 'lucide-react'
 import { FaDiceD20 } from 'react-icons/fa6'
 import type { DeltaPositionContext } from '@/game/types/delta'
+import { TfiTarget } from 'react-icons/tfi'
 
 function ActionItem({
   action,
@@ -53,7 +53,7 @@ function ActionItem({
             <CollapsibleContent className="flex flex-col items-end text-muted-foreground font-mono">
               {renderer.Accuracy && (
                 <div className="flex items-center gap-1 font-black">
-                  <AtSign className="size-3.5" />
+                  <TfiTarget className="size-3.5" />
                   <renderer.Accuracy />
                 </div>
               )}

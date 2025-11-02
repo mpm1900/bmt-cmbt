@@ -33,7 +33,7 @@ function ActorSelectorButton({
 
   return (
     <Button
-      size="icon-lg"
+      size="icon"
       variant={active ? 'slate-active' : 'slate'}
       className={cn({ 'opacity-50 hover:opacity-90': !actor.state.alive })}
       {...props}

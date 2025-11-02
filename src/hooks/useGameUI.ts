@@ -1,8 +1,4 @@
-import {
-  findActor,
-  getActiveActorIDs,
-  nextAvailableAction,
-} from '@/game/access'
+import { getActiveActorIDs, getActor, nextAvailableAction } from '@/game/access'
 import type { State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
@@ -37,7 +33,7 @@ const gameUIStore = createStore<GameUIStore>((set) => {
       if (!nextActorID) return
       set({
         activeActorID: nextActorID,
-        activeActionID: nextAvailableAction(findActor(game, nextActorID), game)
+        activeActionID: nextAvailableAction(getActor(game, nextActorID), game)
           ?.ID,
       })
     },

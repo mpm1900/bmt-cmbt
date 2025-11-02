@@ -64,7 +64,7 @@ function resolveAction(
     if (action.name) {
       return [
         pushMessagesResolver(context, [
-          newMessage({ text: `${action.name} failed.` }),
+          newMessage({ text: `${action.name} failed.`, depth: 1 }),
         ]),
       ]
     }

@@ -2,12 +2,14 @@ import type { ReactNode } from 'react'
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '../ui/table'
 import type { SItem } from '@/game/state'
+import { Ellipsis } from 'lucide-react'
 
 function ItemsTable({
   items,
@@ -34,7 +36,9 @@ function ItemsTable({
           <TableHead></TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead className="text-end">...</TableHead>
+          <TableHead className="flex items-center justify-end">
+            <Ellipsis />
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -56,6 +60,7 @@ function ItemsTable({
             </TableRow>
           ))}
       </TableBody>
+      {items.length === 0 && <TableCaption>No items available.</TableCaption>}
     </Table>
   )
 }

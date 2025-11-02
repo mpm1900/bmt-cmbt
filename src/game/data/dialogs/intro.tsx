@@ -1,4 +1,4 @@
-import { getNodeCount } from '@/game/access'
+import { getAliveActiveActors, getNodeCount } from '@/game/access'
 import {
   createDialogOption,
   createSourceDialogOption,
@@ -18,7 +18,6 @@ import {
 } from '@/game/state'
 import { createActor } from '@/lib/create-actor'
 import {
-  TbMessage2Share,
   TbUserPlus,
   TbUserMinus,
   TbUsersPlus,
@@ -29,8 +28,11 @@ import {
 import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
-import { Heal, SelfHealSource } from '../actions/heal'
+import { Heal } from '../actions/heal'
 import { Fireball } from '../actions/fireball'
+import { GiCreditsCurrency } from 'react-icons/gi'
+import { FaQuestion } from 'react-icons/fa'
+import { chance } from '@/lib/chance'
 
 const Criminal = (index: number, aiID: string) =>
   createActor(`Criminal (${index})`, aiID, {
@@ -62,7 +64,15 @@ const IntroNode0: SDialogNode = {
       success: (roll) => [
         pushMessagesResolver(context, [
           newMessage({
-            text: `random roll: success! (50 > ${roll.toFixed(0)})`,
+            text: (
+              <span className="text-green-300">
+                [random roll: success!]{' '}
+                <span className="opacity-50">
+                  (50{'>'}
+                  {roll.toFixed(0)})
+                </span>
+              </span>
+            ),
           }),
           newMessage({ text: `Your crew avoided the trap!` }),
         ]),
@@ -70,7 +80,15 @@ const IntroNode0: SDialogNode = {
       failure: (roll) => [
         pushMessagesResolver(context, [
           newMessage({
-            text: `random roll: failure! (50 > ${roll.toFixed(0)})`,
+            text: (
+              <span className="text-red-300">
+                [random roll: failure!]{' '}
+                <span className="opacity-50">
+                  (50{'>'}
+                  {roll.toFixed(0)})
+                </span>
+              </span>
+            ),
           }),
           newMessage({ text: `Your crew triggered a shock trap!` }),
         ]),
@@ -154,18 +172,6 @@ const IntroNode0: SDialogNode = {
       action: Heal,
     },
     {
-      ID: v4(),
-      disable: 'hide',
-      text: <em>Self Heal</em>,
-      icons: (
-        <>
-          <TbHeartPlus />
-        </>
-      ),
-      context,
-      action: SelfHealSource,
-    },
-    {
       ID: 'IntroNode0-Activate-Actor',
       disable: 'hide',
       text: <em>Activate</em>,
@@ -194,7 +200,7 @@ const IntroNode0: SDialogNode = {
         text: <span className="font-semibold">"Show me your items."</span>,
         icons: (
           <>
-            <TbMessage2Share />
+            <GiCreditsCurrency />
           </>
         ),
       },
@@ -202,6 +208,42 @@ const IntroNode0: SDialogNode = {
       IntroNode2.ID,
       []
     ),
+    {
+      ID: v4(),
+      disable: 'disable',
+      text: <em>Flip a Coin</em>,
+      icons: (
+        <>
+          <FaQuestion />
+        </>
+      ),
+      context,
+      action: {
+        ...InlineMutation(
+          (_state, context) => {
+            const result = chance(50)
+            if (result[0]) {
+              return [
+                pushMessagesResolver(context, [newMessage({ text: 'heads!' })]),
+              ]
+            } else {
+              return [
+                pushMessagesResolver(context, [newMessage({ text: 'tails!' })]),
+              ]
+            }
+          },
+          (a) => ({
+            targets: {
+              ...a.targets,
+              validate: (_, context) => !!context.sourceID,
+            },
+            sources: (state, context) => getAliveActiveActors(state, context),
+            validate: (state, context) =>
+              getAliveActiveActors(state, context).length > 0,
+          })
+        ),
+      },
+    },
   ],
   state: {},
 }

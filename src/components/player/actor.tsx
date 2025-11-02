@@ -82,11 +82,16 @@ function Actor({
         className={cn('h-auto p-2 pb-1')}
         onClick={() => onClick(actor)}
       >
-        <ItemContent>
+        <ItemContent className="gap-0">
           <ItemTitle className="font-semibold">{actor.name}</ItemTitle>
-          <ActorHealth active={active} value={(health * 100) / maxHealth} />
+          <ActorHealth
+            active={active}
+            showHealthNumbers={true}
+            health={health}
+            maxHealth={maxHealth}
+          />
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 mt-1">
             <div className="flex gap-1 items-center">
               <MAIN_STAT_ICONS.body />
               {actor.stats.body}
@@ -135,9 +140,14 @@ function EnemyActor({
         disabled
         onClick={onClick}
       >
-        <ItemContent>
-          <ItemTitle>{actor.name}</ItemTitle>
-          <ActorHealth active={active} value={(health * 100) / maxHealth} />
+        <ItemContent className="gap-0">
+          <ItemTitle className="text-xs">{actor.name}</ItemTitle>
+          <ActorHealth
+            active={active}
+            showHealthNumbers={false}
+            health={health}
+            maxHealth={maxHealth}
+          />
         </ItemContent>
       </Button>
       <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">

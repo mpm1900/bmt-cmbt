@@ -29,7 +29,7 @@ function ActionSelectionCard({
   )
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card className="w-180 gap-4">
+    <Card className="w-180 gap-2">
       {children}
       <CardContent className="grid grid-cols-2 gap-3">
         <ScrollArea className="max-h-108 pr-3">

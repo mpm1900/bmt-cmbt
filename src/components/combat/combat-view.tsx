@@ -15,12 +15,16 @@ import { CombatDebug } from './combat-debug'
 import { PhaseController } from './phase-controller'
 import { Button } from '../ui/button'
 import { SkipForward } from 'lucide-react'
+import { findActor, nextAvailableAction } from '@/game/access'
+import { Swap } from '@/game/data/actions/_system/swap'
 
 function CombatView() {
-  const phase = useGameState((store) => store.state.combat?.phase)
+  const state = useGameState((store) => store.state)
+  const phase = state.combat!.phase
   const next = useGameState((store) => store.nextPhase)
-  const { set } = useGameUI((s) => s)
+  const { set, view, activeActorID } = useGameUI((s) => s)
   const [activeTab, setActiveTab] = useState('debug')
+  const activeActor = findActor(state, activeActorID)
 
   useEffect(() => {
     set({ view: 'actions' })
@@ -33,14 +37,26 @@ function CombatView() {
       <PhaseController />
       <ViewLayout
         main={
-          <div>
+          <Tabs
+            value={view}
+            onValueChange={(v) => {
+              const newView: typeof view = v as typeof view
+              set({
+                view: newView,
+                activeActionID:
+                  newView === 'actions'
+                    ? nextAvailableAction(activeActor, state)?.ID
+                    : Swap.ID,
+              })
+            }}
+          >
             {phase === 'start' && <PhaseStart />}
             {phase === 'planning' && <PhasePlanning />}
             {phase === 'main' && <PhaseMain />}
             {phase === 'end' && <PhaseEnd />}
             {phase === 'pre' && <PhasePre />}
             {phase === 'post' && <PhasePost />}
-          </div>
+          </Tabs>
         }
         aside={
           <Card className="h-120">

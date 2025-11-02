@@ -57,9 +57,9 @@ function ActorDeactivated(actor: SActor | undefined) {
 }
 function ActorDied(actor: SActor | undefined) {
   return (
-    <>
-      {Actor(actor)} {<span className="text-foreground">died.</span>}
-    </>
+    <span className="[&_*]:!text-red-300/80">
+      {Actor(actor)} {<span> died.</span>}
+    </span>
   )
 }
 
@@ -140,10 +140,10 @@ function SourceAction(source: SActor | undefined, action: SAction) {
   )
 }
 function SourceMissed(source: SActor | undefined) {
-  return <>{Actor(source, <>missed.</>)}</>
+  return <>{Actor(source)} missed.</>
 }
 function CriticalHit() {
-  return <span className="text-yellow-200/60">Critical hit!</span>
+  return <span className="text-yellow-200">Critical hit!</span>
 }
 
 export {

@@ -4,7 +4,6 @@ import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Button } from '../ui/button'
 import { EnemyActor } from './actor'
-import { ButtonGrid32 } from '../button-grid'
 import { TbHexagonFilled } from 'react-icons/tb'
 
 function EncounterActors({ encounter }: { encounter: SPlayer }) {
@@ -26,7 +25,7 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
                 <Button
                   disabled
                   variant="stone-inactive"
-                  className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed"
+                  className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
                 >
                   inactive
                 </Button>
@@ -45,11 +44,11 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
             />
           )
         })}
-      <ButtonGrid32 className="text-foreground/20">
+      <div className="grid grid-cols-3 gap-1 text-stone-300/40">
         {actors.map(([a]) => (
           <TbHexagonFilled key={a.ID} />
         ))}
-      </ButtonGrid32>
+      </div>
     </div>
   )
 }

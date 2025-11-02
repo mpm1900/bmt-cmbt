@@ -1,11 +1,11 @@
 import { withEffects } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
-import { ActionPlanningBreadcrumbs } from './action-planning-breadcrumbs'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
 import { CardHeader } from '../ui/card'
 import { usePlayerID } from '@/hooks/usePlayer'
+import { CombatViewTabs } from './combat-view-tabs'
 
 function PhasePlanning() {
   const playerID = usePlayerID()
@@ -20,11 +20,8 @@ function PhasePlanning() {
     set: setUI,
   } = useGameUI((s) => s)
   const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
-  const activeAction = activeActor?.actions.find(
-    (action) => action.ID === activeActionID
-  )
-
   if (!activeActor) return null
+
   return (
     <>
       {view === 'actions' && (
@@ -37,10 +34,7 @@ function PhasePlanning() {
           onActionConfirm={(action, context) => pushAction(action, context)}
         >
           <CardHeader>
-            <ActionPlanningBreadcrumbs
-              source={activeActor}
-              action={activeAction}
-            />
+            <CombatViewTabs />
           </CardHeader>
         </ActionSelectionCard>
       )}
@@ -58,10 +52,7 @@ function PhasePlanning() {
           }}
         >
           <CardHeader>
-            <ActionPlanningBreadcrumbs
-              source={activeActor}
-              action={activeAction}
-            />
+            <CombatViewTabs />
           </CardHeader>
         </ActionSelectionCard>
       )}
@@ -82,10 +73,7 @@ function PhasePlanning() {
           }}
         >
           <CardHeader>
-            <ActionPlanningBreadcrumbs
-              source={activeActor}
-              action={activeAction}
-            />
+            <CombatViewTabs />
           </CardHeader>
         </ActionSelectionCard>
       )}

@@ -3,9 +3,9 @@ import { v4 } from 'uuid'
 
 function InlineMutation(
   resolve: SDialogAction['resolve'],
-  validate: SDialogAction['validate'] = () => true
+  map: (a: SDialogAction) => Partial<SDialogAction> = () => ({})
 ): SDialogAction {
-  return {
+  const base = {
     ID: v4(),
     name: '',
     priority: 0,
@@ -16,8 +16,13 @@ function InlineMutation(
       unique: false,
     },
     sources: () => [],
-    validate,
+    validate: () => true,
     resolve,
+  }
+
+  return {
+    ...base,
+    ...map(base),
   }
 }
 
