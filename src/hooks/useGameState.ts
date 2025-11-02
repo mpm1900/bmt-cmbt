@@ -7,7 +7,7 @@ import {
   resolveDialogOption,
   resolvePrompt,
 } from '@/game/mutations'
-import { next, nextTurnPhase } from '@/game/next'
+import { getNextType, next, nextTurnPhase } from '@/game/next'
 import type { SAction, SDialogOption, SPlayer, State } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { createActor } from '@/lib/create-actor'
@@ -21,12 +21,13 @@ import {
   HANDLE_TURN_END,
   HANDLE_TURN_START,
 } from '@/game/data/effects/_system'
-import { Heal } from '@/game/data/actions/heal'
-import { Fireball } from '@/game/data/actions/fireball'
+import { useEffect, useState } from 'react'
+import { findActor } from '@/game/access'
 
 type GameStateStore = {
   state: State
   pushAction: (action: SAction, context: DeltaPositionContext) => void
+  filterAction: (actorID: string) => void
   resolvePrompt: (context: DeltaPositionContext) => void
   resolveDialogOption: (option: SDialogOption) => void
   next: () => void
@@ -37,24 +38,7 @@ type GameStateStore = {
 const player: SPlayer = {
   ID: playerStore.getState().playerID,
   activeActorIDs: [null, null, null],
-  items: [
-    {
-      ID: v4(),
-      name: 'Potion',
-      consumable: undefined,
-      use: Heal,
-      actions: undefined,
-      effect: undefined,
-    },
-    {
-      ID: v4(),
-      name: 'Fireball Wand',
-      consumable: undefined,
-      use: undefined,
-      actions: [Fireball],
-      effect: undefined,
-    },
-  ],
+  items: [],
 }
 
 const Max = createActor('Max', player.ID, {
@@ -150,6 +134,16 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       state: addActionToQueue(state, context, action),
     }))
   },
+  filterAction: (actorID) => {
+    set(({ state }) => ({
+      state: {
+        ...state,
+        actionQueue: state.actionQueue.filter(
+          (i) => i.context.sourceID !== actorID
+        ),
+      },
+    }))
+  },
   resolvePrompt: (context) => {
     set(({ state }) => ({
       state: resolvePrompt(state, context),
@@ -190,4 +184,21 @@ function useGamePhase() {
   return useGameState((s) => s.state.combat?.phase)
 }
 
-export { gameStateStore, useGamePhase, useGameState }
+function useGameCurrentAction() {
+  const state = useGameState((s) => s.state)
+  const firstActionItem = state.actionQueue[0]
+  const nextType = getNextType(state)
+  const [currentActionItem, setCurrentActionItem] = useState(firstActionItem)
+
+  useEffect(() => {
+    if (nextType !== 'action') return
+    const source = findActor(state, firstActionItem?.context.sourceID)
+    if (!source || !source.state.alive) return
+
+    setCurrentActionItem(firstActionItem)
+  }, [nextType, firstActionItem?.ID])
+
+  return currentActionItem
+}
+
+export { gameStateStore, useGamePhase, useGameState, useGameCurrentAction }

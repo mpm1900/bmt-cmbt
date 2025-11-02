@@ -19,6 +19,7 @@ import {
   InputGroupButton,
 } from '../ui/input-group'
 import { usePlayerID } from '@/hooks/usePlayer'
+import { ButtonGroup } from '../ui/button-group'
 
 function DialogOptionContent({
   className,
@@ -66,8 +67,10 @@ function DialogOptionSelect({
         <MiniDropdown
           className={cn('data-[state=open]:text-foreground', {
             'text-foreground hover:text-foreground': value,
-            'bg-slate-800': value && value.playerID === playerID,
-            'bg-stone-800': value && value.playerID !== playerID,
+            'bg-slate-700 hover:bg-slate-700/80':
+              value && value.playerID === playerID,
+            'bg-stone-700 hover:bg-stone-700/80':
+              value && value.playerID !== playerID,
           })}
           value={value?.ID}
           disabled={disabled || selectOptions.length === 0}
@@ -194,4 +197,17 @@ function DialogOption({
   )
 }
 
-export { DialogOption }
+function DialogOptionGroup({
+  className,
+  ...props
+}: ComponentProps<typeof ButtonGroup>) {
+  return (
+    <ButtonGroup
+      orientation="vertical"
+      className={cn('flex flex-col gap-0 w-full')}
+      {...props}
+    />
+  )
+}
+
+export { DialogOption, DialogOptionGroup }

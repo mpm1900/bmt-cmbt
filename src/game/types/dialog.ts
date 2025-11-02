@@ -6,6 +6,7 @@ import type {
   DeltaQueueItem,
 } from './delta'
 import type { Message } from './message'
+import type { Item } from './item'
 
 type DialogCheck<T> = {
   chance: number
@@ -20,8 +21,9 @@ type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   context: DeltaPositionContext
 }
 
-type DialogNode<T, A, S extends Object = {}> = {
+type OptionsNode<T, A, S extends Object = {}> = {
   ID: string
+  type: 'options'
   checks: (state: T, context: DeltaContext) => Array<DialogCheck<T>>
   messages: (state: T, context: DeltaContext) => Array<Message>
   options: (
@@ -31,13 +33,36 @@ type DialogNode<T, A, S extends Object = {}> = {
   state: S
 }
 
+type ShopNode<T, A, S extends Object = {}> = {
+  ID: string
+  type: 'shop'
+  messages: (state: T, context: DeltaContext) => Array<Message>
+  items: Array<Item<T, A>>
+  options: (
+    state: T,
+    context: DeltaPositionContext
+  ) => Array<DialogOption<T, A>>
+  state: S
+}
+
+type DialogNode<T, A, S extends Object = {}> =
+  | OptionsNode<T, A, S>
+  | ShopNode<T, A, S>
+
 type Dialog<T, A> = {
   ID: string
-  nodes: Array<DialogNode<T, A>>
+  nodes: Array<DialogNode<T, A> | ShopNode<T, A>>
   startNodeID: string
   activeNodeID: string | undefined
   nodeCounts: { [nodeID: string]: number }
   nodeHistory: Array<string>
 }
 
-export type { DialogCheck, DialogOption, DialogNode, Dialog }
+export type {
+  DialogCheck,
+  DialogOption,
+  OptionsNode,
+  ShopNode,
+  DialogNode,
+  Dialog,
+}

@@ -4,6 +4,8 @@ import { useGameState } from '@/hooks/useGameState'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Button } from '../ui/button'
 import { EnemyActor } from './actor'
+import { ButtonGrid32 } from '../button-grid'
+import { TbHexagonFilled } from 'react-icons/tb'
 
 function EncounterActors({ encounter }: { encounter: SPlayer }) {
   const state = useGameState((s) => s.state)
@@ -43,6 +45,11 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
             />
           )
         })}
+      <ButtonGrid32 className="text-foreground/20">
+        {actors.map(([a]) => (
+          <TbHexagonFilled key={a.ID} />
+        ))}
+      </ButtonGrid32>
     </div>
   )
 }

@@ -16,7 +16,7 @@ function PlayerActors({ player }: { player: SPlayer }) {
   const planning = phase === 'planning'
 
   return (
-    <div className="flex gap-2 items-end px-6">
+    <div className="flex gap-2 items-end px-4">
       {player.activeActorIDs.map((actorID, i) => {
         return (
           <Actor

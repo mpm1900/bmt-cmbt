@@ -1,5 +1,5 @@
 import { Box, Component, MessageSquare } from 'lucide-react'
-import { ButtonGrid } from './button-grid'
+import { ButtonGrid22 } from './button-grid'
 import { Button } from './ui/button'
 import { useGameUI, GameUIViews } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
@@ -26,7 +26,7 @@ function getVariant(
       return 'default'
     }
   }
-  return 'ghost'
+  return 'secondary'
 }
 
 function ViewSelector() {
@@ -38,7 +38,7 @@ function ViewSelector() {
   const running = !planning && hasNext(state)
 
   return (
-    <ButtonGrid className="grid grid-cols-2 grid-rows-2">
+    <ButtonGrid22 className="grid grid-cols-2 grid-rows-2">
       <Button
         variant={getVariant('dialog', view, phase)}
         size="icon-lg"
@@ -76,7 +76,7 @@ function ViewSelector() {
       >
         <AiOutlineUserSwitch className="size-5" />
       </Button>
-    </ButtonGrid>
+    </ButtonGrid22>
   )
 }
 

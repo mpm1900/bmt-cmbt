@@ -480,22 +480,24 @@ function navigateDialogResolver(
     delta: {
       apply: (state, context) => {
         const active = state.dialog.nodes.find((node) => node.ID === nodeID)!
-        active.checks(state, context).forEach((check) => {
-          const [success, roll] = chance(check.chance)
+        if (active.type == 'options') {
+          active.checks(state, context).forEach((check) => {
+            const [success, roll] = chance(check.chance)
 
-          if (success && check.success) {
-            state.mutationQueue = enqueue(
-              state.mutationQueue,
-              check.success(roll)
-            )
-          }
-          if (!success && check.failure) {
-            state.mutationQueue = enqueue(
-              state.mutationQueue,
-              check.failure(roll)
-            )
-          }
-        })
+            if (success && check.success) {
+              state.mutationQueue = enqueue(
+                state.mutationQueue,
+                check.success(roll)
+              )
+            }
+            if (!success && check.failure) {
+              state.mutationQueue = enqueue(
+                state.mutationQueue,
+                check.failure(roll)
+              )
+            }
+          })
+        }
 
         state = incrementNodeCount(state, nodeID)
         state.mutationQueue = enqueue(state.mutationQueue, [

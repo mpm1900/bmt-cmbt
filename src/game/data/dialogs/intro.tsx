@@ -30,6 +30,7 @@ import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
 import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
 import { Heal, SelfHealSource } from '../actions/heal'
+import { Fireball } from '../actions/fireball'
 
 const Criminal = (index: number, aiID: string) =>
   createActor(`Criminal (${index})`, aiID, {
@@ -54,6 +55,7 @@ const criminal3 = Criminal(3, encounterPlayer.ID)
 
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
+  type: 'options',
   checks: (state, context) => [
     {
       chance: 50,
@@ -189,7 +191,7 @@ const IntroNode0: SDialogNode = {
     },
     createSourceDialogOption(
       {
-        text: <span className="font-semibold">"Hello over there!"</span>,
+        text: <span className="font-semibold">"Show me your items."</span>,
         icons: (
           <>
             <TbMessage2Share />
@@ -197,7 +199,7 @@ const IntroNode0: SDialogNode = {
         ),
       },
       context,
-      IntroNode1.ID,
+      IntroNode2.ID,
       []
     ),
   ],
@@ -206,6 +208,7 @@ const IntroNode0: SDialogNode = {
 
 const IntroNode1: SDialogNode = {
   ID: v4(),
+  type: 'options',
   checks: () => [],
   messages: () => [
     newMessage({
@@ -243,11 +246,64 @@ const IntroNode1: SDialogNode = {
   state: {},
 }
 
+const IntroNode2: SDialogNode = {
+  ID: v4(),
+  type: 'shop',
+  messages: () => [
+    newMessage({
+      ID: 'IntroNode2-0',
+      text: 'Welcome to the shop!',
+    }),
+  ],
+  options: (_, context) => [
+    createDialogOption(
+      {
+        text: <em>Go back</em>,
+        icons: (
+          <>
+            <TbExternalLink />
+          </>
+        ),
+      },
+      context,
+      IntroNode0.ID,
+      []
+    ),
+  ],
+  state: {},
+  items: [
+    {
+      ID: 'Potion',
+      name: 'Potion',
+      consumable: undefined,
+      use: Heal,
+      actions: undefined,
+      effect: undefined,
+    },
+    {
+      ID: 'Potion',
+      name: 'Potion',
+      consumable: undefined,
+      use: Heal,
+      actions: undefined,
+      effect: undefined,
+    },
+    {
+      ID: v4(),
+      name: 'Fireball Wand',
+      consumable: undefined,
+      use: undefined,
+      actions: [Fireball],
+      effect: undefined,
+    },
+  ],
+}
+
 const IntroDialog: SDialog = {
   ID: v4(),
   startNodeID: IntroNode0.ID,
   activeNodeID: undefined,
-  nodes: [IntroNode0, IntroNode1],
+  nodes: [IntroNode0, IntroNode1, IntroNode2],
   nodeCounts: {},
   nodeHistory: [],
 }

@@ -10,6 +10,7 @@ import { Badge } from '../ui/badge'
 import { EffectTooltip } from '../tooltips/effect-tooltip'
 import { useState } from 'react'
 import { ActorHealth } from './actor-health'
+import { ActorStatus } from './actor-status'
 
 function Actor({
   actorID,
@@ -40,7 +41,6 @@ function Actor({
 
   const [actor, effects] = getActorWithEffects(state, actorID)!
   const [health, maxHealth] = getHealth(actor)
-  const done = !!state.actionQueue.find((a) => a.context.sourceID === actorID)
 
   return (
     <div
@@ -102,9 +102,7 @@ function Actor({
           </div>
         </ItemContent>
       </Button>
-      <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center mt-1">
-        {done ? '...' : status}
-      </span>
+      <ActorStatus actor={actor} />
     </div>
   )
 }

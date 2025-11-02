@@ -1,15 +1,12 @@
-import { useGameState } from '@/hooks/useGameState'
+import { useGameCurrentAction, useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
-import { usePrevious } from '@uidotdev/usehooks'
 import { CardHeader, CardTitle } from '../ui/card'
 
 function PhaseMain() {
   const { state, resolvePrompt } = useGameState((s) => s)
-  const action = state.actionQueue[0]
+  const current = useGameCurrentAction()
   const prompt = state.promptQueue[0]
-  const prev = usePrevious(action)
-  const aitem = prev ?? action
 
   if (prompt) {
     const action = prompt.action
@@ -34,8 +31,8 @@ function PhaseMain() {
     )
   }
 
-  if (aitem) {
-    const { action, context } = aitem
+  if (current) {
+    const { action, context } = current
     const source = getActor(state, context.sourceID)
     return (
       <div className="w-172">

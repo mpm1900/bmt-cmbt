@@ -73,7 +73,7 @@ function ActionPlanningBreadcrumbs({
         <BreadcrumbItem>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 capitalize [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
-              {view} <ChevronDown />
+              {view === 'switch' ? 'Swap Actors' : view} <ChevronDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               {view !== 'actions' && (
@@ -94,7 +94,7 @@ function ActionPlanningBreadcrumbs({
                     set({ view: 'switch', activeActionID: Swap.ID })
                   }
                 >
-                  Switch
+                  Swap Actors
                 </DropdownMenuItem>
               )}
               {view !== 'items' && (

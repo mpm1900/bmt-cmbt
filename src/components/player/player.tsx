@@ -1,5 +1,4 @@
 import type { SPlayer } from '@/game/state'
-import { ViewSelector } from '../view-selector'
 import { ActorSelectorGrid } from './actor-selector-grid'
 import { PlayerActors } from './player-actors'
 
@@ -9,14 +8,8 @@ function Player({ player }: { player: SPlayer }) {
       <PlayerActors player={player} />
       <div className="flex flex-col items-center justify-end px-4 gap-1">
         <ActorSelectorGrid playerID={player.ID} />
-        <span className="uppercase font-bold text-xs text-muted-foreground">
+        <span className="uppercase font-bold text-xs text-slate-300/50">
           Team
-        </span>
-      </div>
-      <div className="flex flex-col items-center justify-end px-4 gap-1">
-        <ViewSelector />
-        <span className="uppercase font-bold text-xs text-muted-foreground">
-          Views
         </span>
       </div>
     </div>

@@ -86,8 +86,8 @@ function ActionTargetIdButton({
       variant={
         active
           ? allied
-            ? 'default-slate'
-            : 'default-stone'
+            ? 'slate-active'
+            : 'stone-active'
           : allied
             ? 'slate'
             : 'stone'
@@ -135,8 +135,8 @@ function ActionPositionButton({
       variant={
         active
           ? allied
-            ? 'default-slate'
-            : 'default-stone'
+            ? 'slate-active'
+            : 'stone-active'
           : allied
             ? 'slate'
             : 'stone'

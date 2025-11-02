@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 function ViewHeader() {
   const state = useGameState((s) => s.state)
   return (
-    <div className="flex items-center justify-start gap-2 p-1">
+    <div className="flex items-center justify-start gap-2 p-1 px-3">
       <Badge variant="outline">Effects: {state.effects.length}</Badge>
       <Badge
         variant={state.combat ? 'outline' : 'secondary'}
@@ -29,7 +29,6 @@ function ViewHeader() {
           <CombatHeader />
         </>
       )}
-      <Separator orientation="vertical" />
       {getStatus(state) === 'running' && <Spinner />}
     </div>
   )
