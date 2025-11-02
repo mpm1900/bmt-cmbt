@@ -1,10 +1,8 @@
-import { useGameUI } from '@/hooks/useGameUI'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { useGameState } from '@/hooks/useGameState'
 
 function PhasePost() {
-  const { set } = useGameUI((s) => s)
   const { deleteCombat, state } = useGameState((s) => s)
   return (
     <Card>
@@ -14,7 +12,6 @@ function PhasePost() {
       <CardContent>
         <Button
           onClick={() => {
-            set({ view: 'dialog' })
             deleteCombat(state.dialog.activeNodeID!)
           }}
         >

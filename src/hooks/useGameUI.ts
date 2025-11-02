@@ -6,7 +6,6 @@ import { playerStore } from './usePlayer'
 
 const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
-  view: (typeof GameUIViews)[number]
   activeActorID: string | undefined
   activeActionID: string | undefined
 }
@@ -18,7 +17,6 @@ type GameUIStore = GameUIState & {
 
 const gameUIStore = createStore<GameUIStore>((set) => {
   return {
-    view: 'dialog',
     activeActorID: undefined,
     activeActionID: undefined,
     set: (state: Partial<GameUIState>) => set(state),

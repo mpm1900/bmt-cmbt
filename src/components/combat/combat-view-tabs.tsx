@@ -10,7 +10,6 @@ function CombatViewTabs() {
   return (
     <TabsList>
       <TabsTrigger value="actions">Actions</TabsTrigger>
-      <TabsTrigger value="switch">Swap Actors</TabsTrigger>
       <TabsTrigger value="items" disabled={player!.items.length === 0}>
         Items
       </TabsTrigger>

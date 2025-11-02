@@ -6,12 +6,7 @@ import type { SPlayer } from '@/game/state'
 
 function PlayerActors({ player }: { player: SPlayer }) {
   const state = useGameState((s) => s.state)
-  const {
-    activeActionID,
-    activeActorID,
-    view,
-    set: setUI,
-  } = useGameUI((s) => s)
+  const { activeActorID, set: setUI } = useGameUI((s) => s)
   const phase = state.combat?.phase
   const planning = phase === 'planning'
 
@@ -30,10 +25,7 @@ function PlayerActors({ player }: { player: SPlayer }) {
             }
             onClick={(actor) => {
               setUI({
-                activeActionID:
-                  view === 'actions'
-                    ? nextAvailableAction(actor, state)?.ID
-                    : activeActionID,
+                activeActionID: nextAvailableAction(actor, state)?.ID,
                 activeActorID: actor.ID,
               })
             }}

@@ -6,6 +6,7 @@ import { Swap } from '@/game/data/actions/_system/swap'
 import { CardHeader } from '../ui/card'
 import { usePlayerID } from '@/hooks/usePlayer'
 import { CombatViewTabs } from './combat-view-tabs'
+import { TabsContent } from '../ui/tabs'
 
 function PhasePlanning() {
   const playerID = usePlayerID()
@@ -15,7 +16,6 @@ function PhasePlanning() {
   const {
     activeActionID,
     activeActorID,
-    view,
     resetActive,
     set: setUI,
   } = useGameUI((s) => s)
@@ -24,11 +24,11 @@ function PhasePlanning() {
 
   return (
     <>
-      {view === 'actions' && (
+      <TabsContent value="actions">
         <ActionSelectionCard
           playerID={activeActor.playerID}
           source={activeActor}
-          actions={activeActor.actions}
+          actions={activeActor.actions.concat(Swap)}
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => pushAction(action, context)}
@@ -37,26 +37,8 @@ function PhasePlanning() {
             <CombatViewTabs />
           </CardHeader>
         </ActionSelectionCard>
-      )}
-      {view === 'switch' && (
-        <ActionSelectionCard
-          playerID={activeActor.playerID}
-          source={activeActor}
-          actions={[Swap]}
-          activeActionID={activeActionID}
-          onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
-          onActionConfirm={(action, context) => {
-            pushAction(action, context)
-            setUI({ view: 'actions' })
-            resetActive(state)
-          }}
-        >
-          <CardHeader>
-            <CombatViewTabs />
-          </CardHeader>
-        </ActionSelectionCard>
-      )}
-      {view === 'items' && (
+      </TabsContent>
+      <TabsContent value="items">
         <ActionSelectionCard
           playerID={activeActor.playerID}
           source={activeActor}
@@ -68,7 +50,6 @@ function PhasePlanning() {
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => {
             pushAction(action, context)
-            setUI({ view: 'actions' })
             resetActive(state)
           }}
         >
@@ -76,7 +57,7 @@ function PhasePlanning() {
             <CombatViewTabs />
           </CardHeader>
         </ActionSelectionCard>
-      )}
+      </TabsContent>
     </>
   )
 }

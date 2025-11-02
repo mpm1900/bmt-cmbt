@@ -12,7 +12,7 @@ function DialogItemsCard() {
   if (!player) return null
   return (
     <>
-      <CardContent>
+      <CardContent className="flex-1">
         <ItemsTable
           items={player.items}
           actions={(item) => (
