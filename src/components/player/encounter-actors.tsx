@@ -1,18 +1,25 @@
 import { withStatEffects } from '@/game/access'
-import type { SPlayer } from '@/game/state'
+import type { SActionItem, SPlayer } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
-import { useGameUI } from '@/hooks/useGameUI'
 import { Button } from '../ui/button'
 import { EnemyActor } from './actor'
 import { TbHexagonFilled } from 'react-icons/tb'
 
-function EncounterActors({ encounter }: { encounter: SPlayer }) {
+function EncounterActors({
+  encounter,
+  current,
+}: {
+  encounter: SPlayer
+  current: SActionItem | undefined
+}) {
   const state = useGameState((s) => s.state)
-  const { activeActorID } = useGameUI((s) => s)
   const phase = state.combat?.phase
+  const planning = phase === 'planning'
+  const running = !!phase && phase !== 'pre' && phase !== 'post'
   const actors = state.actors
     .filter((a) => a.playerID === encounter.ID)
     .map((actor) => withStatEffects(actor, state.effects))
+
   return (
     <div className="w-full flex flex-row-reverse justify-start items-start p-4 pt-0 gap-2">
       {encounter.activeActorIDs
@@ -33,13 +40,14 @@ function EncounterActors({ encounter }: { encounter: SPlayer }) {
             )
           const afx = actors.find((a) => a[0].ID === actorID)!
           const [actor, effects] = afx
+          const issource = !planning && current?.context.sourceID === actorID
 
           return (
             <EnemyActor
               key={actorID}
               actor={actor}
               effects={effects}
-              active={phase === 'planning' && activeActorID === actorID}
+              active={running && issource}
               onClick={() => {}}
             />
           )

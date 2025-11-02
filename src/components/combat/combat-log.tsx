@@ -2,14 +2,16 @@ import { useGameState } from '@/hooks/useGameState'
 import { ScrollArea } from '../ui/scroll-area'
 import { useEffect, useRef } from 'react'
 
-function CombatLog({ activeTab }: { activeTab: string }) {
+function CombatLog() {
   const combatLog = useGameState((s) => s.state.combatLog)
   const combatLogRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (combatLogRef.current) {
       combatLogRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [combatLog.length, activeTab])
+  }, [combatLog.length])
+
   return (
     <ScrollArea className="h-94">
       <ul className="text-sm text-muted-foreground">

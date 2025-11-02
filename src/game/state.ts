@@ -1,5 +1,10 @@
 import type { Effect, EffectItem } from './types/effect'
-import type { ActionQueue, DialogAction, PromptQueue } from './types/action'
+import type {
+  ActionQueue,
+  ActionQueueItem,
+  DialogAction,
+  PromptQueue,
+} from './types/action'
 import type {
   Delta,
   DeltaContext,
@@ -28,6 +33,7 @@ type SActor = Actor<State>
 type SPlayer = Player<State, SActor>
 type SItem = Item<State, SActor>
 type SAction = Action<State, SActor>
+type SActionItem = ActionQueueItem<State, SActor>
 type SDialogAction = DialogAction<State, SActor>
 type SEffect = Effect<State, SActor>
 type SEffectItem = EffectItem<State, SActor>
@@ -75,6 +81,7 @@ export type {
   SPlayer,
   SItem,
   SAction,
+  SActionItem,
   SDialogAction,
   SEffect,
   SEffectItem,

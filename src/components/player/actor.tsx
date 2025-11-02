@@ -6,11 +6,10 @@ import { MAIN_STAT_ICONS } from '@/renderers/icons'
 import { getHealth } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
 import { getActorWithEffects } from '@/game/access'
-import { Badge } from '../ui/badge'
-import { EffectTooltip } from '../tooltips/effect-tooltip'
 import { useState } from 'react'
 import { ActorHealth } from './actor-health'
 import { ActorStatus } from './actor-status'
+import { EffectBadge } from '../effect-badge'
 
 function Actor({
   actorID,
@@ -35,7 +34,7 @@ function Actor({
         disabled
         variant="slate-inactive"
         className="h-20 mb-4.5 mt-8 w-64 flex items-center justify-center border border-foreground/10 border-dashed"
-      ></Button>
+      />
     )
   }
 
@@ -56,23 +55,14 @@ function Actor({
                 [state.effects.find((e) => e.effect.ID === id)!, count] as const
             )
             .map(([effect, count]) => (
-              <EffectTooltip
-                key={effect.ID}
-                effectID={effect.effect.ID}
+              <EffectBadge
+                effect={effect.effect}
+                count={count}
                 side="top"
-                asChild
                 onOpenChange={(open) => {
                   setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
                 }}
-              >
-                <Badge
-                  variant="outline"
-                  className="bg-background text-muted-foreground"
-                >
-                  {effect.effect.name}
-                  {count > 1 ? `(${count})` : ''}
-                </Badge>
-              </EffectTooltip>
+              />
             ))}
         </div>
       </div>
@@ -158,24 +148,13 @@ function EnemyActor({
                 [state.effects.find((e) => e.effect.ID === id)!, count] as const
             )
             .map(([effect, count]) => (
-              <EffectTooltip
-                key={effect.ID}
-                effectID={effect.effect.ID}
-                side="bottom"
-                asChild
+              <EffectBadge
+                effect={effect.effect}
+                count={count}
                 onOpenChange={(open) => {
                   setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
                 }}
-              >
-                <Badge
-                  key={effect.ID}
-                  variant="outline"
-                  className="bg-background text-muted-foreground"
-                >
-                  {effect.effect.name}
-                  {count > 1 ? `(${count})` : ''}
-                </Badge>
-              </EffectTooltip>
+              />
             ))}
         </div>
       </div>

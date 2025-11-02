@@ -1,11 +1,11 @@
-import { useGameCurrentAction, useGameState } from '@/hooks/useGameState'
+import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
 import { CardHeader, CardTitle } from '../ui/card'
+import type { SActionItem } from '@/game/state'
 
-function PhaseMain() {
+function PhaseMain({ current }: { current: SActionItem | undefined }) {
   const { state, resolvePrompt } = useGameState((s) => s)
-  const current = useGameCurrentAction()
   const prompt = state.promptQueue[0]
 
   if (prompt) {

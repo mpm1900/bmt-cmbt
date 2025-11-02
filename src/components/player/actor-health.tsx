@@ -27,6 +27,7 @@ function ActorHealth({
       data-slot="progress"
       className={cn(
         'bg-background/50 border border-background/50 relative h-5 rounded-[3px] overflow-hidden',
+        { 'border-red-500/50': health <= 0 },
         className
       )}
       {...props}
@@ -48,7 +49,7 @@ function ActorHealth({
       />
       {showHealthNumbers && (
         <div className="absolute top-0 right-1 z-10 text-xs leading-5 font-black text-foreground/80 text-shadow-md">
-          {health}/{maxHealth}
+          {Math.max(health, 0)}/{maxHealth}
         </div>
       )}
     </ProgressPrimitive.Root>

@@ -1,11 +1,17 @@
-import type { SPlayer } from '@/game/state'
+import type { SActionItem, SPlayer } from '@/game/state'
 import { ActorSelectorGrid } from './actor-selector-grid'
 import { PlayerActors } from './player-actors'
 
-function Player({ player }: { player: SPlayer }) {
+function Player({
+  player,
+  current,
+}: {
+  player: SPlayer
+  current: SActionItem | undefined
+}) {
   return (
     <div className="flex justify-start gap-6 my-2 mx-6">
-      <PlayerActors player={player} />
+      <PlayerActors player={player} current={current} />
       <div className="flex flex-col items-center justify-end gap-1">
         <ActorSelectorGrid playerID={player.ID} />
         <span className="uppercase font-bold text-xs text-slate-300/50">

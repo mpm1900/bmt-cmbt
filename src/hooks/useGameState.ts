@@ -6,9 +6,16 @@ import {
   newContext,
   resolveDialogOption,
   resolvePrompt,
+  sortActionQueue,
 } from '@/game/mutations'
 import { getNextType, next, nextTurnPhase } from '@/game/next'
-import type { SAction, SDialogOption, SPlayer, State } from '@/game/state'
+import type {
+  SAction,
+  SActionItem,
+  SDialogOption,
+  SPlayer,
+  State,
+} from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { createActor } from '@/lib/create-actor'
 import { v4 } from 'uuid'
@@ -184,13 +191,19 @@ function useGamePhase() {
   return useGameState((s) => s.state.combat?.phase)
 }
 
-function useGameCurrentAction() {
+function useGameCurrentAction(): SActionItem | undefined {
   const state = useGameState((s) => s.state)
-  const firstActionItem = state.actionQueue[0]
+  const firstActionItem = sortActionQueue(state).actionQueue[0]
   const nextType = getNextType(state)
-  const [currentActionItem, setCurrentActionItem] = useState(firstActionItem)
+  const [currentActionItem, setCurrentActionItem] = useState<
+    SActionItem | undefined
+  >(firstActionItem)
 
   useEffect(() => {
+    if (!state.combat) {
+      setCurrentActionItem(undefined)
+      return
+    }
     if (nextType !== 'action') return
     const source = findActor(state, firstActionItem?.context.sourceID)
     if (!source || !source.state.alive) return
