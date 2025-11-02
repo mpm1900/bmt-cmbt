@@ -1,0 +1,1 @@
+import{j as e}from"./index-DodoU3sW.js";function n(){return e.jsx("div",{className:"h-screen w-screen flex flex-col items-between bg-cover bg-no-repeat",children:'Hello "/crew"!'})}export{n as component};
