@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import type { SPlayer, State } from './state'
+import type { SAction, SItem, SPlayer, State } from './state'
 import type { Position } from './types/player'
 import { getAliveInactiveActors } from './access'
 import { newContext } from './mutations'
@@ -54,6 +54,31 @@ function isPlayerDead(player: SPlayer, inactiveLiveActors: number): boolean {
   )
 }
 
+function getItemAction(item: SItem | undefined): SAction | undefined {
+  let action: SAction | undefined = undefined
+  if (!item) return undefined
+  if (item.use) action = item.use
+  if (item.consumable) action = item.consumable
+  if (action) {
+    action.name = item.name
+  }
+  return action
+}
+
+function groupItems(items: Array<SItem>) {
+  return items.reduce(
+    (acc, item) => {
+      if (acc[item.name] !== undefined) {
+        acc[item.name] = acc[item.name] + 1
+      } else {
+        acc[item.name] = 1
+      }
+      return acc
+    },
+    {} as Record<string, number>
+  )
+}
+
 export {
   getActorID,
   getPosition,
@@ -61,4 +86,6 @@ export {
   newPosition,
   getMissingActorCount,
   isPlayerDead,
+  getItemAction,
+  groupItems,
 }

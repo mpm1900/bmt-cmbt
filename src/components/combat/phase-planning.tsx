@@ -3,23 +3,23 @@ import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Swap } from '@/game/data/actions/_system/swap'
-import { CardHeader } from '../ui/card'
 import { usePlayerID } from '@/hooks/usePlayer'
-import { CombatViewTabs } from './combat-view-tabs'
 import { TabsContent } from '../ui/tabs'
+import { getItemAction, groupItems } from '@/game/player'
 
 function PhasePlanning() {
   const playerID = usePlayerID()
   const { state, pushAction } = useGameState((store) => store)
+  const { activeActionID, activeActorID, set: setUI } = useGameUI((s) => s)
   const player = state.players.find((p) => p.ID === playerID)!
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
-  const {
-    activeActionID,
-    activeActorID,
-    resetActive,
-    set: setUI,
-  } = useGameUI((s) => s)
   const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
+  const items = player.items.filter((i) => i.use || i.consumable)
+  const counts = groupItems(items)
+  const itemActions = Object.entries(counts).map(
+    ([id]) => getItemAction(items.find((i) => i.name === id)!)!
+  )
+
   if (!activeActor) return null
 
   return (
@@ -32,31 +32,17 @@ function PhasePlanning() {
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
           onActionConfirm={(action, context) => pushAction(action, context)}
-        >
-          <CardHeader>
-            <CombatViewTabs />
-          </CardHeader>
-        </ActionSelectionCard>
+        />
       </TabsContent>
       <TabsContent value="items">
         <ActionSelectionCard
           playerID={activeActor.playerID}
           source={activeActor}
-          actions={player.items
-            .filter((i) => i.use || i.consumable)
-            // TODO: factor in renderers here
-            .map((i) => ({ ...(i.use || i.consumable)!, name: i.name }))}
+          actions={itemActions}
           activeActionID={activeActionID}
           onActiveActionIDChange={(activeActionID) => setUI({ activeActionID })}
-          onActionConfirm={(action, context) => {
-            pushAction(action, context)
-            resetActive(state)
-          }}
-        >
-          <CardHeader>
-            <CombatViewTabs />
-          </CardHeader>
-        </ActionSelectionCard>
+          onActionConfirm={(action, context) => pushAction(action, context)}
+        />
       </TabsContent>
     </>
   )

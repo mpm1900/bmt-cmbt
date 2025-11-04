@@ -3,7 +3,8 @@ import type { SActionItem, SPlayer } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
 import { Button } from '../ui/button'
 import { EnemyActor } from './actor'
-import { TbHexagonFilled } from 'react-icons/tb'
+import { TbHexagon, TbHexagonFilled } from 'react-icons/tb'
+import { Separator } from '../ui/separator'
 
 function EncounterActors({
   encounter,
@@ -57,10 +58,20 @@ function EncounterActors({
           />
         )
       })}
-      <div className="grid grid-cols-3 gap-1 text-stone-300/40">
-        {actors.map(([a]) => (
-          <TbHexagonFilled key={a.ID} />
-        ))}
+      <div className="flex flex-col gap-1 items-end mt-3">
+        <div className="grid grid-cols-3 gap-1 text-stone-300/40">
+          {actors.map(([a]) =>
+            a.state.alive ? (
+              <TbHexagonFilled key={a.ID} />
+            ) : (
+              <TbHexagon key={a.ID} />
+            )
+          )}
+        </div>
+        <Separator />
+        <div className="text-xs text-muted-foreground/50 uppercase">
+          {actors.filter((a) => a[0].state.alive).length} Enemies left
+        </div>
       </div>
     </div>
   )

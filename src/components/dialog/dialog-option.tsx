@@ -1,25 +1,17 @@
 import { hasNext } from '@/game/next'
-import type { SActor, SDialogOption } from '@/game/state'
+import type { SDialogOption } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
-import { useEffect, useState, type ComponentProps } from 'react'
-import { MiniDropdown } from '../mini-dropdown'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
+import { useState, type ComponentProps } from 'react'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
 } from '../ui/input-group'
-import { usePlayerID } from '@/hooks/usePlayer'
 import { ButtonGroup } from '../ui/button-group'
+import { ActorSelect } from './actor-select'
 
 function DialogOptionContent({
   className,
@@ -35,66 +27,6 @@ function DialogOptionContent({
       )}
       {...props}
     />
-  )
-}
-
-function DialogOptionSelect({
-  placeholder,
-  disabled,
-  options,
-  onValueChange,
-  ...props
-}: {
-  placeholder: string
-  disabled: boolean
-  options: Array<SActor>
-  value: string | undefined
-  onValueChange: (value: string) => void
-}) {
-  const playerID = usePlayerID()
-  const value = options.find((option) => option.ID === props.value)
-  const selectOptions = options.filter((o) => o.ID !== props.value)
-
-  useEffect(() => {
-    if (options.length === 1 && !value && !disabled) {
-      onValueChange(options[0].ID)
-    }
-  }, [options.length, disabled])
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <MiniDropdown
-          className={cn('data-[state=open]:text-foreground', {
-            'text-foreground hover:text-foreground': value,
-            'bg-slate-700 hover:bg-slate-700/80': value?.playerID === playerID,
-            'bg-stone-700 hover:bg-stone-700/80':
-              value && value?.playerID !== playerID,
-          })}
-          value={value?.ID}
-          disabled={disabled || selectOptions.length === 0}
-        >
-          {value?.name || placeholder}
-        </MiniDropdown>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuGroup>
-          {selectOptions.map((option) => (
-            <DropdownMenuItem
-              key={option.ID}
-              className={cn({
-                'dark:hover:bg-slate-800': option.playerID === playerID,
-                'dark:hover:bg-stone-800':
-                  option.playerID && option.playerID !== playerID,
-              })}
-              onSelect={() => onValueChange(option.ID)}
-            >
-              {option.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
   )
 }
 
@@ -140,7 +72,7 @@ function DialogOption({
       )}
       {sources.length > 0 && (
         <InputGroupAddon>
-          <DialogOptionSelect
+          <ActorSelect
             placeholder="Source"
             disabled={disabled || loading}
             options={sources}
@@ -161,7 +93,7 @@ function DialogOption({
       {max > 0 && targets.length > 0 && (
         <InputGroupAddon className="gap-2">
           {Array.from({ length: max }).map((_, i) => (
-            <DialogOptionSelect
+            <ActorSelect
               key={i}
               placeholder="Target"
               disabled={disabled || loading}

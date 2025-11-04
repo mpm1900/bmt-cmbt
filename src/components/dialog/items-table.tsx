@@ -10,6 +10,7 @@ import {
 } from '../ui/table'
 import type { SItem } from '@/game/state'
 import { Ellipsis } from 'lucide-react'
+import { groupItems } from '@/game/player'
 
 function ItemsTable({
   items,
@@ -20,17 +21,7 @@ function ItemsTable({
   actionHeader?: ReactNode
   actions: (item: SItem) => ReactNode
 }) {
-  const counts = items.reduce(
-    (acc, item) => {
-      if (acc[item.name] !== undefined) {
-        acc[item.name] = acc[item.name] + 1
-      } else {
-        acc[item.name] = 1
-      }
-      return acc
-    },
-    {} as Record<string, number>
-  )
+  const counts = groupItems(items)
   return (
     <Table>
       <TableHeader>

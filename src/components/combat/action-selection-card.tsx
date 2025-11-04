@@ -1,11 +1,12 @@
 import type { SAction, SActor } from '@/game/state'
-import { Card, CardContent } from '../ui/card'
+import { Card, CardContent, CardHeader } from '../ui/card'
 import { useState, type ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { ActionItem } from './action-item'
 import { ActionContextBuilder } from './action-context-builder'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { newContext } from '@/game/mutations'
+import { CombatViewTabs } from './combat-view-tabs'
 
 function ActionSelectionCard({
   playerID,
@@ -30,7 +31,11 @@ function ActionSelectionCard({
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
     <Card className="w-180 gap-2">
-      {children}
+      {children || (
+        <CardHeader>
+          <CombatViewTabs />
+        </CardHeader>
+      )}
       <CardContent className="grid grid-cols-2 gap-3">
         <ScrollArea className="max-h-96 pr-3">
           <div className="flex flex-col gap-2">
