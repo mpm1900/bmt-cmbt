@@ -48,7 +48,7 @@ function ActorHealth({
         style={{ transform: `translateX(-${100 - (after || 0)}%)` }}
       />
       {showHealthNumbers && (
-        <div className="absolute top-0 right-1 z-10 text-xs leading-5 font-black text-foreground/80 text-shadow-md">
+        <div className="absolute top-0 right-1 z-10 text-xs leading-4.5 font-bold text-foreground text-shadow-md">
           {Math.max(health, 0)}/{maxHealth}
         </div>
       )}

@@ -67,10 +67,9 @@ function DialogOptionSelect({
         <MiniDropdown
           className={cn('data-[state=open]:text-foreground', {
             'text-foreground hover:text-foreground': value,
-            'bg-slate-700 hover:bg-slate-700/80':
-              value && value.playerID === playerID,
+            'bg-slate-700 hover:bg-slate-700/80': value?.playerID === playerID,
             'bg-stone-700 hover:bg-stone-700/80':
-              value && value.playerID !== playerID,
+              value && value?.playerID !== playerID,
           })}
           value={value?.ID}
           disabled={disabled || selectOptions.length === 0}
@@ -83,6 +82,11 @@ function DialogOptionSelect({
           {selectOptions.map((option) => (
             <DropdownMenuItem
               key={option.ID}
+              className={cn({
+                'dark:hover:bg-slate-800': option.playerID === playerID,
+                'dark:hover:bg-stone-800':
+                  option.playerID && option.playerID !== playerID,
+              })}
               onSelect={() => onValueChange(option.ID)}
             >
               {option.name}

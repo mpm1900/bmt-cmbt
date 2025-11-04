@@ -22,36 +22,41 @@ function EncounterActors({
 
   return (
     <div className="w-full flex flex-row-reverse justify-start items-start p-4 pt-0 gap-2">
-      {encounter.activeActorIDs
-        .slice()
-        .reverse()
-        .map((actorID, i) => {
-          if (!actorID)
-            return (
-              <div key={i} className="flex flex-col gap-1">
-                <Button
-                  disabled
-                  variant="stone-inactive"
-                  className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
-                >
-                  inactive
-                </Button>
-              </div>
-            )
-          const afx = actors.find((a) => a[0].ID === actorID)!
-          const [actor, effects] = afx
-          const issource = !planning && current?.context.sourceID === actorID
-
+      {encounter.activeActorIDs.map((actorID, i) => {
+        if (!actorID)
           return (
-            <EnemyActor
-              key={actorID}
-              actor={actor}
-              effects={effects}
-              active={running && issource}
-              onClick={() => {}}
-            />
+            <div key={i} className="flex flex-col gap-1">
+              <Button
+                disabled
+                variant="stone-inactive"
+                className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
+              >
+                inactive
+              </Button>
+            </div>
           )
-        })}
+        const afx = actors.find((a) => a[0].ID === actorID)!
+        const [actor, effects] = afx
+        const issource = !planning && current?.context.sourceID === actorID
+        const idTargeted =
+          !planning && !!current?.context.targetIDs.includes(actorID)
+        const posTargeted =
+          !planning &&
+          !!current?.context.positions.find(
+            (p) => p.playerID === actor.playerID && p.index === i
+          )
+
+        return (
+          <EnemyActor
+            key={actorID}
+            actor={actor}
+            effects={effects}
+            active={running && issource}
+            targeted={idTargeted || posTargeted}
+            onClick={() => {}}
+          />
+        )
+      })}
       <div className="grid grid-cols-3 gap-1 text-stone-300/40">
         {actors.map(([a]) => (
           <TbHexagonFilled key={a.ID} />

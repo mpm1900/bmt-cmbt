@@ -25,6 +25,7 @@ import {
   mutateDamage,
   mutatePlayer,
   newContext,
+  purchaseItem,
   pushMessages,
   removeParentEffects,
 } from '@/game/mutations'
@@ -376,7 +377,8 @@ function damagesResolver(
                   depth: 1,
                 }),
               ])
-            } else if (damage.evade) {
+              // can't evade crits
+            } else if (damage.evade && !damage.critical) {
               next = pushMessages(next, [
                 newMessage({
                   text: TargetEvade(target),
@@ -517,6 +519,21 @@ function navigateDialogResolver(
   }
 }
 
+function purchaseItemResolver(
+  context: DeltaContext,
+  itemID: string
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state, context) => {
+        return purchaseItem(state, context.playerID, itemID)
+      },
+    },
+  }
+}
+
 function emptyResolver(context: DeltaContext): SMutation {
   return {
     ID: v4(),
@@ -544,4 +561,5 @@ export {
   addPlayerResolver,
   startCombatResolver,
   navigateDialogResolver,
+  purchaseItemResolver,
 }

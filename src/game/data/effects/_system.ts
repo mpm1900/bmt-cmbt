@@ -23,7 +23,6 @@ const HANDLE_DEATH: SEffect = {
       priority: 0,
       validate: () => true,
       resolve: (state, tcontext) => {
-        console.log('on death!', tcontext)
         return tcontext.targetIDs.flatMap((targetID) => {
           const target = state.actors.find((a) => a.ID === targetID)!
           return [deactivateActorResolver(target.playerID, targetID!, tcontext)]

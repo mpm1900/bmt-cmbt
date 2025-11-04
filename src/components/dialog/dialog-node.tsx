@@ -8,13 +8,17 @@ import { newContext } from '@/game/mutations'
 import { DialogActiveMessages } from './dialog-active-messages'
 import { ItemsTable } from './items-table'
 import { Button } from '../ui/button'
+import { GiCreditsCurrency } from 'react-icons/gi'
+import { hasNext } from '@/game/next'
+import { getActiveNode } from '@/game/access'
+import { PurchaseItem } from '@/game/data/actions/_system/purchase-item'
 
 function DialogNode() {
-  const { state, resolveDialogOption } = useGameState((s) => s)
+  const { state, resolveActionItem } = useGameState((s) => s)
   const playerID = usePlayerID()
   const context = newContext({ playerID })
-  const dialog = state.dialog
-  const activeNode = dialog.nodes.find((n) => n.ID === dialog.activeNodeID)
+  const activeNode = getActiveNode(state)
+  const loading = hasNext(state)
   if (!activeNode) return null
 
   return (
@@ -25,11 +29,22 @@ function DialogNode() {
         {activeNode.type === 'shop' && (
           <ItemsTable
             items={activeNode.items}
-            actions={(_item) => (
-              <Button size="xs" variant="secondary">
-                Buy (200G)
-              </Button>
-            )}
+            actionHeader="Buy"
+            actions={(item) => {
+              const action = PurchaseItem(item.ID)
+              return (
+                <Button
+                  size="xs"
+                  variant="secondary"
+                  className="cursor-pointer"
+                  disabled={loading || !action.validate(state, context)}
+                  onClick={() => resolveActionItem(action, context)}
+                >
+                  {item.value}
+                  <GiCreditsCurrency className="opacity-40" />
+                </Button>
+              )
+            }}
           />
         )}
         <DialogOptionGroup>
@@ -39,7 +54,8 @@ function DialogNode() {
               index={index + 1}
               option={option}
               onConfirm={(context) => {
-                resolveDialogOption(withContext(option, context))
+                const o = withContext(option, context)
+                resolveActionItem(o.action, o.context)
               }}
             />
           ))}

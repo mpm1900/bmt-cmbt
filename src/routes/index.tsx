@@ -12,19 +12,20 @@ export const Route = createFileRoute('/')({
 })
 
 function RouteComponent() {
-  const state = useGameState((s) => s.state)
+  const players = useGameState((s) => s.state.players)
+  const combat = useGameState((s) => s.state.combat)
   const current = useGameCurrentAction()
   const playerID = usePlayerID()
-  const player = state.players.find((p) => p.ID === playerID)!
-  const ai = state.players.find((p) => p.ID !== playerID)
+  const player = players.find((p) => p.ID === playerID)!
+  const ai = players.find((p) => p.ID !== playerID)
 
   return (
     <div className="h-screen w-screen flex flex-col items-between bg-cover bg-no-repeat">
       <ViewHeader />
       {ai && <EncounterActors encounter={ai} current={current} />}
 
-      {state.combat && <CombatView current={current} />}
-      {!state.combat && <DialogView />}
+      {combat && <CombatView current={current} />}
+      {!combat && <DialogView />}
 
       <Player player={player} current={current} />
     </div>

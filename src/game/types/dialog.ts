@@ -38,6 +38,7 @@ type ShopNode<T, A, S extends Object = {}> = {
   type: 'shop'
   messages: (state: T, context: DeltaContext) => Array<Message>
   items: Array<Item<T, A>>
+  credits: number
   options: (
     state: T,
     context: DeltaPositionContext

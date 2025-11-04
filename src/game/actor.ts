@@ -111,7 +111,7 @@ function getDamageResult(
     const ratio = sourceStat / targetStat
     const successModifier = damage.success ? 1 : 0
     const criticalModifier = damage.critical ? damage.criticalModifier : 1
-    const evasionModifier = damage.evade ? 0 : 1
+    const evasionModifier = damage.evade && !damage.critical ? 0 : 1 // can't evade crits
     const damageAmount = Math.round(
       damage.power *
         ratio *

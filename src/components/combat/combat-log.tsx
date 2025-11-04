@@ -13,7 +13,7 @@ function CombatLog() {
   }, [combatLog.length])
 
   return (
-    <ScrollArea className="h-94">
+    <ScrollArea className="h-100">
       <ul className="text-sm text-muted-foreground">
         {combatLog.map((log, index) => (
           <li

@@ -1,6 +1,7 @@
 import type { SActionItem, SPlayer } from '@/game/state'
 import { ActorSelectorGrid } from './actor-selector-grid'
 import { PlayerActors } from './player-actors'
+import { GiCreditsCurrency } from 'react-icons/gi'
 
 function Player({
   player,
@@ -16,6 +17,15 @@ function Player({
         <ActorSelectorGrid playerID={player.ID} />
         <span className="uppercase font-bold text-xs text-slate-300/50">
           Team
+        </span>
+      </div>
+      <div className="flex flex-col items-center justify-end gap-1">
+        <div className="flex items-center text-muted-foreground">
+          {player.credits}
+          <GiCreditsCurrency />
+        </div>
+        <span className="uppercase font-bold text-xs text-slate-300/50">
+          Credits
         </span>
       </div>
     </div>

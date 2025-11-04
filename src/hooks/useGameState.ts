@@ -4,18 +4,16 @@ import {
   addActionToQueue,
   endCombat,
   newContext,
-  resolveDialogOption,
   resolvePrompt,
   sortActionQueue,
 } from '@/game/mutations'
-import { getNextType, next, nextTurnPhase } from '@/game/next'
-import type {
-  SAction,
-  SActionItem,
-  SDialogOption,
-  SPlayer,
-  State,
-} from '@/game/state'
+import {
+  getNextType,
+  next,
+  nextTurnPhase,
+  resolveActionItem,
+} from '@/game/next'
+import type { SAction, SActionItem, SPlayer, State } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { createActor } from '@/lib/create-actor'
 import { v4 } from 'uuid'
@@ -36,7 +34,7 @@ type GameStateStore = {
   pushAction: (action: SAction, context: DeltaPositionContext) => void
   filterAction: (actorID: string) => void
   resolvePrompt: (context: DeltaPositionContext) => void
-  resolveDialogOption: (option: SDialogOption) => void
+  resolveActionItem: (action: SAction, context: DeltaPositionContext) => void
   next: () => void
   nextPhase: () => void
   deleteCombat: (encounterID: string) => void
@@ -46,6 +44,7 @@ const player: SPlayer = {
   ID: playerStore.getState().playerID,
   activeActorIDs: [null, null, null],
   items: [],
+  credits: 9999,
 }
 
 const Max = createActor('Max', player.ID, {
@@ -169,9 +168,9 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       },
     }))
   },
-  resolveDialogOption: (option) => {
+  resolveActionItem: (action, context) => {
     set(({ state }) => {
-      state = resolveDialogOption(state, option.context, option)
+      state = resolveActionItem(state, { ID: '', action, context })
       return { state }
     })
   },

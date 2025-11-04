@@ -2,8 +2,10 @@ import { playerStore } from '@/hooks/usePlayer'
 import { v4 } from 'uuid'
 import {
   findActor,
+  getActiveNode,
   getActor,
   getAliveInactiveActors,
+  getItem,
   getTriggers,
   isActive,
   mapActor,
@@ -12,7 +14,7 @@ import { getDamageResult, withDamage } from './actor'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './dialog'
-import { nextTurnPhase, resolveActionItem } from './next'
+import { nextTurnPhase } from './next'
 import { getMissingActorCount } from './player'
 import { enqueue, pop, push, sort } from './queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
@@ -21,7 +23,6 @@ import type {
   SActor,
   SDialog,
   SDialogNode,
-  SDialogOption,
   SEffect,
   SEffectItem,
   SPlayer,
@@ -297,7 +298,6 @@ function mutateDamage(
 
   const targetID = context.targetIDs[0] // this line could be problematic, but probs not
   const target = findActor(state, targetID)
-  console.log('damage', target)
   const dead = !target?.state.alive
 
   if (committed > 0) {
@@ -369,18 +369,6 @@ function validateState(state: State): [State, boolean] {
   })
 
   return [state, valid]
-}
-
-function resolveDialogOption(
-  state: State,
-  context: DeltaPositionContext,
-  option: SDialogOption
-) {
-  return resolveActionItem(state, {
-    ID: '',
-    context,
-    action: option.action,
-  })
 }
 
 function updateDialogNode(
@@ -475,6 +463,42 @@ function setDialog(state: State, dialog: SDialog | undefined): State {
   }
 }
 
+function setDialogNode(
+  state: State,
+  nodeID: string,
+  fn: (node: SDialogNode) => SDialogNode
+): State {
+  return setDialog(state, {
+    ...state.dialog,
+    nodes: state.dialog.nodes.map((n) => (n.ID === nodeID ? fn(n) : n)),
+  })
+}
+
+function purchaseItem(state: State, playerID: string, itemID: string): State {
+  const player = state.players.find((p) => p.ID === playerID)
+  const node = getActiveNode(state)
+  if (!player || !node || !state.dialog.activeNodeID) return state
+
+  const item = getItem(state, state.dialog.activeNodeID, itemID)
+  if (!item) return state
+  if (item.value > player.credits) return state
+
+  state = setDialogNode(state, node.ID, (n) =>
+    n.type === 'shop'
+      ? { ...n, items: n.items.filter((i) => i.ID !== itemID) }
+      : n
+  )
+  state = mutatePlayer(state, newContext({ playerID }), {
+    apply: (p) => ({
+      ...p,
+      items: [...p.items, item],
+      credits: p.credits - item.value,
+    }),
+  })
+
+  return state
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -489,7 +513,6 @@ export {
   pushAction,
   pushMessages,
   pushPrompt,
-  resolveDialogOption,
   resolvePrompt,
   sortActionQueue,
   sortPromptQueue,
@@ -504,4 +527,6 @@ export {
   removePlayer,
   endCombat,
   setDialog,
+  setDialogNode,
+  purchaseItem,
 }

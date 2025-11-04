@@ -1,9 +1,10 @@
-import { useEffect, useRef, type ComponentProps } from 'react'
+import { useRef, type ComponentProps } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { useGameState } from '@/hooks/useGameState'
 import { newContext } from '@/game/mutations'
 import { playerStore } from '@/hooks/usePlayer'
+import { useLayoutEffect } from '@tanstack/react-router'
 
 const context = newContext({
   playerID: playerStore.getState().playerID,
@@ -27,13 +28,15 @@ function DialogHistoryLog({
   )
 
   const messageLogRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
+
+  useLayoutEffect(() => {
     if (messageLogRef.current) {
-      messageLogRef.current.scrollIntoView({ behavior: 'smooth' })
+      messageLogRef.current.scrollIntoView({ behavior: 'auto' })
     }
   }, [messageLog.length])
+
   return (
-    <ScrollArea className={cn('max-h-50', className)} {...props}>
+    <ScrollArea className={cn('max-h-50 px-3', className)} {...props}>
       <ul className="text-xs text-muted-foreground">
         {firstMessages.map((message, i) => (
           <li

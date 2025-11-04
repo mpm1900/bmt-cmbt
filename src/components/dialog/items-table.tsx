@@ -13,17 +13,19 @@ import { Ellipsis } from 'lucide-react'
 
 function ItemsTable({
   items,
+  actionHeader,
   actions,
 }: {
   items: Array<SItem>
+  actionHeader?: ReactNode
   actions: (item: SItem) => ReactNode
 }) {
   const counts = items.reduce(
     (acc, item) => {
-      if (acc[item.ID] !== undefined) {
-        acc[item.ID] = acc[item.ID] + 1
+      if (acc[item.name] !== undefined) {
+        acc[item.name] = acc[item.name] + 1
       } else {
-        acc[item.ID] = 1
+        acc[item.name] = 1
       }
       return acc
     },
@@ -32,20 +34,20 @@ function ItemsTable({
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className="pointer-events-none">
           <TableHead></TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
           <TableHead className="flex items-center justify-end">
-            <Ellipsis />
+            {actionHeader ?? <Ellipsis />}
           </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {Object.entries(counts)
           .map(
-            ([itemID, count]) =>
-              [items.find((i) => i.ID === itemID)!, count] as const
+            ([name, count]) =>
+              [items.find((i) => i.name === name)!, count] as const
           )
           .map(([item, count]) => (
             <TableRow key={item.ID}>

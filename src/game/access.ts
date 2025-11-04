@@ -1,7 +1,15 @@
 import { v4 } from 'uuid'
 import { getStats, withEffects } from './actor'
 import { getActorID, getPosition } from './player'
-import type { SAction, SActor, SEffectItem, State, STrigger } from './state'
+import type {
+  SAction,
+  SActor,
+  SDialogNode,
+  SEffectItem,
+  SItem,
+  State,
+  STrigger,
+} from './state'
 import type { ActionTarget } from './types/action'
 import type { DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Position } from './types/player'
@@ -187,6 +195,21 @@ function getNodeCount(state: State, nodeID: string): number {
   return state.dialog.nodeCounts[nodeID] || 0
 }
 
+function getActiveNode(state: State): SDialogNode | undefined {
+  return state.dialog.nodes.find((n) => n.ID === state.dialog.activeNodeID)
+}
+
+function getItem(
+  state: State,
+  nodeID: string,
+  itemID: string
+): SItem | undefined {
+  const node = state.dialog.nodes.find((n) => n.ID === nodeID)
+  if (!node || node.type !== 'shop') return undefined
+
+  return node.items.find((i) => i.ID === itemID)
+}
+
 export {
   getTriggers,
   findActor,
@@ -206,4 +229,6 @@ export {
   convertPositionToTargetContext,
   convertTargetToPositionContext,
   getNodeCount,
+  getActiveNode,
+  getItem,
 }

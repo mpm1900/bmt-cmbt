@@ -56,6 +56,7 @@ function Actor({
             )
             .map(([effect, count]) => (
               <EffectBadge
+                key={effect.ID}
                 effect={effect.effect}
                 count={count}
                 side="top"
@@ -106,12 +107,14 @@ function EnemyActor({
   actor,
   effects,
   active,
+  targeted,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
   actor: SActor
   effects: { [key: string]: number }
   active: boolean
+  targeted: boolean
   onClick: () => void
 }) {
   const state = useGameState((s) => s.state)
@@ -125,7 +128,7 @@ function EnemyActor({
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
     >
       <Button
-        variant={active ? 'default' : 'stone'}
+        variant={targeted ? 'destructive' : active ? 'default' : 'stone'}
         className="min-h-14 h-auto py-1 px-2"
         disabled
         onClick={onClick}
@@ -149,6 +152,7 @@ function EnemyActor({
             )
             .map(([effect, count]) => (
               <EffectBadge
+                key={effect.ID}
                 effect={effect.effect}
                 count={count}
                 onOpenChange={(open) => {

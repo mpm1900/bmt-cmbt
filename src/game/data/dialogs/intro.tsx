@@ -7,6 +7,7 @@ import {
 import { getMissingActorCount } from '@/game/player'
 import {
   damagesResolver,
+  mutatePlayerResolver,
   pushMessagesResolver,
   startCombatResolver,
 } from '@/game/resolvers'
@@ -33,6 +34,9 @@ import { Fireball } from '../actions/fireball'
 import { GiCreditsCurrency } from 'react-icons/gi'
 import { FaQuestion } from 'react-icons/fa'
 import { chance } from '@/lib/chance'
+import { playerStore } from '@/hooks/usePlayer'
+
+const playerID = playerStore.getState().playerID
 
 const Criminal = (index: number, aiID: string) =>
   createActor(`Criminal (${index})`, aiID, {
@@ -50,6 +54,7 @@ const encounterPlayer: SPlayer = {
   ID: IntroNode0ID,
   activeActorIDs: [null, null, null],
   items: [],
+  credits: 0,
 }
 const criminal1 = Criminal(1, encounterPlayer.ID)
 const criminal2 = Criminal(2, encounterPlayer.ID)
@@ -211,7 +216,15 @@ const IntroNode0: SDialogNode = {
     {
       ID: v4(),
       disable: 'disable',
-      text: <em>Flip a Coin</em>,
+      text: (
+        <em className="inline-flex items-center">
+          Flip a Coin (-1
+          <span className="inline-block h-full">
+            <GiCreditsCurrency />
+          </span>
+          )
+        </em>
+      ),
       icons: (
         <>
           <FaQuestion />
@@ -222,15 +235,23 @@ const IntroNode0: SDialogNode = {
         ...InlineMutation(
           (_state, context) => {
             const result = chance(50)
+            const mutations = [
+              mutatePlayerResolver(playerID, context, (p) => ({
+                ...p,
+                credits: p.credits - 1,
+              })),
+            ]
             if (result[0]) {
-              return [
-                pushMessagesResolver(context, [newMessage({ text: 'heads!' })]),
-              ]
+              mutations.push(
+                pushMessagesResolver(context, [newMessage({ text: 'heads!' })])
+              )
             } else {
-              return [
-                pushMessagesResolver(context, [newMessage({ text: 'tails!' })]),
-              ]
+              mutations.push(
+                pushMessagesResolver(context, [newMessage({ text: 'tails!' })])
+              )
             }
+
+            return mutations
           },
           (a) => ({
             targets: {
@@ -315,16 +336,18 @@ const IntroNode2: SDialogNode = {
   state: {},
   items: [
     {
-      ID: 'Potion',
+      ID: v4(),
       name: 'Potion',
+      value: 123,
       consumable: undefined,
       use: Heal,
       actions: undefined,
       effect: undefined,
     },
     {
-      ID: 'Potion',
+      ID: v4(),
       name: 'Potion',
+      value: 123,
       consumable: undefined,
       use: Heal,
       actions: undefined,
@@ -333,12 +356,14 @@ const IntroNode2: SDialogNode = {
     {
       ID: v4(),
       name: 'Fireball Wand',
+      value: 9994,
       consumable: undefined,
       use: undefined,
       actions: [Fireball],
       effect: undefined,
     },
   ],
+  credits: 100,
 }
 
 const IntroDialog: SDialog = {
