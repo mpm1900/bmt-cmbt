@@ -1,1 +1,0 @@
-import{j as e}from"./index-Crn98iGz.js";function n(){return e.jsx("div",{className:"h-screen w-screen flex flex-col items-between bg-cover bg-no-repeat",children:'Hello "/crew"!'})}export{n as component};
