@@ -15,7 +15,7 @@ import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './dialog'
 import { nextTurnPhase } from './next'
-import { getMissingActorCount } from './player'
+import { getMissingActorCount, isPlayerDead } from './player'
 import { enqueue, pop, push, sort } from './queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
@@ -359,10 +359,7 @@ function validateState(state: State): [State, boolean] {
       }
     }
 
-    if (
-      player.activeActorIDs.every((id) => id === null) &&
-      inactiveLiveActors.length === 0
-    ) {
+    if (isPlayerDead(player, inactiveLiveActors.length)) {
       state = withPhase(state, 'post')
       valid = false
     }

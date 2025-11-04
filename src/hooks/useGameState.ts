@@ -37,7 +37,7 @@ type GameStateStore = {
   resolveActionItem: (action: SAction, context: DeltaPositionContext) => void
   next: () => void
   nextPhase: () => void
-  deleteCombat: (encounterID: string) => void
+  deleteCombat: () => void
 }
 
 const player: SPlayer = {
@@ -174,9 +174,9 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
       return { state }
     })
   },
-  deleteCombat: (encounterID: string) => {
+  deleteCombat: () => {
     set(({ state }) => ({
-      state: endCombat(state, encounterID),
+      state: endCombat(state, state.dialog.activeNodeID!),
     }))
   },
 }))

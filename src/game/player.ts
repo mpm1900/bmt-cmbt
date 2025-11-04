@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import type { State } from './state'
+import type { SPlayer, State } from './state'
 import type { Position } from './types/player'
 import { getAliveInactiveActors } from './access'
 import { newContext } from './mutations'
@@ -48,10 +48,17 @@ function getMissingActorCount(state: State, playerID: string): number {
   )
 }
 
+function isPlayerDead(player: SPlayer, inactiveLiveActors: number): boolean {
+  return (
+    player.activeActorIDs.every((id) => id === null) && inactiveLiveActors === 0
+  )
+}
+
 export {
   getActorID,
   getPosition,
   positionEquals,
   newPosition,
   getMissingActorCount,
+  isPlayerDead,
 }
