@@ -247,12 +247,12 @@ function removeParentEffects(state: State, context: DeltaContext): State {
 function mutateActor(
   state: State,
   context: DeltaContext,
-  delta: Delta<SActor>
+  delta: Required<Delta<SActor>>
 ): State {
   return {
     ...state,
     actors: state.actors.map((a) => {
-      if (!a.state.alive || (delta.filter && !delta.filter(a, context))) {
+      if (!a.state.alive || !delta.filter(a, context)) {
         return a
       }
       return delta.apply(a, context)
@@ -263,12 +263,12 @@ function mutateActor(
 function mutatePlayer(
   state: State,
   context: DeltaContext,
-  delta: Delta<SPlayer>
+  delta: Required<Delta<SPlayer>>
 ): State {
   return {
     ...state,
     players: state.players.map((p) => {
-      if (delta.filter && !delta.filter(p, context)) {
+      if (!delta.filter(p, context)) {
         return p
       }
       return delta.apply(p, context)
@@ -282,39 +282,46 @@ function mutateDamage(
   damage: Damage,
   depth: number
 ): State {
-  let committed = 0
-  state = mutateActor(state, context, {
-    filter: (ac) => context.targetIDs.includes(ac.ID),
-    apply: (ac) => {
-      const source = getActor(state, context.sourceID)
-      const target = getActor(state, ac.ID)
-      if ((damage.type === 'power' && !source) || !target) return ac
-      const damageAmount = getDamageResult(source, target, damage)
-      committed += damageAmount
-      const newDamage = ac.state.damage + damageAmount
-      return withDamage(ac, newDamage, newDamage < target.stats.health ? 1 : 0)
-    },
+  context.targetIDs.forEach((targetID) => {
+    let committed = 0
+    const pre = getActor(state, targetID)
+    state = mutateActor(state, context, {
+      filter: (ac) => targetID === ac.ID,
+      apply: (ac) => {
+        const source = getActor(state, context.sourceID)
+        const target = getActor(state, ac.ID)
+        if ((damage.type === 'power' && !source) || !target) return ac
+
+        const damageAmount = getDamageResult(source, target, damage)
+        committed = damageAmount
+        const newDamage = ac.state.damage + damageAmount
+        return withDamage(
+          ac,
+          newDamage,
+          newDamage < target.stats.health ? 1 : 0
+        )
+      },
+    })
+
+    const target = getActor(state, targetID)
+    const dead = !target?.state.alive
+
+    if (committed > 0) {
+      state = handleTrigger(state, context, 'on-damage')
+      state = handleTrigger(state, context, 'on-damage-dealt')
+      state = pushMessages(state, [
+        newMessage({
+          context,
+          text: messages.TargetDamagePercent(pre, committed),
+          depth: depth + 1,
+        }),
+      ])
+    }
+
+    if (dead) {
+      state = handleTrigger(state, context, 'on-death')
+    }
   })
-
-  const targetID = context.targetIDs[0] // this line could be problematic, but probs not
-  const target = findActor(state, targetID)
-  const dead = !target?.state.alive
-
-  if (committed > 0) {
-    state = handleTrigger(state, context, 'on-damage')
-    state = handleTrigger(state, context, 'on-damage-dealt')
-    state = pushMessages(state, [
-      newMessage({
-        context,
-        text: messages.TargetDamage(target, committed),
-        depth: depth + 1,
-      }),
-    ])
-  }
-
-  if (dead) {
-    state = handleTrigger(state, context, 'on-death')
-  }
 
   return state
 }
@@ -486,6 +493,7 @@ function purchaseItem(state: State, playerID: string, itemID: string): State {
       : n
   )
   state = mutatePlayer(state, newContext({ playerID }), {
+    filter: (p) => p.ID === playerID,
     apply: (p) => ({
       ...p,
       items: [...p.items, item],

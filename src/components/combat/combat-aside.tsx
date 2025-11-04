@@ -10,7 +10,7 @@ function CombatAside() {
   const next = useGameState((store) => store.nextPhase)
 
   return (
-    <Card className="h-120 w-80">
+    <Card className="max-h-120 w-80">
       <Tabs defaultValue="combat-log">
         <CardHeader>
           <TabsList>

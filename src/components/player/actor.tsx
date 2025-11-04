@@ -33,7 +33,7 @@ function Actor({
       <Button
         disabled
         variant="slate-inactive"
-        className="h-20 mb-4.5 mt-8 w-64 flex items-center justify-center border border-foreground/10 border-dashed"
+        className="h-20 mb-4.5 mt-5 w-64 flex items-center justify-center border border-foreground/10 border-dashed"
       />
     )
   }
@@ -47,7 +47,7 @@ function Actor({
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
       {...rest}
     >
-      <div className="flex transition-all justify-between h-6 -mb-2 mt-4 group-hover:mb-1 group-hover:mt-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">
+      <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           {Object.entries(effects)
             .map(
@@ -143,7 +143,7 @@ function EnemyActor({
           />
         </ItemContent>
       </Button>
-      <div className="flex transition-all justify-between -mt-2 mb-4 group-hover:mt-1 group-hover:mb-1 group-data-[state=open]:mb-1 group-data-[state=open]:mt-1 z-10">
+      <div className="flex transition-all justify-between h-6 -translate-y-2 group-hover:translate-y-1 group-data-[state=open]:translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           {Object.entries(effects)
             .map(

@@ -37,7 +37,7 @@ function ActionSelectionCard({
         </CardHeader>
       )}
       <CardContent className="grid grid-cols-2 gap-3">
-        <ScrollArea className="max-h-96 pr-3">
+        <ScrollArea className="max-h-98.5 pr-3">
           <div className="flex flex-col gap-2">
             {actions.map((action) => (
               <ActionItem

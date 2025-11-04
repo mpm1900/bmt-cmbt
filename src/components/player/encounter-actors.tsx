@@ -22,7 +22,7 @@ function EncounterActors({
     .map((actor) => withStatEffects(actor, state.effects))
 
   return (
-    <div className="w-full flex flex-row-reverse justify-start items-start p-4 pt-0 gap-2">
+    <div className="w-full flex flex-row-reverse justify-start items-start px-4 gap-2">
       {encounter.activeActorIDs.map((actorID, i) => {
         if (!actorID)
           return (
@@ -30,7 +30,7 @@ function EncounterActors({
               <Button
                 disabled
                 variant="stone-inactive"
-                className="h-14 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
+                className="h-14 mb-6 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
               >
                 inactive
               </Button>

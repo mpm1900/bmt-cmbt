@@ -3,6 +3,7 @@ import type { SAction, SActor, SEffect } from '../state'
 import { cn } from '@/lib/utils'
 import { playerStore } from '@/hooks/usePlayer'
 import { EffectTooltip } from '@/components/tooltips/effect-tooltip'
+import { getHealth } from '../actor'
 
 const playerID = playerStore.getState().playerID
 
@@ -75,6 +76,24 @@ function TargetDamage(target: SActor | undefined, damage: number) {
     </>
   )
 }
+function TargetDamagePercent(pre: SActor | undefined, damage: number) {
+  if (!pre) return null
+  let [health, maxHealth] = getHealth(pre)
+  health = Math.max(health, 0)
+  maxHealth = Math.max(maxHealth, 1)
+  const remaining = Math.round((health / maxHealth) * 100)
+  const percent = Math.min(Math.round((damage / maxHealth) * 100), remaining)
+  return (
+    <>
+      {Actor(pre)}{' '}
+      {
+        <>
+          lost <span className="text-foreground/80">{percent}% health</span>.
+        </>
+      }
+    </>
+  )
+}
 function TargetHeal(target: SActor | undefined, healed: number) {
   return (
     <>
@@ -121,7 +140,7 @@ function EffectSourceTrigger(effect: SlimEffect, source: SActor | undefined) {
 function ParentEffect(parent: SActor | undefined, effect: SlimEffect) {
   return (
     <>
-      {Actor(parent)} gained {Effect(effect)}
+      {Actor(parent)} gained {Effect(effect)}.
     </>
   )
 }
@@ -133,7 +152,7 @@ function SourceAction(source: SActor | undefined, action: SAction) {
       {
         <>
           uses{' '}
-          <span className="text-foreground font-semibold">{action.name}</span>
+          <span className="text-foreground font-semibold">{action.name}</span>.
         </>
       }
     </>
@@ -156,6 +175,7 @@ export {
   ActorDeactivated,
   ActorDied,
   TargetDamage,
+  TargetDamagePercent,
   TargetHeal,
   TargetEvade,
   Effect,

@@ -11,7 +11,7 @@ function Player({
   current: SActionItem | undefined
 }) {
   return (
-    <div className="flex justify-start gap-6 my-2 mx-6">
+    <div className="flex justify-start gap-6 mb-3 mx-6">
       <PlayerActors player={player} current={current} />
       <div className="flex flex-col items-center justify-end gap-1">
         <ActorSelectorGrid playerID={player.ID} />

@@ -45,12 +45,14 @@ function PhaseMain({ current }: { current: SActionItem | undefined }) {
         )
       )
       .filter(Boolean)
+    const names = new Set(
+      targets.map((t) => t?.name).concat(positions.map((p) => p?.name))
+    )
     return (
       <div className="w-172 text-center">
         <div className="text-center">{source?.name} uses</div>
         <h1 className="text-6xl font-black text-center">{action.name}</h1>
-        <div>{targets.map((t) => t?.name).join(', ')}</div>
-        <div>{positions.map((t) => t?.name).join(', ')}</div>
+        <div>{Array.from(names).join(', ')}</div>
       </div>
     )
   }

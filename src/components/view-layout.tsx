@@ -8,7 +8,7 @@ function ViewLayoutContent({
 }: ComponentProps<'div'>) {
   return (
     <div {...props} className="flex-1 flex items-center justify-center">
-      <div className="flex-1 flex items-start justify-center gap-4 w-260">
+      <div className="flex-1 flex items-start justify-center gap-4 w-260 min-h-120">
         {children}
       </div>
     </div>
@@ -23,8 +23,8 @@ function ViewLayout({
 }) {
   return (
     <ViewLayoutContent {...props}>
-      <Slot className="w-180">{props.main}</Slot>
-      <Slot className="w-80">{props.aside}</Slot>
+      <Slot className="flex-1 max-w-180">{props.main}</Slot>
+      <Slot className="flex-1 max-w-80">{props.aside}</Slot>
     </ViewLayoutContent>
   )
 }
