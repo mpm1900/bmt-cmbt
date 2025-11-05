@@ -1,6 +1,20 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 import { cn } from '@/lib/utils'
 import { EFFECT_RENDERERS } from '@/renderers'
+import type { EffectRenderer } from '@/renderers/effects'
+
+function EffectDetails({ renderer }: { renderer: EffectRenderer }) {
+  return (
+    <>
+      <p className="font-bold mb-2">
+        <renderer.Name />
+      </p>
+      <p className="text-xs">
+        <renderer.Description />
+      </p>
+    </>
+  )
+}
 
 function EffectTooltip({
   className,
@@ -40,15 +54,10 @@ function EffectTooltip({
         side={side}
         sideOffset={8}
       >
-        <p className="font-bold mb-2">
-          <renderer.Name />
-        </p>
-        <p className="text-xs">
-          <renderer.Description />
-        </p>
+        <EffectDetails renderer={renderer} />
       </HoverCardContent>
     </HoverCard>
   )
 }
 
-export { EffectTooltip }
+export { EffectDetails, EffectTooltip }

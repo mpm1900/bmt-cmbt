@@ -7,7 +7,7 @@ import { FaQuestionCircle } from 'react-icons/fa'
 const GokuRenderer: EffectRenderer = {
   effectID: Goku.ID,
   Name: () => <>Goku</>,
-  Description: () => <>On Damage: gain {Effect(BodyUp)}</>,
+  Description: () => <>On Damage: gain {Effect(BodyUp.ID, BodyUp.name)}</>,
   Icon: () => <FaQuestionCircle />,
 }
 

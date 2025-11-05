@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
-import type { SAction, SActor, SEffect } from '../state'
+import type { SAction, SActor } from '../state'
 import { cn } from '@/lib/utils'
 import { playerStore } from '@/hooks/usePlayer'
 import { EffectTooltip } from '@/components/tooltips/effect-tooltip'
 import { getHealth } from '../actor'
+import { ActionTooltip } from '@/components/tooltips/action-tooltip'
 
 const playerID = playerStore.getState().playerID
 
@@ -115,32 +116,47 @@ function TargetEvade(target: SActor | undefined) {
   )
 }
 
-type SlimEffect = Pick<SEffect, 'ID' | 'name'>
-function Effect(effect: SlimEffect) {
+function Action(action: SAction) {
+  return (
+    <ActionTooltip actionID={action.ID} side="right" asChild>
+      <span className="text-foreground font-semibold">{action.name}</span>
+    </ActionTooltip>
+  )
+}
+
+function Effect(effectID: string, effectName: string) {
   return (
     <EffectTooltip
-      effectID={effect.ID}
+      effectID={effectID}
       side="right"
       className="text-foreground font-semibold"
     >
-      {effect.name}
+      {effectName}
     </EffectTooltip>
   )
 }
-function EffectTrigger(effect: SlimEffect) {
-  return <>{Effect(effect)} trigger:</>
+function EffectTrigger(effectID: string, effectName: string) {
+  return <>{Effect(effectID, effectName)} trigger:</>
 }
-function EffectSourceTrigger(effect: SlimEffect, source: SActor | undefined) {
+function EffectSourceTrigger(
+  effectID: string,
+  effectName: string,
+  source: SActor | undefined
+) {
   return (
     <>
-      {Actor(source, `'s`)} {EffectTrigger(effect)}
+      {Actor(source, `'s`)} {EffectTrigger(effectID, effectName)}
     </>
   )
 }
-function ParentEffect(parent: SActor | undefined, effect: SlimEffect) {
+function ParentEffect(
+  parent: SActor | undefined,
+  effectID: string,
+  effectName: string
+) {
   return (
     <>
-      {Actor(parent)} gained {Effect(effect)}.
+      {Actor(parent)} gained {Effect(effectID, effectName)}.
     </>
   )
 }
@@ -148,13 +164,7 @@ function ParentEffect(parent: SActor | undefined, effect: SlimEffect) {
 function SourceAction(source: SActor | undefined, action: SAction) {
   return (
     <>
-      {Actor(source)}{' '}
-      {
-        <>
-          uses{' '}
-          <span className="text-foreground font-semibold">{action.name}</span>.
-        </>
-      }
+      {Actor(source)} uses {Action(action)}.
     </>
   )
 }
@@ -178,6 +188,7 @@ export {
   TargetDamagePercent,
   TargetHeal,
   TargetEvade,
+  Action,
   Effect,
   EffectTrigger,
   EffectSourceTrigger,

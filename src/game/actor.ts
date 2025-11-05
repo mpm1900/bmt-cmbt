@@ -1,8 +1,9 @@
 import { v4 } from 'uuid'
-import type { SActor, SEffectItem } from './state'
+import type { SActor, SEffectItem, State } from './state'
 import type { ChanceEvent, Damage, PowerDamage } from './types/damage'
 import type { ActorState, ActorStats } from './types/actor'
 import { chance } from '@/lib/chance'
+import type { DeltaPositionContext } from './types/delta'
 
 function withState(actor: SActor, state: Partial<ActorState>): SActor {
   return {
@@ -209,6 +210,26 @@ function getHealth(actor: SActor): [number, number] {
   return [health - damage, health]
 }
 
+function isTargeted(
+  state: State,
+  context: DeltaPositionContext | undefined,
+  actorID: string,
+  playerID: string,
+  index: number
+) {
+  const phase = state.combat?.phase
+  const planning = phase === 'planning'
+  const idTargeted =
+    !planning && !!context?.targetIDs.includes(actorID ?? undefined)
+  const posTargeted =
+    !planning &&
+    !!context?.positions.find(
+      (p) => p.playerID === playerID && p.index === index
+    )
+
+  return idTargeted || posTargeted
+}
+
 export {
   withState,
   withStats,
@@ -221,4 +242,5 @@ export {
   withEffects,
   getStats,
   getHealth,
+  isTargeted,
 }

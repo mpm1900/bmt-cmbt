@@ -2,12 +2,10 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from '../ui/button'
 import type { SAction } from '@/game/state'
 import { ACTION_RENDERERS } from '@/renderers'
-import { Item, ItemActions, ItemContent } from '../ui/item'
-import { Collapsible, CollapsibleContent } from '../ui/collapsible'
+import { Item } from '../ui/item'
 import { useGameState } from '@/hooks/useGameState'
-import { FaDiceD20 } from 'react-icons/fa6'
 import type { DeltaPositionContext } from '@/game/types/delta'
-import { TfiTarget } from 'react-icons/tfi'
+import { ActionDetails } from '../tooltips/action-tooltip'
 
 function ActionItem({
   action,
@@ -26,7 +24,6 @@ function ActionItem({
   const renderer = ACTION_RENDERERS[action.ID]
   return (
     <Item
-      asChild
       onClick={() => onActiveChange(!active)}
       className={cn(
         buttonVariants({
@@ -36,52 +33,11 @@ function ActionItem({
         { 'opacity-50 pointer-events-none !cursor-not-allowed': disabled }
       )}
     >
-      <Collapsible open={active}>
-        {renderer && (
-          <ItemActions
-            className={cn('flex-col items-end float-right pl-3', {
-              'pb-2': active,
-            })}
-          >
-            <div
-              className={cn({
-                'text-muted-foreground': !active,
-              })}
-            >
-              <renderer.Icons />
-            </div>
-            <CollapsibleContent className="flex flex-col items-end text-muted-foreground font-mono">
-              {renderer.Accuracy && (
-                <div className="flex items-center gap-1 font-black">
-                  <TfiTarget className="size-3.5" />
-                  <renderer.Accuracy />
-                </div>
-              )}
-              {renderer.Critical && (
-                <div className="flex items-center gap-1 opacity-60">
-                  <FaDiceD20 className="size-3.5" />
-                  <renderer.Critical />
-                </div>
-              )}
-            </CollapsibleContent>
-          </ItemActions>
-        )}
-        <ItemContent className="block">
-          <span
-            className={cn('inline-block', {
-              'mb-2': active,
-              'text-muted-foreground': !active,
-            })}
-          >
-            {renderer ? <renderer.Name /> : action.name}
-          </span>
-          {renderer && (
-            <CollapsibleContent className="text-muted-foreground">
-              <renderer.DescriptionShort />
-            </CollapsibleContent>
-          )}
-        </ItemContent>
-      </Collapsible>
+      {renderer ? (
+        <ActionDetails renderer={renderer} active={active} />
+      ) : (
+        action.name
+      )}
     </Item>
   )
 }

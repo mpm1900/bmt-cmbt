@@ -1,7 +1,6 @@
 import { playerStore } from '@/hooks/usePlayer'
 import { v4 } from 'uuid'
 import {
-  findActor,
   getActiveNode,
   getActor,
   getAliveInactiveActors,

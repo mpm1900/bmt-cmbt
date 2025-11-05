@@ -35,7 +35,8 @@ const Intimidate: SEffect = {
             pushMessagesResolver(tcontext, [
               newMessage({
                 text: EffectSourceTrigger(
-                  { ID: IntimidateID, name },
+                  IntimidateID,
+                  name,
                   findActor(state, tcontext.sourceID)
                 ),
                 depth: 1,
@@ -79,7 +80,8 @@ const Intimidate: SEffect = {
             pushMessagesResolver(tcontext, [
               newMessage({
                 text: EffectSourceTrigger(
-                  { ID: IntimidateID, name },
+                  IntimidateID,
+                  name,
                   findActor(state, econtext.sourceID)
                 ),
                 depth: 0,

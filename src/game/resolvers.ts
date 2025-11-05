@@ -335,7 +335,11 @@ function addEffectResolver(
 
         state = pushMessages(state, [
           newMessage({
-            text: ParentEffect(findActor(state, context.parentID), effect),
+            text: ParentEffect(
+              findActor(state, context.parentID),
+              effect.ID,
+              effect.name
+            ),
             depth: depth + 1,
           }),
         ])

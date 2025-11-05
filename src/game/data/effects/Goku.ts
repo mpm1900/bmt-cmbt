@@ -31,7 +31,7 @@ const Goku: SEffect = {
         return [
           pushMessagesResolver(tcontext, [
             newMessage({
-              text: EffectTrigger({ ID: GokuID, name }),
+              text: EffectTrigger(GokuID, name),
               depth: 1,
             }),
           ]),

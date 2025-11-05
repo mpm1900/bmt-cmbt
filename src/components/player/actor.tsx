@@ -104,20 +104,31 @@ function Actor({
 }
 
 function EnemyActor({
-  actor,
-  effects,
+  actorID,
   active,
   targeted,
   onClick,
   ...rest
 }: React.ComponentProps<'div'> & {
-  actor: SActor
-  effects: { [key: string]: number }
+  actorID: string | null
   active: boolean
   targeted: boolean
   onClick: () => void
 }) {
   const state = useGameState((s) => s.state)
+  if (!actorID) {
+    return (
+      <Button
+        disabled
+        variant="stone-inactive"
+        className="h-14 mb-6 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
+      >
+        inactive
+      </Button>
+    )
+  }
+
+  const [actor, effects] = getActorWithEffects(state, actorID)!
   const [health, maxHealth] = getHealth(actor)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
 
