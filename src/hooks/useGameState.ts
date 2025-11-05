@@ -28,6 +28,7 @@ import {
 } from '@/game/data/effects/_system'
 import { useEffect, useState } from 'react'
 import { findActor } from '@/game/access'
+import { isPlayerDead } from '@/game/player'
 
 type GameStateStore = {
   state: State
@@ -204,6 +205,7 @@ function useGameCurrentAction(): SActionItem | undefined {
       return
     }
     if (nextType !== 'action') return
+    if (state.players.some((p) => isPlayerDead(state, p))) return
     const source = findActor(state, firstActionItem?.context.sourceID)
     if (!source || !source.state.alive) return
 

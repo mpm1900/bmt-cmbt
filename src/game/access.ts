@@ -20,6 +20,10 @@ function getTriggers(state: State): Array<STrigger> {
   return effects.flatMap(({ effect, context }) => effect.triggers(context))
 }
 
+function findPlayer(state: State, playerID: string | undefined) {
+  return state.players.find((p) => p.ID === playerID)
+}
+
 function findActor(
   state: State,
   actorID: string | undefined
@@ -212,6 +216,7 @@ function getItem(
 
 export {
   getTriggers,
+  findPlayer,
   findActor,
   withStatEffects,
   getAliveInactiveActors,

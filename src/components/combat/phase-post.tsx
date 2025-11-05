@@ -10,8 +10,6 @@ import {
 import { useGameState } from '@/hooks/useGameState'
 import { usePlayerID } from '@/hooks/usePlayer'
 import { isPlayerDead } from '@/game/player'
-import { getAliveInactiveActors } from '@/game/access'
-import { newContext } from '@/game/mutations'
 import { GiCreditsCurrency } from 'react-icons/gi'
 
 function PhasePost() {
@@ -19,11 +17,7 @@ function PhasePost() {
   const playerID = usePlayerID()
   const player = state.players.find((p) => p.ID === playerID)!
   const encounter = state.players.find((p) => p.ID !== playerID)!
-  const context = newContext({ playerID })
-  const dead = isPlayerDead(
-    player,
-    getAliveInactiveActors(state, context).length
-  )
+  const dead = isPlayerDead(state, player)
 
   return (
     <Card className="w-90 mt-16 self-center">

@@ -213,7 +213,7 @@ function getHealth(actor: SActor): [number, number] {
 function isTargeted(
   state: State,
   context: DeltaPositionContext | undefined,
-  actorID: string,
+  actorID: string | null,
   playerID: string,
   index: number
 ) {

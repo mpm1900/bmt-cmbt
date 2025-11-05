@@ -48,9 +48,25 @@ function getMissingActorCount(state: State, playerID: string): number {
   )
 }
 
-function isPlayerDead(player: SPlayer, inactiveLiveActors: number): boolean {
+function isPlayerDead(state: State, player: SPlayer): boolean {
+  const inactiveLiveActors = getAliveInactiveActors(
+    state,
+    newContext({ playerID: player.ID })
+  )
   return (
-    player.activeActorIDs.every((id) => id === null) && inactiveLiveActors === 0
+    player.activeActorIDs.every((id) => id === null) &&
+    inactiveLiveActors.length === 0
+  )
+}
+
+function requiresPrompt(state: State, player: SPlayer): boolean {
+  const inactiveLiveActors = getAliveInactiveActors(
+    state,
+    newContext({ playerID: player.ID })
+  )
+  return (
+    player.activeActorIDs.some((id) => id === null) &&
+    inactiveLiveActors.length > 0
   )
 }
 
@@ -86,6 +102,7 @@ export {
   newPosition,
   getMissingActorCount,
   isPlayerDead,
+  requiresPrompt,
   getItemAction,
   groupItems,
 }

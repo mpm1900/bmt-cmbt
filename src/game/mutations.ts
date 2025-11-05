@@ -3,7 +3,6 @@ import { v4 } from 'uuid'
 import {
   getActiveNode,
   getActor,
-  getAliveInactiveActors,
   getItem,
   getTriggers,
   isActive,
@@ -14,7 +13,7 @@ import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './dialog'
 import { nextTurnPhase } from './next'
-import { getMissingActorCount, isPlayerDead } from './player'
+import { getMissingActorCount, isPlayerDead, requiresPrompt } from './player'
 import { enqueue, pop, push, sort } from './queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
@@ -340,14 +339,7 @@ function validateState(state: State): [State, boolean] {
   let valid = true
   if (!state.combat) return [state, valid]
   state.players.forEach((player) => {
-    const inactiveLiveActors = getAliveInactiveActors(
-      state,
-      newContext({ playerID: player.ID })
-    )
-    if (
-      player.activeActorIDs.some((id) => id === null) &&
-      inactiveLiveActors.length > 0
-    ) {
+    if (requiresPrompt(state, player)) {
       const count = getMissingActorCount(state, player.ID)
       if (count > 0) {
         state = pushPrompt(
@@ -365,7 +357,7 @@ function validateState(state: State): [State, boolean] {
       }
     }
 
-    if (isPlayerDead(player, inactiveLiveActors.length)) {
+    if (isPlayerDead(state, player)) {
       state = withPhase(state, 'post')
       valid = false
     }
