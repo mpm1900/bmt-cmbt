@@ -28,7 +28,6 @@ function Actor({
 }) {
   const state = useGameState((s) => s.state)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
-
   const actor = getActor(state, actorID)!
   const [health, maxHealth] = getHealth<State>(actor)
 
@@ -44,29 +43,24 @@ function Actor({
       <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           <AnimatePresence>
-            {Object.entries(actor.applied)
-              .map(
-                ([id, count]) =>
-                  [state.effects.find((e) => e.effect.ID === id)!, count] as const
-              )
-              .map(([effect, count]) => (
-                <motion.div
-                  key={effect.ID}
-                  layout
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.5 }}
-                >
-                  <EffectBadge
-                    effect={effect.effect}
-                    count={count}
-                    side="top"
-                    onOpenChange={(open) => {
-                      setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
-                    }}
-                  />
-                </motion.div>
-              ))}
+            {Object.entries(actor.applied).map(([effectID, count]) => (
+              <motion.div
+                key={effectID}
+                layout
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+              >
+                <EffectBadge
+                  effectID={effectID}
+                  count={count}
+                  side="top"
+                  onOpenChange={(open) => {
+                    setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
+                  }}
+                />
+              </motion.div>
+            ))}
           </AnimatePresence>
         </div>
       </div>
@@ -117,7 +111,6 @@ function EnemyActor({
   targeted: boolean
 }) {
   const state = useGameState((s) => s.state)
-
   const actor = getActor(state, actorID)!
   const [health, maxHealth] = getHealth<State>(actor)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
@@ -148,28 +141,23 @@ function EnemyActor({
       <div className="flex transition-all justify-between h-6 -translate-y-2 group-hover:translate-y-1 group-data-[state=open]:translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           <AnimatePresence>
-            {Object.entries(actor.applied)
-              .map(
-                ([id, count]) =>
-                  [state.effects.find((e) => e.effect.ID === id)!, count] as const
-              )
-              .map(([effect, count]) => (
-                <motion.div
-                  key={effect.ID}
-                  layout
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.5 }}
-                >
-                  <EffectBadge
-                    effect={effect.effect}
-                    count={count}
-                    onOpenChange={(open) => {
-                      setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
-                    }}
-                  />
-                </motion.div>
-              ))}
+            {Object.entries(actor.applied).map(([effectID, count]) => (
+              <motion.div
+                key={effectID}
+                layout
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+              >
+                <EffectBadge
+                  effectID={effectID}
+                  count={count}
+                  onOpenChange={(open) => {
+                    setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
+                  }}
+                />
+              </motion.div>
+            ))}
           </AnimatePresence>
         </div>
       </div>

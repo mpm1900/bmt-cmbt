@@ -41,7 +41,7 @@ function ActionSelectionCard({
           <CombatViewTabs />
         </CardHeader>
       )}
-      <CardContent className="grid grid-cols-2 gap-3">
+      <CardContent className="grid grid-cols-2 gap-1">
         <ScrollArea className="max-h-98.5 pr-3">
           <div className="flex flex-col gap-2">
             {actions.map((action) => (

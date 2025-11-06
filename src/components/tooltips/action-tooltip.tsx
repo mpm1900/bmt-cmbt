@@ -42,7 +42,7 @@ function ActionDetails({
       <ItemContent className="block">
         <span
           className={cn('inline-block text-base', {
-            'mb-2': active,
+            'mb-3': active,
             'text-muted-foreground': !active,
           })}
         >

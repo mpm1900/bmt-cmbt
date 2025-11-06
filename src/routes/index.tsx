@@ -1,5 +1,5 @@
 import { CombatView } from '@/components/combat/combat-view'
-import { DialogView } from '@/components/dialog/dialog-view'
+import { EncounterView } from '@/components/encounter/encounter-view'
 import { EncounterActors } from '@/components/player/encounter-actors'
 import { Player } from '@/components/player/player'
 import { ViewHeader } from '@/components/view-header'
@@ -25,7 +25,7 @@ function RouteComponent() {
       {ai && <EncounterActors encounter={ai} current={current} />}
 
       {combat && <CombatView current={current} />}
-      {!combat && <DialogView />}
+      {!combat && <EncounterView />}
 
       <Player player={player} current={current} />
     </div>

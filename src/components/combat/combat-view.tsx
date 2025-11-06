@@ -28,6 +28,7 @@ function CombatView({ current }: { current: SActionItem | undefined }) {
         main={
           <Tabs
             defaultValue="actions"
+            className="h-120"
             onValueChange={() => {
               set({
                 activeActionID: nextAvailableAction(activeActor, state)?.ID,

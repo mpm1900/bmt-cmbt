@@ -16,8 +16,8 @@ const FireballRenderer: ActionRenderer = {
   DescriptionShort: () => (
     <div>
       Deals <strong className="text-foreground">{FireballDamage.power}</strong>{' '}
-      power of <strong className="text-orange-300">fire</strong> damage to{' '}
-      <strong className="text-foreground">{FireballTargetCount}</strong> targets
+      power of <strong className="text-orange-300">fire</strong> damage to up to{' '}
+      <strong className="text-foreground">{FireballTargetCount}</strong> enemies
       simultaneously.
     </div>
   ),

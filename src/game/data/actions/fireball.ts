@@ -43,7 +43,7 @@ const Fireball: SAction = {
     unique: true,
     get: (state, context) =>
       state.actors
-        .filter((a) => a.ID !== context.sourceID && isActive(state, a.ID))
+        .filter((a) => a.playerID !== context.playerID && isActive(state, a.ID))
         .map((actor) => mapTarget(actor, 'position')),
     max: () => FireballTargetCount,
     validate: (_state, context) =>

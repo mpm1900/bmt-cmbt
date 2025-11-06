@@ -2,15 +2,15 @@ import { hasNext } from '@/game/next'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect } from 'react'
 
-function DialogController() {
+function EncounterController() {
   const { state } = useGameState((s) => s)
 
   if (!state.combat) {
-    return <DialogNextController />
+    return <EncounterNextController />
   }
 }
 
-function DialogNextController() {
+function EncounterNextController() {
   const state = useGameState((s) => s.state)
   const next = useGameState((s) => s.next)
   const run = hasNext(state)
@@ -25,4 +25,4 @@ function DialogNextController() {
   return null
 }
 
-export { DialogController }
+export { EncounterController }

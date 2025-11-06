@@ -1,4 +1,3 @@
-import type { SEffect } from '@/game/state'
 import { EffectTooltip } from './tooltips/effect-tooltip'
 import { Badge } from './ui/badge'
 import type { ComponentProps } from 'react'
@@ -7,15 +6,14 @@ import { FaQuestionCircle } from 'react-icons/fa'
 
 function EffectBadge({
   count,
-  effect,
+  effectID,
   ...rest
-}: Omit<ComponentProps<typeof EffectTooltip>, 'effectID'> & {
+}: ComponentProps<typeof EffectTooltip> & {
   count: number
-  effect: SEffect
 }) {
-  const renderer = EFFECT_RENDERERS[effect.ID]
+  const renderer = EFFECT_RENDERERS[effectID]
   return (
-    <EffectTooltip effectID={effect.ID} side="bottom" asChild {...rest}>
+    <EffectTooltip effectID={effectID} side="bottom" asChild {...rest}>
       <Badge
         variant="outline"
         className="bg-background text-muted-foreground p-1 [&>svg]:size-4"

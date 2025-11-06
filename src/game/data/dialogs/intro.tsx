@@ -8,6 +8,7 @@ import { getMissingActorCount } from '@/game/player'
 import {
   damagesResolver,
   mutatePlayerResolver,
+  navigateEncounterResolver,
   pushMessagesResolver,
   startCombatResolver,
 } from '@/game/resolvers'
@@ -31,6 +32,8 @@ import { FaQuestion } from 'react-icons/fa'
 import { chance } from '@/lib/chance'
 import { playerStore } from '@/hooks/usePlayer'
 import { newCombat } from '@/game/lib/combat'
+import { ArrowRight } from 'lucide-react'
+import { TwoEncounter } from './two'
 
 const playerID = playerStore.getState().playerID
 
@@ -261,6 +264,20 @@ const IntroNode0: SDialogNode = {
           })
         ),
       },
+    },
+    {
+      ID: v4(),
+      disable: 'hide',
+      text: <em>Go to another encounter.</em>,
+      icons: (
+        <>
+          <ArrowRight />
+        </>
+      ),
+      context,
+      action: InlineMutation((_s, c) => [
+        navigateEncounterResolver(c, TwoEncounter),
+      ]),
     },
   ],
   state: {},

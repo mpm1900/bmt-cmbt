@@ -558,7 +558,10 @@ function navigateEncounterResolver(
         }
 
         state = setEncounter(state, encounter)
-        return state
+        return {
+          ...state,
+          messageLog: [],
+        }
       },
     },
   }

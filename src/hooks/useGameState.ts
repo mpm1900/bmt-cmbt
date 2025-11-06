@@ -70,7 +70,7 @@ const Katie = createActor('Katie', player.ID, {
 const Hank = createActor('Hank', player.ID, {
   accuracy: 0,
   body: 180,
-  evasion: 100,
+  evasion: 90,
   health: 0,
   mind: 100,
   reflexes: 150,

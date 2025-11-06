@@ -8,7 +8,7 @@ function ViewLayoutContent({
 }: ComponentProps<'div'>) {
   return (
     <div {...props} className="flex-1 flex items-center justify-center">
-      <div className="flex-1 flex items-start justify-center gap-4 w-260 min-h-120">
+      <div className="relative flex-1 flex items-start justify-center gap-4 w-260 min-h-120">
         {children}
       </div>
     </div>

@@ -20,7 +20,7 @@ function PhasePost() {
   const dead = isPlayerDead(state, player)
 
   return (
-    <Card className="w-90 mt-16 self-center">
+    <Card className="w-90 m-auto">
       <CardHeader>
         {dead ? (
           <CardTitle>You Lose.</CardTitle>

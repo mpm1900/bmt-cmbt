@@ -20,9 +20,10 @@ const SprayNPrayRenderer: ActionRenderer = {
       <strong className="text-foreground">{SprayNPrayDamage.power}</strong>{' '}
       power of{' '}
       <strong className="text-foreground">{SprayNPrayDamage.element}</strong>{' '}
-      damage <strong className="text-foreground">{SPrayNPrayCount}</strong>{' '}
-      times. Testing out a much longer description name to see how the lines
-      break, hopefully well.
+      damage to any other target{' '}
+      <strong className="text-foreground">{SPrayNPrayCount}</strong> times.
+      Testing out a much longer description name to see how the lines break,
+      hopefully well.
     </div>
   ),
   Icons: () => (

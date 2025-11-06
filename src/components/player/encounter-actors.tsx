@@ -40,6 +40,7 @@ function EncounterActors({
                   active={
                     running &&
                     !planning &&
+                    state.promptQueue.length === 0 &&
                     current?.context.sourceID === actorID
                   }
                   targeted={isTargeted(
