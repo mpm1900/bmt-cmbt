@@ -24,31 +24,30 @@ function EncounterActors({
   return (
     <div className="w-full flex flex-row-reverse justify-start items-start px-4 gap-2">
       {encounter.activeActorIDs.map((actorID, i) => {
-        const issource = !planning && current?.context.sourceID === actorID
-
         return (
-          <div key={actorID ?? i} className="relative h-14 w-48">
+          <div key={i} className="relative h-14 w-48">
             <div
               className={cn(
-                'absolute rounded bg-stone-900 opacity-40 z-0',
+                'rounded bg-stone-900 opacity-40 z-0',
                 'h-full w-full mb-6 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30'
               )}
-            >
-              inactive
-            </div>
+            />
             <AnimatePresence>
               {actorID && (
                 <EnemyActor
                   key={actorID}
                   actorID={actorID}
-                  active={running && issource}
+                  active={
+                    running &&
+                    !planning &&
+                    current?.context.sourceID === actorID
+                  }
                   targeted={isTargeted(
                     state,
                     current?.context,
                     actorID!,
                     newPosition(encounter.ID, i)
                   )}
-                  onClick={() => {}}
                 />
               )}
             </AnimatePresence>

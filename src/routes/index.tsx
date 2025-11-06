@@ -20,7 +20,7 @@ function RouteComponent() {
   const ai = players.find((p) => p.ID !== playerID)
 
   return (
-    <div className="h-screen w-screen flex flex-col items-between bg-cover bg-no-repeat">
+    <div className="h-screen w-screen flex flex-col items-between bg-cover bg-no-repeat overflow-hidden">
       <ViewHeader />
       {ai && <EncounterActors encounter={ai} current={current} />}
 
