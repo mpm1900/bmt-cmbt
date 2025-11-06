@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { getStats, withEffects } from './actor'
+import { withEffects } from './queries'
 import { getActorID, getPosition } from './player'
 import type {
   SAction,
@@ -7,6 +7,7 @@ import type {
   SDialogNode,
   SEffectItem,
   SItem,
+  SModifiedActor,
   State,
   STrigger,
 } from './state'
@@ -14,6 +15,7 @@ import type { ActionTarget } from './types/action'
 import type { DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Position } from './types/player'
 import { newContext } from './mutations'
+import { getStats, withStats } from './lib/actor'
 
 function getTriggers(state: State): Array<STrigger> {
   const effects = [...state.effects, ...(state.combat?.effects ?? [])]
@@ -31,18 +33,15 @@ function findActor(
   return state.actors.find((a) => a.ID === actorID)
 }
 
-function withStatEffects(actor: SActor, effects: Array<SEffectItem>) {
-  const [a, e] = withEffects(actor, effects)
-  return [
-    {
-      ...a,
-      stats: getStats(a),
-    },
-    e,
-  ] as const
+function withStatEffects(
+  actor: SActor,
+  effects: Array<SEffectItem>
+): SModifiedActor {
+  const modified = withEffects(actor, effects)
+  return withStats<State, SModifiedActor>(modified, getStats<State>(modified))
 }
 
-function getActorWithEffects(
+function getActor(
   state: State,
   sourceID: string | undefined
 ): ReturnType<typeof withStatEffects> | undefined {
@@ -52,13 +51,6 @@ function getActorWithEffects(
   const combatEffects = state.combat?.effects ?? []
   const effects = [...state.effects, ...combatEffects]
   return withStatEffects(source, effects)
-}
-
-function getActor(
-  state: State,
-  sourceID: string | undefined
-): SActor | undefined {
-  return getActorWithEffects(state, sourceID)?.[0]
 }
 
 function mapActor<T = unknown>(
@@ -196,11 +188,13 @@ function convertPositionToTargetContext(
 }
 
 function getNodeCount(state: State, nodeID: string): number {
-  return state.dialog.nodeCounts[nodeID] || 0
+  return state.encounter.nodeCounts[nodeID] || 0
 }
 
 function getActiveNode(state: State): SDialogNode | undefined {
-  return state.dialog.nodes.find((n) => n.ID === state.dialog.activeNodeID)
+  return state.encounter.nodes.find(
+    (n) => n.ID === state.encounter.activeNodeID
+  )
 }
 
 function getItem(
@@ -208,7 +202,7 @@ function getItem(
   nodeID: string,
   itemID: string
 ): SItem | undefined {
-  const node = state.dialog.nodes.find((n) => n.ID === nodeID)
+  const node = state.encounter.nodes.find((n) => n.ID === nodeID)
   if (!node || node.type !== 'shop') return undefined
 
   return node.items.find((i) => i.ID === itemID)
@@ -221,7 +215,6 @@ export {
   withStatEffects,
   getAliveInactiveActors,
   getAliveActiveActors,
-  getActorWithEffects,
   getActor,
   mapTarget,
   mapActor,

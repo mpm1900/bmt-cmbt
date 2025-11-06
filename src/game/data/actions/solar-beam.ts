@@ -5,12 +5,6 @@ import {
   isActive,
   mapTarget,
 } from '@/game/access'
-import {
-  getSourceChance,
-  getTargetChance,
-  newDamage,
-  withChanceEvents,
-} from '@/game/actor'
 import { addEffectResolver, damagesResolver } from '@/game/resolvers'
 import type { SAction, SEffect, State } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'
@@ -18,6 +12,12 @@ import { v4 } from 'uuid'
 import { SetActionsEffect } from '../effects/set-actions'
 import { newContext, remapTargetIDs } from '@/game/mutations'
 import type { DeltaContext, DeltaPositionContext } from '@/game/types/delta'
+import {
+  getSourceChance,
+  getTargetChance,
+  newDamage,
+  withChanceEvents,
+} from '@/game/lib/damage'
 
 const SolarBeamTargetCount = 1
 const SolarBeamAccuracy = 100

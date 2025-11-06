@@ -14,7 +14,7 @@ import {
   validateState,
   withPhase,
 } from './mutations'
-import { pop, push } from './queue'
+import { pop, push } from './lib/queue'
 import { resolveAction } from './resolvers'
 import type { SActor, State } from './state'
 import type { ActionQueueItem } from './types/action'
@@ -125,7 +125,7 @@ function nextTurnPhase(state: State): State {
 
   if (phase === 'planning') {
     const player = state.players.find(
-      (p) => p.ID === state.dialog.activeNodeID
+      (p) => p.ID === state.encounter.activeNodeID
     )!
     player.activeActorIDs.forEach((id) => {
       if (!id) return
@@ -158,7 +158,8 @@ function nextAiPrompt(state: State): State {
   if (!state.promptQueue[0]) return state
 
   const { action, context } = state.promptQueue[0]
-  if (context.playerID !== state.dialog.activeNodeID || !action.ai) return state
+  if (context.playerID !== state.encounter.activeNodeID || !action.ai)
+    return state
   const contexts = action.ai
     .generateContexts(state, context, action)
     .map((c) => [c, action.ai!.compute(state, c)] as const)
@@ -194,7 +195,7 @@ function next(state: State): State {
     return nextTurnPhase(state)
   }
 
-  if (!state.dialog.activeNodeID) {
+  if (!state.encounter.activeNodeID) {
     state = startDialog(state)
   }
 
@@ -203,11 +204,11 @@ function next(state: State): State {
 
 function hasNext(state: State): boolean {
   return (
-    state.dialog.activeNodeID === undefined ||
+    state.encounter.activeNodeID === undefined ||
     state.mutationQueue.length > 0 ||
     state.triggerQueue.length > 0 ||
     (state.actionQueue.length > 0 && state.promptQueue.length === 0) ||
-    state.promptQueue[0]?.context.playerID === state.dialog.activeNodeID
+    state.promptQueue[0]?.context.playerID === state.encounter.activeNodeID
   )
 }
 

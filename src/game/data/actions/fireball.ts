@@ -10,13 +10,13 @@ import {
 } from '@/game/access'
 import { costResolver, damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
+import { getPosition } from '@/game/player'
 import {
   getSourceChance,
   getTargetChance,
   newDamage,
   withChanceEvents,
-} from '@/game/actor'
-import { getPosition } from '@/game/player'
+} from '@/game/lib/damage'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50

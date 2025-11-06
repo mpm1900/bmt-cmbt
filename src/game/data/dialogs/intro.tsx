@@ -1,4 +1,4 @@
-import { getAliveActiveActors, getNodeCount } from '@/game/access'
+import { findPlayer, getAliveActiveActors, getNodeCount } from '@/game/access'
 import {
   createDialogOption,
   createSourceDialogOption,
@@ -11,12 +11,7 @@ import {
   pushMessagesResolver,
   startCombatResolver,
 } from '@/game/resolvers'
-import {
-  createCombat,
-  type SDialog,
-  type SDialogNode,
-  type SPlayer,
-} from '@/game/state'
+import { type SEncounter, type SDialogNode, type SPlayer } from '@/game/state'
 import { createActor } from '@/lib/create-actor'
 import {
   TbUserPlus,
@@ -35,6 +30,7 @@ import { GiCreditsCurrency } from 'react-icons/gi'
 import { FaQuestion } from 'react-icons/fa'
 import { chance } from '@/lib/chance'
 import { playerStore } from '@/hooks/usePlayer'
+import { newCombat } from '@/game/lib/combat'
 
 const playerID = playerStore.getState().playerID
 
@@ -148,7 +144,7 @@ const IntroNode0: SDialogNode = {
       ),
       context,
       action: InlineMutation(() => [
-        startCombatResolver(createCombat(IntroNode1.ID, []), {
+        startCombatResolver(newCombat(IntroNode1.ID, []), {
           players: [encounterPlayer],
           actors: [criminal1, criminal2, criminal3],
         }),
@@ -260,7 +256,8 @@ const IntroNode0: SDialogNode = {
             },
             sources: (state, context) => getAliveActiveActors(state, context),
             validate: (state, context) =>
-              getAliveActiveActors(state, context).length > 0,
+              getAliveActiveActors(state, context).length > 0 &&
+              (findPlayer(state, context.playerID)?.credits ?? 0) > 0,
           })
         ),
       },
@@ -366,7 +363,7 @@ const IntroNode2: SDialogNode = {
   credits: 100,
 }
 
-const IntroDialog: SDialog = {
+const IntroEncounter: SEncounter = {
   ID: v4(),
   startNodeID: IntroNode0.ID,
   activeNodeID: undefined,
@@ -375,4 +372,4 @@ const IntroDialog: SDialog = {
   nodeHistory: [],
 }
 
-export { IntroDialog }
+export { IntroEncounter }

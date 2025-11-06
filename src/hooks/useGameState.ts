@@ -1,4 +1,4 @@
-import { IntroDialog } from '@/game/data/dialogs/intro'
+import { IntroEncounter } from '@/game/data/dialogs/intro'
 import { Goku } from '@/game/data/effects/goku'
 import {
   addActionToQueue,
@@ -89,7 +89,7 @@ const Milo = createActor('Milo', player.ID, {
 const initialState: State = {
   players: [player],
   combat: undefined, //createCombat(),
-  dialog: IntroDialog,
+  encounter: IntroEncounter,
   actors: [Max, Katie, Hank, Milo],
   effects: [
     {
@@ -177,7 +177,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   },
   deleteCombat: () => {
     set(({ state }) => ({
-      state: endCombat(state, state.dialog.activeNodeID!),
+      state: endCombat(state, state.encounter.activeNodeID!),
     }))
   },
 }))

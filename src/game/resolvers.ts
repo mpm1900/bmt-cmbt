@@ -15,7 +15,6 @@ import type {
   SPlayer,
 } from '@/game/state'
 import { v4 } from 'uuid'
-import { withState } from '@/game/actor'
 import {
   decrementEffectItem,
   filterActionQueue,
@@ -38,7 +37,7 @@ import {
   isActive,
 } from './access'
 import { chance } from '@/lib/chance'
-import { enqueue } from './queue'
+import { enqueue } from './lib/queue'
 import type { Message } from './types/message'
 import { newMessage } from './dialog'
 import {
@@ -52,6 +51,7 @@ import {
   TargetEvade,
   TargetHeal,
 } from './data/messages'
+import { withState } from './lib/actor'
 
 function resolveAction(
   state: State,
@@ -83,7 +83,7 @@ function costResolver(
     apply: (state, context) =>
       mutateActor(state, context, {
         filter: (a) => a.ID === context.sourceID,
-        apply: (a) => withState(a, fn(a.state)),
+        apply: (a) => withState<State>(a, fn(a.state)),
       }),
   }
 
@@ -141,7 +141,7 @@ function healActorResolver(
           apply: (a) => {
             const damage = Math.max(a.state.damage - amount, 0)
             healed += a.state.damage - damage
-            return withState(a, {
+            return withState<State>(a, {
               damage,
             })
           },
@@ -485,7 +485,7 @@ function navigateDialogResolver(
     context,
     delta: {
       apply: (state, context) => {
-        const active = state.dialog.nodes.find((node) => node.ID === nodeID)!
+        const active = state.encounter.nodes.find((node) => node.ID === nodeID)!
         if (active.type == 'options') {
           active.checks(state, context).forEach((check) => {
             const [success, roll] = chance(check.chance)
@@ -512,10 +512,10 @@ function navigateDialogResolver(
 
         return {
           ...state,
-          dialog: {
-            ...state.dialog,
+          encounter: {
+            ...state.encounter,
             activeNodeID: nodeID,
-            nodeHistory: [...state.dialog.nodeHistory, nodeID],
+            nodeHistory: [...state.encounter.nodeHistory, nodeID],
           },
         }
       },

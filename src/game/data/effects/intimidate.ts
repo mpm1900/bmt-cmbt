@@ -25,7 +25,7 @@ const Intimidate: SEffect = {
         return tcontext.sourceID === econtext.sourceID
       },
       resolve: (state, tcontext) => {
-        const opponentID = state.dialog.activeNodeID!
+        const opponentID = state.encounter.activeNodeID!
         const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
           (id) => id !== null
         )
@@ -70,7 +70,7 @@ const Intimidate: SEffect = {
       resolve: (state, tcontext) => {
         // TODO factor in only doing one or the other
         return []
-        const opponentID = state.dialog.activeNodeID!
+        const opponentID = state.encounter.activeNodeID!
         const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
           (id) => id !== null
         )

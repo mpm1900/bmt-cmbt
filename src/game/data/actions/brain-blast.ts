@@ -4,7 +4,7 @@ import {
   getTargetChance,
   newDamage,
   withChanceEvents,
-} from '@/game/actor'
+} from '@/game/lib/damage'
 import { damagesResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'

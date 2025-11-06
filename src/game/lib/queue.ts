@@ -1,4 +1,4 @@
-import type { Queue } from './types/queue'
+import type { Queue } from '../types/queue'
 
 function enqueue<T>(queue: Queue<T>, items: Array<T>): Queue<T> {
   return [...queue, ...items]

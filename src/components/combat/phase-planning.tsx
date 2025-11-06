@@ -1,4 +1,4 @@
-import { withEffects } from '@/game/actor'
+import { withEffects } from '@/game/queries'
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { useGameUI } from '@/hooks/useGameUI'
@@ -13,7 +13,7 @@ function PhasePlanning() {
   const { activeActionID, activeActorID, set: setUI } = useGameUI((s) => s)
   const player = state.players.find((p) => p.ID === playerID)!
   const actors = state.actors.map((actor) => withEffects(actor, state.effects))
-  const activeActor = actors.find((actor) => actor[0].ID === activeActorID)?.[0]
+  const activeActor = actors.find((actor) => actor.ID === activeActorID)
   const items = player.items.filter((i) => i.use || i.consumable)
   const counts = groupItems(items)
   const itemActions = Object.entries(counts).map(

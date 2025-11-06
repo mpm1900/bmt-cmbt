@@ -1,15 +1,15 @@
-import type { SActor } from '@/game/state'
+import type { State, SActor } from '@/game/state'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { Button } from '../ui/button'
 import { cn } from '@/lib/utils'
 import { MAIN_STAT_ICONS } from '@/renderers/icons'
-import { getHealth } from '@/game/actor'
 import { useGameState } from '@/hooks/useGameState'
-import { getActorWithEffects } from '@/game/access'
 import { useState } from 'react'
 import { ActorHealth } from './actor-health'
 import { ActorStatus } from './actor-status'
 import { EffectBadge } from '../effect-badge'
+import { getHealth } from '@/game/lib/actor'
+import { getActor } from '@/game/access'
 
 function Actor({
   actorID,
@@ -38,8 +38,8 @@ function Actor({
     )
   }
 
-  const [actor, effects] = getActorWithEffects(state, actorID)!
-  const [health, maxHealth] = getHealth(actor)
+  const actor = getActor(state, actorID)!
+  const [health, maxHealth] = getHealth<State>(actor)
 
   return (
     <div
@@ -49,7 +49,7 @@ function Actor({
     >
       <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
-          {Object.entries(effects)
+          {Object.entries(actor.applied)
             .map(
               ([id, count]) =>
                 [state.effects.find((e) => e.effect.ID === id)!, count] as const
@@ -128,8 +128,8 @@ function EnemyActor({
     )
   }
 
-  const [actor, effects] = getActorWithEffects(state, actorID)!
-  const [health, maxHealth] = getHealth(actor)
+  const actor = getActor(state, actorID)!
+  const [health, maxHealth] = getHealth<State>(actor)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
 
   return (
@@ -156,7 +156,7 @@ function EnemyActor({
       </Button>
       <div className="flex transition-all justify-between h-6 -translate-y-2 group-hover:translate-y-1 group-data-[state=open]:translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
-          {Object.entries(effects)
+          {Object.entries(actor.applied)
             .map(
               ([id, count]) =>
                 [state.effects.find((e) => e.effect.ID === id)!, count] as const

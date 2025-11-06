@@ -3,7 +3,8 @@ import { useGameState } from '@/hooks/useGameState'
 import { EnemyActor } from './actor'
 import { TbHexagonFilled, TbHexagonOff } from 'react-icons/tb'
 import { Separator } from '../ui/separator'
-import { isTargeted } from '@/game/actor'
+import { isTargeted } from '@/game/queries'
+import { newPosition } from '@/game/player'
 
 function EncounterActors({
   encounter,
@@ -32,8 +33,7 @@ function EncounterActors({
               state,
               current?.context,
               actorID!,
-              encounter.ID,
-              i
+              newPosition(encounter.ID, i)
             )}
             onClick={() => {}}
           />

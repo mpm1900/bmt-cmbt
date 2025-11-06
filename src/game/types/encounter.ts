@@ -50,7 +50,7 @@ type DialogNode<T, A, S extends Object = {}> =
   | OptionsNode<T, A, S>
   | ShopNode<T, A, S>
 
-type Dialog<T, A> = {
+type Encounter<T, A> = {
   ID: string
   nodes: Array<DialogNode<T, A> | ShopNode<T, A>>
   startNodeID: string
@@ -65,5 +65,5 @@ export type {
   OptionsNode,
   ShopNode,
   DialogNode,
-  Dialog,
+  Encounter,
 }

@@ -8,18 +8,17 @@ import {
   isActive,
   mapActor,
 } from './access'
-import { getDamageResult, withDamage } from './actor'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './dialog'
 import { nextTurnPhase } from './next'
 import { getMissingActorCount, isPlayerDead, requiresPrompt } from './player'
-import { enqueue, pop, push, sort } from './queue'
+import { enqueue, pop, push, sort } from './lib/queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
   SAction,
   SActor,
-  SDialog,
+  SEncounter,
   SDialogNode,
   SEffect,
   SEffectItem,
@@ -32,6 +31,8 @@ import type { Damage } from './types/damage'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Message } from './types/message'
 import * as messages from './data/messages'
+import { withDamage } from './lib/actor'
+import { getDamageResult } from './lib/damage'
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -52,7 +53,7 @@ function startDialog(state: State): State {
     newContext({
       playerID: playerStore.getState().playerID,
     }),
-    NavigateDialog(state.dialog.startNodeID, [])
+    NavigateDialog(state.encounter.startNodeID, [])
   )
 
   return {
@@ -293,7 +294,7 @@ function mutateDamage(
         const damageAmount = getDamageResult(source, target, damage)
         committed = damageAmount
         const newDamage = ac.state.damage + damageAmount
-        return withDamage(
+        return withDamage<State>(
           ac,
           newDamage,
           newDamage < target.stats.health ? 1 : 0
@@ -349,7 +350,7 @@ function validateState(state: State): [State, boolean] {
           }),
           {
             ...ActivateX(count),
-            priority: player.ID === state.dialog.activeNodeID ? 1 : 0,
+            priority: player.ID === state.encounter.activeNodeID ? 1 : 0,
           }
         )
 
@@ -366,20 +367,25 @@ function validateState(state: State): [State, boolean] {
   return [state, valid]
 }
 
+function setEncounter(state: State, encounter: SEncounter | undefined): State {
+  if (!encounter) return state
+  return {
+    ...state,
+    encounter,
+  }
+}
+
 function updateDialogNode(
   state: State,
   nodeID: string,
   fn: (node: SDialogNode) => SDialogNode
 ): State {
-  return {
-    ...state,
-    dialog: {
-      ...state.dialog,
-      nodes: state.dialog.nodes.map((node) =>
-        node.ID === nodeID ? fn(node) : node
-      ),
-    },
-  }
+  return setEncounter(state, {
+    ...state.encounter,
+    nodes: state.encounter.nodes.map((node) =>
+      node.ID === nodeID ? fn(node) : node
+    ),
+  })
 }
 
 function updateDialogNodeState<T = unknown>(
@@ -399,11 +405,11 @@ function updateDialogNodeState<T = unknown>(
 function incrementNodeCount(state: State, nodeID: string): State {
   return {
     ...state,
-    dialog: {
-      ...state.dialog,
+    encounter: {
+      ...state.encounter,
       nodeCounts: {
-        ...state.dialog.nodeCounts,
-        [nodeID]: (state.dialog.nodeCounts[nodeID] || 0) + 1,
+        ...state.encounter.nodeCounts,
+        [nodeID]: (state.encounter.nodeCounts[nodeID] || 0) + 1,
       },
     },
   }
@@ -450,35 +456,16 @@ function endCombat(state: State, encounterID: string): State {
   return state
 }
 
-function setDialog(state: State, dialog: SDialog | undefined): State {
-  if (!dialog) return state
-  return {
-    ...state,
-    dialog,
-  }
-}
-
-function setDialogNode(
-  state: State,
-  nodeID: string,
-  fn: (node: SDialogNode) => SDialogNode
-): State {
-  return setDialog(state, {
-    ...state.dialog,
-    nodes: state.dialog.nodes.map((n) => (n.ID === nodeID ? fn(n) : n)),
-  })
-}
-
 function purchaseItem(state: State, playerID: string, itemID: string): State {
   const player = state.players.find((p) => p.ID === playerID)
   const node = getActiveNode(state)
-  if (!player || !node || !state.dialog.activeNodeID) return state
+  if (!player || !node || !state.encounter.activeNodeID) return state
 
-  const item = getItem(state, state.dialog.activeNodeID, itemID)
+  const item = getItem(state, state.encounter.activeNodeID, itemID)
   if (!item) return state
   if (item.value > player.credits) return state
 
-  state = setDialogNode(state, node.ID, (n) =>
+  state = updateDialogNode(state, node.ID, (n) =>
     n.type === 'shop'
       ? { ...n, items: n.items.filter((i) => i.ID !== itemID) }
       : n
@@ -522,7 +509,6 @@ export {
   remapTargetIDs,
   removePlayer,
   endCombat,
-  setDialog,
-  setDialogNode,
+  setEncounter,
   purchaseItem,
 }

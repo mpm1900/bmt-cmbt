@@ -3,13 +3,13 @@ import { v4 } from 'uuid'
 
 import { damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
+import { getActor, isActive, mapTarget } from '@/game/access'
 import {
   getSourceChance,
   getTargetChance,
   newDamage,
   withChanceEvents,
-} from '@/game/actor'
-import { getActor, isActive, mapTarget } from '@/game/access'
+} from '@/game/lib/damage'
 
 const SprayNPrayDamage: PowerDamage = newDamage({
   offenseStat: 'reflexes',

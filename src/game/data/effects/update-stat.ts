@@ -1,5 +1,5 @@
-import { withStats } from '@/game/actor'
-import type { SActor, SEffect, SModifier } from '@/game/state'
+import { withStats } from '@/game/lib/actor'
+import type { State, SActor, SEffect, SModifier } from '@/game/state'
 import type { ActorStats } from '@/game/types/actor'
 import { v4 } from 'uuid'
 
@@ -8,7 +8,7 @@ function UpdateStatModifier(fn: (a: SActor) => Partial<ActorStats>): SModifier {
     ID: v4(),
     priority: 0,
     filter: (actor, context) => actor.ID === context.parentID,
-    apply: (actor) => withStats(actor, { ...actor.stats, ...fn(actor) }),
+    apply: (actor) => withStats<State>(actor, { ...actor.stats, ...fn(actor) }),
   }
 }
 

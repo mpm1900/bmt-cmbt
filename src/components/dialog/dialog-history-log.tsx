@@ -16,8 +16,8 @@ function DialogHistoryLog({
 }: ComponentProps<typeof ScrollArea>) {
   const state = useGameState((s) => s.state)
   const messageLog = state.messageLog
-  const activeNode = state.dialog.nodes.find(
-    (node) => node.ID === state.dialog.activeNodeID
+  const activeNode = state.encounter.nodes.find(
+    (node) => node.ID === state.encounter.activeNodeID
   )
   const activeMessages =
     activeNode?.messages(state, context).map((m) => m.ID) ?? []

@@ -1,35 +1,35 @@
-import type { Effect, EffectItem } from './types/effect'
 import type {
+  Action,
   ActionQueue,
   ActionQueueItem,
   DialogAction,
   PromptQueue,
 } from './types/action'
+import type { Actor, ModifiedActor } from './types/actor'
+import type { Combat } from './types/combat'
 import type {
   Delta,
   DeltaContext,
   DeltaQueue,
   DeltaQueueItem,
 } from './types/delta'
-import type { Trigger, TriggerQueue, TriggerQueueItem } from './types/trigger'
-import type { Action } from './types/action'
-import type { Actor } from './types/actor'
-import type { Modifier } from './types/modifier'
-import type { Player } from './types/player'
-
 import type {
-  Dialog,
+  Encounter,
   DialogCheck,
   DialogNode,
   DialogOption,
   OptionsNode,
   ShopNode,
-} from './types/dialog'
-import type { Message } from './types/message'
-import type { Combat } from './types/combat'
+} from './types/encounter'
+import type { Effect, EffectItem } from './types/effect'
 import type { Item } from './types/item'
+import type { Message } from './types/message'
+import type { Modifier } from './types/modifier'
+import type { Player } from './types/player'
+import type { Trigger, TriggerQueue, TriggerQueueItem } from './types/trigger'
 
 type SActor = Actor<State>
+type SModifiedActor = ModifiedActor<State>
 type SPlayer = Player<State, SActor>
 type SItem = Item<State, SActor>
 type SAction = Action<State, SActor>
@@ -43,7 +43,7 @@ type SModifier = Modifier<SActor>
 type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 type SCombat = Combat<State, SActor>
-type SDialog = Dialog<State, SActor>
+type SEncounter = Encounter<State, SActor>
 type SShopeNode<T extends Object = {}> = ShopNode<State, SActor, T>
 type SOptionsNode<T extends Object = {}> = OptionsNode<State, SActor, T>
 type SDialogNode<T extends Object = {}> = DialogNode<State, SActor, T>
@@ -52,7 +52,7 @@ type SDialogCheck = DialogCheck<State>
 
 type State = {
   combat: SCombat | undefined
-  dialog: SDialog
+  encounter: SEncounter
   players: Array<SPlayer>
   actors: Array<SActor>
   effects: Array<SEffectItem>
@@ -64,37 +64,27 @@ type State = {
   messageLog: Array<Message>
 }
 
-function createCombat(exitNodeID: string, effects: SEffectItem[]): SCombat {
-  return {
-    exitNodeID,
-    turn: 0,
-    phase: 'pre',
-    effects,
-  }
-}
-
-export { createCombat }
 export type {
-  Combat,
-  State,
-  SActor,
-  SPlayer,
-  SItem,
   SAction,
   SActionItem,
-  SDialogAction,
-  SEffect,
-  SEffectItem,
-  SDelta,
-  SMutation,
-  SModifier,
-  STrigger,
-  STriggerItem,
+  SActor,
   SCombat,
-  SDialog,
-  SOptionsNode,
-  SShopeNode,
+  SDelta,
+  SEncounter,
+  SDialogAction,
+  SDialogCheck,
   SDialogNode,
   SDialogOption,
-  SDialogCheck,
+  SEffect,
+  SEffectItem,
+  SItem,
+  SModifiedActor,
+  SModifier,
+  SMutation,
+  SOptionsNode,
+  SPlayer,
+  SShopeNode,
+  State,
+  STrigger,
+  STriggerItem,
 }

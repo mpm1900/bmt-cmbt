@@ -26,4 +26,9 @@ type Actor<T> = {
   state: ActorState
 }
 
-export type { Actor, ActorStats, ActorState, MainStat, Element }
+type ModifiedActor<T> = Actor<T> & {
+  modified: true
+  applied: Record<string, number>
+}
+
+export type { Actor, ModifiedActor, ActorStats, ActorState, MainStat, Element }

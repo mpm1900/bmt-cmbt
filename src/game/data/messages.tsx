@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import type { SAction, SActor } from '../state'
+import type { State, SAction, SActor, SItem } from '../state'
 import { cn } from '@/lib/utils'
 import { playerStore } from '@/hooks/usePlayer'
 import { EffectTooltip } from '@/components/tooltips/effect-tooltip'
-import { getHealth } from '../actor'
 import { ActionTooltip } from '@/components/tooltips/action-tooltip'
+import { getHealth } from '../lib/actor'
 
 const playerID = playerStore.getState().playerID
 
@@ -79,7 +79,7 @@ function TargetDamage(target: SActor | undefined, damage: number) {
 }
 function TargetDamagePercent(pre: SActor | undefined, damage: number) {
   if (!pre) return null
-  let [health, maxHealth] = getHealth(pre)
+  let [health, maxHealth] = getHealth<State>(pre)
   health = Math.max(health, 0)
   maxHealth = Math.max(maxHealth, 1)
   const remaining = Math.round((health / maxHealth) * 100)
@@ -175,6 +175,15 @@ function CriticalHit() {
   return <span className="text-yellow-200">Critical hit!</span>
 }
 
+function Item(item: SItem | undefined, after?: ReactNode) {
+  return (
+    <>
+      <span className="text-foreground">{item?.name}</span>
+      {after}
+    </>
+  )
+}
+
 export {
   SeporatorBottom,
   SeporatorTop,
@@ -196,4 +205,5 @@ export {
   SourceAction,
   SourceMissed,
   CriticalHit,
+  Item,
 }
