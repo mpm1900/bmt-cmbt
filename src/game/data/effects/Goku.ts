@@ -3,7 +3,7 @@ import type { SEffect, State } from '../../state'
 import { BodyUp } from './body-up'
 import type { DeltaContext } from '@/game/types/delta'
 import { addEffectResolver, pushMessagesResolver } from '@/game/resolvers'
-import { newMessage } from '@/game/dialog'
+import { newMessage } from '@/game/encounter'
 import { EffectTrigger } from '../messages'
 import { findActor } from '@/game/access'
 

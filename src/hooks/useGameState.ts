@@ -90,6 +90,7 @@ const initialState: State = {
   players: [player],
   combat: undefined, //createCombat(),
   encounter: IntroEncounter,
+  pastEncounters: {},
   actors: [Max, Katie, Hank, Milo],
   effects: [
     {

@@ -10,6 +10,7 @@ import { ActorStatus } from './actor-status'
 import { EffectBadge } from '../effect-badge'
 import { getHealth } from '@/game/lib/actor'
 import { getActor } from '@/game/access'
+import { AnimatePresence, motion } from 'motion/react'
 
 function Actor({
   actorID,
@@ -18,7 +19,7 @@ function Actor({
   status,
   onClick,
   ...rest
-}: Omit<React.ComponentProps<'div'>, 'onClick'> & {
+}: Omit<React.ComponentProps<typeof motion.div>, 'onClick'> & {
   actorID: string | null
   active: boolean
   disabled: boolean
@@ -42,64 +43,72 @@ function Actor({
   const [health, maxHealth] = getHealth<State>(actor)
 
   return (
-    <div
-      className="group relative flex flex-col justify-end w-64"
-      data-state={openTooltipCount > 0 ? 'open' : 'closed'}
-      {...rest}
-    >
-      <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
-        <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
-          {Object.entries(actor.applied)
-            .map(
-              ([id, count]) =>
-                [state.effects.find((e) => e.effect.ID === id)!, count] as const
-            )
-            .map(([effect, count]) => (
-              <EffectBadge
-                key={effect.ID}
-                effect={effect.effect}
-                count={count}
-                side="top"
-                onOpenChange={(open) => {
-                  setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
-                }}
-              />
-            ))}
-        </div>
-      </div>
-      <Button
-        variant={active ? 'slate-active' : 'slate'}
-        disabled={disabled}
-        className={cn('h-auto p-2 pb-1')}
-        onClick={() => onClick(actor)}
+    <AnimatePresence>
+      <motion.div
+        initial={{ y: '100%', opacity: 0 }}
+        animate={{ y: '0%', opacity: 1 }}
+        exit={{ y: '100%', opacity: 0 }}
+        className="group relative flex flex-col justify-end w-64"
+        data-state={openTooltipCount > 0 ? 'open' : 'closed'}
+        {...rest}
       >
-        <ItemContent className="gap-0">
-          <ItemTitle className="font-semibold">{actor.name}</ItemTitle>
-          <ActorHealth
-            active={active}
-            showHealthNumbers={true}
-            health={health}
-            maxHealth={maxHealth}
-          />
-
-          <div className="flex gap-3 mt-1">
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.body />
-              {actor.stats.body}
-            </div>
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.reflexes />
-              {actor.stats.reflexes}
-            </div>
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.mind />
-              {actor.stats.mind}
-            </div>
+        <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
+          <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
+            {Object.entries(actor.applied)
+              .map(
+                ([id, count]) =>
+                  [
+                    state.effects.find((e) => e.effect.ID === id)!,
+                    count,
+                  ] as const
+              )
+              .map(([effect, count]) => (
+                <EffectBadge
+                  key={effect.ID}
+                  effect={effect.effect}
+                  count={count}
+                  side="top"
+                  onOpenChange={(open) => {
+                    setOpenTooltipCount((prev) => prev + (open ? 1 : -1))
+                  }}
+                />
+              ))}
           </div>
-        </ItemContent>
-      </Button>
-      <ActorStatus actor={actor} />
-    </div>
+        </div>
+        <Button
+          variant={active ? 'slate-active' : 'slate'}
+          disabled={disabled}
+          className={cn('h-auto p-2 pb-1')}
+          onClick={() => onClick(actor)}
+        >
+          <ItemContent className="gap-0">
+            <ItemTitle className="font-semibold">{actor.name}</ItemTitle>
+            <ActorHealth
+              active={active}
+              showHealthNumbers={true}
+              health={health}
+              maxHealth={maxHealth}
+            />
+
+            <div className="flex gap-3 mt-1">
+              <div className="flex gap-1 items-center">
+                <MAIN_STAT_ICONS.body />
+                {actor.stats.body}
+              </div>
+              <div className="flex gap-1 items-center">
+                <MAIN_STAT_ICONS.reflexes />
+                {actor.stats.reflexes}
+              </div>
+              <div className="flex gap-1 items-center">
+                <MAIN_STAT_ICONS.mind />
+                {actor.stats.mind}
+              </div>
+            </div>
+          </ItemContent>
+        </Button>
+        <ActorStatus actor={actor} />
+      </motion.div>
+    </AnimatePresence>
   )
 }
 
@@ -109,39 +118,31 @@ function EnemyActor({
   targeted,
   onClick,
   ...rest
-}: React.ComponentProps<'div'> & {
+}: React.ComponentProps<typeof motion.div> & {
   actorID: string | null
   active: boolean
   targeted: boolean
   onClick: () => void
 }) {
   const state = useGameState((s) => s.state)
-  if (!actorID) {
-    return (
-      <Button
-        disabled
-        variant="stone-inactive"
-        className="h-14 mb-6 w-48 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30"
-      >
-        inactive
-      </Button>
-    )
-  }
+  if (!actorID) return null
 
   const actor = getActor(state, actorID)!
   const [health, maxHealth] = getHealth<State>(actor)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
 
   return (
-    <div
-      className="group flex flex-col w-48"
+    <motion.div
+      initial={{ y: '-100%', opacity: 0 }}
+      animate={{ y: '0%', opacity: 1 }}
+      exit={{ y: '-100%', opacity: 0 }}
+      className="group flex flex-col w-full"
       {...rest}
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
     >
       <Button
         variant={targeted ? 'destructive' : active ? 'default' : 'stone'}
-        className="min-h-14 h-auto py-1 px-2"
-        disabled
+        className="h-14 py-1 px-2 pointer-events-none"
         onClick={onClick}
       >
         <ItemContent className="gap-0">
@@ -173,7 +174,7 @@ function EnemyActor({
             ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

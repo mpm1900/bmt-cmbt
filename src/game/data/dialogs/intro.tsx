@@ -3,7 +3,7 @@ import {
   createDialogOption,
   createSourceDialogOption,
   newMessage,
-} from '@/game/dialog'
+} from '@/game/encounter'
 import { getMissingActorCount } from '@/game/player'
 import {
   damagesResolver,
@@ -365,6 +365,8 @@ const IntroNode2: SDialogNode = {
 
 const IntroEncounter: SEncounter = {
   ID: v4(),
+  name: 'Introductions',
+  persist: false,
   startNodeID: IntroNode0.ID,
   activeNodeID: undefined,
   nodes: [IntroNode0, IntroNode1, IntroNode2],

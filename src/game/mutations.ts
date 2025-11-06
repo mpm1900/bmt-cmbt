@@ -10,7 +10,7 @@ import {
 } from './access'
 import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
-import { newMessage } from './dialog'
+import { newMessage } from './encounter'
 import { nextTurnPhase } from './next'
 import { getMissingActorCount, isPlayerDead, requiresPrompt } from './player'
 import { enqueue, pop, push, sort } from './lib/queue'

@@ -18,7 +18,7 @@ function PlayerActors({
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div className="flex gap-2 items-end">
+    <div className="flex gap-2 items-end overflow-hidden">
       {player.activeActorIDs.map((actorID, i) => {
         const isactive = planning && activeActorID === actorID
         const issource = !planning && current?.context.sourceID === actorID

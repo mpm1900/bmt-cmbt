@@ -1,4 +1,4 @@
-import { newMessage } from '@/game/dialog'
+import { newMessage } from '@/game/encounter'
 import {
   deactivateActorResolver,
   decrementEffectsResolver,

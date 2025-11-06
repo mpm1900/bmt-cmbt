@@ -53,13 +53,17 @@ type SDialogCheck = DialogCheck<State>
 type State = {
   combat: SCombat | undefined
   encounter: SEncounter
+  pastEncounters: Record<string, SEncounter>
+
   players: Array<SPlayer>
   actors: Array<SActor>
   effects: Array<SEffectItem>
+
   actionQueue: ActionQueue<State, SActor>
   promptQueue: PromptQueue<State, SActor>
   triggerQueue: TriggerQueue<State>
   mutationQueue: DeltaQueue<State, DeltaContext>
+
   combatLog: Array<Message>
   messageLog: Array<Message>
 }

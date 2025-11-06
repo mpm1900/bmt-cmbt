@@ -13,6 +13,7 @@ import type {
   SMutation,
   State,
   SPlayer,
+  SEncounter,
 } from '@/game/state'
 import { v4 } from 'uuid'
 import {
@@ -27,6 +28,7 @@ import {
   purchaseItem,
   pushMessages,
   removeParentEffects,
+  setEncounter,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
@@ -39,7 +41,7 @@ import {
 import { chance } from '@/lib/chance'
 import { enqueue } from './lib/queue'
 import type { Message } from './types/message'
-import { newMessage } from './dialog'
+import { newMessage } from './encounter'
 import {
   ActorActivated,
   ActorDeactivated,
@@ -509,15 +511,13 @@ function navigateDialogResolver(
         state.mutationQueue = enqueue(state.mutationQueue, [
           pushMessagesResolver(context, active.messages(state, context)),
         ])
+        state = setEncounter(state, {
+          ...state.encounter,
+          activeNodeID: nodeID,
+          nodeHistory: [...state.encounter.nodeHistory, nodeID],
+        })
 
-        return {
-          ...state,
-          encounter: {
-            ...state.encounter,
-            activeNodeID: nodeID,
-            nodeHistory: [...state.encounter.nodeHistory, nodeID],
-          },
-        }
+        return state
       },
     },
   }
@@ -533,6 +533,32 @@ function purchaseItemResolver(
     delta: {
       apply: (state, context) => {
         return purchaseItem(state, context.playerID, itemID)
+      },
+    },
+  }
+}
+
+function navigateEncounterResolver(
+  context: DeltaContext,
+  encounter: SEncounter
+): SMutation {
+  return {
+    ID: v4(),
+    context,
+    delta: {
+      apply: (state) => {
+        if (state.encounter.persist) {
+          state = {
+            ...state,
+            pastEncounters: {
+              ...state.pastEncounters,
+              [state.encounter.ID]: state.encounter,
+            },
+          }
+        }
+
+        state = setEncounter(state, encounter)
+        return state
       },
     },
   }
@@ -566,4 +592,5 @@ export {
   startCombatResolver,
   navigateDialogResolver,
   purchaseItemResolver,
+  navigateEncounterResolver,
 }

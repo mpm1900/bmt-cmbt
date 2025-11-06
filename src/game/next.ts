@@ -1,6 +1,6 @@
 import { findActor } from './access'
 import { SourceAction } from './data/messages'
-import { newMessage } from './dialog'
+import { newMessage } from './encounter'
 import {
   handleTrigger,
   newContext,

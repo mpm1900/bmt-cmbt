@@ -16,11 +16,7 @@ function ActionDetails({
 }) {
   return (
     <Collapsible open={active}>
-      <ItemActions
-        className={cn('flex-col items-end float-right pl-3', {
-          'pb-2': active,
-        })}
-      >
+      <ItemActions className={cn('flex-col items-end float-right pl-3', {})}>
         <div
           className={cn({
             'text-muted-foreground': !active,

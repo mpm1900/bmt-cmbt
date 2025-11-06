@@ -1,5 +1,5 @@
 import { getItem } from '@/game/access'
-import { newMessage } from '@/game/dialog'
+import { newMessage } from '@/game/encounter'
 import { purchaseItemResolver, pushMessagesResolver } from '@/game/resolvers'
 import type { SDialogAction } from '@/game/state'
 import { v4 } from 'uuid'

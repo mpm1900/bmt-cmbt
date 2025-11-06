@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { BodyDown } from './body-down'
 import { findActor, getActiveActorIDs } from '@/game/access'
 import { newContext } from '@/game/mutations'
-import { newMessage } from '@/game/dialog'
+import { newMessage } from '@/game/encounter'
 import { EffectSourceTrigger } from '../messages'
 
 const IntimidateID = v4()

@@ -5,6 +5,8 @@ import { TbHexagonFilled, TbHexagonOff } from 'react-icons/tb'
 import { Separator } from '../ui/separator'
 import { isTargeted } from '@/game/queries'
 import { newPosition } from '@/game/player'
+import { cn } from '@/lib/utils'
+import { AnimatePresence } from 'motion/react'
 
 function EncounterActors({
   encounter,
@@ -25,18 +27,32 @@ function EncounterActors({
         const issource = !planning && current?.context.sourceID === actorID
 
         return (
-          <EnemyActor
-            key={actorID ?? i}
-            actorID={actorID}
-            active={running && issource}
-            targeted={isTargeted(
-              state,
-              current?.context,
-              actorID!,
-              newPosition(encounter.ID, i)
-            )}
-            onClick={() => {}}
-          />
+          <div key={actorID ?? i} className="relative h-14 w-48">
+            <div
+              className={cn(
+                'absolute rounded bg-stone-900 opacity-40 z-0',
+                'h-full w-full mb-6 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30'
+              )}
+            >
+              inactive
+            </div>
+            <AnimatePresence>
+              {actorID && (
+                <EnemyActor
+                  key={actorID}
+                  actorID={actorID}
+                  active={running && issource}
+                  targeted={isTargeted(
+                    state,
+                    current?.context,
+                    actorID!,
+                    newPosition(encounter.ID, i)
+                  )}
+                  onClick={() => {}}
+                />
+              )}
+            </AnimatePresence>
+          </div>
         )
       })}
       <div className="flex flex-col gap-1 items-end mt-3">

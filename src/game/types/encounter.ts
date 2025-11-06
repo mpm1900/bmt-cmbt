@@ -52,6 +52,8 @@ type DialogNode<T, A, S extends Object = {}> =
 
 type Encounter<T, A> = {
   ID: string
+  name: string
+  persist: boolean
   nodes: Array<DialogNode<T, A> | ShopNode<T, A>>
   startNodeID: string
   activeNodeID: string | undefined

@@ -30,7 +30,12 @@ function ActionSelectionCard({
   )
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card className="w-180 gap-2">
+    <Card
+      className="w-180 gap-2"
+      initial={{ scale: 1, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+    >
       {children || (
         <CardHeader>
           <CombatViewTabs />
