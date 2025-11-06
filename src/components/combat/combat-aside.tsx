@@ -10,7 +10,12 @@ function CombatAside() {
   const next = useGameState((store) => store.nextPhase)
 
   return (
-    <Card className="max-h-120 w-80">
+    <Card
+      className="max-h-120 w-80"
+      initial={{ opacity: 0, translateX: '80px' }}
+      animate={{ opacity: 1, translateX: '0' }}
+      exit={{ opacity: 0, translateX: '80px' }}
+    >
       <Tabs defaultValue="combat-log">
         <CardHeader>
           <TabsList>

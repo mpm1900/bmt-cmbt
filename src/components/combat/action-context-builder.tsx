@@ -154,7 +154,7 @@ function UniqueTargetGenerator({
   const players = new Set(targets.map((t) => t.target.playerID))
   if (players.size > 1 && targets.length > 4) {
     return (
-      <div className="flex flex-col w-full justify-around px-4 gap-4">
+      <div className="flex flex-col w-full justify-around px-4 pt-4 gap-4">
         <div className="flex flex-col gap-1">
           <div className="font-semibold text-xs text-enemy/70 hidden">
             Enemy Targets

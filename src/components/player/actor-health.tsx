@@ -16,7 +16,7 @@ function ActorHealth({
   health: number
   maxHealth: number
 }) {
-  const value = (health * 100) / maxHealth
+  const value = maxHealth === 0 ? 0 : (health * 100) / maxHealth
   const [after, setAfter] = React.useState(value)
   React.useEffect(() => {
     const timeout = setTimeout(() => setAfter(value), 300)
