@@ -17,6 +17,7 @@ import {
   newDamage,
   withChanceEvents,
 } from '@/game/lib/damage'
+import { resolveAction } from '@/game/action'
 
 const FireballTargetCount = 2
 const FireballManaCost = 50
@@ -62,39 +63,46 @@ const Fireball: SAction = {
       })
     },
     compute: (state, context) => {
-      return (
-        mapActorPosition(
-          state,
-          context.positions[0],
-          (a) => a.stats.health - a.state.damage
-        ) ?? 0
+      return mapActorPosition(
+        state,
+        context.positions[0],
+        (a) => a.stats.health - a.state.damage
       )
     },
   },
   resolve: (state, context) => {
-    const source = getActor(state, context.sourceID)!
-    const sChance = getSourceChance(source, {
-      successThreshold: FireballAccuracy,
-      criticalThreshold: 0,
-    })
-    const targetIDs = context.targetIDs.filter(Boolean)
-    return [
-      costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
-      damagesResolver(
-        context,
-        targetIDs.map((targetID) => {
-          const target = getActor(state, targetID)!
-          const tChance = getTargetChance(target)
-          const damage = withChanceEvents(FireballDamage, sChance, tChance)
-          return damage
-        }),
-        targetIDs.map((targetID) => ({
-          ...context,
-          targetIDs: [targetID],
+    return resolveAction(state, context, {
+      costs: [
+        costResolver(context, (s) => ({
+          mana: s.mana - FireballManaCost,
         })),
-        0
-      ),
-    ]
+      ],
+      onSuccess: (mutations) => {
+        const source = getActor(state, context.sourceID)!
+        const sChance = getSourceChance(source, {
+          successThreshold: FireballAccuracy,
+          criticalThreshold: 0,
+        })
+        const targetIDs = context.targetIDs.filter(Boolean)
+        return [
+          ...mutations,
+          damagesResolver(
+            context,
+            targetIDs.map((targetID) => {
+              const target = getActor(state, targetID)!
+              const tChance = getTargetChance(target)
+              const damage = withChanceEvents(FireballDamage, sChance, tChance)
+              return damage
+            }),
+            targetIDs.map((targetID) => ({
+              ...context,
+              targetIDs: [targetID],
+            }))
+          ),
+        ]
+      },
+      onError: (mutations) => [...mutations],
+    })
   },
 }
 

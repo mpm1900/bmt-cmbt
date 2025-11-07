@@ -356,7 +356,7 @@ function damagesResolver(
   context: DeltaContext,
   damages: Array<Damage>,
   contexts: Array<DeltaContext> = [],
-  depth: number
+  depth: number = 0
 ): SMutation {
   return {
     ID: v4(),

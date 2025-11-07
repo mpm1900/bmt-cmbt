@@ -36,7 +36,9 @@ function ActionItem({
       {renderer ? (
         <ActionDetails renderer={renderer} active={active} />
       ) : (
-        action.name
+        <span className={cn('text-lg', { 'text-muted-foreground': !active })}>
+          {action.name}
+        </span>
       )}
     </Item>
   )

@@ -20,7 +20,7 @@ type ActionAI<T, A> = {
     context: DeltaPositionContext,
     action: Action<T, A>
   ) => Array<DeltaPositionContext>
-  compute: (state: T, context: DeltaPositionContext) => number
+  compute: (state: T, context: DeltaPositionContext) => number | undefined
 }
 
 type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {

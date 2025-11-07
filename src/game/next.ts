@@ -136,7 +136,7 @@ function nextTurnPhase(state: State): State {
         const contexts = a
           .ai!.generateContexts(state, context, a)
           .map((c) => [c, a.ai!.compute(state, c)] as const)
-          .sort((a, b) => b[1] - a[1])
+          .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
 
         return [a, contexts[0][0], contexts[0][1]] as const
       })
@@ -163,7 +163,7 @@ function nextAiPrompt(state: State): State {
   const contexts = action.ai
     .generateContexts(state, context, action)
     .map((c) => [c, action.ai!.compute(state, c)] as const)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
 
   state = resolvePrompt(state, contexts[0][0])
   return state

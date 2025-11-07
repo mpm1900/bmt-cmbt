@@ -33,9 +33,11 @@ function createActor(
     actions: actions,
     stats,
     state: {
-      mana: 100,
-      damage: 0,
       alive: 1,
+      damage: 0,
+      flinching: 0,
+      mana: 100,
+      protected: 0,
     },
   }
 }

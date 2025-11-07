@@ -60,51 +60,6 @@ const Intimidate: SEffect = {
         return deltas
       },
     },
-    {
-      ID: v4(),
-      type: 'on-turn-start',
-      priority: 0,
-      validate: (state, _tcontext) => {
-        return state.combat?.turn === 0
-      },
-      resolve: (state, tcontext) => {
-        // TODO factor in only doing one or the other
-        return []
-        const opponentID = state.encounter.activeNodeID!
-        const activeActorIDs = getActiveActorIDs(state, opponentID).filter(
-          (id) => id !== null
-        )
-        const deltas: Array<SMutation> = []
-        if (activeActorIDs.length > 0) {
-          deltas.push(
-            pushMessagesResolver(tcontext, [
-              newMessage({
-                text: EffectSourceTrigger(
-                  IntimidateID,
-                  name,
-                  findActor(state, econtext.sourceID)
-                ),
-                depth: 0,
-              }),
-            ])
-          )
-        }
-        deltas.push(
-          ...activeActorIDs.map((id) => {
-            return addEffectResolver(
-              BodyDown,
-              newContext({
-                playerID: opponentID,
-                sourceID: tcontext.sourceID,
-                parentID: id,
-              }),
-              0
-            )
-          })
-        )
-        return deltas
-      },
-    },
   ],
 }
 

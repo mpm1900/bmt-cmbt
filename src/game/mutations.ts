@@ -283,6 +283,7 @@ function mutateDamage(
 ): State {
   context.targetIDs.forEach((targetID) => {
     let committed = 0
+    let isProtected = false
     const pre = getActor(state, targetID)
     state = mutateActor(state, context, {
       filter: (ac) => targetID === ac.ID,
@@ -292,18 +293,33 @@ function mutateDamage(
         if ((damage.type === 'power' && !source) || !target) return ac
 
         const damageAmount = getDamageResult(source, target, damage)
-        committed = damageAmount
-        const newDamage = ac.state.damage + damageAmount
-        return withDamage<State>(
-          ac,
-          newDamage,
-          newDamage < target.stats.health ? 1 : 0
-        )
+        if (target.state.protected) {
+          isProtected = true
+          return ac
+        } else {
+          committed = damageAmount
+          const newDamage = ac.state.damage + damageAmount
+          return withDamage<State>(
+            ac,
+            newDamage,
+            newDamage < target.stats.health ? 1 : 0
+          )
+        }
       },
     })
 
     const target = getActor(state, targetID)
     const dead = !target?.state.alive
+
+    if (isProtected) {
+      state = pushMessages(state, [
+        newMessage({
+          context,
+          text: messages.ActorProtected(target),
+          depth: depth + 1,
+        }),
+      ])
+    }
 
     if (committed > 0) {
       state = handleTrigger(state, context, 'on-damage')

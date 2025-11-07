@@ -10,7 +10,7 @@ function ActorSelectorGrid({ playerID }: { playerID: string }) {
   const actors = state.actors.filter((actor) => actor.playerID === playerID)
 
   return (
-    <ButtonGrid32>
+    <ButtonGrid32 className="bg-background/40 rounded-xl p-0.5 border border-background/60">
       {actors.map((actor) => {
         return (
           <Dialog key={actor.ID}>

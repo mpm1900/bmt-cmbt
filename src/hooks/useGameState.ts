@@ -29,6 +29,7 @@ import {
 import { useEffect, useState } from 'react'
 import { findActor } from '@/game/access'
 import { isPlayerDead } from '@/game/player'
+import { Protected } from '@/game/data/effects/protected'
 
 type GameStateStore = {
   state: State
@@ -70,7 +71,8 @@ const Katie = createActor('Katie', player.ID, {
 const Hank = createActor('Hank', player.ID, {
   accuracy: 0,
   body: 180,
-  evasion: 90,
+  // evasion: 90,
+  evasion: 0,
   health: 0,
   mind: 100,
   reflexes: 150,
@@ -124,6 +126,15 @@ const initialState: State = {
         playerID: player.ID,
         sourceID: Max.ID,
         parentID: Max.ID,
+      }),
+    },
+    {
+      ID: v4(),
+      effect: Protected,
+      context: newContext({
+        playerID: player.ID,
+        sourceID: Hank.ID,
+        parentID: Hank.ID,
       }),
     },
   ],

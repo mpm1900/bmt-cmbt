@@ -1,13 +1,40 @@
+import { getActor } from './access'
+import { ActorFlinched } from './data/messages'
+import { newMessage } from './encounter'
+import { pushMessagesResolver } from './resolvers'
 import type { SAction, State } from './state'
-import type { DeltaPositionContext } from './types/delta'
+import type { DeltaContext } from './types/delta'
 
-function validateTargetsLength(
+type Mutations = ReturnType<SAction['resolve']>
+
+function resolveAction(
   state: State,
-  action: SAction,
-  context: DeltaPositionContext
-): boolean {
-  const max = action.targets.max(state, context)
-  return context.positions.length <= max
+  context: DeltaContext,
+  config: {
+    costs?: Mutations
+    onSuccess: (mutations: Mutations) => Mutations
+    onError: (mutations: Mutations) => Mutations
+  }
+): Mutations {
+  const { costs = [], onError, onSuccess } = config
+  const source = getActor(state, context.sourceID)
+  if (!source) return onError(costs)
+  if (!source.state.alive) return onError(costs)
+
+  if (source.state.flinching) {
+    return onError(
+      costs.concat(
+        pushMessagesResolver(context, [
+          newMessage({
+            text: ActorFlinched(source),
+            depth: 1,
+          }),
+        ])
+      )
+    )
+  }
+
+  return onSuccess(costs)
 }
 
-export { validateTargetsLength }
+export { resolveAction }

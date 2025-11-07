@@ -64,6 +64,20 @@ function ActorDied(actor: SActor | undefined) {
     </span>
   )
 }
+function ActorProtected(actor: SActor | undefined) {
+  return (
+    <>
+      {Actor(actor)} <span>was protected.</span>
+    </>
+  )
+}
+function ActorFlinched(actor: SActor | undefined) {
+  return (
+    <>
+      {Actor(actor)} <span>flinched.</span>
+    </>
+  )
+}
 
 function TargetDamage(target: SActor | undefined, damage: number) {
   return (
@@ -193,6 +207,8 @@ export {
   ActorActivated,
   ActorDeactivated,
   ActorDied,
+  ActorProtected,
+  ActorFlinched,
   TargetDamage,
   TargetDamagePercent,
   TargetHeal,

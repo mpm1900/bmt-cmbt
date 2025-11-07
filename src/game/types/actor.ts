@@ -10,9 +10,12 @@ type ActorStats = Record<MainStat, number> & {
   speed: number
 }
 type ActorState = {
+  alive: 0 | 1
   damage: number
   mana: number
-  alive: 0 | 1
+
+  protected: 0 | 1
+  flinching: 0 | 1
 }
 
 type Actor<T> = {
