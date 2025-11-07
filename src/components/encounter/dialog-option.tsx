@@ -3,7 +3,7 @@ import type { SDialogOption } from '@/game/state'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
-import { ArrowRight } from 'lucide-react'
+import { ArrowUp } from 'lucide-react'
 import { useState, type ComponentProps } from 'react'
 import {
   InputGroup,
@@ -125,7 +125,7 @@ function DialogOption({
               setContext(option.context)
             }}
           >
-            <ArrowRight />
+            <ArrowUp />
           </InputGroupButton>
         </InputGroupAddon>
       )}

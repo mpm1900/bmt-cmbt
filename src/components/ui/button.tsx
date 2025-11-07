@@ -26,8 +26,9 @@ const buttonVariants = cva(
         slate: 'bg-slate-700 text-secondary-foreground hover:bg-slate-700/80',
         ['slate-active']: 'bg-slate-300 text-slate-700 hover:bg-slate-300/90',
         ['slate-inactive']:
-          'bg-slate-900/30 text-slate-300/60 hover:bg-slate-900/80',
-        stone: 'bg-stone-700 text-secondary-foreground hover:bg-stone-700/80',
+          'bg-slate-950/60 text-slate-300/60 hover:bg-slate-900/80',
+        stone:
+          'bg-stone-700 border text-secondary-foreground hover:bg-stone-700/80',
         ['stone-active']: 'bg-stone-300 text-stone-700 hover:bg-stone-300/90',
         ['stone-inactive']:
           'bg-stone-800/50 text-stone-300/80 hover:bg-stone-900/80',

@@ -41,11 +41,10 @@ const SprayNPray: SAction = {
     const targetIDs = context.targetIDs.filter(Boolean)
     return [
       targetIDs.map((targetID) => {
-        const source = getSourceChance(
-          SprayNPrayAccuracy,
-          SprayNPrayCritChance,
-          getActor(state, context.sourceID)!
-        )
+        const source = getSourceChance(getActor(state, context.sourceID)!, {
+          successThreshold: SprayNPrayAccuracy,
+          criticalThreshold: SprayNPrayCritChance,
+        })
         const target = getTargetChance(getActor(state, targetID)!)
         const damage = withChanceEvents(SprayNPrayDamage, source, target)
         const ctx = { ...context, targetIDs: [targetID] }

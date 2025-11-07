@@ -34,7 +34,10 @@ const HotShots: SAction = {
   },
   resolve: (state, context) => {
     const source = getActor(state, context.sourceID)!
-    const sChance = getSourceChance(100, 0, source)
+    const sChance = getSourceChance(source, {
+      successThreshold: 100,
+      criticalThreshold: 0,
+    })
     const target = getActor(state, context.targetIDs[0])!
     if (!target) return []
 

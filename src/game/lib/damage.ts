@@ -43,13 +43,15 @@ function withChanceEvents(
 }
 
 function getSourceChance<T>(
-  success: number,
-  critical: number,
-  source: Actor<T>
+  source: Actor<T>,
+  options: {
+    successThreshold: number
+    criticalThreshold: number
+  }
 ): ChanceEvent {
-  const successThreshold = success + source.stats.accuracy
+  const successThreshold = options.successThreshold + source.stats.accuracy
   const successRoll = chance(successThreshold)
-  const criticalThreshold = critical + 0 // TODO: critical stat
+  const criticalThreshold = options.criticalThreshold + 0 // TODO: critical stat
   const criticalRoll = chance(criticalThreshold)
   const sourceEvent: ChanceEvent = newChanceEvent({
     success: successRoll[0],
@@ -63,8 +65,13 @@ function getSourceChance<T>(
   return sourceEvent
 }
 
-function getTargetChance<T>(target: Actor<T>): ChanceEvent {
-  const evasionRoll = chance(target.stats.evasion)
+function getTargetChance<T>(
+  target: Actor<T>,
+  options: { ignoreEvade?: boolean } = {}
+): ChanceEvent {
+  const evasionRoll = options.ignoreEvade
+    ? ([false, 0] as const)
+    : chance(target.stats.evasion)
   const targetEvent: ChanceEvent = newChanceEvent({
     success: evasionRoll[0],
     successRoll: evasionRoll[1],

@@ -28,7 +28,7 @@ function EncounterActors({
           <div key={i} className="relative h-14 w-48">
             <div
               className={cn(
-                'rounded bg-stone-900 opacity-40 z-0',
+                'rounded bg-background opacity-40 z-0',
                 'h-full w-full mb-6 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30'
               )}
             />

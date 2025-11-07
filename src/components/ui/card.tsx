@@ -11,7 +11,7 @@ function Card({
     <motion.div
       data-slot="card"
       className={cn(
-        'bg-card text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
+        'bg-card/70 text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
         className
       )}
       {...props}

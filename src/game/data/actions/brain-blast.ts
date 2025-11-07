@@ -37,12 +37,13 @@ const BrainBlast: SAction = {
     const targetIDs = context.targetIDs.filter(Boolean)
     return [
       targetIDs.map((targetID) => {
-        const source = getSourceChance(
-          100,
-          0,
-          getActor(state, context.sourceID)!
-        )
-        const target = getTargetChance(getActor(state, targetID)!)
+        const source = getSourceChance(getActor(state, context.sourceID)!, {
+          successThreshold: 100,
+          criticalThreshold: 0,
+        })
+        const target = getTargetChance(getActor(state, targetID)!, {
+          ignoreEvade: true,
+        })
         const damage = withChanceEvents(BrainBlastDamage, source, target)
         const ctx = { ...context, targetIDs: [targetID] }
         return damagesResolver(ctx, [damage], [ctx], 0)

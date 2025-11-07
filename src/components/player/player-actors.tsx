@@ -3,7 +3,6 @@ import { useGameState } from '@/hooks/useGameState'
 import { nextAvailableAction } from '@/game/access'
 import { useGameUI } from '@/hooks/useGameUI'
 import type { SActionItem, SPlayer } from '@/game/state'
-import { Button } from '../ui/button'
 import { AnimatePresence } from 'motion/react'
 import { cn } from '@/lib/utils'
 
@@ -21,20 +20,14 @@ function PlayerActors({
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div
-      className="grid items-end gap-2"
-      style={{
-        gridTemplateColumns: `repeat(${player.activeActorIDs.length}, 1fr)`,
-      }}
-    >
+    <div className="flex items-end justify-end gap-2">
       {player.activeActorIDs.map((actorID, i) => (
-        <div key={i} className="relative w-64 h-30 overflow-hidden">
-          <Button
-            disabled
-            variant="slate-inactive"
+        <div key={i} className="relative w-64 h-32 overflow-hidden">
+          <div
             className={cn(
-              'h-20 mb-5 mt-5 w-64 flex items-center justify-center border border-foreground/10 border-dashed',
-              { hidden: !!actorID }
+              'rounded-lg h-19 mb-4 mt-8 w-64 flex items-center justify-center transition-all',
+              ' bg-background/60 border border-background/80',
+              { 'opacity-0': !!actorID }
             )}
           />
           <AnimatePresence>

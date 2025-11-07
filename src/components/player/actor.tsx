@@ -67,7 +67,7 @@ function Actor({
       <Button
         variant={active ? 'slate-active' : 'slate'}
         disabled={disabled}
-        className={cn('h-auto p-2 pb-1')}
+        className={cn('h-auto p-2 pb-1 border border-slate-950')}
         onClick={() => onClick(actor)}
       >
         <ItemContent className="gap-0">
@@ -126,7 +126,7 @@ function EnemyActor({
     >
       <Button
         variant={targeted ? 'destructive' : active ? 'default' : 'stone'}
-        className="h-14 py-1 px-2 pointer-events-none"
+        className="h-14 py-1 px-2 pointer-events-none border border-stone-950"
       >
         <ItemContent className="gap-0">
           <ItemTitle className="text-xs">{actor.name}</ItemTitle>

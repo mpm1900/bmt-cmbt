@@ -80,7 +80,10 @@ function SolarBeamFollowUp(ctx: DeltaPositionContext): SAction {
     resolve: (state) => {
       const context = convertPositionToTargetContext(state, ctx)
       const source = getActor(state, context.sourceID)!
-      const sChance = getSourceChance(SolarBeamAccuracy, 0, source)
+      const sChance = getSourceChance(source, {
+        successThreshold: SolarBeamAccuracy,
+        criticalThreshold: 0,
+      })
       const targetIDs = remapTargetIDs(state, context)
 
       return [

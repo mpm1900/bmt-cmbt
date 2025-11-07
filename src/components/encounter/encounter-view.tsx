@@ -16,7 +16,9 @@ function EncounterView() {
   const phase = state.combat?.phase
   const planning = phase === 'planning'
   const running = !planning && hasNext(state)
-  const pastEncounters = Object.values(state.pastEncounters)
+  const pastEncounters = Object.values(state.pastEncounters).filter(
+    (e) => e.ID !== state.encounter.ID
+  )
   useEffect(() => {}, [state])
 
   return (

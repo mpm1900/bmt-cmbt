@@ -73,7 +73,10 @@ const Fireball: SAction = {
   },
   resolve: (state, context) => {
     const source = getActor(state, context.sourceID)!
-    const sChance = getSourceChance(FireballAccuracy, 0, source)
+    const sChance = getSourceChance(source, {
+      successThreshold: FireballAccuracy,
+      criticalThreshold: 0,
+    })
     const targetIDs = context.targetIDs.filter(Boolean)
     return [
       costResolver(context, (s) => ({ mana: s.mana - FireballManaCost })),
