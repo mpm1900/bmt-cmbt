@@ -7,6 +7,7 @@ const DragonDance: SAction = {
   ID: v4(),
   name: 'Dragon Dance',
   priority: 0,
+  cooldown: () => 0,
   validate: () => true,
   targets: {
     unique: true,

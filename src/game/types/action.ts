@@ -26,6 +26,7 @@ type ActionAI<T, A> = {
 type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
   name: string
   priority: number
+  cooldown: (state: T, context: DeltaContext) => number
   targets: ActionTargetGenerator<T, A>
   ai?: ActionAI<T, A>
 }

@@ -16,6 +16,7 @@ import type { DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Position } from './types/player'
 import { newContext } from './mutations'
 import { getStats, withStats } from './lib/actor'
+import { validateAction } from './action'
 
 function getTriggers(state: State): Array<STrigger> {
   const effects = [...state.effects, ...(state.combat?.effects ?? [])]
@@ -118,21 +119,12 @@ function getAliveActiveActors(
   )
 }
 
-function isValid(
-  action: SAction | undefined,
-  state: State,
-  context: DeltaPositionContext
-) {
-  const valid = action && action.validate(state, context)
-  return valid
-}
-
 function nextAvailableAction(
   actor: SActor | undefined,
   state: State
 ): SAction | undefined {
   return actor?.actions.find((a) =>
-    isValid(a, state, newContext({ sourceID: actor.ID }))
+    validateAction(a, state, newContext({ sourceID: actor.ID }))
   )
 }
 
@@ -220,7 +212,6 @@ export {
   mapActor,
   mapActorPosition,
   isActive,
-  isValid,
   nextAvailableAction,
   getActiveActorIDs,
   hasActiveActorSpace,

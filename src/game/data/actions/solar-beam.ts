@@ -43,6 +43,7 @@ const SolarBeam: SAction = {
   ID: v4(),
   name: 'Solar Beam',
   priority: 0,
+  cooldown: () => 0,
   validate: () => true,
   targets: {
     unique: true,
@@ -70,6 +71,7 @@ function SolarBeamFollowUp(ctx: DeltaPositionContext): SAction {
     ID: v4(),
     name: 'Solar Beam',
     priority: 0,
+    cooldown: () => 0,
     validate: () => true,
     targets: {
       unique: true,

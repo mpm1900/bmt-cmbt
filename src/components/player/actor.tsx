@@ -31,7 +31,6 @@ function Actor({
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
   const health = actor.state.alive ? _health : 0
-  console.log(_health, actor.name)
 
   return (
     <motion.div

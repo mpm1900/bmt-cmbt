@@ -12,6 +12,7 @@ import { GiCreditsCurrency } from 'react-icons/gi'
 import { hasNext } from '@/game/next'
 import { getActiveNode } from '@/game/access'
 import { PurchaseItem } from '@/game/data/actions/_system/purchase-item'
+import { validateAction } from '@/game/action'
 
 function DialogNode() {
   const { state, resolveActionItem } = useGameState((s) => s)
@@ -37,7 +38,7 @@ function DialogNode() {
                   size="xs"
                   variant="secondary"
                   className="cursor-pointer"
-                  disabled={loading || !action.validate(state, context)}
+                  disabled={loading || !validateAction(action, state, context)}
                   onClick={() => resolveActionItem(action, context)}
                 >
                   {item.value}

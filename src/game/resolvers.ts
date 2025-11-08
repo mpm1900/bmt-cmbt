@@ -17,6 +17,7 @@ import type {
 } from '@/game/state'
 import { v4 } from 'uuid'
 import {
+  decrementActorCooldowns,
   decrementEffectItem,
   filterActionQueue,
   handleTrigger,
@@ -418,6 +419,7 @@ function nextTurnResolver(context: DeltaContext): SMutation {
     context,
     delta: {
       apply: (state, _context) => {
+        state = decrementActorCooldowns(state)
         if (!state.combat) return state
         return {
           ...state,

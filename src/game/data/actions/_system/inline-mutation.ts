@@ -9,6 +9,7 @@ function InlineMutation(
     ID: v4(),
     name: '',
     priority: 0,
+    cooldown: () => 0,
     targets: {
       get: () => [],
       max: () => 0,

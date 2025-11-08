@@ -31,7 +31,7 @@ import type { Damage } from './types/damage'
 import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
 import type { Message } from './types/message'
 import * as messages from './data/messages'
-import { withDamage } from './lib/actor'
+import { decrementCooldowns, withDamage } from './lib/actor'
 import { getDamageResult } from './lib/damage'
 
 function newContext<T = {}>(
@@ -481,6 +481,13 @@ function purchaseItem(state: State, playerID: string, itemID: string): State {
   return state
 }
 
+function decrementActorCooldowns(state: State): State {
+  return {
+    ...state,
+    actors: state.actors.map((a) => decrementCooldowns<State>(a)),
+  }
+}
+
 export {
   addActionToQueue,
   decrementEffect,
@@ -510,4 +517,5 @@ export {
   endCombat,
   setEncounter,
   purchaseItem,
+  decrementActorCooldowns,
 }

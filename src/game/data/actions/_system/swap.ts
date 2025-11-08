@@ -17,6 +17,7 @@ const Swap: SDialogAction = {
   ID: v4(),
   name: 'Swap Actors',
   priority: 5,
+  cooldown: () => 0,
   validate: (state, context) => {
     const targets = getAliveInactiveActors(state, context)
     const valid = context.sourceID

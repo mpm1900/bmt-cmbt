@@ -7,6 +7,7 @@ import type {
 } from '../types/actor'
 import type { Delta, DeltaContext, DeltaQueueItem } from '../types/delta'
 import type { EffectItem } from '../types/effect'
+import type { Action } from '../types/action'
 
 function updateActor<T, A extends Actor<T> = Actor<T>>(
   actor: A,
@@ -40,6 +41,21 @@ function withStats<T, A extends Actor<T> = Actor<T>>(
     stats: {
       ...actor.stats,
       ...stats,
+    },
+  }
+}
+
+function withCooldown<T, A extends Actor<T> = Actor<T>>(
+  actor: A,
+  action: Action<T, A>,
+  state: T,
+  context: DeltaContext
+): A {
+  return {
+    ...actor,
+    cooldowns: {
+      ...actor.cooldowns,
+      [action.ID]: action.cooldown(state, context),
     },
   }
 }
@@ -149,13 +165,32 @@ function getStats<T, A extends Actor<T> = Actor<T>>(actor: A): ActorStats {
   }
 }
 
+function decrementCooldowns<T, A extends Actor<T> = Actor<T>>(actor: A): A {
+  return {
+    ...actor,
+    cooldowns: Object.keys(actor.cooldowns).reduce(
+      (cooldowns, key) => {
+        const value = actor.cooldowns[key] - 1
+        if (value === 0) return cooldowns
+        return {
+          ...cooldowns,
+          [key]: value,
+        }
+      },
+      {} as typeof actor.cooldowns
+    ),
+  }
+}
+
 export {
   updateActor,
   withState,
   withStats,
+  withCooldown,
   withDamage,
   withModifierItems,
   withEffects,
   getHealth,
   getStats,
+  decrementCooldowns,
 }

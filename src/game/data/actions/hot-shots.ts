@@ -22,6 +22,7 @@ const HotShots: SAction = {
   ID: v4(),
   name: 'Hot Shots',
   priority: 0,
+  cooldown: () => 0,
   validate: () => true,
   targets: {
     unique: false,

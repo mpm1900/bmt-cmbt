@@ -10,6 +10,7 @@ function PurchaseItem(itemID: string): SDialogAction {
     ID: v4(),
     name: 'Purchase Item',
     priority: 0,
+    cooldown: () => 0,
     validate: (state, context) => {
       const player = state.players.find((p) => p.ID === context.playerID)
       const item = getItem(state, state.encounter.activeNodeID!, itemID)

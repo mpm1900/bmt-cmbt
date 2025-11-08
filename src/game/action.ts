@@ -1,9 +1,9 @@
-import { getActor } from './access'
+import { findActor, getActor } from './access'
 import { ActorFlinched } from './data/messages'
 import { newMessage } from './encounter'
 import { pushMessagesResolver } from './resolvers'
 import type { SAction, State } from './state'
-import type { DeltaContext } from './types/delta'
+import type { DeltaContext, DeltaPositionContext } from './types/delta'
 
 type Mutations = ReturnType<SAction['resolve']>
 
@@ -37,4 +37,20 @@ function resolveAction(
   return onSuccess(costs)
 }
 
-export { resolveAction }
+function validateAction(
+  action: SAction | undefined,
+  state: State,
+  context: DeltaPositionContext
+): boolean {
+  if (!action) return false
+  const source = findActor(state, context.sourceID)
+  if (
+    source?.cooldowns[action.ID] !== undefined &&
+    source.cooldowns[action.ID] > 0
+  )
+    return false
+
+  return action.validate(state, context)
+}
+
+export { resolveAction, validateAction }

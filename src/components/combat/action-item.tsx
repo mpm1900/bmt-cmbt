@@ -6,6 +6,7 @@ import { Item } from '../ui/item'
 import { useGameState } from '@/hooks/useGameState'
 import type { DeltaPositionContext } from '@/game/types/delta'
 import { ActionDetails } from '../tooltips/action-tooltip'
+import { validateAction } from '@/game/action'
 
 function ActionItem({
   action,
@@ -20,7 +21,7 @@ function ActionItem({
 }) {
   const state = useGameState((s) => s.state)
 
-  const disabled = context && !action.validate(state, context)
+  const disabled = context && !validateAction(action, state, context)
   const renderer = ACTION_RENDERERS[action.ID]
   return (
     <Item

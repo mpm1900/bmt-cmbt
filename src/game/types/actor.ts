@@ -27,6 +27,7 @@ type Actor<T> = {
   actions: Array<Action<T, Actor<T>>>
   stats: ActorStats
   state: ActorState
+  cooldowns: Record<string, number>
 }
 
 type ModifiedActor<T> = Actor<T> & {

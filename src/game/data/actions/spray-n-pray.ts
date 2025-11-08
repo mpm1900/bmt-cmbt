@@ -26,6 +26,7 @@ const SprayNPray: SAction = {
   ID: v4(),
   name: "Spray 'n Pray",
   priority: 0,
+  cooldown: () => 0,
   validate: () => true,
   targets: {
     unique: false,

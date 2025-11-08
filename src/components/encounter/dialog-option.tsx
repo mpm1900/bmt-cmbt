@@ -12,6 +12,7 @@ import {
 } from '../ui/input-group'
 import { ButtonGroup } from '../ui/button-group'
 import { ActorSelect } from './actor-select'
+import { validateAction } from '@/game/action'
 
 function DialogOptionContent({
   className,
@@ -40,7 +41,7 @@ function DialogOption({
 }) {
   const state = useGameState((s) => s.state)
   const [context, setContext] = useState(option.context)
-  const disabled = !option.action.validate(state, context)
+  const disabled = !validateAction(option.action, state, context)
   const loading = hasNext(state)
   const sources = option.action.sources(state, context)
   const targets = option.action.targets.get(state, context)

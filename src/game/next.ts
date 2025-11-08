@@ -3,6 +3,7 @@ import { SourceAction } from './data/messages'
 import { newMessage } from './encounter'
 import {
   handleTrigger,
+  mutateActor,
   newContext,
   pushAction,
   pushMessages,
@@ -20,6 +21,7 @@ import type { SActor, State } from './state'
 import type { ActionQueueItem } from './types/action'
 import type { CombatPhase } from './types/combat'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
+import { withCooldown } from './lib/actor'
 
 function resolveTrigger(
   resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
@@ -46,6 +48,10 @@ function resolveActionItem(
       }),
     ])
   }
+  state = mutateActor(state, newContext({ sourceID: source?.ID }), {
+    filter: (a, c) => a.ID === c.sourceID,
+    apply: (a, c) => withCooldown(a, item.action, state, c),
+  })
   const mutations = resolveAction(state, item.context, item.action)
   const mutationQueue = push(state.mutationQueue, mutations)
   return {

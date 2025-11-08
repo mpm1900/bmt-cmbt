@@ -23,6 +23,7 @@ const BrainBlast: SAction = {
   name: 'Brain Blast',
   priority: 0,
   validate: () => true,
+  cooldown: () => 0,
   targets: {
     unique: true,
     max: () => 2,

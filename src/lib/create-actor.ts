@@ -39,6 +39,7 @@ function createActor(
       mana: 100,
       protected: 0,
     },
+    cooldowns: {},
   }
 }
 

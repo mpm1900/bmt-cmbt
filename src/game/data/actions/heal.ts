@@ -7,6 +7,7 @@ const Heal: SDialogAction = {
   ID: v4(),
   name: 'Heal',
   priority: 0,
+  cooldown: () => 0,
   validate: (state, context) => getAliveActiveActors(state, context).length > 0,
   targets: {
     unique: true,
