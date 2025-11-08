@@ -15,6 +15,7 @@ type PowerDamage = {
   defenseStat: MainStat
   element: Element
   power: number
+
   success: boolean
   evade: boolean
   critical: boolean
@@ -26,5 +27,12 @@ type RawDamage = {
   raw: number
 }
 
-type Damage = PowerDamage | RawDamage
+type PercentageDamage = {
+  type: 'percentage'
+  percentage: number
+}
+
+type Damage = (PowerDamage | RawDamage | PercentageDamage) & {
+  bypassProtected?: boolean
+}
 export type { ChanceEvent, Damage, PowerDamage, RawDamage }

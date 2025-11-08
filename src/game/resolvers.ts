@@ -46,6 +46,7 @@ import {
   ActorActivated,
   ActorDeactivated,
   ActorDied,
+  ActorProtected,
   CriticalHit,
   ParentEffect,
   SeporatorTop,
@@ -370,17 +371,26 @@ function damagesResolver(
 
           next = mutateDamage(next, ctx, damage, depth)
 
+          if (target?.state.protected && !damage.bypassProtected) {
+            next = pushMessages(next, [
+              newMessage({
+                context,
+                text: ActorProtected(target),
+                depth: depth + 1,
+              }),
+            ])
+          }
           if (damage.type === 'power' && source) {
             if (damage.critical && target?.state.alive) {
               next = pushMessages(next, [
-                newMessage({ text: CriticalHit(), depth: 1 }),
+                newMessage({ text: CriticalHit(), depth: depth + 1 }),
               ])
             }
             if (!damage.success && target?.state.alive) {
               next = pushMessages(next, [
                 newMessage({
                   text: SourceMissed(source),
-                  depth: 1,
+                  depth: depth + 1,
                 }),
               ])
               // can't evade crits
@@ -388,7 +398,7 @@ function damagesResolver(
               next = pushMessages(next, [
                 newMessage({
                   text: TargetEvade(target),
-                  depth: 1,
+                  depth: depth + 1,
                 }),
               ])
             }

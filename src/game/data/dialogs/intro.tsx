@@ -103,8 +103,8 @@ const IntroNode0: SDialogNode = {
               { ...context, targetIDs: [a.ID] },
               [
                 {
-                  type: 'raw',
-                  raw: 10,
+                  type: 'percentage',
+                  percentage: 0.125,
                 },
               ],
               [],

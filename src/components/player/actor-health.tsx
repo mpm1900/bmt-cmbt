@@ -9,12 +9,14 @@ function ActorHealth({
   showHealthNumbers,
   health,
   maxHealth,
+  children,
   ...props
 }: Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, 'value'> & {
   active: boolean
   showHealthNumbers: boolean
   health: number
   maxHealth: number
+  children?: React.ReactNode
 }) {
   const value = maxHealth === 0 ? 0 : (health * 100) / maxHealth
   const [after, setAfter] = React.useState(value)
@@ -49,7 +51,11 @@ function ActorHealth({
       />
       {showHealthNumbers && (
         <div className="absolute top-0 right-1 z-10 text-xs leading-4.5 font-bold text-foreground text-shadow-md">
-          {Math.max(health, 0)}/{maxHealth}
+          {children || (
+            <>
+              {Math.max(health, 0)}/{maxHealth}
+            </>
+          )}
         </div>
       )}
     </ProgressPrimitive.Root>

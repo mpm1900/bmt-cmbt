@@ -29,7 +29,9 @@ function Actor({
   const state = useGameState((s) => s.state)
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
   const actor = getActor(state, actorID)!
-  const [health, maxHealth] = getHealth<State>(actor)
+  const [_health, maxHealth] = getHealth<State>(actor)
+  const health = actor.state.alive ? _health : 0
+  console.log(_health, actor.name)
 
   return (
     <motion.div
@@ -75,9 +77,15 @@ function Actor({
           <ActorHealth
             active={active}
             showHealthNumbers={true}
-            health={actor.state.alive ? health : 0}
+            health={health}
             maxHealth={maxHealth}
-          />
+          >
+            {_health <= 0 && actor.state.alive && (
+              <span className="text-destructive-foreground uppercase">
+                Death's Door
+              </span>
+            )}
+          </ActorHealth>
 
           <div className="flex gap-3 mt-1">
             <div className="flex gap-1 items-center">
@@ -112,7 +120,8 @@ function EnemyActor({
 }) {
   const state = useGameState((s) => s.state)
   const actor = getActor(state, actorID)!
-  const [health, maxHealth] = getHealth<State>(actor)
+  const [_health, maxHealth] = getHealth<State>(actor)
+  const health = actor.state.alive ? _health : 0
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
 
   return (
@@ -133,9 +142,9 @@ function EnemyActor({
           <ActorHealth
             active={active}
             showHealthNumbers={false}
-            health={actor.state.alive ? health : 0}
+            health={health}
             maxHealth={maxHealth}
-          />
+          ></ActorHealth>
         </ItemContent>
       </Button>
       <div className="flex transition-all justify-between h-6 -translate-y-2 group-hover:translate-y-1 group-data-[state=open]:translate-y-1 z-10">

@@ -1,6 +1,7 @@
 import { chance } from '@/lib/chance'
 import type { Actor } from '../types/actor'
 import type { ChanceEvent, Damage, PowerDamage } from '../types/damage'
+import { getHealth } from './actor'
 
 function newDamage(
   damage: Partial<PowerDamage> &
@@ -85,8 +86,17 @@ function getDamageResult<T>(
   target: Actor<T>,
   damage: Damage
 ): number {
+  if (target.state.protected && !damage.bypassProtected) {
+    return 0
+  }
+
   if (damage.type === 'raw') {
     return damage.raw
+  }
+
+  if (damage.type === 'percentage') {
+    const [_, maxHealth] = getHealth<T>(target)
+    return Math.round(maxHealth * damage.percentage)
   }
 
   if (damage.type === 'power') {
