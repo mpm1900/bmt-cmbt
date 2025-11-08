@@ -135,6 +135,8 @@ function nextTurnPhase(state: State): State {
     )!
     player.activeActorIDs.forEach((id) => {
       if (!id) return
+      const source = findActor(state, id)
+      if (source?.state.stunned || !source?.state.alive) return
 
       const aiActions = findActor(state, id)?.actions.filter((a) => a.ai) ?? []
       const context = newContext({ playerID: player.ID, sourceID: id })

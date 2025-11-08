@@ -1,8 +1,14 @@
-import { getActiveActorIDs, getActor, nextAvailableAction } from '@/game/access'
+import {
+  getActionableActors,
+  getActor,
+  nextAvailableAction,
+} from '@/game/access'
 import type { State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { playerStore } from './usePlayer'
+
+const playerID = playerStore.getState().playerID
 
 const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
@@ -21,13 +27,12 @@ const gameUIStore = createStore<GameUIStore>((set) => {
     activeActionID: undefined,
     set: (state: Partial<GameUIState>) => set(state),
     resetActive: (game: State) => {
-      const nextActorID = getActiveActorIDs(
+      const nextActorID = getActionableActors(
         game,
-        playerStore.getState().playerID
+        (a) => a.playerID === playerID
       ).find(
-        (a) =>
-          a !== null && !game.actionQueue.find((q) => q.context.sourceID === a)
-      )
+        (a) => !game.actionQueue.find((q) => q.context.sourceID === a.ID)
+      )?.ID
       if (!nextActorID) return
       set({
         activeActorID: nextActorID,

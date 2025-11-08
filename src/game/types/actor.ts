@@ -14,8 +14,9 @@ type ActorState = {
   damage: number
   mana: number
 
-  protected: 0 | 1
   flinching: 0 | 1
+  protected: 0 | 1
+  stunned: 0 | 1
 }
 
 type Actor<T> = {

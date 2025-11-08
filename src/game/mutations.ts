@@ -1,6 +1,7 @@
 import { playerStore } from '@/hooks/usePlayer'
 import { v4 } from 'uuid'
 import {
+  getActionableActors,
   getActiveNode,
   getActor,
   getItem,
@@ -121,10 +122,7 @@ function addActionToQueue(
   }
 
   state = pushAction(state, context, action)
-  const maxLength = state.players.reduce(
-    (len, player) => len + player.activeActorIDs.filter(Boolean).length,
-    0
-  )
+  const maxLength = getActionableActors(state).length
 
   if (state.actionQueue.length === maxLength) {
     state = nextTurnPhase(state)

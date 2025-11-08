@@ -38,6 +38,7 @@ function createActor(
       flinching: 0,
       mana: 100,
       protected: 0,
+      stunned: 0,
     },
     cooldowns: {},
   }
