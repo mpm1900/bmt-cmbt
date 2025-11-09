@@ -3,12 +3,14 @@ import { ActionSelectionCard } from './action-selection-card'
 import { findActor, getActiveActorIDs, getActor } from '@/game/access'
 import { CardHeader, CardTitle } from '../ui/card'
 import type { SActionItem } from '@/game/state'
+import { usePlayerID } from '@/hooks/usePlayer'
 
 function PhaseMain({ current }: { current: SActionItem | undefined }) {
   const { state, resolvePrompt } = useGameState((s) => s)
+  const playerID = usePlayerID()
   const prompt = state.promptQueue[0]
 
-  if (prompt) {
+  if (prompt && prompt.context.playerID === playerID) {
     const action = prompt.action
     const context = prompt.context
     const source = getActor(state, context.sourceID)
@@ -48,9 +50,11 @@ function PhaseMain({ current }: { current: SActionItem | undefined }) {
     const names = new Set(
       targets.map((t) => t?.name).concat(positions.map((p) => p?.name))
     )
+    if (!source) return null
+
     return (
       <div className="w-172 text-center self-center justify-self-center m-auto">
-        <div className="text-center">{source?.name} uses</div>
+        <div className="text-center">{source.name} uses</div>
         <h1 className="text-6xl font-black text-center">{action.name}</h1>
         <div>{Array.from(names).join(', ')}</div>
       </div>
