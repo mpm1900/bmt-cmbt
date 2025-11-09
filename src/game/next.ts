@@ -1,4 +1,4 @@
-import { findActor } from './access'
+import { findActor, getActionableActors } from './access'
 import { SourceAction } from './data/messages'
 import { newMessage } from './encounter'
 import {
@@ -154,6 +154,11 @@ function nextTurnPhase(state: State): State {
         state = pushAction(state, ratedActions[0][1], ratedActions[0][0])
       }
     })
+
+    console.log(state.actionQueue.length, getActionableActors(state))
+    if (state.actionQueue.length === getActionableActors(state).length) {
+      state = nextTurnPhase(state)
+    }
   }
 
   if (phase === 'end') {

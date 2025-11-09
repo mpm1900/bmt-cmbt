@@ -120,13 +120,15 @@ function getAliveActiveActors(
 }
 
 function getActionableActors(state: State, filter?: (a: SActor) => boolean) {
-  return state.actors.filter(
-    (actor) =>
-      (filter ? filter(actor) : true) &&
-      isActive(state, actor.ID) &&
-      actor.state.alive &&
-      !actor.state.stunned
-  )
+  return state.actors
+    .map((a) => getActor(state, a.ID)!)
+    .filter(
+      (actor) =>
+        (filter ? filter(actor) : true) &&
+        isActive(state, actor.ID) &&
+        actor.state.alive &&
+        !actor.state.stunned
+    )
 }
 
 function nextAvailableAction(
