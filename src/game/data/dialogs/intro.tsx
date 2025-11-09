@@ -6,7 +6,6 @@ import {
 } from '@/game/encounter'
 import { getMissingActorCount } from '@/game/player'
 import {
-  addPlayerResolver,
   damagesResolver,
   mutatePlayerResolver,
   navigateEncounterResolver,
@@ -77,7 +76,7 @@ const IntroNode0: SDialogNode = {
     {
       chance: 50,
       success: (roll) => [
-        addPlayerResolver(encounterPlayer),
+        //addPlayerResolver(encounterPlayer),
         pushMessagesResolver(context, [
           newMessage({
             text: (
@@ -94,7 +93,7 @@ const IntroNode0: SDialogNode = {
         ]),
       ],
       failure: (roll) => [
-        addPlayerResolver(encounterPlayer),
+        //addPlayerResolver(encounterPlayer),
         pushMessagesResolver(context, [
           newMessage({
             text: (

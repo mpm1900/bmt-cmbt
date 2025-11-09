@@ -12,19 +12,19 @@ function EncounterActors({
   encounter,
   current,
 }: {
-  encounter: SPlayer
+  encounter: SPlayer | undefined
   current: SActionItem | undefined
 }) {
   const state = useGameState((s) => s.state)
-  const actors = state.actors.filter((a) => a.playerID === encounter.ID)
+  const actors = state.actors.filter((a) => a.playerID === encounter?.ID)
   const alive = actors.filter((a) => a.state.alive)
   const phase = useGameState((s) => s.state.combat?.phase)
   const planning = phase === 'planning'
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div className="w-full flex flex-row-reverse justify-start items-start max-w-[1440px] px-4 gap-2">
-      {encounter.activeActorIDs.map((actorID, i) => {
+    <div className="w-full flex flex-row-reverse justify-start items-start h-20 max-w-[1440px] px-4 gap-2">
+      {encounter?.activeActorIDs.map((actorID, i) => {
         return (
           <div key={i} className="relative h-20 w-48">
             <div

@@ -22,7 +22,7 @@ function RouteComponent() {
   return (
     <div className="h-screen w-screen flex flex-col items-center gap-3 overflow-hidden">
       <ViewHeader />
-      {ai && <EncounterActors encounter={ai} current={current} />}
+      <EncounterActors encounter={ai} current={current} />
 
       {combat && <CombatView current={current} />}
       {!combat && <EncounterView />}
