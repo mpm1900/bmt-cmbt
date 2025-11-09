@@ -28,6 +28,7 @@ const FireballDamage: PowerDamage = newDamage({
   power: 50,
   criticalModifier: 1.5,
   recoil: 0,
+  lifesteal: 0,
 })
 
 const Fireball: SAction = {

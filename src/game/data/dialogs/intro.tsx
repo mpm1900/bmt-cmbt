@@ -117,6 +117,8 @@ const IntroNode0: SDialogNode = {
                 {
                   type: 'percentage',
                   percentage: 0.125,
+                  recoil: 0,
+                  lifesteal: 0,
                 },
               ],
               [],

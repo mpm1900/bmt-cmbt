@@ -20,6 +20,7 @@ function newDamage(
     criticalModifier: 1,
     element: 'physical',
     recoil: 0,
+    lifesteal: 0,
     ...damage,
   }
 }
@@ -28,7 +29,7 @@ function newDamageResult(partial: Partial<DamageResult>): DamageResult {
   return {
     damage: 0,
     recoil: 0,
-    steal: 0,
+    lifesteal: 0,
     ...partial,
   }
 }
@@ -115,6 +116,8 @@ function getDamageResult<T>(
   if (damage.type === 'percentage') {
     const [_, maxHealth] = getHealth<T>(target)
     result.damage = Math.round(maxHealth * damage.percentage)
+    result.recoil = result.damage * damage.recoil
+    result.lifesteal = result.damage * damage.lifesteal
     return result
   }
 
@@ -134,7 +137,8 @@ function getDamageResult<T>(
         evasionModifier
     )
     result.damage = damageAmount
-    result.recoil = damageAmount * damage.recoil
+    result.recoil = result.damage * damage.recoil
+    result.lifesteal = result.damage * damage.lifesteal
     return result
   }
 

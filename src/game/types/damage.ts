@@ -16,6 +16,7 @@ type PowerDamage = {
   element: Element
   power: number
   recoil: number
+  lifesteal: number
 
   success: boolean
   evade: boolean
@@ -31,6 +32,8 @@ type RawDamage = {
 type PercentageDamage = {
   type: 'percentage'
   percentage: number
+  recoil: number
+  lifesteal: number
 }
 
 type Damage = (PowerDamage | RawDamage | PercentageDamage) & {
@@ -40,7 +43,7 @@ type Damage = (PowerDamage | RawDamage | PercentageDamage) & {
 type DamageResult = {
   damage: number
   recoil: number
-  steal: number
+  lifesteal: number
 }
 
 export type {

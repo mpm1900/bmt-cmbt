@@ -24,6 +24,7 @@ import {
 import { enqueue, pop, push, sort } from './lib/queue'
 import {
   damagesResolver,
+  healActorResolver,
   navigateDialogResolver,
   resolveAction,
 } from './resolvers'
@@ -343,7 +344,18 @@ function mutateDamage(
       ])
     }
 
-    if (result.steal > 0) {
+    if (result.lifesteal > 0) {
+      state = enqueueMutations(state, [
+        healActorResolver(
+          source.ID,
+          newContext({
+            playerID: source.playerID,
+            sourceID: source.ID,
+            targetIDs: [source.ID],
+          }),
+          result.lifesteal
+        ),
+      ])
     }
 
     if (!getActor(state, targetID)?.state.alive) {
