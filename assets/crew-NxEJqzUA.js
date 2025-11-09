@@ -1,0 +1,11 @@
+import{j as e,r as p,L as x}from"./index-Beu5hDQn.js";import{c as n,I as d,a,b as o,C as u,S as m,d as y,u as h,e as j,B as g,A as f}from"./useGameState-B_37ijiR.js";import"./clsx-B-dksMZM.js";/**
+ * @license lucide-react v0.545.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const k=[["circle",{cx:"12",cy:"5",r:"1",key:"gxeob9"}],["circle",{cx:"19",cy:"5",r:"1",key:"w8mnmm"}],["circle",{cx:"5",cy:"5",r:"1",key:"lttvr7"}],["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"19",cy:"12",r:"1",key:"1wjl8i"}],["circle",{cx:"5",cy:"12",r:"1",key:"1pcz8c"}],["circle",{cx:"12",cy:"19",r:"1",key:"lyex9k"}],["circle",{cx:"19",cy:"19",r:"1",key:"shf9b7"}],["circle",{cx:"5",cy:"19",r:"1",key:"bfqh0e"}]],v=n("grip",k);/**
+ * @license lucide-react v0.545.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const I=[["path",{d:"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6",key:"miytrc"}],["path",{d:"M3 6h18",key:"d0wm0j"}],["path",{d:"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2",key:"e791ji"}]],b=n("trash",I);function N({active:s,onSelect:i,...r}){return e.jsxs(d,{className:a("group",{"bg-input! border-ring cursor-default [&_*]:cursor-default":s}),onClick:()=>i(),children:[e.jsxs("div",{className:"flex items-center gap-1 pr-1!",children:[e.jsx(o,{className:"ml-2 cursor-pointer",children:e.jsx(v,{})}),e.jsxs(o,{className:a("text-muted-foreground"),children:["Class ",e.jsx(u,{})]})]}),e.jsx(m,{orientation:"vertical"}),e.jsx(y,{...r}),e.jsx(o,{className:"opacity-0 group-hover:opacity-100 mr-1",size:"icon-xs",onClick:t=>{t.stopPropagation()},children:e.jsx(b,{className:a("text-muted-foreground")})})]})}function G(){const s=h(),r=j(c=>c.state).actors.filter(c=>c.playerID===s),[t,l]=p.useState(r[0]?.ID);return e.jsxs("div",{className:"h-screen w-screen flex flex-col gap-6 p-6 items-center bg-cover bg-no-repeat",children:[e.jsx("div",{className:"w-220 flex justify-end",children:e.jsx(g,{asChild:!0,children:e.jsxs(x,{to:"/",children:["Begin ",e.jsx(f,{})]})})}),e.jsx("div",{className:"grid grid-cols-3 grid-rows-2 w-220 gap-2 p-2 rounded-lg bg-background/60",children:r.map(c=>e.jsx(N,{value:c.name,active:c.ID===t,onSelect:()=>l(c.ID)},c.ID))})]})}export{G as component};
