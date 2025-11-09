@@ -103,6 +103,15 @@ function addRewards(player: SPlayer, encounter: SPlayer): SPlayer {
   }
 }
 
+function withActiveSize(player: SPlayer, size: number): SPlayer {
+  return {
+    ...player,
+    activeActorIDs: Array.from({ length: size }).map(
+      (_, i) => player.activeActorIDs[i] ?? null
+    ),
+  }
+}
+
 export {
   getActorID,
   getPosition,
@@ -114,4 +123,5 @@ export {
   getItemAction,
   groupItems,
   addRewards,
+  withActiveSize,
 }

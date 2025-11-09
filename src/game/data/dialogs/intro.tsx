@@ -159,6 +159,9 @@ const IntroNode0: SDialogNode = {
       ),
       context,
       action: InlineMutation(() => [
+        /* state.actors
+          .filter((a) => a.playerID === playerID && isActive(state, a.ID))
+          .map((a) => deactivateActorResolver(playerID, a.ID, context)), */
         startCombatResolver(
           newCombat({ exitNodeID: IntroNode1.ID }),
           {

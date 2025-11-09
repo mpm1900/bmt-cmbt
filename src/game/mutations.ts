@@ -19,6 +19,7 @@ import {
   getMissingActorCount,
   isPlayerDead,
   requiresPrompt,
+  withActiveSize,
 } from './player'
 import { enqueue, pop, push, sort } from './lib/queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
@@ -450,7 +451,7 @@ function endCombat(state: State, encounterID: string): State {
   const encounter = findPlayer(state, encounterID)!
   state = mutatePlayer(state, newContext({}), {
     filter: (p) => p.ID == playerID,
-    apply: (p) => addRewards(p, encounter),
+    apply: (p) => withActiveSize(addRewards(p, encounter), 3),
   })
   state = removePlayer(state, encounterID)
 

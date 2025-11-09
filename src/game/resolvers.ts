@@ -56,6 +56,7 @@ import {
 } from './data/messages'
 import { withState } from './lib/actor'
 import { validateAction } from './action'
+import { withActiveSize } from './player'
 
 function resolveAction(
   state: State,
@@ -481,12 +482,9 @@ function startCombatResolver(
           triggerQueue: [],
           mutationQueue: [],
           promptQueue: [],
-          players: state.players.concat(players).map((p) => ({
-            ...p,
-            activeActorIDs: Array.from({ length: options.activeSize }).map(
-              (_, i) => p.activeActorIDs[i] ?? null
-            ),
-          })),
+          players: state.players
+            .concat(players)
+            .map((p) => withActiveSize(p, options.activeSize)),
           actors: state.actors.concat(actors),
           combat,
           combatLog: [],
