@@ -15,6 +15,7 @@ type PowerDamage = {
   defenseStat: MainStat
   element: Element
   power: number
+  recoil: number
 
   success: boolean
   evade: boolean
@@ -35,4 +36,18 @@ type PercentageDamage = {
 type Damage = (PowerDamage | RawDamage | PercentageDamage) & {
   bypassProtected?: boolean
 }
-export type { ChanceEvent, Damage, PowerDamage, RawDamage }
+
+type DamageResult = {
+  damage: number
+  recoil: number
+  steal: number
+}
+
+export type {
+  ChanceEvent,
+  Damage,
+  PowerDamage,
+  RawDamage,
+  PercentageDamage,
+  DamageResult,
+}

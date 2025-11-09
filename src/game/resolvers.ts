@@ -54,7 +54,7 @@ import {
   TargetEvade,
   TargetHeal,
 } from './data/messages'
-import { withState } from './lib/actor'
+import { withHeal, withState } from './lib/actor'
 import { validateAction } from './action'
 import { withActiveSize } from './player'
 
@@ -117,14 +117,15 @@ function mutateActorResolver(
   fn: (a: SActor) => SActor
 ): SMutation {
   return {
-    ID: v4(),
+    ID: 'mutatate actor' + v4(),
     context,
     delta: {
-      apply: (state: State) =>
-        mutateActor(state, context, {
+      apply: (state: State) => {
+        return mutateActor(state, context, {
           filter: (a) => a.ID === targetID,
           apply: fn,
-        }),
+        })
+      },
     },
   }
 }
@@ -145,9 +146,7 @@ function healActorResolver(
           apply: (a) => {
             const damage = Math.max(a.state.damage - amount, 0)
             healed += a.state.damage - damage
-            return withState<State>(a, {
-              damage,
-            })
+            return withHeal<State>(a, amount)
           },
         })
 
@@ -365,18 +364,20 @@ function damagesResolver(
     context,
     delta: {
       apply: (state: State, dcontext: DeltaContext) => {
-        state = damages.reduce((next, damage, index) => {
+        damages.forEach((damage, index) => {
           const ctx = contexts[index] ?? dcontext
-          const source = getActor(next, ctx.sourceID)
-          const target = getActor(next, ctx.targetIDs[0])
+          const source = getActor(state, ctx.sourceID)
+          const target = getActor(state, ctx.targetIDs[0])
 
           // if already dead, don't make any more triggers
-          if (!target?.state.alive) return next
+          if (!target?.state.alive) return
 
-          next = mutateDamage(next, ctx, damage, depth)
+          state = mutateDamage(state, ctx, damage, {
+            depth,
+          })
 
           if (target?.state.protected && !damage.bypassProtected) {
-            next = pushMessages(next, [
+            state = pushMessages(state, [
               newMessage({
                 context,
                 text: ActorProtected(target),
@@ -386,12 +387,12 @@ function damagesResolver(
           }
           if (damage.type === 'power' && source) {
             if (damage.critical && target?.state.alive) {
-              next = pushMessages(next, [
+              state = pushMessages(state, [
                 newMessage({ text: CriticalHit(), depth: depth + 1 }),
               ])
             }
             if (!damage.success && target?.state.alive) {
-              next = pushMessages(next, [
+              state = pushMessages(state, [
                 newMessage({
                   text: SourceMissed(source),
                   depth: depth + 1,
@@ -399,7 +400,7 @@ function damagesResolver(
               ])
               // can't evade crits
             } else if (damage.evade && !damage.critical) {
-              next = pushMessages(next, [
+              state = pushMessages(state, [
                 newMessage({
                   text: TargetEvade(target),
                   depth: depth + 1,
@@ -407,9 +408,7 @@ function damagesResolver(
               ])
             }
           }
-
-          return next
-        }, state)
+        })
         return state
       },
     },

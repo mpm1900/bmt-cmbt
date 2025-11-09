@@ -1,6 +1,11 @@
 import { chance } from '@/lib/chance'
 import type { Actor } from '../types/actor'
-import type { ChanceEvent, Damage, PowerDamage } from '../types/damage'
+import type {
+  ChanceEvent,
+  Damage,
+  DamageResult,
+  PowerDamage,
+} from '../types/damage'
 import { getHealth } from './actor'
 
 function newDamage(
@@ -14,7 +19,17 @@ function newDamage(
     critical: false,
     criticalModifier: 1,
     element: 'physical',
+    recoil: 0,
     ...damage,
+  }
+}
+
+function newDamageResult(partial: Partial<DamageResult>): DamageResult {
+  return {
+    damage: 0,
+    recoil: 0,
+    steal: 0,
+    ...partial,
   }
 }
 
@@ -85,22 +100,26 @@ function getDamageResult<T>(
   source: Actor<T> | undefined,
   target: Actor<T>,
   damage: Damage
-): number {
+): DamageResult {
+  let result = newDamageResult({})
+
   if (target.state.protected && !damage.bypassProtected) {
-    return 0
+    return result
   }
 
   if (damage.type === 'raw') {
-    return damage.raw
+    result.damage = damage.raw
+    return result
   }
 
   if (damage.type === 'percentage') {
     const [_, maxHealth] = getHealth<T>(target)
-    return Math.round(maxHealth * damage.percentage)
+    result.damage = Math.round(maxHealth * damage.percentage)
+    return result
   }
 
   if (damage.type === 'power') {
-    if (!source) return 0
+    if (!source) return result
     const sourceStat = source.stats[damage.offenseStat]
     const targetStat = target.stats[damage.defenseStat]
     const ratio = sourceStat / targetStat
@@ -114,14 +133,17 @@ function getDamageResult<T>(
         criticalModifier *
         evasionModifier
     )
-    return damageAmount
+    result.damage = damageAmount
+    result.recoil = damageAmount * damage.recoil
+    return result
   }
 
-  return 0
+  return result
 }
 
 export {
   newDamage,
+  newDamageResult,
   getSourceChance,
   getTargetChance,
   getDamageResult,

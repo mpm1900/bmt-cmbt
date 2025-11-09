@@ -22,7 +22,11 @@ import {
   withActiveSize,
 } from './player'
 import { enqueue, pop, push, sort } from './lib/queue'
-import { navigateDialogResolver, resolveAction } from './resolvers'
+import {
+  damagesResolver,
+  navigateDialogResolver,
+  resolveAction,
+} from './resolvers'
 import type {
   SAction,
   SActor,
@@ -36,11 +40,16 @@ import type {
 } from './state'
 import type { CombatPhase } from './types/combat'
 import type { Damage } from './types/damage'
-import type { Delta, DeltaContext, DeltaPositionContext } from './types/delta'
+import type {
+  Delta,
+  DeltaContext,
+  DeltaPositionContext,
+  DeltaQueueItem,
+} from './types/delta'
 import type { Message } from './types/message'
 import * as messages from './data/messages'
-import { decrementCooldowns, withDamage } from './lib/actor'
-import { getDamageResult } from './lib/damage'
+import { computeDamage, decrementCooldowns } from './lib/actor'
+import { newDamageResult } from './lib/damage'
 
 const playerID = playerStore.getState().playerID
 
@@ -57,6 +66,16 @@ function newContext<T = {}>(
   }
 }
 
+function enqueueMutations(
+  state: State,
+  mutations: Array<DeltaQueueItem<State, DeltaContext>>
+): State {
+  return {
+    ...state,
+    mutationQueue: enqueue(state.mutationQueue, mutations),
+  }
+}
+
 function startDialog(state: State): State {
   const mutations = resolveAction(
     state,
@@ -66,10 +85,7 @@ function startDialog(state: State): State {
     NavigateDialog(state.encounter.startNodeID, [])
   )
 
-  return {
-    ...state,
-    mutationQueue: push(state.mutationQueue, mutations),
-  }
+  return enqueueMutations(state, mutations)
 }
 
 function decrementEffect(effect: SEffect): SEffect {
@@ -286,44 +302,51 @@ function mutateDamage(
   state: State,
   context: DeltaContext,
   damage: Damage,
-  depth: number
+  options: {
+    depth: number
+  }
 ): State {
   context.targetIDs.forEach((targetID) => {
-    let committed = 0
-    const pre = getActor(state, targetID)
-    state = mutateActor(state, context, {
-      filter: (ac) => targetID === ac.ID,
-      apply: (ac) => {
-        const source = getActor(state, context.sourceID)
-        const target = getActor(state, ac.ID)
-        if ((damage.type === 'power' && !source) || !target) return ac
-        const damageAmount = getDamageResult(source, target, damage)
-        committed = damageAmount
-        const newDamage = ac.state.damage + damageAmount
-        return withDamage<State>(
-          ac,
-          newDamage,
-          newDamage < target.stats.health ? 1 : 0
-        )
-      },
+    let result = newDamageResult({})
+    const source = getActor(state, context.sourceID)!
+    const target = getActor(state, targetID)!
+    const fn = computeDamage(source, target, damage, (r) => {
+      result = r
     })
 
-    const target = getActor(state, targetID)
-    const dead = !target?.state.alive
-
-    if (committed > 0) {
+    if (result.damage > 0) {
+      state = mutateActor(state, context, {
+        filter: (a) => targetID === a.ID,
+        apply: (a) => fn(a),
+      })
       state = handleTrigger(state, context, 'on-damage')
       state = handleTrigger(state, context, 'on-damage-dealt')
       state = pushMessages(state, [
         newMessage({
           context,
-          text: messages.TargetDamagePercent(pre, committed),
-          depth: depth + 1,
+          text: messages.TargetDamagePercent(target, result.damage),
+          depth: options.depth + 1,
         }),
       ])
     }
 
-    if (dead) {
+    if (result.recoil > 0) {
+      state = enqueueMutations(state, [
+        damagesResolver(
+          newContext({
+            playerID: source.playerID,
+            sourceID: source.ID,
+            targetIDs: [source.ID],
+          }),
+          [{ type: 'raw', raw: result.recoil }]
+        ),
+      ])
+    }
+
+    if (result.steal > 0) {
+    }
+
+    if (!getActor(state, targetID)?.state.alive) {
       state = handleTrigger(state, context, 'on-death')
     }
   })
@@ -513,6 +536,7 @@ export {
   mutateDamage,
   mutatePlayer,
   newContext,
+  enqueueMutations,
   pushAction,
   pushMessages,
   pushPrompt,

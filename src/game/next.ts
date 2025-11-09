@@ -93,11 +93,12 @@ function nextMutation(state: State): State {
   if (!state.mutationQueue[0]) return state
 
   const { delta, context } = state.mutationQueue[0]
-  if (delta.filter && !delta.filter(state, context)) return state
-  state = state.mutationQueue[0].delta.apply(
-    state,
-    state.mutationQueue[0].context
-  )
+  if (delta.filter && !delta.filter(state, context)) {
+    console.error('failed mutation filer', state, context, delta)
+    return state
+  }
+
+  state = delta.apply(state, context)
   const mutationQueue = pop(state.mutationQueue)
   return {
     ...state,

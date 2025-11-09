@@ -8,6 +8,8 @@ import type {
 import type { Delta, DeltaContext, DeltaQueueItem } from '../types/delta'
 import type { EffectItem } from '../types/effect'
 import type { Action } from '../types/action'
+import { getDamageResult } from './damage'
+import type { Damage, DamageResult } from '../types/damage'
 
 function updateActor<T, A extends Actor<T> = Actor<T>>(
   actor: A,
@@ -65,7 +67,31 @@ function withDamage<T, A extends Actor<T> = Actor<T>>(
   damage: number,
   alive: 0 | 1
 ): A {
-  return withState<T, A>(actor, { damage, alive })
+  return withState<T, A>(actor, { damage: Math.max(damage, 0), alive })
+}
+
+function withHeal<T, A extends Actor<T> = Actor<T>>(actor: A, heal: number): A {
+  const damage = Math.max(actor.state.damage - heal, 0)
+  return withState<T, A>(actor, {
+    damage,
+  })
+}
+
+function computeDamage<T>(
+  source: ModifiedActor<T> | undefined,
+  target: ModifiedActor<T> | undefined,
+  damage: Damage,
+  cb?: (result: DamageResult) => void
+): (a: Actor<T>) => Actor<T> {
+  if ((damage.type === 'power' && !source) || !target) return (a) => a
+
+  const result = getDamageResult(source, target, damage)
+  cb?.(result)
+
+  return (a) => {
+    const newDamage = a.state.damage + result.damage
+    return withDamage<T>(a, newDamage, newDamage < target.stats.health ? 1 : 0)
+  }
 }
 
 function withModifier<T, A extends Actor<T> = Actor<T>>(
@@ -188,6 +214,8 @@ export {
   withStats,
   withCooldown,
   withDamage,
+  withHeal,
+  computeDamage,
   withModifierItems,
   withEffects,
   getHealth,

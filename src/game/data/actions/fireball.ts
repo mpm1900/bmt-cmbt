@@ -1,6 +1,5 @@
 import type { SAction } from '@/game/state'
 import { v4 } from 'uuid'
-
 import {
   getActor,
   isActive,
@@ -28,6 +27,7 @@ const FireballDamage: PowerDamage = newDamage({
   element: 'fire',
   power: 50,
   criticalModifier: 1.5,
+  recoil: 0,
 })
 
 const Fireball: SAction = {
