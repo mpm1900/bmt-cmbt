@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'motion/react'
 function Actor({
   actorID,
   active,
+  targeted,
   disabled,
   status,
   onClick,
@@ -22,6 +23,7 @@ function Actor({
 }: Omit<React.ComponentProps<typeof motion.div>, 'onClick'> & {
   actorID: string
   active: boolean
+  targeted: boolean
   disabled: boolean
   status: string
   onClick: (actor: SActor) => void
@@ -67,7 +69,7 @@ function Actor({
         </div>
       </div>
       <Button
-        variant={active ? 'slate-active' : 'slate'}
+        variant={targeted ? 'destructive' : active ? 'slate-active' : 'slate'}
         disabled={disabled}
         className={cn('h-auto p-2 pb-1 border border-slate-950')}
         onClick={() => onClick(actor)}

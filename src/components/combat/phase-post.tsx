@@ -20,7 +20,13 @@ function PhasePost() {
   const dead = isPlayerDead(state, player)
 
   return (
-    <Card className="w-90 m-auto">
+    <Card
+      className="w-90 m-auto"
+      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <CardHeader>
         {dead ? (
           <CardTitle>You Lose.</CardTitle>

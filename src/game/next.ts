@@ -155,7 +155,6 @@ function nextTurnPhase(state: State): State {
       }
     })
 
-    console.log(state.actionQueue.length, getActionableActors(state))
     if (state.actionQueue.length === getActionableActors(state).length) {
       state = nextTurnPhase(state)
     }

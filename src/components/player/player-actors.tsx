@@ -5,6 +5,8 @@ import { useGameUI } from '@/hooks/useGameUI'
 import type { SActionItem, SPlayer } from '@/game/state'
 import { AnimatePresence } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { isTargeted } from '@/game/queries'
+import { newPosition } from '@/game/player'
 
 function PlayerActors({
   player,
@@ -41,6 +43,12 @@ function PlayerActors({
                   ((planning && activeActorID === actorID) ||
                     (!planning && current?.context.sourceID === actorID))
                 }
+                targeted={isTargeted(
+                  state,
+                  current?.context,
+                  actorID!,
+                  newPosition(player.ID, i)
+                )}
                 disabled={
                   !planning ||
                   !!state.actionQueue.find(

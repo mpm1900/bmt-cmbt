@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 function getTickRate(type: ReturnType<typeof getNextType>, phase: CombatPhase) {
   switch (type) {
     case 'action':
-      return 1000
+      return 1500
     case 'trigger': {
       if (phase === 'main') return 500
       return 100
