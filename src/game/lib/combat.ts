@@ -1,15 +1,14 @@
 import type { Combat } from '../types/combat'
-import type { EffectItem } from '../types/effect'
 
 function newCombat<T, A>(
-  exitNodeID: string,
-  effects: EffectItem<T, A>[]
+  partial: Partial<Combat<T, A>> & Pick<Combat<T, A>, 'exitNodeID'>
 ): Combat<T, A> {
   return {
-    exitNodeID,
     turn: 0,
     phase: 'pre',
-    effects,
+    effects: [],
+    actorFilter: () => true,
+    ...partial,
   }
 }
 

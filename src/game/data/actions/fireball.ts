@@ -34,7 +34,7 @@ const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   priority: 0,
-  cooldown: () => 2,
+  cooldown: () => 0,
   validate: (state, context) =>
     !!mapActor(
       state,

@@ -42,13 +42,19 @@ function validateAction(
   state: State,
   context: DeltaPositionContext
 ): boolean {
-  if (!action) return false
+  if (!action) {
+    console.error('[validateAction] no action')
+    return false
+  }
+
   const source = findActor(state, context.sourceID)
   if (
     source?.cooldowns[action.ID] !== undefined &&
     source.cooldowns[action.ID] > 0
-  )
+  ) {
+    console.error('[validateAction] on cooldown', source.cooldowns)
     return false
+  }
 
   return action.validate(state, context)
 }

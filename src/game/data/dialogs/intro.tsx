@@ -147,10 +147,16 @@ const IntroNode0: SDialogNode = {
       ),
       context,
       action: InlineMutation(() => [
-        startCombatResolver(newCombat(IntroNode1.ID, []), {
-          players: [encounterPlayer],
-          actors: [criminal1, criminal2, criminal3],
-        }),
+        startCombatResolver(
+          newCombat({ exitNodeID: IntroNode1.ID }),
+          {
+            players: [encounterPlayer],
+            actors: [criminal1, criminal2, criminal3],
+          },
+          {
+            activeSize: 3,
+          }
+        ),
       ]),
     },
     /*

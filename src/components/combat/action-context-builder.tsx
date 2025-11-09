@@ -62,12 +62,12 @@ function DuplicateTargetGenerator({
         onIndexChange={setTargetIndex}
       />
       {players.size > 1 && targets.length > 4 ? (
-        <div className="flex flex-col w-full justify-around px-4 gap-4">
+        <div className="flex flex-col w-full justify-around px-3 gap-4">
           <div className="flex flex-col gap-1">
             <div className="font-semibold text-xs text-enemy/70 hidden">
               Enemy Targets
             </div>
-            <div className="flex flex-wrap gap-2 w-full">
+            <div className="flex flex-wrap gap-2 w-full justify-center">
               {targets
                 .filter((t) => t.target.playerID !== context.playerID)
                 .map(({ target, type }) => {
@@ -92,7 +92,7 @@ function DuplicateTargetGenerator({
             <div className="font-semibold text-xs text-ally/80 hidden">
               Ally Targets
             </div>
-            <div className="flex flex-wrap gap-2 w-full">
+            <div className="flex flex-wrap gap-2 w-full justify-center">
               {targets
                 .filter((t) => t.target.playerID === context.playerID)
                 .map(({ target, type }) => {
@@ -159,7 +159,7 @@ function UniqueTargetGenerator({
           <div className="font-semibold text-xs text-enemy/70 hidden">
             Enemy Targets
           </div>
-          <div className="flex flex-wrap gap-2 w-full">
+          <div className="flex flex-wrap gap-2 w-full justify-center">
             {targets
               .filter((t) => t.target.playerID !== context.playerID)
               .map(({ target, type }) => {
@@ -182,7 +182,7 @@ function UniqueTargetGenerator({
           <div className="font-semibold text-xs text-ally/80 hidden">
             Ally Targets
           </div>
-          <div className="flex flex-wrap gap-2 w-full">
+          <div className="flex flex-wrap gap-2 w-full justify-centerok">
             {targets
               .filter((t) => t.target.playerID === context.playerID)
               .map(({ target, type }) => {

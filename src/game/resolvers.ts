@@ -3,7 +3,6 @@ import type {
   DeltaContext,
   DeltaPositionContext,
   DeltaQueueItem,
-  DeltaResolver,
 } from '@/game/types/delta'
 import type {
   SCombat,
@@ -56,16 +55,16 @@ import {
   TargetHeal,
 } from './data/messages'
 import { withState } from './lib/actor'
+import { validateAction } from './action'
 
 function resolveAction(
   state: State,
   context: DeltaPositionContext,
-  resolver: DeltaResolver<State, DeltaPositionContext, DeltaContext>
+  action: SAction
 ): Array<DeltaQueueItem<State, DeltaContext>> {
-  if (!resolver.validate(state, context)) {
+  if (!validateAction(action, state, context)) {
     // likely an AI action
-    console.error('resolver validation failed', resolver, state, context)
-    const action = resolver as SAction
+    console.error('resolver validation failed', action, state, context)
     if (action.name) {
       return [
         pushMessagesResolver(context, [
@@ -76,7 +75,7 @@ function resolveAction(
     return []
   }
   const resolverContext = convertPositionToTargetContext(state, context)
-  return resolver.resolve(state, resolverContext).flatMap((m) => m)
+  return action.resolve(state, resolverContext).flatMap((m) => m)
 }
 
 function costResolver(
@@ -451,7 +450,10 @@ function addPlayerResolver(player: SPlayer): SMutation {
 
 function startCombatResolver(
   combat: SCombat,
-  preState: Partial<State>
+  preState: Partial<State>,
+  options: {
+    activeSize: number
+  }
 ): SMutation {
   return {
     ID: v4(),
@@ -476,7 +478,12 @@ function startCombatResolver(
           triggerQueue: [],
           mutationQueue: [],
           promptQueue: [],
-          players: state.players.concat(players),
+          players: state.players.concat(players).map((p) => ({
+            ...p,
+            activeActorIDs: Array.from({ length: options.activeSize }).map(
+              (_, i) => p.activeActorIDs[i] ?? null
+            ),
+          })),
           actors: state.actors.concat(actors),
           combat,
           combatLog: [],

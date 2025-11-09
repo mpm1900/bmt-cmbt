@@ -16,6 +16,8 @@ type Combat<T, A> = {
   phase: CombatPhase
   effects: Array<EffectItem<T, A>>
   exitNodeID: string
+
+  actorFilter: (actor: A) => boolean
 }
 
 export { CombatPhases }

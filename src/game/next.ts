@@ -48,16 +48,18 @@ function resolveActionItem(
       }),
     ])
   }
+
+  const mutations = resolveAction(state, item.context, item.action)
+  const mutationQueue = push(state.mutationQueue, mutations)
+  state = {
+    ...state,
+    mutationQueue,
+  }
   state = mutateActor(state, newContext({ sourceID: source?.ID }), {
     filter: (a, c) => a.ID === c.sourceID,
     apply: (a, c) => withCooldown(a, item.action, state, c),
   })
-  const mutations = resolveAction(state, item.context, item.action)
-  const mutationQueue = push(state.mutationQueue, mutations)
-  return {
-    ...state,
-    mutationQueue,
-  }
+  return state
 }
 
 function nextAction(state: State): State {
