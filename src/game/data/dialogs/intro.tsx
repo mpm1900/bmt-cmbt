@@ -6,6 +6,7 @@ import {
 } from '@/game/encounter'
 import { getMissingActorCount } from '@/game/player'
 import {
+  addPlayerResolver,
   damagesResolver,
   mutatePlayerResolver,
   navigateEncounterResolver,
@@ -52,8 +53,18 @@ const IntroNode0ID = v4()
 const encounterPlayer: SPlayer = {
   ID: IntroNode0ID,
   activeActorIDs: [null, null, null],
-  items: [],
-  credits: 0,
+  items: [
+    {
+      ID: v4(),
+      name: 'Potion',
+      value: 123,
+      consumable: Heal,
+      use: undefined,
+      actions: undefined,
+      effect: undefined,
+    },
+  ],
+  credits: 710,
 }
 const criminal1 = Criminal(1, encounterPlayer.ID)
 const criminal2 = Criminal(2, encounterPlayer.ID)
@@ -66,6 +77,7 @@ const IntroNode0: SDialogNode = {
     {
       chance: 50,
       success: (roll) => [
+        addPlayerResolver(encounterPlayer),
         pushMessagesResolver(context, [
           newMessage({
             text: (
@@ -82,6 +94,7 @@ const IntroNode0: SDialogNode = {
         ]),
       ],
       failure: (roll) => [
+        addPlayerResolver(encounterPlayer),
         pushMessagesResolver(context, [
           newMessage({
             text: (

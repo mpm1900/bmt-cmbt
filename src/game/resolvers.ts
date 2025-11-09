@@ -369,6 +369,9 @@ function damagesResolver(
           const source = getActor(next, ctx.sourceID)
           const target = getActor(next, ctx.targetIDs[0])
 
+          // if already dead, don't make any more triggers
+          if (!target?.state.alive) return next
+
           next = mutateDamage(next, ctx, damage, depth)
 
           if (target?.state.protected && !damage.bypassProtected) {

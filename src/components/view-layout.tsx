@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { Slot } from '@radix-ui/react-slot'
 import type { ComponentProps } from 'react'
 
@@ -7,7 +8,10 @@ function ViewLayoutContent({
   ...props
 }: ComponentProps<'div'>) {
   return (
-    <div {...props} className="flex-1 flex items-center justify-center">
+    <div
+      {...props}
+      className={cn('flex items-center justify-center', className)}
+    >
       <div className="relative flex-1 flex items-start justify-center gap-4 w-260 min-h-120">
         {children}
       </div>

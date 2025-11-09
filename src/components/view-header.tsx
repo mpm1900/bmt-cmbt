@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 function ViewHeader() {
   const state = useGameState((s) => s.state)
   return (
-    <div className="flex items-center justify-start gap-2 p-1 px-3">
+    <div className="flex items-center justify-start gap-2 p-1 px-3 w-full">
       <Badge variant="outline">Effects: {state.effects.length}</Badge>
       <Badge
         variant={state.combat ? 'outline' : 'secondary'}

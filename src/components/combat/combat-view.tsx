@@ -25,6 +25,7 @@ function CombatView({ current }: { current: SActionItem | undefined }) {
     <>
       <PhaseController />
       <ViewLayout
+        className="h-152"
         main={
           <Tabs
             defaultValue="actions"

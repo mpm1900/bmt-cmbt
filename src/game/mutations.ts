@@ -1,6 +1,7 @@
 import { playerStore } from '@/hooks/usePlayer'
 import { v4 } from 'uuid'
 import {
+  findPlayer,
   getActionableActors,
   getActiveNode,
   getActor,
@@ -13,7 +14,12 @@ import { NavigateDialog } from './data/actions/_system/navigate-dialog'
 import { ActivateX } from './data/actions/_system/swap'
 import { newMessage } from './encounter'
 import { nextTurnPhase } from './next'
-import { getMissingActorCount, isPlayerDead, requiresPrompt } from './player'
+import {
+  addRewards,
+  getMissingActorCount,
+  isPlayerDead,
+  requiresPrompt,
+} from './player'
 import { enqueue, pop, push, sort } from './lib/queue'
 import { navigateDialogResolver, resolveAction } from './resolvers'
 import type {
@@ -34,6 +40,8 @@ import type { Message } from './types/message'
 import * as messages from './data/messages'
 import { decrementCooldowns, withDamage } from './lib/actor'
 import { getDamageResult } from './lib/damage'
+
+const playerID = playerStore.getState().playerID
 
 function newContext<T = {}>(
   context: Partial<DeltaContext> & T
@@ -439,7 +447,13 @@ function endCombat(state: State, encounterID: string): State {
   state = pushMessages(state, [
     newMessage({ text: messages.SeporatorBottom('Combat ended.') }),
   ])
+  const encounter = findPlayer(state, encounterID)!
+  state = mutatePlayer(state, newContext({}), {
+    filter: (p) => p.ID == playerID,
+    apply: (p) => addRewards(p, encounter),
+  })
   state = removePlayer(state, encounterID)
+
   const exitNodeID = state.combat!.exitNodeID
   state = {
     ...state,
@@ -450,6 +464,7 @@ function endCombat(state: State, encounterID: string): State {
     mutationQueue: [navigateDialogResolver(exitNodeID, newContext({}))],
     promptQueue: [],
   }
+
   return state
 }
 

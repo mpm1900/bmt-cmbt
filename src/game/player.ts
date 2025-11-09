@@ -95,6 +95,14 @@ function groupItems(items: Array<SItem>) {
   )
 }
 
+function addRewards(player: SPlayer, encounter: SPlayer): SPlayer {
+  return {
+    ...player,
+    items: player.items.concat(encounter.items),
+    credits: player.credits + encounter.credits,
+  }
+}
+
 export {
   getActorID,
   getPosition,
@@ -105,4 +113,5 @@ export {
   requiresPrompt,
   getItemAction,
   groupItems,
+  addRewards,
 }

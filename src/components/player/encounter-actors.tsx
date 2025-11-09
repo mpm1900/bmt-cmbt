@@ -17,19 +17,20 @@ function EncounterActors({
 }) {
   const state = useGameState((s) => s.state)
   const actors = state.actors.filter((a) => a.playerID === encounter.ID)
+  const alive = actors.filter((a) => a.state.alive)
   const phase = useGameState((s) => s.state.combat?.phase)
   const planning = phase === 'planning'
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div className="w-full flex flex-row-reverse justify-start items-start px-4 gap-2">
+    <div className="w-full flex flex-row-reverse justify-start items-start max-w-[1440px] px-4 gap-2">
       {encounter.activeActorIDs.map((actorID, i) => {
         return (
-          <div key={i} className="relative h-14 w-48">
+          <div key={i} className="relative h-20 w-48">
             <div
               className={cn(
                 'rounded bg-background opacity-40 z-0 transition-all',
-                'h-full w-full mb-6 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30',
+                'h-14 w-full mb-6 flex items-center justify-center border border-foreground/10 border-dashed text-stone-300/30',
                 { 'opacity-0': !!actorID }
               )}
             />
@@ -67,9 +68,11 @@ function EncounterActors({
           )}
         </div>
         <Separator />
-        <div className="text-xs text-muted-foreground/50 uppercase">
-          {actors.filter((a) => a.state.alive).length} Enemies left
-        </div>
+        {alive.length > 0 && (
+          <div className="text-xs text-muted-foreground/50 uppercase">
+            {alive.length} Enemies left
+          </div>
+        )}
       </div>
     </div>
   )
