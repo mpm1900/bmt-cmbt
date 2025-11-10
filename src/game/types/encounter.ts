@@ -1,10 +1,6 @@
 import type { ReactNode } from 'react'
 import type { ActionQueueItem, DialogAction } from './action'
-import type {
-  DeltaContext,
-  DeltaPositionContext,
-  DeltaQueueItem,
-} from './delta'
+import type { DeltaContext, DeltaQueueItem } from './delta'
 import type { Message } from './message'
 import type { Item } from './item'
 
@@ -18,7 +14,7 @@ type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   disable: 'hide' | 'disable'
   text: ReactNode
   icons: ReactNode
-  context: DeltaPositionContext
+  context: DeltaContext
 }
 
 type OptionsNode<T, A, S extends Object = {}> = {
@@ -26,10 +22,7 @@ type OptionsNode<T, A, S extends Object = {}> = {
   type: 'options'
   checks: (state: T, context: DeltaContext) => Array<DialogCheck<T>>
   messages: (state: T, context: DeltaContext) => Array<Message>
-  options: (
-    state: T,
-    context: DeltaPositionContext
-  ) => Array<DialogOption<T, A>>
+  options: (state: T, context: DeltaContext) => Array<DialogOption<T, A>>
   state: S
 }
 
@@ -39,10 +32,7 @@ type ShopNode<T, A, S extends Object = {}> = {
   messages: (state: T, context: DeltaContext) => Array<Message>
   items: Array<Item<T, A>>
   credits: number
-  options: (
-    state: T,
-    context: DeltaPositionContext
-  ) => Array<DialogOption<T, A>>
+  options: (state: T, context: DeltaContext) => Array<DialogOption<T, A>>
   state: S
 }
 

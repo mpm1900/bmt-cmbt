@@ -1,11 +1,11 @@
 import type { State } from './state'
-import type { DeltaPositionContext } from './types/delta'
+import type { DeltaContext } from './types/delta'
 import { withEffects } from './lib/actor'
 import type { Position } from './types/player'
 
 function isTargeted(
   state: State,
-  context: DeltaPositionContext | undefined,
+  context: DeltaContext | undefined,
   actorID: string | null,
   position: Position
 ) {

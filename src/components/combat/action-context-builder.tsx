@@ -1,5 +1,5 @@
 import type { SAction, State } from '@/game/state'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import {
   Card,
   CardAction,
@@ -20,7 +20,7 @@ import { ActionRepeatPages } from './action-repeat-pages'
 import { newContext } from '@/game/mutations'
 import { usePlayerID } from '@/hooks/usePlayer'
 
-function getSelectedCount(context: DeltaPositionContext) {
+function getSelectedCount(context: DeltaContext) {
   return (
     context.positions.filter((p) => !!p).length +
     context.targetIDs.filter((id) => !!id).length
@@ -34,8 +34,8 @@ function DuplicateTargetGenerator({
   state,
 }: {
   action: SAction
-  context: DeltaPositionContext
-  onContextChange: (context: DeltaPositionContext) => void
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
   state: State
 }) {
   const playerID = usePlayerID()
@@ -146,8 +146,8 @@ function UniqueTargetGenerator({
 }: {
   action: SAction
   state: State
-  context: DeltaPositionContext
-  onContextChange: (context: DeltaPositionContext) => void
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
 }) {
   const playerID = usePlayerID()
   const targets = action.targets.get(state, context)
@@ -235,9 +235,9 @@ function ActionContextBuilder({
   playerID: string
   action: SAction
   sourceID: string | undefined
-  context: DeltaPositionContext
-  onContextChange: (context: DeltaPositionContext) => void
-  onContextConfirm: (context: DeltaPositionContext) => void
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
+  onContextConfirm: (context: DeltaContext) => void
 }) {
   const state = useGameState((s) => s.state)
 

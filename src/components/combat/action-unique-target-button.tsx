@@ -1,7 +1,7 @@
 import type { SAction, SActor, State } from '@/game/state'
 import type { ActionTarget } from '@/game/types/action'
 import { Button } from '../ui/button'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { getPosition, positionEquals } from '@/game/player'
 import { getSelectedCount } from './action-context-builder'
 
@@ -19,8 +19,8 @@ function ActionUniqueTargetButton({
   target: SActor
   type: ActionTarget<SActor>['type']
   allied: boolean
-  context: DeltaPositionContext
-  onContextChange: (context: DeltaPositionContext) => void
+  context: DeltaContext
+  onContextChange: (context: DeltaContext) => void
 }) {
   const max = action.targets.max(state, context)
   const ready = action.targets.validate(state, context)
@@ -66,8 +66,8 @@ function ActionTargetIdButton({
   target: SActor
   disabled: boolean
   allied: boolean
-  context: DeltaPositionContext
-  onContextChange: (context: Partial<DeltaPositionContext>) => void
+  context: DeltaContext
+  onContextChange: (context: Partial<DeltaContext>) => void
 }) {
   const active = context.targetIDs.includes(target.ID)
   return (
@@ -112,8 +112,8 @@ function ActionPositionButton({
   target: SActor
   disabled: boolean
   allied: boolean
-  context: DeltaPositionContext
-  onContextChange: (context: Partial<DeltaPositionContext>) => void
+  context: DeltaContext
+  onContextChange: (context: Partial<DeltaContext>) => void
 }) {
   const position = getPosition(state, target.ID)
   const active =

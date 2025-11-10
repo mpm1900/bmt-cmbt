@@ -4,7 +4,7 @@ import { useState, type ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { ActionItem } from './action-item'
 import { ActionContextBuilder } from './action-context-builder'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { newContext } from '@/game/mutations'
 import { CombatViewTabs } from './combat-view-tabs'
 
@@ -22,10 +22,10 @@ function ActionSelectionCard({
   actions: Array<SAction>
   activeActionID: string | undefined
   onActiveActionIDChange: (actionID: string | undefined) => void
-  onActionConfirm: (action: SAction, context: DeltaPositionContext) => void
+  onActionConfirm: (action: SAction, context: DeltaContext) => void
   children?: ReactNode
 }) {
-  const [context, setContext] = useState<DeltaPositionContext>(
+  const [context, setContext] = useState<DeltaContext>(
     newContext<{}>({ playerID })
   )
   const activeAction = actions.find((action) => action.ID === activeActionID)

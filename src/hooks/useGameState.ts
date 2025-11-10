@@ -14,7 +14,7 @@ import {
   resolveActionItem,
 } from '@/game/next'
 import type { SAction, SActionItem, SPlayer, State } from '@/game/state'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { createActor } from '@/lib/create-actor'
 import { v4 } from 'uuid'
 import { createStore, useStore } from 'zustand'
@@ -33,10 +33,10 @@ import { Protected } from '@/game/data/effects/protected'
 
 type GameStateStore = {
   state: State
-  pushAction: (action: SAction, context: DeltaPositionContext) => void
+  pushAction: (action: SAction, context: DeltaContext) => void
   filterAction: (actorID: string) => void
-  resolvePrompt: (context: DeltaPositionContext) => void
-  resolveActionItem: (action: SAction, context: DeltaPositionContext) => void
+  resolvePrompt: (context: DeltaContext) => void
+  resolveActionItem: (action: SAction, context: DeltaContext) => void
   next: () => void
   nextPhase: () => void
   deleteCombat: () => void

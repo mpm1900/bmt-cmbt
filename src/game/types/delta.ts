@@ -11,8 +11,6 @@ type DeltaContext = {
   sourceID: string
   parentID: string
   targetIDs: Array<string | undefined>
-}
-type DeltaPositionContext = DeltaContext & {
   positions: Array<Position>
 }
 
@@ -39,7 +37,6 @@ type DeltaResolver<T, C1, C2> = {
 export type {
   Delta,
   DeltaContext,
-  DeltaPositionContext,
   ContextItem,
   DeltaQueueItem,
   DeltaQueue,

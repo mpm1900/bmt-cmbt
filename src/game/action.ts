@@ -3,7 +3,7 @@ import { ActorFlinched } from './data/messages'
 import { newMessage } from './encounter'
 import { pushMessagesResolver } from './resolvers'
 import type { SAction, State } from './state'
-import type { DeltaContext, DeltaPositionContext } from './types/delta'
+import type { DeltaContext } from './types/delta'
 
 type Mutations = ReturnType<SAction['resolve']>
 
@@ -40,7 +40,7 @@ function resolveAction(
 function validateAction(
   action: SAction | undefined,
   state: State,
-  context: DeltaPositionContext
+  context: DeltaContext
 ): boolean {
   if (!action) {
     console.error('[validateAction] no action')
@@ -62,7 +62,7 @@ function validateAction(
 function getSortedAIContexts(
   action: SAction,
   state: State,
-  context: DeltaPositionContext
+  context: DeltaContext
 ) {
   const ai = action.ai
   if (!ai) return []

@@ -11,7 +11,7 @@ import type { PowerDamage } from '@/game/types/damage'
 import { v4 } from 'uuid'
 import { SetActionsEffect } from '../effects/set-actions'
 import { newContext, remapTargetIDs } from '@/game/mutations'
-import type { DeltaContext, DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import {
   getSourceChance,
   getTargetChance,
@@ -66,7 +66,7 @@ const SolarBeam: SAction = {
   },
 }
 
-function SolarBeamFollowUp(ctx: DeltaPositionContext): SAction {
+function SolarBeamFollowUp(ctx: DeltaContext): SAction {
   return {
     ID: v4(),
     name: 'Solar Beam',

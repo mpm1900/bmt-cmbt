@@ -20,4 +20,4 @@ type TriggerQueueItem<T> = ContextItem<DeltaContext> & {
 
 type TriggerQueue<T> = Queue<TriggerQueueItem<T>>
 
-export type { Trigger, DeltaContext, TriggerQueueItem, TriggerQueue }
+export type { Trigger, TriggerQueueItem, TriggerQueue }

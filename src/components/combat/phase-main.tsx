@@ -4,8 +4,7 @@ import { findActor, getActiveActorIDs, getActor } from '@/game/access'
 import { CardHeader, CardTitle } from '../ui/card'
 import type { SAction, SActionItem, SActor } from '@/game/state'
 import { usePlayerID } from '@/hooks/usePlayer'
-import type { DeltaContext } from '@/game/types/trigger'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { AnimatePresence } from 'motion/react'
 import { motion } from 'motion/react'
 
@@ -51,7 +50,7 @@ function PhaseMainPrompt({
   context: DeltaContext
   source: SActor
   action: SAction
-  onActionConfirm: (context: DeltaPositionContext) => void
+  onActionConfirm: (context: DeltaContext) => void
 }) {
   return (
     <ActionSelectionCard
@@ -78,7 +77,7 @@ function PhaseMainRenderer({
 }: {
   action: SAction
   source: SActor
-  context: DeltaPositionContext
+  context: DeltaContext
 }) {
   const state = useGameState((s) => s.state)
   const targets = context.targetIDs

@@ -1,6 +1,6 @@
 import { hasNext } from '@/game/next'
 import type { SDialogOption } from '@/game/state'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
 import { ArrowUp } from 'lucide-react'
@@ -37,7 +37,7 @@ function DialogOption({
 }: {
   index: number
   option: SDialogOption
-  onConfirm: (context: DeltaPositionContext) => void
+  onConfirm: (context: DeltaContext) => void
 }) {
   const state = useGameState((s) => s.state)
   const [context, setContext] = useState(option.context)

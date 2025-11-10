@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 import { ButtonGroup } from '../ui/button-group'
 import { Button } from '../ui/button'
 import { Circle, Target } from 'lucide-react'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import type { SAction, State } from '@/game/state'
 import { getSelectedCount } from './action-context-builder'
 
@@ -15,7 +15,7 @@ function ActionRepeatPages({
 }: {
   state: State
   action: SAction
-  context: DeltaPositionContext
+  context: DeltaContext
   index: number
   onIndexChange: (index: number) => void
 }) {

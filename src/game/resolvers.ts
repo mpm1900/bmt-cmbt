@@ -1,9 +1,4 @@
-import type {
-  Delta,
-  DeltaContext,
-  DeltaPositionContext,
-  DeltaQueueItem,
-} from '@/game/types/delta'
+import type { Delta, DeltaContext, DeltaQueueItem } from '@/game/types/delta'
 import type {
   SCombat,
   SAction,
@@ -60,7 +55,7 @@ import { decrementEffectItem } from './lib/effect'
 
 function resolveAction(
   state: State,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   action: SAction
 ): Array<DeltaQueueItem<State, DeltaContext>> {
   if (!validateAction(action, state, context)) {

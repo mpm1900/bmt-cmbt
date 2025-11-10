@@ -39,12 +39,7 @@ import type {
 } from './state'
 import type { CombatPhase } from './types/combat'
 import type { Damage } from './types/damage'
-import type {
-  Delta,
-  DeltaContext,
-  DeltaPositionContext,
-  DeltaQueueItem,
-} from './types/delta'
+import type { Delta, DeltaContext, DeltaQueueItem } from './types/delta'
 import type { Message } from './types/message'
 import * as messages from './data/messages'
 import { computeDamage, decrementCooldowns } from './lib/actor'
@@ -91,7 +86,7 @@ function pushMessages(state: State, messages: Array<Message>): State {
 
 function pushAction(
   state: State,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   action: SAction
 ): State {
   const actionQueue = push(state.actionQueue, [
@@ -109,7 +104,7 @@ function pushAction(
 
 function addActionToQueue(
   state: State,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   action: SAction
 ): State {
   const existing = state.actionQueue.find(
@@ -131,7 +126,7 @@ function addActionToQueue(
 
 function pushPrompt(
   state: State,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   prompt: SAction
 ): State {
   const promptQueue = push(state.promptQueue, [
@@ -147,7 +142,7 @@ function pushPrompt(
   }
 }
 
-function resolvePrompt(state: State, context: DeltaPositionContext): State {
+function resolvePrompt(state: State, context: DeltaContext): State {
   if (!state.promptQueue[0]) return state
   const mutations = resolveAction(state, context, state.promptQueue[0].action)
   const mutationQueue = push(state.mutationQueue, mutations)

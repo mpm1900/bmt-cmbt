@@ -12,7 +12,7 @@ import type {
   STrigger,
 } from './state'
 import type { ActionTarget } from './types/action'
-import type { DeltaContext, DeltaPositionContext } from './types/delta'
+import type { DeltaContext } from './types/delta'
 import type { Position } from './types/player'
 import { newContext } from './mutations'
 import { getStats, withStats } from './lib/actor'
@@ -157,7 +157,7 @@ function hasActiveActorSpace(state: State, playerID: string): boolean {
 function convertTargetToPositionContext(
   state: State,
   context: DeltaContext
-): DeltaPositionContext {
+): DeltaContext {
   const positions_targets = context.targetIDs.map(
     (targetID) =>
       [getPosition(state, targetID), targetID] as [Position | undefined, string]
@@ -177,7 +177,7 @@ function convertTargetToPositionContext(
 
 function convertPositionToTargetContext(
   state: State,
-  context: DeltaPositionContext
+  context: DeltaContext
 ): DeltaContext {
   const targetIDs: Array<string | undefined> = context.positions.map((p) =>
     getActorID(state, p)
@@ -188,6 +188,7 @@ function convertPositionToTargetContext(
     sourceID: context.sourceID,
     parentID: context.parentID,
     targetIDs: targetIDs.concat(context.targetIDs),
+    positions: [],
   }
 }
 

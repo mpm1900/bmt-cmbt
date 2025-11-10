@@ -6,7 +6,7 @@ import {
 import { newContext } from './mutations'
 import type { SDialogOption, State } from './state'
 import type { Message } from './types/message'
-import type { DeltaPositionContext } from './types/delta'
+import type { DeltaContext } from './types/delta'
 
 function newMessage(partial: Partial<Message>): Message {
   return {
@@ -20,7 +20,7 @@ function newMessage(partial: Partial<Message>): Message {
 
 function createDialogOption(
   option: Partial<SDialogOption>,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   nodeID: string,
   messages: Array<Message>
 ): SDialogOption {
@@ -44,7 +44,7 @@ function createDialogOption(
 
 function createSourceDialogOption(
   option: Partial<SDialogOption>,
-  context: DeltaPositionContext,
+  context: DeltaContext,
   nodeID: string,
   messages: Array<Message>
 ): SDialogOption {

@@ -4,7 +4,7 @@ import type { SAction } from '@/game/state'
 import { ACTION_RENDERERS } from '@/renderers'
 import { Item } from '../ui/item'
 import { useGameState } from '@/hooks/useGameState'
-import type { DeltaPositionContext } from '@/game/types/delta'
+import type { DeltaContext } from '@/game/types/delta'
 import { ActionDetails } from '../tooltips/action-tooltip'
 import { validateAction } from '@/game/action'
 
@@ -15,7 +15,7 @@ function ActionItem({
   onActiveChange,
 }: {
   action: SAction
-  context: DeltaPositionContext
+  context: DeltaContext
   active: boolean
   onActiveChange: (active: boolean) => void
 }) {

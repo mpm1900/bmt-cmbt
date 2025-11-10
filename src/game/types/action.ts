@@ -1,4 +1,4 @@
-import type { DeltaContext, DeltaPositionContext, DeltaResolver } from './delta'
+import type { DeltaContext, DeltaResolver } from './delta'
 import type { Queue } from './queue'
 
 type ActionTarget<A> = {
@@ -8,22 +8,22 @@ type ActionTarget<A> = {
 }
 
 type ActionTargetGenerator<T, A> = {
-  get: (state: T, context: DeltaPositionContext) => Array<ActionTarget<A>>
-  max: (state: T, context: DeltaPositionContext) => number
-  validate: (state: T, context: DeltaPositionContext) => boolean
+  get: (state: T, context: DeltaContext) => Array<ActionTarget<A>>
+  max: (state: T, context: DeltaContext) => number
+  validate: (state: T, context: DeltaContext) => boolean
   unique: boolean
 }
 
 type ActionAI<T, A> = {
   generateContexts: (
     state: T,
-    context: DeltaPositionContext,
+    context: DeltaContext,
     action: Action<T, A>
-  ) => Array<DeltaPositionContext>
-  compute: (state: T, context: DeltaPositionContext) => number | undefined
+  ) => Array<DeltaContext>
+  compute: (state: T, context: DeltaContext) => number | undefined
 }
 
-type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
+type Action<T, A> = DeltaResolver<T, DeltaContext, DeltaContext> & {
   name: string
   priority: number
   cooldown: (state: T, context: DeltaContext) => number
@@ -32,17 +32,17 @@ type Action<T, A> = DeltaResolver<T, DeltaPositionContext, DeltaContext> & {
 }
 
 type DialogAction<T, A> = Action<T, A> & {
-  sources: (state: T, context: DeltaPositionContext) => Array<A>
+  sources: (state: T, context: DeltaContext) => Array<A>
 }
 
 type ActionQueueItem<T, A, N extends Action<T, A> = Action<T, A>> = {
   ID: string
-  context: DeltaPositionContext
+  context: DeltaContext
   action: N
 }
 
 type PromptQueueItem<T, A> = ActionQueueItem<T, A> & {
-  context: DeltaPositionContext
+  context: DeltaContext
 }
 
 type ActionQueue<T, A> = Queue<ActionQueueItem<T, A>>
