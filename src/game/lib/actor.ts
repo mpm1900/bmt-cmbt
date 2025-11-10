@@ -11,9 +11,9 @@ import type { Action } from '../types/action'
 import { getDamageResult } from './damage'
 import type { Damage, DamageResult } from '../types/damage'
 
-function updateActor<T, A extends Actor<T> = Actor<T>>(
-  actor: A,
-  fn: (a: A) => Partial<A>
+function updateActor<T>(
+  actor: Actor<T>,
+  fn: (a: Actor<T>) => Partial<Actor<T>>
 ) {
   return {
     ...actor,
@@ -21,58 +21,52 @@ function updateActor<T, A extends Actor<T> = Actor<T>>(
   }
 }
 
-function withState<T, A extends Actor<T> = Actor<T>>(
-  actor: A,
+function withState<T>(
+  actor: Actor<T>,
   state: Partial<ActorState>
-): A {
-  return {
-    ...actor,
+): ReturnType<typeof updateActor<T>> {
+  return updateActor<T>(actor, (a) => ({
     state: {
-      ...actor.state,
+      ...a.state,
       ...state,
     },
-  }
+  }))
 }
 
-function withStats<T, A extends Actor<T> = Actor<T>>(
-  actor: A,
-  stats: Partial<ActorStats>
-): A {
-  return {
-    ...actor,
+function withStats<T>(actor: Actor<T>, stats: Partial<ActorStats>): Actor<T> {
+  return updateActor<T>(actor, (a) => ({
     stats: {
-      ...actor.stats,
+      ...a.stats,
       ...stats,
     },
-  }
+  }))
 }
 
-function withCooldown<T, A extends Actor<T> = Actor<T>>(
-  actor: A,
-  action: Action<T, A>,
+function withCooldown<T>(
+  actor: Actor<T>,
+  action: Action<T, Actor<T>>,
   state: T,
   context: DeltaContext
-): A {
-  return {
-    ...actor,
+): Actor<T> {
+  return updateActor<T>(actor, (a) => ({
     cooldowns: {
-      ...actor.cooldowns,
+      ...a.cooldowns,
       [action.ID]: action.cooldown(state, context),
     },
-  }
+  }))
 }
 
-function withDamage<T, A extends Actor<T> = Actor<T>>(
-  actor: A,
+function withDamage<T>(
+  actor: Actor<T>,
   damage: number,
   alive: 0 | 1
-): A {
-  return withState<T, A>(actor, { damage: Math.max(damage, 0), alive })
+): Actor<T> {
+  return withState<T>(actor, { damage: Math.max(damage, 0), alive })
 }
 
-function withHeal<T, A extends Actor<T> = Actor<T>>(actor: A, heal: number): A {
+function withHeal<T>(actor: Actor<T>, heal: number): Actor<T> {
   const damage = Math.max(actor.state.damage - heal, 0)
-  return withState<T, A>(actor, {
+  return withState<T>(actor, {
     damage,
   })
 }
@@ -198,7 +192,7 @@ function decrementCooldowns<T, A extends Actor<T> = Actor<T>>(actor: A): A {
     cooldowns: Object.keys(actor.cooldowns).reduce(
       (cooldowns, key) => {
         const value = actor.cooldowns[key] - 1
-        if (value === 0) return cooldowns
+        if (value <= 0) return cooldowns
         return {
           ...cooldowns,
           [key]: value,

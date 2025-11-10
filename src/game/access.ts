@@ -39,7 +39,7 @@ function withStatEffects(
   effects: Array<SEffectItem>
 ): SModifiedActor {
   const modified = withEffects(actor, effects)
-  return withStats<State, SModifiedActor>(modified, getStats<State>(modified))
+  return withStats<State>(modified, getStats<State>(modified)) as SModifiedActor
 }
 
 function getActor(
