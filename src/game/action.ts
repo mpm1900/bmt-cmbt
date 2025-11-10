@@ -59,4 +59,17 @@ function validateAction(
   return action.validate(state, context)
 }
 
-export { resolveAction, validateAction }
+function getSortedAIContexts(
+  action: SAction,
+  state: State,
+  context: DeltaPositionContext
+) {
+  const ai = action.ai
+  if (!ai) return []
+  return ai
+    .generateContexts(state, context, action)
+    .map((c) => [c, ai.compute(state, c) ?? 0] as const)
+    .sort((a, b) => b[1] - a[1])
+}
+
+export { resolveAction, validateAction, getSortedAIContexts }

@@ -17,11 +17,11 @@ import {
 } from './mutations'
 import { pop, push } from './lib/queue'
 import { resolveAction } from './resolvers'
-import type { SActor, State } from './state'
-import type { ActionQueueItem } from './types/action'
+import type { SActionItem, State } from './state'
 import type { CombatPhase } from './types/combat'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 import { withCooldown } from './lib/actor'
+import { getSortedAIContexts } from './action'
 
 function resolveTrigger(
   resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
@@ -35,11 +35,8 @@ function resolveTrigger(
   return resolver.resolve(state, context).flatMap((m) => m)
 }
 
-function resolveActionItem(
-  state: State,
-  item: Omit<ActionQueueItem<State, SActor>, 'ID'> &
-    Partial<Pick<ActionQueueItem<State, SActor>, 'ID'>>
-): State {
+type Item = Omit<SActionItem, 'ID'> & Partial<Pick<SActionItem, 'ID'>>
+function resolveActionItem(state: State, item: Item): State {
   const source = findActor(state, item.context.sourceID)
   // TODO: better log condition here item.action.name is flimsy
   if (source && item.action.name) {
@@ -143,17 +140,19 @@ function nextTurnPhase(state: State): State {
       if (source?.state.stunned || !source?.state.alive) return
 
       const aiActions = findActor(state, id)?.actions.filter((a) => a.ai) ?? []
-      const context = newContext({ playerID: player.ID, sourceID: id })
       const ratedActions = aiActions.map((a) => {
-        const contexts = a
-          .ai!.generateContexts(state, context, a)
-          .map((c) => [c, a.ai!.compute(state, c)] as const)
-          .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
-
-        return [a, contexts[0][0], contexts[0][1]] as const
+        const contexts = getSortedAIContexts(
+          a,
+          state,
+          newContext({ playerID: player.ID, sourceID: id })
+        )
+        const [context, score] = contexts[0]
+        return [a, context, score] as const
       })
+
       if (ratedActions[0]) {
-        state = pushAction(state, ratedActions[0][1], ratedActions[0][0])
+        const [action, context] = ratedActions[0]
+        state = pushAction(state, context, action)
       }
     })
 
@@ -176,10 +175,7 @@ function nextAiPrompt(state: State): State {
   const { action, context } = state.promptQueue[0]
   if (context.playerID !== state.encounter.activeNodeID || !action.ai)
     return state
-  const contexts = action.ai
-    .generateContexts(state, context, action)
-    .map((c) => [c, action.ai!.compute(state, c)] as const)
-    .sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0))
+  const contexts = getSortedAIContexts(action, state, context)
 
   state = resolvePrompt(state, contexts[0][0])
   return state

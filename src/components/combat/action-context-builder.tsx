@@ -182,7 +182,7 @@ function UniqueTargetGenerator({
           <div className="font-semibold text-xs text-ally/80 hidden">
             Ally Targets
           </div>
-          <div className="flex flex-wrap gap-2 w-full justify-centerok">
+          <div className="flex flex-wrap gap-2 w-full justify-center">
             {targets
               .filter((t) => t.target.playerID === context.playerID)
               .map(({ target, type }) => {

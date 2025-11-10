@@ -17,7 +17,6 @@ import type {
 import { v4 } from 'uuid'
 import {
   decrementActorCooldowns,
-  decrementEffectItem,
   filterActionQueue,
   handleTrigger,
   incrementNodeCount,
@@ -57,6 +56,7 @@ import {
 import { withHeal, withState } from './lib/actor'
 import { validateAction } from './action'
 import { withActiveSize } from './player'
+import { decrementEffectItem } from './lib/effect'
 
 function resolveAction(
   state: State,

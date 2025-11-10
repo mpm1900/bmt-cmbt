@@ -33,8 +33,6 @@ import type {
   SActor,
   SEncounter,
   SDialogNode,
-  SEffect,
-  SEffectItem,
   SPlayer,
   State,
   STrigger,
@@ -51,21 +49,9 @@ import type { Message } from './types/message'
 import * as messages from './data/messages'
 import { computeDamage, decrementCooldowns } from './lib/actor'
 import { newDamageResult } from './lib/damage'
+import { newContext } from './lib/context'
 
 const playerID = playerStore.getState().playerID
-
-function newContext<T = {}>(
-  context: Partial<DeltaContext> & T
-): DeltaPositionContext & T {
-  return {
-    playerID: '',
-    sourceID: '',
-    parentID: '',
-    targetIDs: [],
-    positions: [],
-    ...context,
-  }
-}
 
 function enqueueMutations(
   state: State,
@@ -87,21 +73,6 @@ function startDialog(state: State): State {
   )
 
   return enqueueMutations(state, mutations)
-}
-
-function decrementEffect(effect: SEffect): SEffect {
-  return {
-    ...effect,
-    duration: effect.duration === undefined ? undefined : effect.duration - 1,
-    delay: effect.delay > 0 ? effect.delay - 1 : effect.delay,
-  }
-}
-
-function decrementEffectItem(effectItem: SEffectItem): SEffectItem {
-  return {
-    ...effectItem,
-    effect: decrementEffect(effectItem.effect),
-  }
 }
 
 function pushMessages(state: State, messages: Array<Message>): State {
@@ -540,8 +511,6 @@ function decrementActorCooldowns(state: State): State {
 
 export {
   addActionToQueue,
-  decrementEffect,
-  decrementEffectItem,
   filterActionQueue,
   removeParentEffects,
   handleTrigger,
