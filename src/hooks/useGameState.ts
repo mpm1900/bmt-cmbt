@@ -183,7 +183,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   },
   resolveActionItem: (action, context) => {
     set(({ state }) => {
-      state = resolveActionItem(state, { ID: '', action, context })
+      state = resolveActionItem(state, { action, context })
       return { state }
     })
   },

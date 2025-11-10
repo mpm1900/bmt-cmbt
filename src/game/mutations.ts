@@ -93,6 +93,7 @@ function decrementEffect(effect: SEffect): SEffect {
   return {
     ...effect,
     duration: effect.duration === undefined ? undefined : effect.duration - 1,
+    delay: effect.delay > 0 ? effect.delay - 1 : effect.delay,
   }
 }
 

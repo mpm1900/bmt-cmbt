@@ -5,6 +5,7 @@ import { Separator } from './ui/separator'
 import { Spinner } from './ui/spinner'
 import { getStatus } from '@/game/next'
 import { cn } from '@/lib/utils'
+import { Link } from '@tanstack/react-router'
 
 function ViewHeader() {
   const state = useGameState((s) => s.state)
@@ -30,6 +31,10 @@ function ViewHeader() {
         </>
       )}
       {getStatus(state) === 'running' && <Spinner />}
+      <div className="flex-1" />
+      <Badge variant="outline" asChild>
+        <Link to="/crew">edit crew</Link>
+      </Badge>
     </div>
   )
 }

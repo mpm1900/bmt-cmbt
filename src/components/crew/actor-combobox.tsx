@@ -1,13 +1,11 @@
-import { ChevronDown, Trash } from 'lucide-react'
+import { ChevronDown, Grip, Trash } from 'lucide-react'
 import {
   InputGroup,
-  InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from '../ui/input-group'
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Separator } from '../ui/separator'
 
 function ActorCombobox({
@@ -26,11 +24,9 @@ function ActorCombobox({
       onClick={() => onSelect()}
     >
       <div className="flex items-center gap-1 pr-1!">
-        <InputGroupAddon>
-          <RadioGroup value={active ? 'selected' : ''}>
-            <RadioGroupItem value="selected" />
-          </RadioGroup>
-        </InputGroupAddon>
+        <InputGroupButton className="ml-2 cursor-pointer">
+          <Grip />
+        </InputGroupButton>
         <InputGroupButton className={cn('text-muted-foreground')}>
           Class <ChevronDown />
         </InputGroupButton>
@@ -44,7 +40,7 @@ function ActorCombobox({
           e.stopPropagation()
         }}
       >
-        <Trash />
+        <Trash className={cn('text-muted-foreground')} />
       </InputGroupButton>
     </InputGroup>
   )

@@ -19,7 +19,7 @@ import {
 import { resolveAction } from '@/game/action'
 
 const FireballTargetCount = 2
-const FireballManaCost = 50
+const FireballManaCost = 0 //50
 const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
   offenseStat: 'mind',

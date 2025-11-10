@@ -129,6 +129,7 @@ function withEffects<T>(
     return actor as ModifiedActor<T>
   }
 
+  effects = effects.filter((e) => e.effect.delay === 0)
   const parentEffects = effects.filter((e) => e.context.parentID === actor.ID)
   const applied = parentEffects.reduce(
     (acc, e) => {

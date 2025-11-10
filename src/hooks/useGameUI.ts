@@ -34,10 +34,11 @@ const gameUIStore = createStore<GameUIStore>((set) => {
         (a) => !game.actionQueue.find((q) => q.context.sourceID === a.ID)
       )?.ID
       if (!nextActorID) return
+
+      const actor = getActor(game, nextActorID)
       set({
         activeActorID: nextActorID,
-        activeActionID: nextAvailableAction(getActor(game, nextActorID), game)
-          ?.ID,
+        activeActionID: nextAvailableAction(actor, game)?.ID,
       })
     },
   }

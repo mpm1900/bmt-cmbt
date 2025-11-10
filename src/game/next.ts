@@ -37,7 +37,8 @@ function resolveTrigger(
 
 function resolveActionItem(
   state: State,
-  item: ActionQueueItem<State, SActor>
+  item: Omit<ActionQueueItem<State, SActor>, 'ID'> &
+    Partial<Pick<ActionQueueItem<State, SActor>, 'ID'>>
 ): State {
   const source = findActor(state, item.context.sourceID)
   // TODO: better log condition here item.action.name is flimsy
