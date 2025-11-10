@@ -21,7 +21,7 @@ import type { SActionItem, State } from './state'
 import type { CombatPhase } from './types/combat'
 import type { DeltaContext, DeltaQueueItem, DeltaResolver } from './types/delta'
 import { withCooldown } from './lib/actor'
-import { getSortedAIContexts } from './action'
+import { getSortedAIContexts, validateAction } from './action'
 
 function resolveTrigger(
   resolver: DeltaResolver<State, DeltaContext, DeltaContext>,
@@ -139,7 +139,14 @@ function nextTurnPhase(state: State): State {
       const source = findActor(state, id)
       if (source?.state.stunned || !source?.state.alive) return
 
-      const aiActions = findActor(state, id)?.actions.filter((a) => a.ai) ?? []
+      const context = newContext({
+        playerID: source.playerID,
+        sourceID: source.ID,
+      })
+      const aiActions =
+        findActor(state, id)?.actions.filter(
+          (a) => a.ai && validateAction(a, state, context)
+        ) ?? []
       const ratedActions = aiActions.map((a) => {
         const contexts = getSortedAIContexts(
           a,

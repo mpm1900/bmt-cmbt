@@ -1,10 +1,11 @@
-import { getActor, isActive, mapTarget } from '@/game/access'
+import { getActor, isActive, mapActorPosition, mapTarget } from '@/game/access'
 import {
   getSourceChance,
   getTargetChance,
   newDamage,
   withChanceEvents,
 } from '@/game/lib/damage'
+import { getPosition } from '@/game/player'
 import { damagesResolver } from '@/game/resolvers'
 import type { SAction } from '@/game/state'
 import type { PowerDamage } from '@/game/types/damage'
@@ -33,6 +34,25 @@ const BrainBlast: SAction = {
         .map((actor) => mapTarget(actor, 'position')),
     validate: (_state, context) =>
       0 < context.positions.length && context.positions.length <= 2,
+  },
+  ai: {
+    generateContexts: (state, context, action) => {
+      return action.targets.get(state, context).map((target) => {
+        const position = getPosition(state, target.target.ID)
+        return {
+          ...context,
+          sourceID: context.sourceID,
+          positions: position ? [position] : [],
+        }
+      })
+    },
+    compute: (state, context) => {
+      return mapActorPosition(
+        state,
+        context.positions[0],
+        (a) => a.stats.health - a.state.damage
+      )
+    },
   },
   resolve: (state, context) => {
     const targetIDs = context.targetIDs.filter(Boolean)
