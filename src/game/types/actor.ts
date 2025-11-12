@@ -24,6 +24,7 @@ type Actor<T> = {
   playerID: string
   parentID: string | undefined
   name: string
+  image: string
   modified: boolean
   actions: Array<Action<T, Actor<T>>>
   stats: ActorStats

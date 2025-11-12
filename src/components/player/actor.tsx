@@ -1,3 +1,4 @@
+import { portraits } from '@/renderers/portraits'
 import type { State, SActor } from '@/game/state'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { useGameState } from '@/hooks/useGameState'
@@ -9,6 +10,8 @@ import { getHealth } from '@/game/lib/actor'
 import { getActor } from '@/game/access'
 import { motion, AnimatePresence } from 'motion/react'
 import { ActorBg } from './actor-bg'
+import { Badge } from '../ui/badge'
+import { cn } from '@/lib/utils'
 
 function Actor({
   actorID,
@@ -70,25 +73,39 @@ function Actor({
         variant={targeted ? 'targeted' : active ? 'ally-active' : 'ally'}
         disabled={disabled}
         onClick={() => onClick(actor)}
-        className="flex"
+        className={cn('flex pl-15 relative', {
+          'opacity-50': disabled && !active,
+        })}
       >
-        <img src="public/portraits/wizard_2.png" />
-        <ItemContent className="gap-0">
-          <ItemTitle className="text-xl title">{actor.name}</ItemTitle>
-          <ActorHealth
-            showHealthNumbers={true}
-            health={health}
-            maxHealth={maxHealth}
-            className="-mt-0.5 h-6"
-          >
-            {_health <= 0 && actor.state.alive && (
-              <span className="text-destructive-foreground uppercase">
-                Death's Door
-              </span>
-            )}
-          </ActorHealth>
-          <span className="text-xs h-4">resource bars here</span>
-        </ItemContent>
+        <div className="absolute -left-4 -top-3 size-25 overflow-hidden z-0">
+          <img src={portraits[actor.image]} className="actor-portrait" />
+        </div>
+        <Badge
+          className="absolute left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"
+          variant="outline"
+        >
+          9999
+        </Badge>
+        <div className="flex-1 z-10">
+          <ItemContent className="gap-0">
+            <ItemTitle className="text-xl title pl-2 shadow-xl">
+              {actor.name}
+            </ItemTitle>
+            <ActorHealth
+              showHealthNumbers={true}
+              health={health}
+              maxHealth={maxHealth}
+              className="-mt-0.5 h-6"
+            >
+              {_health <= 0 && actor.state.alive && (
+                <span className="text-destructive-foreground uppercase">
+                  Death's Door
+                </span>
+              )}
+            </ActorHealth>
+            <span className="text-xs h-4">resource bars here</span>
+          </ItemContent>
+        </div>
       </ActorBg>
       <ActorStatus actor={actor} />
     </motion.div>

@@ -35,7 +35,7 @@ function ActorHealth({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className={cn(
-          'absolute top-0 bg-red-400 h-full w-full flex-1 transition-all z-10',
+          'absolute top-0 bg-red-600/80 h-full w-full flex-1 transition-all z-10',
           { 'ring-1 ring-black': value !== 100 }
         )}
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}

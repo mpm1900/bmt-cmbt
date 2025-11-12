@@ -6,6 +6,7 @@ import {
   newContext,
   resolvePrompt,
   sortActionQueue,
+  validateState,
 } from '@/game/mutations'
 import {
   getNextType,
@@ -49,7 +50,7 @@ const player: SPlayer = {
   credits: 9999,
 }
 
-const Max = createActor('Max', player.ID, {
+const Max = createActor('Max', player.ID, 'lumberjack_2', {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -59,7 +60,7 @@ const Max = createActor('Max', player.ID, {
   speed: 100,
 })
 Max.state.damage = 60
-const Katie = createActor('Katie', player.ID, {
+const Katie = createActor('Katie', player.ID, 'woman_54', {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -68,7 +69,7 @@ const Katie = createActor('Katie', player.ID, {
   mind: 180,
   speed: 70,
 })
-const Hank = createActor('Hank', player.ID, {
+const Hank = createActor('Hank', player.ID, 'lion', {
   accuracy: 0,
   body: 180,
   // evasion: 90,
@@ -78,7 +79,7 @@ const Hank = createActor('Hank', player.ID, {
   reflexes: 150,
   speed: 150,
 })
-const Milo = createActor('Milo', player.ID, {
+const Milo = createActor('Milo', player.ID, 'pup', {
   accuracy: 0,
   body: 100,
   evasion: 0,
@@ -216,7 +217,8 @@ function useGameCurrentAction(): SActionItem | undefined {
       setCurrentActionItem(undefined)
       return
     }
-    if (nextType !== 'action') return
+    const [_, valid] = validateState(state)
+    if (!valid || nextType !== 'action') return
     if (state.players.some((p) => isPlayerDead(state, p))) return
     const source = findActor(state, firstActionItem?.context.sourceID)
     if (!source || !source.state.alive) return

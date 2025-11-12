@@ -38,7 +38,7 @@ import { TwoEncounter } from './two'
 const playerID = playerStore.getState().playerID
 
 const Criminal = (index: number, aiID: string) =>
-  createActor(`Criminal (${index})`, aiID, {
+  createActor(`Criminal (${index})`, aiID, '', {
     accuracy: 0,
     body: 100,
     evasion: 0,

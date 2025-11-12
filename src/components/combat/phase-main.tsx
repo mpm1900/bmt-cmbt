@@ -14,9 +14,9 @@ function PhaseMain({ current }: { current: SActionItem | undefined }) {
   const prompt = state.promptQueue[0]
   const promptSource = getActor(state, prompt?.context.sourceID)
   const currentSource = getActor(state, current?.context.sourceID)
-  const hasPrompt =
-    prompt && promptSource && prompt.context.playerID === playerID
+  const hasPrompt = prompt && prompt.context.playerID === playerID
   const hasRender = !hasPrompt && current && currentSource
+  console.log(prompt, promptSource, playerID)
 
   return (
     <AnimatePresence mode="wait">
@@ -48,7 +48,7 @@ function PhaseMainPrompt({
   onActionConfirm,
 }: {
   context: DeltaContext
-  source: SActor
+  source: SActor | undefined
   action: SAction
   onActionConfirm: (context: DeltaContext) => void
 }) {

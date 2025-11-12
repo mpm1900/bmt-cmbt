@@ -22,6 +22,7 @@ const actions = [
 function createActor(
   name: string,
   playerID: string,
+  image: string,
   stats: ActorStats
 ): SActor {
   return {
@@ -29,6 +30,7 @@ function createActor(
     playerID: playerID,
     parentID: undefined,
     name,
+    image,
     modified: false,
     actions: actions,
     stats,

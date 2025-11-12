@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import type { ComponentProps } from 'react'
 
 const actorBgVariants = cva(
-  'flex disabled:pointer-events-none disabled:opacity-50 outline-none p-1 px-2 rounded-xs transition-all border border-transparent',
+  'flex disabled:pointer-events-none outline-none p-1 px-2 rounded-xs transition-all border border-transparent',
   {
     variants: {
       variant: {
