@@ -27,7 +27,7 @@ function ActionSubDetails({
   const DStatIcon = damage ? MAIN_STAT_ICONS[damage.defenseStat] : undefined
 
   return (
-    <div className="flex flex-row gap-2 h-4 opacity-60">
+    <div className="flex flex-row gap-2 h-4 opacity-60 self-center">
       {damage && (
         <>
           <div className="text-xs inline-flex items-center gap-1">

@@ -16,7 +16,7 @@ function EffectBadge({
     <EffectTooltip effectID={effectID} side="bottom" asChild {...rest}>
       <Badge
         variant="outline"
-        className="bg-background text-muted-foreground p-1 [&>svg]:size-4"
+        className="bg-background border-input hover:border-ring text-muted-foreground p-1 [&>svg]:size-4 ring ring-black"
       >
         {renderer ? <renderer.Icon /> : <FaQuestionCircle />}
         {count > 1 ? `(${count})` : ''}

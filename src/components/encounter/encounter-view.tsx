@@ -29,16 +29,16 @@ function EncounterView() {
           <DialogCard key={state.encounter.ID}>
             <Tabs className="flex-1" defaultValue="dialog">
               <CardHeader className="flex items-center">
-                <TabsList>
-                  <TabsTrigger value="dialog" disabled={running}>
-                    Dialog
-                  </TabsTrigger>
-                  <TabsTrigger value="items">Items</TabsTrigger>
-                </TabsList>
                 <CardTitle className="flex-1 px-2 title text-2xl">
                   {state.encounter.name}
                 </CardTitle>
                 <CardAction>
+                  <TabsList>
+                    <TabsTrigger value="dialog" disabled={running}>
+                      Dialog
+                    </TabsTrigger>
+                    <TabsTrigger value="items">Items</TabsTrigger>
+                  </TabsList>
                   {pastEncounters.length > 0 && (
                     <Button variant="ghost">
                       <span className="text-muted-foreground">Travel</span>

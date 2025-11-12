@@ -32,7 +32,7 @@ function ActionItem({
         buttonVariants({
           variant: active ? 'outline-active' : 'outline',
         }),
-        'rounded-xs whitespace-normal items-start h-auto cursor-default block',
+        'rounded-xs whitespace-normal items-start h-auto cursor-default block ring ring-black',
         { 'opacity-50 pointer-events-none !cursor-not-allowed': disabled }
       )}
     >

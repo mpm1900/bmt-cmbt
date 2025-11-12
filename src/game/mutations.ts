@@ -460,6 +460,7 @@ function endCombat(state: State, encounterID: string): State {
   const exitNodeID = state.combat!.exitNodeID
   state = {
     ...state,
+    actors: state.actors.map((a) => ({ ...a, cooldowns: {} })),
     effects: state.effects.filter((e) => e.effect.persist),
     combat: undefined,
     actionQueue: [],

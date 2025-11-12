@@ -1,5 +1,4 @@
 import { useGameState } from '@/hooks/useGameState'
-import { ButtonGrid32 } from '../button-grid'
 import { ActorSelectorButton } from './actor-selector-button'
 import { getPosition } from '@/game/player'
 import { Dialog, DialogTrigger } from '../ui/dialog'
@@ -10,7 +9,7 @@ function ActorSelectorGrid({ playerID }: { playerID: string }) {
   const actors = state.actors.filter((actor) => actor.playerID === playerID)
 
   return (
-    <ButtonGrid32 className="bg-background/40 rounded-xs p-0.5 border border-background/60">
+    <div className="grid grid-cols-3 gap-px bg-background/40 rounded-xs p-0.5 border border-background/60">
       {actors.map((actor) => {
         return (
           <Dialog key={actor.ID}>
@@ -24,7 +23,7 @@ function ActorSelectorGrid({ playerID }: { playerID: string }) {
           </Dialog>
         )
       })}
-    </ButtonGrid32>
+    </div>
   )
 }
 
