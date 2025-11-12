@@ -262,7 +262,7 @@ function ActionContextBuilder({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Select Targets</CardTitle>
+        <CardTitle className="text-lg">Select Targets</CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (
             <span>
@@ -274,7 +274,7 @@ function ActionContextBuilder({
         </CardDescription>
         {renderer && (
           <CardAction>
-            <renderer.Icons />
+            <renderer.Icon />
           </CardAction>
         )}
       </CardHeader>

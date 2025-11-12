@@ -13,20 +13,21 @@ import {
 
 const SprayNPrayDamage: PowerDamage = newDamage({
   offenseStat: 'reflexes',
-  defenseStat: 'reflexes',
+  defenseStat: 'body',
   element: 'physical',
-  power: 8,
+  power: 7,
   criticalModifier: 1.5,
 })
-const SprayNPrayAccuracy = 90
-const SPrayNPrayCount = 8
-const SprayNPrayCritChance = 70
+const SprayNPrayAccuracy = 77
+const SPrayNPrayCount = 7
+const SprayNPrayCritChance = 7
+const SprayNPrayCooldown = 2
 
 const SprayNPray: SAction = {
   ID: v4(),
   name: "Spray 'n Pray",
   priority: 0,
-  cooldown: () => 0,
+  cooldown: () => SprayNPrayCooldown,
   validate: () => true,
   targets: {
     unique: false,
@@ -61,4 +62,5 @@ export {
   SprayNPrayAccuracy,
   SprayNPrayCritChance,
   SPrayNPrayCount,
+  SprayNPrayCooldown,
 }

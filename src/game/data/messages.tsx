@@ -186,7 +186,7 @@ function SourceMissed(source: SActor | undefined) {
   return <>{Actor(source)} missed.</>
 }
 function CriticalHit() {
-  return <span className="text-yellow-200">Critical hit!</span>
+  return <span className="text-critical">Critical hit!</span>
 }
 
 function Item(item: SItem | undefined, after?: ReactNode) {

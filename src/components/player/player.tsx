@@ -15,16 +15,16 @@ function Player({
       <PlayerActors player={player} current={current} />
       <div className="flex flex-col items-center justify-end gap-1">
         <ActorSelectorGrid playerID={player.ID} />
-        <span className="uppercase font-bold text-xs text-slate-300/50">
+        <span className="text-lg font-bold text-slate-300/50 title h-5">
           Team
         </span>
       </div>
       <div className="flex flex-col items-center justify-end gap-1">
-        <div className="flex items-center text-muted-foreground">
-          {player.credits}
+        <div className="flex items-baseline text-muted-foreground">
+          <span className="text-2xl title">{player.credits}</span>
           <GiCreditsCurrency />
         </div>
-        <span className="uppercase font-bold text-xs text-slate-300/50">
+        <span className=" font-bold text-lg text-slate-300/50 title h-5">
           Credits
         </span>
       </div>

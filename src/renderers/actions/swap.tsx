@@ -3,17 +3,18 @@ import type { ActionRenderer } from '.'
 
 const ActivateRenderer: ActionRenderer = {
   actionID: Activate.ID,
+  Icon: () => <></>,
   Name: () => <div className="">Activate Actor</div>,
-  DescriptionShort: () =>
-    'Select an actor to fill the missing space in your active crew.',
-  Icons: () => <></>,
+  Body: () => 'Select an actor to fill the missing space in your active crew.',
+  Stat: () => <></>,
 }
 
 const SwapRenderer: ActionRenderer = {
   actionID: Swap.ID,
+  Icon: () => <></>,
   Name: () => <div className="">Swap Actors</div>,
-  DescriptionShort: () => 'Select an actor to switch places with this actor.',
-  Icons: () => <></>,
+  Stat: () => <></>,
+  Body: () => 'Select an actor to switch places with this actor.',
 }
 
 export { ActivateRenderer, SwapRenderer }

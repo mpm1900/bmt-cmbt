@@ -2,7 +2,6 @@ import type { SActionItem, SPlayer } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
 import { EnemyActor } from './actor'
 import { TbHexagonFilled, TbHexagonOff } from 'react-icons/tb'
-import { Separator } from '../ui/separator'
 import { isTargeted } from '@/game/queries'
 import { newPosition } from '@/game/player'
 import { cn } from '@/lib/utils'
@@ -57,7 +56,7 @@ function EncounterActors({
           </div>
         )
       })}
-      <div className="flex flex-col gap-1 items-end mt-3">
+      <div className="flex flex-col gap-0 items-end mt-3">
         <div className="grid grid-cols-3 gap-1 text-stone-300/40">
           {actors.map((a) =>
             a.state.alive ? (
@@ -67,10 +66,9 @@ function EncounterActors({
             )
           )}
         </div>
-        <Separator />
         {alive.length > 0 && (
-          <div className="text-xs text-muted-foreground/50 uppercase">
-            {alive.length} Enemies left
+          <div className="text-lg text-muted-foreground/50 title">
+            {alive.length} enemies left
           </div>
         )}
       </div>

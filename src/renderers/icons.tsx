@@ -6,8 +6,8 @@ import {
   GiPowerLightning,
 } from 'react-icons/gi'
 import { LuBrain, LuBicepsFlexed } from 'react-icons/lu'
-import { FaGun } from 'react-icons/fa6'
 import type { IconType } from 'react-icons/lib'
+import { PiHandEyeFill } from 'react-icons/pi'
 
 const ELEMENT_ICONS: Record<Element, IconType> = {
   fire: GiFlamer,
@@ -19,7 +19,8 @@ const ELEMENT_ICONS: Record<Element, IconType> = {
 const MAIN_STAT_ICONS: Record<MainStat, IconType> = {
   body: LuBicepsFlexed,
   mind: LuBrain,
-  reflexes: FaGun,
+  //reflexes: FaGun,
+  reflexes: PiHandEyeFill,
 }
 
 export { ELEMENT_ICONS, MAIN_STAT_ICONS }

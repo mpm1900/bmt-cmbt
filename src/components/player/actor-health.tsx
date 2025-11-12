@@ -4,7 +4,6 @@ import * as ProgressPrimitive from '@radix-ui/react-progress'
 import { cn } from '@/lib/utils'
 
 function ActorHealth({
-  active,
   className,
   showHealthNumbers,
   health,
@@ -12,7 +11,6 @@ function ActorHealth({
   children,
   ...props
 }: Omit<React.ComponentProps<typeof ProgressPrimitive.Root>, 'value'> & {
-  active: boolean
   showHealthNumbers: boolean
   health: number
   maxHealth: number
@@ -28,7 +26,7 @@ function ActorHealth({
     <ProgressPrimitive.Root
       data-slot="progress"
       className={cn(
-        'bg-background/50 border border-background/50 relative h-5 rounded-[3px] overflow-hidden',
+        'bg-background/70 inset-ring-1 relative h-5 border overflow-hidden text-transparent rounded-xs',
         { 'border-red-500/50': health <= 0 },
         className
       )}
@@ -37,8 +35,8 @@ function ActorHealth({
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
         className={cn(
-          'absolute top-0 bg-red-400 h-full w-full flex-1 transition-all ring-black border-background z-10',
-          { 'ring-1': value !== 100 }
+          'absolute top-0 bg-red-400 h-full w-full flex-1 transition-all z-10',
+          { 'ring-1 ring-black': value !== 100 }
         )}
         style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
       />
@@ -50,7 +48,7 @@ function ActorHealth({
         style={{ transform: `translateX(-${100 - (after || 0)}%)` }}
       />
       {showHealthNumbers && (
-        <div className="absolute top-0 right-1 z-10 text-xs leading-4.5 font-bold text-foreground text-shadow-md">
+        <div className="absolute top-0.5 right-1 z-10 leading-4 title text-lg text-foreground text-shadow-md">
           {children || (
             <>
               {Math.max(health, 0)}/{maxHealth}

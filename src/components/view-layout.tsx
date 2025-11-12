@@ -12,7 +12,7 @@ function ViewLayoutContent({
       {...props}
       className={cn('flex items-center justify-center my-8', className)}
     >
-      <div className="relative flex-1 flex items-start justify-center gap-4 w-260 min-h-120">
+      <div className="relative flex-1 flex items-start justify-center gap-4 w-280 min-h-120">
         {children}
       </div>
     </div>
@@ -28,7 +28,7 @@ function ViewLayout({
   return (
     <ViewLayoutContent {...props}>
       <Slot className="flex-1 max-full">{props.main}</Slot>
-      <Slot className="w-80">{props.aside}</Slot>
+      <Slot className="w-90">{props.aside}</Slot>
     </ViewLayoutContent>
   )
 }

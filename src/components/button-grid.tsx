@@ -6,7 +6,8 @@ function ButtonGrid32({ className, ...props }: ComponentProps<'div'> & {}) {
     <div
       className={cn(
         `grid grid-cols-3 grid-rows-2`,
-        `[&>*]:rounded-none [&>*:first-child]:rounded-tl-lg [&>*:nth-child(3)]:rounded-tr-lg [&>*:nth-child(4)]:rounded-bl-lg [&>*:last-child]:rounded-br-lg`,
+        // `[&>*]:rounded-none [&>*:first-child]:rounded-tl-lg [&>*:nth-child(3)]:rounded-tr-lg [&>*:nth-child(4)]:rounded-bl-lg [&>*:last-child]:rounded-br-lg`,
+        `[&>*]:rounded-none [&>*:first-child]:rounded-tl-sm [&>*:nth-child(3)]:rounded-tr-sm [&>*:nth-child(4)]:rounded-bl-sm [&>*:last-child]:rounded-br-sm`,
         className
       )}
       {...props}

@@ -1,8 +1,5 @@
 import type { State, SActor } from '@/game/state'
 import { ItemContent, ItemTitle } from '../ui/item'
-import { Button } from '../ui/button'
-import { cn } from '@/lib/utils'
-import { MAIN_STAT_ICONS } from '@/renderers/icons'
 import { useGameState } from '@/hooks/useGameState'
 import { useState } from 'react'
 import { ActorHealth } from './actor-health'
@@ -11,6 +8,7 @@ import { EffectBadge } from '../effect-badge'
 import { getHealth } from '@/game/lib/actor'
 import { getActor } from '@/game/access'
 import { motion, AnimatePresence } from 'motion/react'
+import { ActorBg } from './actor-bg'
 
 function Actor({
   actorID,
@@ -68,19 +66,20 @@ function Actor({
           </AnimatePresence>
         </div>
       </div>
-      <Button
-        variant={targeted ? 'destructive' : active ? 'slate-active' : 'slate'}
+      <ActorBg
+        variant={targeted ? 'targeted' : active ? 'ally-active' : 'ally'}
         disabled={disabled}
-        className={cn('h-auto p-2 pb-1 border border-slate-950')}
         onClick={() => onClick(actor)}
+        className="flex"
       >
+        <img src="public/portraits/wizard_2.png" />
         <ItemContent className="gap-0">
-          <ItemTitle className="font-semibold">{actor.name}</ItemTitle>
+          <ItemTitle className="text-xl title">{actor.name}</ItemTitle>
           <ActorHealth
-            active={active}
             showHealthNumbers={true}
             health={health}
             maxHealth={maxHealth}
+            className="-mt-0.5 h-6"
           >
             {_health <= 0 && actor.state.alive && (
               <span className="text-destructive-foreground uppercase">
@@ -88,23 +87,9 @@ function Actor({
               </span>
             )}
           </ActorHealth>
-
-          <div className="flex gap-3 mt-1">
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.body />
-              {actor.stats.body}
-            </div>
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.reflexes />
-              {actor.stats.reflexes}
-            </div>
-            <div className="flex gap-1 items-center">
-              <MAIN_STAT_ICONS.mind />
-              {actor.stats.mind}
-            </div>
-          </div>
+          <span className="text-xs h-4">resource bars here</span>
         </ItemContent>
-      </Button>
+      </ActorBg>
       <ActorStatus actor={actor} />
     </motion.div>
   )
@@ -135,20 +120,19 @@ function EnemyActor({
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
       {...rest}
     >
-      <Button
-        variant={targeted ? 'destructive' : active ? 'default' : 'stone'}
+      <ActorBg
+        variant={targeted ? 'targeted' : active ? 'enemy-active' : 'enemy'}
         className="h-14 py-1 px-2 pointer-events-none border border-stone-950"
       >
         <ItemContent className="gap-0">
-          <ItemTitle className="text-xs">{actor.name}</ItemTitle>
+          <ItemTitle className="text-base title">{actor.name}</ItemTitle>
           <ActorHealth
-            active={active}
             showHealthNumbers={false}
             health={health}
             maxHealth={maxHealth}
           ></ActorHealth>
         </ItemContent>
-      </Button>
+      </ActorBg>
       <div className="flex transition-all justify-between h-6 -translate-y-2 group-hover:translate-y-1 group-data-[state=open]:translate-y-1 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           <AnimatePresence>

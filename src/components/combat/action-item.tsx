@@ -7,6 +7,7 @@ import { useGameState } from '@/hooks/useGameState'
 import type { DeltaContext } from '@/game/types/delta'
 import { ActionDetails } from '../tooltips/action-tooltip'
 import { validateAction } from '@/game/action'
+import { findActor } from '@/game/access'
 
 function ActionItem({
   action,
@@ -20,6 +21,7 @@ function ActionItem({
   onActiveChange: (active: boolean) => void
 }) {
   const state = useGameState((s) => s.state)
+  const source = findActor(state, context.sourceID)
 
   const disabled = context && !validateAction(action, state, context)
   const renderer = ACTION_RENDERERS[action.ID]
@@ -30,14 +32,22 @@ function ActionItem({
         buttonVariants({
           variant: active ? 'outline-active' : 'outline',
         }),
-        'whitespace-normal items-start h-auto cursor-default block',
+        'rounded-xs whitespace-normal items-start h-auto cursor-default block',
         { 'opacity-50 pointer-events-none !cursor-not-allowed': disabled }
       )}
     >
       {renderer ? (
-        <ActionDetails renderer={renderer} active={active} />
+        <ActionDetails
+          renderer={renderer}
+          active={active}
+          cooldown={source?.cooldowns[action.ID]}
+        />
       ) : (
-        <span className={cn('text-base', { 'text-muted-foreground': !active })}>
+        <span
+          className={cn('text-xl title', {
+            'text-muted-foreground': !active,
+          })}
+        >
           {action.name}
         </span>
       )}

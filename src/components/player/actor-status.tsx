@@ -9,10 +9,10 @@ function ActorStatus({ actor }: { actor: SActor }) {
     (a) => a.context.sourceID === actor.ID
   )
   return (
-    <span className="uppercase font-bold text-xs text-muted-foreground/40 text-center mt-1">
+    <span className="font-bold text-xs text-muted-foreground/40 text-center h-5">
       {queuedAction ? (
         <span
-          className="inline-flex items-center gap-1 hover:text-foreground/60 cursor-pointer hover:underline"
+          className="inline-flex items-center gap-1 hover:text-foreground/60 cursor-pointer hover:underline title text-lg"
           onClick={() => {
             cancel(actor.ID)
           }}

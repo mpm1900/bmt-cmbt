@@ -2,54 +2,106 @@ import type { ActionRenderer } from '@/renderers/actions'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { ItemActions, ItemContent } from '../ui/item'
 import { cn } from '@/lib/utils'
-import { TfiTarget } from 'react-icons/tfi'
-import { FaDiceD20 } from 'react-icons/fa'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 import { ACTION_RENDERERS } from '@/renderers'
+import { Clock } from 'lucide-react'
+import { MAIN_STAT_ICONS } from '@/renderers/icons'
+import type { PowerDamage } from '@/game/types/damage'
+import { TfiTarget } from 'react-icons/tfi'
+import { TbMathFunction } from 'react-icons/tb'
+import { FaDiceD20 } from 'react-icons/fa'
+import { Separator } from '../ui/separator'
+
+function ActionSubDetails({
+  damage,
+  accuracy,
+  critChance,
+  cooldown,
+}: {
+  damage?: PowerDamage
+  accuracy?: number
+  critChance?: number
+  cooldown?: number
+}) {
+  const OStatIcon = damage ? MAIN_STAT_ICONS[damage.offenseStat] : undefined
+  const DStatIcon = damage ? MAIN_STAT_ICONS[damage.defenseStat] : undefined
+
+  return (
+    <div className="flex flex-row gap-2 h-4 opacity-60">
+      {damage && (
+        <>
+          <div className="text-xs inline-flex items-center gap-1">
+            <TbMathFunction className="size-3.5" /> ={' '}
+            {OStatIcon && <OStatIcon className="size-3.5 text-ally" />}
+            {' / '}
+            {DStatIcon && <DStatIcon className="size-3.5 text-enemy" />}
+          </div>
+          <Separator orientation="vertical" className="bg-foreground/10" />
+        </>
+      )}
+      {accuracy && (
+        <>
+          <div className="text-xs inline-flex items-center gap-1">
+            <TfiTarget className="size-3.5" />
+            <span>{accuracy}%</span>
+          </div>
+          <Separator orientation="vertical" className="bg-foreground/10" />
+        </>
+      )}
+      {critChance && damage?.criticalModifier && (
+        <>
+          <div className="text-xs inline-flex items-center gap-1 text-critical/60">
+            <FaDiceD20 className="size-3.5" />
+            <span>
+              {critChance}% x{damage.criticalModifier}
+            </span>
+          </div>
+          <Separator orientation="vertical" className="bg-foreground/10" />
+        </>
+      )}
+      {cooldown && (
+        <>
+          <div className="text-xs inline-flex items-center gap-1">
+            <Clock className="size-3.5" />
+            <span>
+              {cooldown - 1} turn{cooldown > 2 && 's'}
+            </span>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
 
 function ActionDetails({
   renderer,
   active,
+  cooldown = 0,
 }: {
   renderer: ActionRenderer
   active: boolean
+  cooldown: number | undefined
 }) {
   return (
     <Collapsible open={active}>
-      <ItemActions className={cn('flex-col items-end float-right pl-3', {})}>
-        <div
-          className={cn({
-            'text-muted-foreground': !active,
-          })}
-        >
-          <renderer.Icons />
-        </div>
-        <CollapsibleContent className="flex flex-col items-end text-muted-foreground font-mono">
-          {renderer.Accuracy && (
-            <div className="flex items-center gap-1 font-black">
-              <TfiTarget className="size-3.5" />
-              <renderer.Accuracy />
-            </div>
-          )}
-          {renderer.Critical && (
-            <div className="flex items-center gap-1 opacity-60">
-              <FaDiceD20 className="size-3.5" />
-              <renderer.Critical />
-            </div>
-          )}
-        </CollapsibleContent>
+      <ItemActions
+        className={cn('flex items-center float-right gap-1 h-4 pt-1', {})}
+      >
+        <renderer.Stat />
       </ItemActions>
       <ItemContent className="block">
         <span
-          className={cn('inline-block text-base', {
+          className={cn('inline-flex items-center gap-2 title text-xl', {
             'mb-3': active,
             'text-muted-foreground': !active,
           })}
         >
+          <renderer.Icon />
           <renderer.Name />
+          {cooldown > 0 && <Clock className="opacity-60" />}
         </span>
         <CollapsibleContent className="text-muted-foreground text-sm">
-          <renderer.DescriptionShort />
+          <renderer.Body />
         </CollapsibleContent>
       </ItemContent>
     </Collapsible>
@@ -94,10 +146,10 @@ function ActionTooltip({
         side={side}
         sideOffset={8}
       >
-        <ActionDetails renderer={renderer} active={true} />
+        <ActionDetails renderer={renderer} active={true} cooldown={0} />
       </HoverCardContent>
     </HoverCard>
   )
 }
 
-export { ActionDetails, ActionTooltip }
+export { ActionSubDetails, ActionDetails, ActionTooltip }

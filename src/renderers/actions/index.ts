@@ -3,10 +3,9 @@ import type { ComponentType } from 'react'
 type ActionRenderer = {
   actionID: string
   Name: ComponentType
-  DescriptionShort: ComponentType
-  Icons: ComponentType
-  Accuracy?: ComponentType
-  Critical?: ComponentType
+  Body: ComponentType
+  Icon: ComponentType
+  Stat: ComponentType
 }
 
 export type { ActionRenderer }

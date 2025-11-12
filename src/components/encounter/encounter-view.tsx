@@ -35,7 +35,7 @@ function EncounterView() {
                   </TabsTrigger>
                   <TabsTrigger value="items">Items</TabsTrigger>
                 </TabsList>
-                <CardTitle className="flex-1 px-2">
+                <CardTitle className="flex-1 px-2 title text-2xl">
                   {state.encounter.name}
                 </CardTitle>
                 <CardAction>

@@ -20,6 +20,7 @@ import { resolveAction } from '@/game/action'
 
 const FireballTargetCount = 2
 const FireballManaCost = 0 //50
+const FireballCooldown = 2
 const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
   offenseStat: 'mind',
@@ -35,7 +36,7 @@ const Fireball: SAction = {
   ID: v4(),
   name: 'Fireball',
   priority: 0,
-  cooldown: () => 2,
+  cooldown: () => FireballCooldown,
   validate: (state, context) =>
     !!mapActor(
       state,
@@ -108,4 +109,10 @@ const Fireball: SAction = {
   },
 }
 
-export { Fireball, FireballDamage, FireballTargetCount, FireballAccuracy }
+export {
+  Fireball,
+  FireballDamage,
+  FireballTargetCount,
+  FireballAccuracy,
+  FireballCooldown,
+}

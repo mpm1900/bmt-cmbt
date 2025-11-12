@@ -11,7 +11,7 @@ function Card({
     <motion.div
       data-slot="card"
       className={cn(
-        'bg-card/70 text-card-foreground flex flex-col gap-4 rounded-xl border py-4 shadow-sm',
+        'bg-card/70 text-card-foreground flex flex-col gap-4 rounded-xs border ring ring-black py-4 shadow-sm',
         className
       )}
       {...props}
@@ -36,7 +36,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-title"
-      className={cn('leading-none font-semibold', className)}
+      className={cn('leading-none font-semibold text-2xl title', className)}
       {...props}
     />
   )
