@@ -2,12 +2,11 @@ import type { Action } from './action'
 
 type Element = 'physical' | 'fire' | 'shock' | 'psy'
 
-type MainStat = 'body' | 'reflexes' | 'mind'
+type MainStat = 'strength' | 'faith' | 'insight' | 'speed'
 type ActorStats = Record<MainStat, number> & {
   accuracy: number
   evasion: number
   health: number
-  speed: number
 }
 type ActorState = {
   alive: 0 | 1

@@ -31,7 +31,7 @@ function ActionSelectionCard({
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
     <Card
-      className="w-196 gap-2"
+      className="w-192 gap-2"
       initial={{ scale: 1, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}
@@ -41,9 +41,9 @@ function ActionSelectionCard({
           <CombatViewTabs />
         </CardHeader>
       )}
-      <CardContent className="grid grid-cols-2 gap-1">
-        <ScrollArea className="max-h-98.5 pr-3">
-          <div className="flex flex-col gap-1">
+      <CardContent className="flex gap-5">
+        <ScrollArea className="max-h-98.5 pr-3 flex-1 min-w-1/2">
+          <div className="flex flex-col gap-1 px-px">
             {actions.map((action) => (
               <ActionItem
                 key={action.ID}
@@ -58,7 +58,7 @@ function ActionSelectionCard({
           </div>
         </ScrollArea>
         {activeAction && (
-          <ScrollArea className="max-h-96">
+          <div className="flex-1">
             <ActionContextBuilder
               playerID={playerID}
               action={activeAction}
@@ -69,7 +69,7 @@ function ActionSelectionCard({
                 onActionConfirm(activeAction, context)
               }}
             />
-          </ScrollArea>
+          </div>
         )}
       </CardContent>
     </Card>

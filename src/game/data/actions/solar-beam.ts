@@ -22,8 +22,8 @@ import {
 const SolarBeamTargetCount = 1
 const SolarBeamAccuracy = 100
 const SolarBeamDamage: PowerDamage = newDamage({
-  offenseStat: 'mind',
-  defenseStat: 'mind',
+  offenseStat: 'insight',
+  defenseStat: 'insight',
   element: 'fire',
   power: 120,
 })

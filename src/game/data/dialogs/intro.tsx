@@ -40,11 +40,11 @@ const playerID = playerStore.getState().playerID
 const Criminal = (index: number, aiID: string) =>
   createActor(`Criminal (${index})`, aiID, '', {
     accuracy: 0,
-    body: 100,
+    strength: 100,
     evasion: 0,
-    health: 0,
-    mind: 100,
-    reflexes: 100,
+    health: 100,
+    insight: 100,
+    faith: 100,
     speed: 100,
   })
 

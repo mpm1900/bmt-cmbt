@@ -77,7 +77,7 @@ function Actor({
           'opacity-50': disabled && !active,
         })}
       >
-        <div className="absolute -left-4 -top-3 size-25 overflow-hidden z-0">
+        <div className="absolute -left-5 -top-3 size-25 overflow-hidden z-0">
           <img src={portraits[actor.image]} className="actor-portrait" />
         </div>
         <Badge

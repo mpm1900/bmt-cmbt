@@ -23,8 +23,8 @@ const FireballManaCost = 0 //50
 const FireballCooldown = 2
 const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
-  offenseStat: 'mind',
-  defenseStat: 'mind',
+  offenseStat: 'insight',
+  defenseStat: 'insight',
   element: 'fire',
   power: 50,
   criticalModifier: 1.5,

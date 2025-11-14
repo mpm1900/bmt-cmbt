@@ -17,6 +17,7 @@ function ActorSelectorGrid({ playerID }: { playerID: string }) {
               <ActorSelectorButton
                 actor={actor}
                 position={getPosition(state, actor?.ID)}
+                className="rounded-xs!"
               />
             </DialogTrigger>
             {actor && <ActorDialog actor={actor} />}

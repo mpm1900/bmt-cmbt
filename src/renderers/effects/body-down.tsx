@@ -4,9 +4,9 @@ import { BodyDown } from '@/game/data/effects/body-down'
 
 const BodyDownRenderer: EffectRenderer = {
   effectID: BodyDown.ID,
-  Name: () => <>Body Down</>,
+  Name: () => <>Strength Down</>,
   Description: () => {
-    return <>-50% Body</>
+    return <>-50% Strength</>
   },
   Icon: () => <BicepsFlexed className="text-red-200" />,
 }

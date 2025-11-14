@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { buttonVariants } from '../ui/button'
 import type { SAction } from '@/game/state'
 import { ACTION_RENDERERS } from '@/renderers'
 import { Item } from '../ui/item'
@@ -28,13 +27,11 @@ function ActionItem({
   return (
     <Item
       onClick={() => onActiveChange(!active)}
-      className={cn(
-        buttonVariants({
-          variant: active ? 'outline-active' : 'outline',
-        }),
-        'rounded-xs whitespace-normal items-start h-auto cursor-default block ring ring-black',
-        { 'opacity-50 pointer-events-none !cursor-not-allowed': disabled }
-      )}
+      size="xs"
+      variant={active ? 'action-active' : 'action'}
+      className={cn('cursor-default', {
+        'opacity-50 pointer-events-none !cursor-not-allowed': disabled,
+      })}
     >
       {renderer ? (
         <ActionDetails

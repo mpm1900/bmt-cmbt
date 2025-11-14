@@ -38,10 +38,15 @@ const itemVariants = cva(
         default: 'bg-transparent',
         outline: 'border-border',
         muted: 'bg-muted/50',
+        action:
+          'p-2 h-auto bg-zinc-950 hover:bg-zinc-900/60 border-zinc-800 ring ring-black',
+        ['action-active']:
+          'h-auto bg-zinc-800 border-zinc-500/50 ring ring-black',
       },
       size: {
         default: 'p-4 gap-4 ',
         sm: 'py-3 px-4 gap-2.5',
+        xs: 'py-2 px-3 gap-2',
       },
     },
     defaultVariants: {

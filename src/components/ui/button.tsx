@@ -22,13 +22,13 @@ const buttonVariants = cva(
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
         slate:
-          'bg-slate-700 text-slate-200 hover:bg-slate-700/80 !rounded-xs ring ring-black border border-slate-500/50',
+          'bg-slate-700 text-slate-200 hover:bg-slate-700/80 !rounded-sm ring ring-black border border-slate-500/50 shadow-sm',
         ['slate-active']:
-          'bg-slate-300 text-slate-700 hover:bg-slate-300/90 !rounded-xs ring ring-black border border-white',
+          'bg-slate-300 text-slate-700 hover:bg-slate-300/90 !rounded-sm ring ring-black border border-white shadow-sm',
         stone:
-          'bg-stone-700 text-stone-200 hover:bg-stone-700/80 !rounded-xs ring ring-black border border-stone-500/50',
+          'bg-stone-700 text-stone-200 hover:bg-stone-700/80 !rounded-sm ring ring-black border border-stone-500/50 shadow-sm',
         ['stone-active']:
-          'bg-stone-300 text-stone-900 hover:bg-stone-300/90 !rounded-xs ring ring-black border border-white',
+          'bg-stone-300 text-stone-900 hover:bg-stone-300/90 !rounded-sm ring ring-black border border-white shadow-sm',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

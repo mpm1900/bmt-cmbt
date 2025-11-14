@@ -4,10 +4,10 @@ import { UpdateStat } from './update-stat'
 
 const BodyDown: SEffect = {
   ...UpdateStat((a) => ({
-    body: Math.round(a.stats.body - a.stats.body * 0.5),
+    strength: Math.round(a.stats.strength - a.stats.strength * 0.5),
   })),
   ID: v4(),
-  name: 'Body Down',
+  name: 'Strength Down',
 }
 
 export { BodyDown }

@@ -7,12 +7,12 @@ const actorBgVariants = cva(
   {
     variants: {
       variant: {
-        ally: 'bg-slate-700 hover:bg-slate-700/80 text-foreground border-slate-500/70! ring ring-black',
+        ally: 'rounded-tl-xl! bg-slate-700 hover:bg-slate-700/80 text-foreground border-slate-600! ring ring-black',
         ['ally-active']:
           'bg-slate-300 text-slate-950 border border-white ring ring-black',
         enemy: 'bg-transparent',
         ['enemy-active']: 'bg-stone-300 text-stone-950 ring ring-black',
-        targeted: 'bg-yellow-500/40 text-white ring ring-black',
+        targeted: 'bg-red-500/40 text-white ring ring-black',
       },
       defaultVariants: {
         variant: 'ally',

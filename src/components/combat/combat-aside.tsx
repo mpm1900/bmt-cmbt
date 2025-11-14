@@ -11,7 +11,7 @@ function CombatAside() {
 
   return (
     <Card
-      className="max-h-120 w-80"
+      className="max-h-120 w-90"
       initial={{ opacity: 0, translateX: '80px' }}
       animate={{ opacity: 1, translateX: '0' }}
       exit={{ opacity: 0, translateX: '80px' }}

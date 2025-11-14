@@ -12,8 +12,8 @@ import {
 } from '@/game/lib/damage'
 
 const SprayNPrayDamage: PowerDamage = newDamage({
-  offenseStat: 'reflexes',
-  defenseStat: 'body',
+  offenseStat: 'speed',
+  defenseStat: 'speed',
   element: 'physical',
   power: 7,
   criticalModifier: 1.5,

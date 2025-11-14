@@ -213,7 +213,7 @@ function activateActorResolver(
 
         state = pushMessages(state, [
           newMessage({
-            text: ActorActivated(findActor(state, actorID)),
+            text: ActorActivated(findActor(state, actorID), !!state.combat),
             depth,
           }),
         ])

@@ -28,7 +28,13 @@ function ActionRepeatPages({
       {pages.map((_, i) => (
         <Button
           key={i}
-          variant={i === index ? 'default' : 'secondary'}
+          variant={
+            i === index
+              ? 'default'
+              : context.positions[i]
+                ? 'secondary'
+                : 'ghost'
+          }
           size="icon-sm"
           onClick={() => onIndexChange(i)}
         >

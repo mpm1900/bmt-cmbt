@@ -43,17 +43,22 @@ function Actor(actor: SActor | undefined, after: ReactNode = null) {
     </span>
   )
 }
-function ActorActivated(actor: SActor | undefined) {
+function ActorActivated(actor: SActor | undefined, isCombat?: boolean) {
   return (
     <>
-      {Actor(actor)} {<span className="text-foreground">activated.</span>}
+      {Actor(actor)}{' '}
+      {
+        <span className="text-foreground">
+          {isCombat ? 'joined combat.' : 'joined.'}
+        </span>
+      }
     </>
   )
 }
 function ActorDeactivated(actor: SActor | undefined) {
   return (
     <>
-      {Actor(actor)} {<span className="text-foreground">deactivated.</span>}
+      {Actor(actor)} {<span className="text-foreground">left combat.</span>}
     </>
   )
 }

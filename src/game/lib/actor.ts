@@ -168,21 +168,10 @@ function getHealth<T, A extends Actor<T> = Actor<T>>(
 }
 
 function getStats<T, A extends Actor<T> = Actor<T>>(actor: A): ActorStats {
-  const { accuracy, body, evasion, health, mind, reflexes, ...stats } =
-    actor.stats
-
-  const accuracyModifier = 0
-  const evasionModifier = 0
-  const healthModifier = body
+  const { ...stats } = actor.stats
 
   return {
     ...stats,
-    accuracy: accuracy + accuracyModifier,
-    body,
-    evasion: evasion + evasionModifier,
-    health: health + healthModifier,
-    mind,
-    reflexes,
   }
 }
 

@@ -62,7 +62,7 @@ function DuplicateTargetGenerator({
         onIndexChange={setTargetIndex}
       />
       {players.size > 1 && targets.length > 4 ? (
-        <div className="flex flex-col w-full justify-around px-3 gap-4">
+        <div className="flex flex-col w-full justify-around gap-2">
           <div className="flex flex-col gap-1">
             <div className="font-semibold text-xs text-enemy/70 hidden">
               Enemy Targets
@@ -154,7 +154,7 @@ function UniqueTargetGenerator({
   const players = new Set(targets.map((t) => t.target.playerID))
   if (players.size > 1 && targets.length > 4) {
     return (
-      <div className="flex flex-col w-full justify-around px-4 pt-4 gap-4">
+      <div className="flex flex-col w-full justify-around pt-4 gap-2">
         <div className="flex flex-col gap-1">
           <div className="font-semibold text-xs text-enemy/70 hidden">
             Enemy Targets
@@ -261,7 +261,7 @@ function ActionContextBuilder({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="gap-0">
         <CardTitle className="text-lg">Select Targets</CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (
@@ -278,7 +278,7 @@ function ActionContextBuilder({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent className="px-3">
+      <CardContent className="px-8">
         <div className="flex flex-col items-center justify-center gap-4">
           {!action.targets.unique && (
             <DuplicateTargetGenerator

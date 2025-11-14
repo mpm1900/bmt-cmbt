@@ -12,8 +12,8 @@ import { chance } from '@/lib/chance'
 import { v4 } from 'uuid'
 
 const HotShotsDamage: Damage = newDamage({
-  offenseStat: 'reflexes',
-  defenseStat: 'reflexes',
+  offenseStat: 'speed',
+  defenseStat: 'strength',
   element: 'fire',
   power: 1,
 })

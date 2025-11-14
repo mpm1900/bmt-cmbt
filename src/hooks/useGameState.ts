@@ -52,40 +52,40 @@ const player: SPlayer = {
 
 const Max = createActor('Max', player.ID, 'lumberjack_2', {
   accuracy: 0,
-  body: 100,
+  strength: 100,
   evasion: 0,
-  health: 0,
-  reflexes: 100,
-  mind: 100,
+  health: 100,
+  faith: 100,
+  insight: 100,
   speed: 100,
 })
 Max.state.damage = 60
-const Katie = createActor('Katie', player.ID, 'woman_54', {
+const Katie = createActor('Katie', player.ID, 'girl_11', {
   accuracy: 0,
-  body: 100,
+  strength: 100,
   evasion: 0,
-  health: 0,
-  reflexes: 100,
-  mind: 180,
+  health: 100,
+  faith: 100,
+  insight: 180,
   speed: 70,
 })
 const Hank = createActor('Hank', player.ID, 'lion', {
   accuracy: 0,
-  body: 180,
+  strength: 180,
   // evasion: 90,
   evasion: 0,
-  health: 0,
-  mind: 100,
-  reflexes: 150,
+  health: 100,
+  insight: 100,
+  faith: 150,
   speed: 150,
 })
 const Milo = createActor('Milo', player.ID, 'pup', {
   accuracy: 0,
-  body: 100,
+  strength: 100,
   evasion: 0,
-  health: 0,
-  mind: 100,
-  reflexes: 100,
+  health: 100,
+  insight: 100,
+  faith: 100,
   speed: 100,
 })
 
