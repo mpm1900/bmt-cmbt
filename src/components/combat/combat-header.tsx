@@ -3,9 +3,11 @@ import { Badge } from '../ui/badge'
 import { Separator } from '../ui/separator'
 import { cn } from '@/lib/utils'
 import { CombatPhases } from '@/game/types/combat'
+import { GiNextButton } from 'react-icons/gi'
 
 function CombatHeader() {
   const state = useGameState((s) => s.state)
+  const next = useGameState((store) => store.nextPhase)
   const phase = useGamePhase()
   return (
     <>
@@ -22,6 +24,10 @@ function CombatHeader() {
           {p}
         </Badge>
       ))}
+      <Separator orientation="vertical" />
+      <Badge onClick={() => next()}>
+        <GiNextButton />
+      </Badge>
     </>
   )
 }

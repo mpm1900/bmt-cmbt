@@ -5,6 +5,7 @@ import { getSelectedCount } from './action-context-builder'
 import { getPosition, positionEquals } from '@/game/player'
 import { Button } from '../ui/button'
 import { Target } from 'lucide-react'
+import { useGameUI } from '@/hooks/useGameUI'
 
 function ActionRepeatTargetButton({
   state,
@@ -78,6 +79,7 @@ function ActionTargetIdButton({
   context: DeltaContext
   onContextChange: (context: Partial<DeltaContext>) => void
 }) {
+  const set = useGameUI((s) => s.set)
   const contextTargetID = context.targetIDs[index]
   const active = contextTargetID === target.ID
   return (
@@ -100,6 +102,12 @@ function ActionTargetIdButton({
         onContextChange({
           targetIDs,
         })
+      }}
+      onMouseEnter={() => {
+        set({ hoverActorID: target.ID })
+      }}
+      onMouseLeave={() => {
+        set({ hoverActorID: undefined })
       }}
     >
       {active && <Target />}
@@ -125,6 +133,7 @@ function ActionPositionButton({
   context: DeltaContext
   onContextChange: (context: Partial<DeltaContext>) => void
 }) {
+  const set = useGameUI((s) => s.set)
   const targetPosition = getPosition(state, target.ID)
   const contextPosition = context.positions[index]
   const active = positionEquals(targetPosition, contextPosition)
@@ -150,6 +159,12 @@ function ActionPositionButton({
         onContextChange({
           positions,
         })
+      }}
+      onMouseEnter={() => {
+        set({ hoverActorID: target.ID })
+      }}
+      onMouseLeave={() => {
+        set({ hoverActorID: undefined })
       }}
     >
       {active && <Target />}

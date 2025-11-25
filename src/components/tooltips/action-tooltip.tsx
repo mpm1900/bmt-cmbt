@@ -8,7 +8,6 @@ import { Clock, Slash } from 'lucide-react'
 import { MAIN_STAT_ICONS } from '@/renderers/icons'
 import type { PowerDamage } from '@/game/types/damage'
 import { TfiTarget } from 'react-icons/tfi'
-import { TbMathFunction } from 'react-icons/tb'
 import { FaDiceD20 } from 'react-icons/fa'
 
 function ActionSubDetails({

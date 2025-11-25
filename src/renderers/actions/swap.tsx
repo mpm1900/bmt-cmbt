@@ -5,7 +5,8 @@ const ActivateRenderer: ActionRenderer = {
   actionID: Activate.ID,
   Icon: () => <></>,
   Name: () => <div className="">Select Fighters</div>,
-  Body: () => 'Select a fighter to fill the missing space in your active team.',
+  Body: () =>
+    'Select a fighter to fill the missing space in your active party.',
   Stat: () => <></>,
 }
 

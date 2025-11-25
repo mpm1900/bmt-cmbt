@@ -45,6 +45,7 @@ import * as messages from './data/messages'
 import { computeDamage, decrementCooldowns } from './lib/actor'
 import { newDamageResult } from './lib/damage'
 import { newContext } from './lib/context'
+import { gameUIStore } from '@/hooks/useGameUI'
 
 const playerID = playerStore.getState().playerID
 
@@ -469,6 +470,7 @@ function endCombat(state: State, encounterID: string): State {
     promptQueue: [],
   }
 
+  gameUIStore.getState().set({ activePlayerTab: 'party' })
   return state
 }
 

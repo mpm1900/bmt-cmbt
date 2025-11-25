@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { ActorBg } from './actor-bg'
 import { Badge } from '../ui/badge'
 import { cn } from '@/lib/utils'
+import { useGameUI } from '@/hooks/useGameUI'
 
 function Actor({
   actorID,
@@ -30,6 +31,8 @@ function Actor({
   onClick: (actor: SActor) => void
 }) {
   const state = useGameState((s) => s.state)
+  const hoverActorID = useGameUI((s) => s.hoverActorID)
+  targeted = targeted || hoverActorID === actorID
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
@@ -45,7 +48,7 @@ function Actor({
       data-state={openTooltipCount > 0 ? 'open' : 'closed'}
       {...rest}
     >
-      <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1 group-data-[state=open]:-translate-y-1 z-10">
+      <div className="flex transition-all justify-between h-6 translate-y-2 group-hover:-translate-y-1.5 group-data-[state=open]:-translate-y-1.5 z-10">
         <div className="flex -space-x-3 group-hover:space-x-1 group-data-[state=open]:space-x-1 transition-all flex-wrap">
           <AnimatePresence>
             {Object.entries(actor.applied).map(([effectID, count]) => (
@@ -69,26 +72,29 @@ function Actor({
           </AnimatePresence>
         </div>
       </div>
+      {state.combat?.phase === 'planning' && (
+        <ActorStatus actor={actor} className="absolute top-8 right-2" />
+      )}
       <ActorBg
         variant={targeted ? 'targeted' : active ? 'ally-active' : 'ally'}
         disabled={disabled}
         onClick={() => onClick(actor)}
-        className={cn('flex pl-15 relative', {
+        className={cn('flex pl-10 relative', {
           'opacity-50': disabled && !active,
         })}
       >
-        <div className="absolute -left-5 -top-3 size-25 overflow-hidden z-0">
+        <div className="absolute -left-8 -top-3 size-25 overflow-hidden z-0">
           <img src={portraits[actor.image]} className="actor-portrait" />
         </div>
         <Badge
-          className="absolute left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"
+          className="absolute -left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"
           variant="outline"
         >
           9999
         </Badge>
         <div className="flex-1 z-10">
           <ItemContent className="gap-0">
-            <ItemTitle className="text-xl title pl-2 shadow-xl">
+            <ItemTitle className="text-xl title pl-4 shadow-xl">
               {actor.name}
             </ItemTitle>
             <ActorHealth
@@ -107,7 +113,6 @@ function Actor({
           </ItemContent>
         </div>
       </ActorBg>
-      <ActorStatus actor={actor} />
     </motion.div>
   )
 }
@@ -123,6 +128,8 @@ function EnemyActor({
   targeted: boolean
 }) {
   const state = useGameState((s) => s.state)
+  const hoverActorID = useGameUI((s) => s.hoverActorID)
+  targeted = targeted || hoverActorID === actorID
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
   const health = actor.state.alive ? _health : 0

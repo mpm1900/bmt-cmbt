@@ -1,8 +1,9 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ScrollArea } from '../ui/scroll-area'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ComponentProps } from 'react'
+import { cn } from '@/lib/utils'
 
-function CombatLog() {
+function CombatLog({ className, ...props }: ComponentProps<typeof ScrollArea>) {
   const combatLog = useGameState((s) => s.state.combatLog)
   const combatLogRef = useRef<HTMLDivElement>(null)
 
@@ -13,8 +14,8 @@ function CombatLog() {
   }, [combatLog.length])
 
   return (
-    <ScrollArea className="h-100">
-      <ul className="text-sm text-muted-foreground">
+    <ScrollArea className={cn('h-100 text-sm', className)} {...props}>
+      <ul className="text-muted-foreground">
         {combatLog.map((log, index) => (
           <li
             key={index}

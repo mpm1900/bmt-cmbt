@@ -12,7 +12,7 @@ function ViewLayoutContent({
       {...props}
       className={cn('flex items-center justify-center my-8', className)}
     >
-      <div className="relative flex-1 flex items-start justify-center gap-4 w-286 min-h-120">
+      <div className="relative flex-1 flex items-center justify-center gap-4 w-286">
         {children}
       </div>
     </div>

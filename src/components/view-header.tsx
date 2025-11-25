@@ -33,7 +33,7 @@ function ViewHeader() {
       {getStatus(state) === 'running' && <Spinner />}
       <div className="flex-1" />
       <Badge variant="outline" asChild>
-        <Link to="/crew">edit crew</Link>
+        <Link to="/crew">edit party</Link>
       </Badge>
     </div>
   )

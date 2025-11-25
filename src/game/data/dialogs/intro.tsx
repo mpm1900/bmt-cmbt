@@ -34,11 +34,12 @@ import { playerStore } from '@/hooks/usePlayer'
 import { newCombat } from '@/game/lib/combat'
 import { ArrowRight } from 'lucide-react'
 import { TwoEncounter } from './two'
+import { faker } from '@faker-js/faker'
 
 const playerID = playerStore.getState().playerID
 
-const Criminal = (index: number, aiID: string) =>
-  createActor(`Criminal (${index})`, aiID, '', {
+const Criminal = (_index: number, aiID: string) =>
+  createActor(faker.person.firstName(), aiID, '', {
     accuracy: 0,
     strength: 100,
     evasion: 0,
@@ -89,7 +90,7 @@ const IntroNode0: SDialogNode = {
               </span>
             ),
           }),
-          newMessage({ text: `Your crew avoided the trap!` }),
+          newMessage({ text: `Your party avoided the trap!` }),
         ]),
       ],
       failure: (roll) => [
@@ -106,7 +107,7 @@ const IntroNode0: SDialogNode = {
               </span>
             ),
           }),
-          newMessage({ text: `Your crew triggered a shock trap!` }),
+          newMessage({ text: `Your party triggered a shock trap!` }),
         ]),
         ...state.actors
           .filter((a) => a.playerID === context.playerID)

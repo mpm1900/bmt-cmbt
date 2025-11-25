@@ -20,14 +20,16 @@ function RouteComponent() {
   const ai = players.find((p) => p.ID !== playerID)
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center gap-3 overflow-hidden">
+    <div className="h-screen w-screen flex flex-col items-center overflow-hidden">
       <ViewHeader />
-      <EncounterActors encounter={ai} current={current} />
+      <div className="flex-1 flex flex-col justify-between">
+        <EncounterActors encounter={ai} current={current} />
 
-      {combat && <CombatView current={current} />}
-      {!combat && <EncounterView />}
+        {combat && <CombatView current={current} />}
+        {!combat && <EncounterView />}
 
-      <Player player={player} current={current} />
+        <Player player={player} current={current} />
+      </div>
     </div>
   )
 }

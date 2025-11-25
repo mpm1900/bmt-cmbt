@@ -29,7 +29,7 @@ function ActionItem({
       onClick={() => onActiveChange(!active)}
       size="xs"
       variant={active ? 'action-active' : 'action'}
-      className={cn('cursor-default', {
+      className={cn('cursor-default rounded-sm', {
         'opacity-50 pointer-events-none !cursor-not-allowed': disabled,
       })}
     >

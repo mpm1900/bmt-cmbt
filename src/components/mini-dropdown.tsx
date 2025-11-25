@@ -16,7 +16,7 @@ function MiniDropdown({
       variant={variant}
       size={size}
       className={cn(
-        'text-muted-foreground hover:text-foreground/70',
+        'text-muted-foreground hover:bg-ring/50 hover:text-foreground/70 border border-white/5 ring ring-black/30',
         { '!opacity-100': !!value },
         className
       )}

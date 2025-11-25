@@ -56,7 +56,8 @@ function ActorSelect({
             <DropdownMenuItem
               key={option.ID}
               className={cn({
-                'dark:hover:bg-slate-800': option.playerID === playerID,
+                'dark:hover:bg-slate-800 border border-transparent hover:border-slate-700':
+                  option.playerID === playerID,
                 'dark:hover:bg-stone-800':
                   option.playerID && option.playerID !== playerID,
               })}

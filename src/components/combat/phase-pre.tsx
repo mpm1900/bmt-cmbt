@@ -26,7 +26,7 @@ function PhasePre() {
         }}
       >
         <CardHeader>
-          <CardTitle>Combat Initiated</CardTitle>
+          <CardTitle className="text-center">Combat Initiated</CardTitle>
         </CardHeader>
       </ActionSelectionCard>
     )

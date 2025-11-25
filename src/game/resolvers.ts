@@ -52,6 +52,7 @@ import { withHeal, withState } from './lib/actor'
 import { validateAction } from './action'
 import { withActiveSize } from './player'
 import { decrementEffectItem } from './lib/effect'
+import { gameUIStore } from '@/hooks/useGameUI'
 
 function resolveAction(
   state: State,
@@ -486,6 +487,7 @@ function startCombatResolver(
         }
 
         state = handleTrigger(state, context, 'on-combat-start')
+        gameUIStore.getState().set({ activePlayerTab: 'combat-log' })
         return state
       },
     },

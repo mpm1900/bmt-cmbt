@@ -1,7 +1,35 @@
 import type { SActionItem, SPlayer } from '@/game/state'
-import { ActorSelectorGrid } from './actor-selector-grid'
 import { PlayerActors } from './player-actors'
-import { GiCreditsCurrency } from 'react-icons/gi'
+import { CombatLog } from '../combat/combat-log'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { VscListSelection } from 'react-icons/vsc'
+import { RiTeamFill } from 'react-icons/ri'
+import { BsBackpack4Fill } from 'react-icons/bs'
+import { useGameState } from '@/hooks/useGameState'
+import { Button } from '../ui/button'
+import { isActive } from '@/game/access'
+import { cn } from '@/lib/utils'
+import {
+  TbHexagon,
+  TbHexagonOff,
+  TbHexagonFilled,
+  TbHexagonNumber1Filled,
+  TbHexagonNumber2Filled,
+  TbHexagonNumber3Filled,
+} from 'react-icons/tb'
+import { getPosition } from '@/game/player'
+import { Dialog } from '@radix-ui/react-dialog'
+import { DialogTrigger } from '../ui/dialog'
+import { ActorDialog } from './actor-dialog'
+import { PlayerItemsDialog } from './player-items-dialog'
+import { useGameUI } from '@/hooks/useGameUI'
+import { Separator } from '../ui/separator'
+
+const numbers = [
+  TbHexagonNumber1Filled,
+  TbHexagonNumber2Filled,
+  TbHexagonNumber3Filled,
+]
 
 function Player({
   player,
@@ -10,24 +38,90 @@ function Player({
   player: SPlayer
   current: SActionItem | undefined
 }) {
+  const { state } = useGameState((s) => s)
+  const { activePlayerTab, set } = useGameUI((s) => s)
+  const actors = state.actors.filter((actor) => actor.playerID === player.ID)
   return (
-    <div className="flex justify-start gap-6 mb-3 px-6 w-full max-w-[1440px]">
-      <PlayerActors player={player} current={current} />
-      <div className="flex flex-col items-center justify-end gap-1">
-        <ActorSelectorGrid playerID={player.ID} />
-        <span className="text-lg font-bold text-slate-300/50 title h-5">
-          Team
-        </span>
-      </div>
-      <div className="flex flex-col items-center justify-end gap-1">
-        <div className="flex items-baseline text-muted-foreground">
-          <span className="text-2xl title">{player.credits}</span>
-          <GiCreditsCurrency />
+    <div className="flex justify-start gap-6 mb-3 w-full max-w-[1440px]">
+      <div>
+        <PlayerActors player={player} current={current} />
+        <div className="flex items-center justify-center text-center title text-lg h-5 leading-5 text-muted-foreground gap-6 px-3 mt-3">
+          <Separator className="flex-1" />
+          Active Party
+          <Separator className="flex-1" />
         </div>
-        <span className=" font-bold text-lg text-slate-300/50 title h-5">
-          Credits
-        </span>
       </div>
+      <Tabs
+        orientation="vertical"
+        className="flex-row items-center rounded-xs gap-1"
+        value={activePlayerTab}
+        onValueChange={(value) =>
+          set({ activePlayerTab: value as typeof activePlayerTab })
+        }
+      >
+        <TabsList className="flex flex-col items-center justify-around bg-transparent h-full gap-2">
+          <TabsTrigger
+            value="combat-log"
+            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50"
+          >
+            <VscListSelection />
+          </TabsTrigger>
+          <TabsTrigger
+            value="party"
+            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50"
+          >
+            <RiTeamFill />
+          </TabsTrigger>
+          <div className="flex-1" />
+          <Dialog>
+            <DialogTrigger className="px-2 py-1.5 bg-muted text-muted-foreground rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50">
+              <BsBackpack4Fill />
+            </DialogTrigger>
+            <PlayerItemsDialog />
+          </Dialog>
+        </TabsList>
+        <div className="relative h-32 w-62 xl:w-80">
+          <TabsContent value="combat-log" className="h-full">
+            <CombatLog className="h-full w-full rounded-xs p-2 bg-background/60 border ring ring-black text-xs" />
+          </TabsContent>
+          <TabsContent value="party" className="h-full">
+            <div className="grid grid-cols-2 grid-rows-3 h-full gap-1">
+              {actors.map((a) => {
+                const active = isActive(state, a.ID)
+                const position = getPosition(state, a.ID)
+                const Icon = numbers[position?.index ?? -1] ?? TbHexagonFilled
+
+                return (
+                  <Dialog key={a.ID}>
+                    <DialogTrigger asChild>
+                      <Button
+                        className={cn('!rounded-sm justify-baseline', {
+                          'opacity-50 hover:opacity-90 h-full':
+                            !a.state.alive || true,
+                        })}
+                        variant={a.state.alive ? 'slate' : 'destructive'}
+                      >
+                        {active ? (
+                          <Icon />
+                        ) : a.state.alive ? (
+                          <TbHexagon />
+                        ) : (
+                          <TbHexagonOff />
+                        )}
+                        {a.name}
+                      </Button>
+                    </DialogTrigger>
+                    <ActorDialog actor={a} />
+                  </Dialog>
+                )
+              })}
+              {Array.from({ length: 6 - actors.length }).map((_, i) => (
+                <div key={i} className="h-full w-full bg-black/20"></div>
+              ))}
+            </div>
+          </TabsContent>
+        </div>
+      </Tabs>
     </div>
   )
 }

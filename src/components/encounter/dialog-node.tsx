@@ -17,10 +17,11 @@ import { validateAction } from '@/game/action'
 function DialogNode() {
   const { state, resolveActionItem } = useGameState((s) => s)
   const playerID = usePlayerID()
+  const player = state.players.find((p) => p.ID === playerID)
   const context = newContext({ playerID })
   const activeNode = getActiveNode(state)
   const loading = hasNext(state)
-  if (!activeNode) return null
+  if (!activeNode || !player) return null
 
   return (
     <CardContent className="flex flex-1 flex-col gap-2 justify-between">
@@ -30,7 +31,11 @@ function DialogNode() {
         {activeNode.type === 'shop' && (
           <ItemsTable
             items={activeNode.items}
-            actionHeader="Buy"
+            actionHeader={
+              <>
+                Buy ({player.credits} <GiCreditsCurrency />)
+              </>
+            }
             actions={(item) => {
               const action = PurchaseItem(item.ID)
               return (

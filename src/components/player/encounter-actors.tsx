@@ -22,7 +22,23 @@ function EncounterActors({
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div className="w-full flex flex-row-reverse justify-start items-start h-20 max-w-[1440px] px-4 gap-2">
+    <div className="w-full flex flex-row justify-end items-start h-20 max-w-[1440px] px-4 gap-2">
+      <div className="flex flex-col gap-0 items-end mt-3">
+        <div className="grid grid-cols-3 gap-1 text-stone-300/40">
+          {actors.map((a) =>
+            a.state.alive ? (
+              <TbHexagonFilled key={a.ID} />
+            ) : (
+              <TbHexagonOff key={a.ID} />
+            )
+          )}
+        </div>
+        {alive.length > 0 && (
+          <div className="text-lg text-muted-foreground/50 title">
+            {alive.length} enemies left
+          </div>
+        )}
+      </div>
       {encounter?.activeActorIDs.map((actorID, i) => {
         return (
           <div key={i} className="relative h-20 w-48">
@@ -56,22 +72,6 @@ function EncounterActors({
           </div>
         )
       })}
-      <div className="flex flex-col gap-0 items-end mt-3">
-        <div className="grid grid-cols-3 gap-1 text-stone-300/40">
-          {actors.map((a) =>
-            a.state.alive ? (
-              <TbHexagonFilled key={a.ID} />
-            ) : (
-              <TbHexagonOff key={a.ID} />
-            )
-          )}
-        </div>
-        {alive.length > 0 && (
-          <div className="text-lg text-muted-foreground/50 title">
-            {alive.length} enemies left
-          </div>
-        )}
-      </div>
     </div>
   )
 }

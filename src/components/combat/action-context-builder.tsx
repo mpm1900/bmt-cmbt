@@ -19,6 +19,7 @@ import { ActionRepeatTargetButton } from './action-repeat-target-button'
 import { ActionRepeatPages } from './action-repeat-pages'
 import { newContext } from '@/game/mutations'
 import { usePlayerID } from '@/hooks/usePlayer'
+import { cn } from '@/lib/utils'
 
 function getSelectedCount(context: DeltaContext) {
   return (
@@ -298,17 +299,16 @@ function ActionContextBuilder({
           )}
         </div>
       </CardContent>
-
       <CardFooter className="justify-end items-center gap-4">
-        {ready && (
-          <Button
-            variant={done ? 'default' : 'secondary'}
-            onClick={() => onContextConfirm(context)}
-          >
-            Confirm {maxP > 1 && `(${selectedTargets}/${maxP})`}
-            <ArrowRight />
-          </Button>
-        )}
+        <Button
+          disabled={!ready}
+          className={cn({ '!opacity-0': !ready })}
+          variant={done ? 'default' : 'secondary'}
+          onClick={() => onContextConfirm(context)}
+        >
+          Confirm {maxP > 1 && ready && `(${selectedTargets}/${maxP})`}
+          <ArrowRight />
+        </Button>
       </CardFooter>
     </Card>
   )

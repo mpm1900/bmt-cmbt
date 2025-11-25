@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ProgressPrimitive from '@radix-ui/react-progress'
 
 import { cn } from '@/lib/utils'
+import { Gauge } from '../gauge'
 
 function ActorHealth({
   className,
@@ -22,6 +23,19 @@ function ActorHealth({
     const timeout = setTimeout(() => setAfter(value), 700)
     return () => clearTimeout(timeout)
   }, [value])
+  return (
+    <Gauge value={value}>
+      {showHealthNumbers && (
+        <div className="absolute top-0.5 right-1 z-10 leading-4 title text-lg text-foreground text-shadow-md">
+          {children || (
+            <>
+              {Math.max(health, 0)}/{maxHealth}
+            </>
+          )}
+        </div>
+      )}
+    </Gauge>
+  )
   return (
     <ProgressPrimitive.Root
       data-slot="progress"

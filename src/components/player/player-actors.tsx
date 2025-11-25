@@ -22,12 +22,12 @@ function PlayerActors({
   const running = !!phase && phase !== 'pre' && phase !== 'post'
 
   return (
-    <div className="flex items-end justify-end gap-4 overflow-y-hidden p-1">
+    <div className="flex items-end justify-end gap-8 overflow-y-clip">
       {player.activeActorIDs.map((actorID, i) => (
-        <div key={i} className="relative w-64 h-32">
+        <div key={i} className="relative w-64 h-32 flex flex-col justify-end">
           <div
             className={cn(
-              'rounded-xs h-19 mb-4 mt-8 w-64 flex items-center justify-center transition-all',
+              'rounded-xs h-19 mt-8 w-64 transition-all',
               ' bg-background/60 border border-background/80',
               { 'opacity-0': !!actorID }
             )}

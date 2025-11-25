@@ -24,10 +24,15 @@ function ActionRepeatPages({
   const pages = Array.from({ length: max })
 
   return (
-    <ButtonGroup className={cn({ 'border rounded-lg border-ring': done })}>
+    <ButtonGroup
+      className={cn('rounded-sm ring ring-black border', {
+        'border-ring': done,
+      })}
+    >
       {pages.map((_, i) => (
         <Button
           key={i}
+          className="rounded-sm"
           variant={
             i === index
               ? 'default'

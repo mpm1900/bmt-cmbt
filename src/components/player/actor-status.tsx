@@ -1,28 +1,28 @@
 import type { SActor } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
-import { Trash2 } from 'lucide-react'
+import { XIcon } from 'lucide-react'
+import { Button } from '../ui/button'
+import type { ComponentProps } from 'react'
 
-function ActorStatus({ actor }: { actor: SActor }) {
+function ActorStatus({
+  actor,
+  ...props
+}: ComponentProps<typeof Button> & { actor: SActor }) {
   const state = useGameState((s) => s.state)
   const cancel = useGameState((s) => s.filterAction)
   const queuedAction = state.actionQueue.find(
     (a) => a.context.sourceID === actor.ID
   )
+  if (!queuedAction) return null
   return (
-    <span className="font-bold text-xs text-muted-foreground/40 text-center h-5">
-      {queuedAction ? (
-        <span
-          className="inline-flex items-center gap-1 hover:text-foreground/60 cursor-pointer hover:underline title text-lg"
-          onClick={() => {
-            cancel(actor.ID)
-          }}
-        >
-          Cancel Action <Trash2 className="size-3" />
-        </span>
-      ) : (
-        <span className="opacity-0">...</span>
-      )}
-    </span>
+    <Button
+      size="icon-xs"
+      variant="destructive"
+      onClick={() => cancel(queuedAction.context.sourceID)}
+      {...props}
+    >
+      <XIcon className="size-4" />
+    </Button>
   )
 }
 

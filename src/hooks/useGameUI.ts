@@ -14,6 +14,8 @@ const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
   activeActorID: string | undefined
   activeActionID: string | undefined
+  activePlayerTab: 'party' | 'combat-log'
+  hoverActorID: string | undefined
 }
 
 type GameUIStore = GameUIState & {
@@ -25,6 +27,8 @@ const gameUIStore = createStore<GameUIStore>((set) => {
   return {
     activeActorID: undefined,
     activeActionID: undefined,
+    activePlayerTab: 'party',
+    hoverActorID: undefined,
     set: (state: Partial<GameUIState>) => set(state),
     resetActive: (game: State) => {
       const nextActorID = getActionableActors(

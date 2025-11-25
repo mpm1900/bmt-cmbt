@@ -4,6 +4,7 @@ import { Button } from '../ui/button'
 import type { DeltaContext } from '@/game/types/delta'
 import { getPosition, positionEquals } from '@/game/player'
 import { getSelectedCount } from './action-context-builder'
+import { useGameUI } from '@/hooks/useGameUI'
 
 function ActionUniqueTargetButton({
   state,
@@ -70,6 +71,7 @@ function ActionTargetIdButton({
   onContextChange: (context: Partial<DeltaContext>) => void
 }) {
   const active = context.targetIDs.includes(target.ID)
+  const set = useGameUI((s) => s.set)
   return (
     <Button
       size="sm"
@@ -94,6 +96,12 @@ function ActionTargetIdButton({
           })
         }
       }}
+      onMouseEnter={() => {
+        set({ hoverActorID: target.ID })
+      }}
+      onMouseLeave={() => {
+        set({ hoverActorID: undefined })
+      }}
     >
       {target.name}
     </Button>
@@ -115,6 +123,7 @@ function ActionPositionButton({
   context: DeltaContext
   onContextChange: (context: Partial<DeltaContext>) => void
 }) {
+  const set = useGameUI((s) => s.set)
   const position = getPosition(state, target.ID)
   const active =
     position !== undefined &&
@@ -146,6 +155,12 @@ function ActionPositionButton({
             positions: [...context.positions, position],
           })
         }
+      }}
+      onMouseEnter={() => {
+        set({ hoverActorID: target.ID })
+      }}
+      onMouseLeave={() => {
+        set({ hoverActorID: undefined })
       }}
     >
       {target.name}

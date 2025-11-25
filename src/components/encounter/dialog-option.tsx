@@ -22,8 +22,8 @@ function DialogOptionContent({
   return (
     <InputGroup
       className={cn(
-        'h-8 border-none',
-        { 'dark:hover:bg-input/50': !disabled },
+        'h-8 border-none rounded-sm',
+        { 'dark:hover:bg-input': !disabled },
         className
       )}
       {...props}
@@ -141,7 +141,9 @@ function DialogOptionGroup({
   return (
     <ButtonGroup
       orientation="vertical"
-      className={cn('flex flex-col gap-0 w-full')}
+      className={cn(
+        'flex flex-col gap-0 w-full border rounded-sm ring ring-black'
+      )}
       {...props}
     />
   )

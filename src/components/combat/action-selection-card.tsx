@@ -1,12 +1,12 @@
 import type { SAction, SActor } from '@/game/state'
-import { Card, CardContent, CardHeader } from '../ui/card'
 import { useState, type ReactNode } from 'react'
 import { ScrollArea } from '../ui/scroll-area'
 import { ActionItem } from './action-item'
 import { ActionContextBuilder } from './action-context-builder'
 import type { DeltaContext } from '@/game/types/delta'
 import { newContext } from '@/game/mutations'
-import { CombatViewTabs } from './combat-view-tabs'
+import { motion } from 'motion/react'
+import { cn } from '@/lib/utils'
 
 function ActionSelectionCard({
   playerID,
@@ -30,19 +30,15 @@ function ActionSelectionCard({
   )
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
-    <Card
+    <motion.div
       className="w-192 gap-2"
       initial={{ scale: 1, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}
     >
-      {children || (
-        <CardHeader>
-          <CombatViewTabs />
-        </CardHeader>
-      )}
-      <CardContent className="flex gap-5">
-        <ScrollArea className="max-h-98.5 pr-3 flex-1 min-w-1/2">
+      {children}
+      <div className={cn('flex gap-2', { 'items-start': actions.length <= 1 })}>
+        <ScrollArea className="flex-1 max-h-100 bg-card/70 p-2 px-3 rounded-xs border ring ring-black">
           <div className="flex flex-col gap-1 px-px">
             {actions.map((action) => (
               <ActionItem
@@ -71,8 +67,8 @@ function ActionSelectionCard({
             />
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </motion.div>
   )
 }
 
