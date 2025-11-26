@@ -25,9 +25,12 @@ function PhasePlanning() {
   const activeAction = actions.find((action) => action.ID === activeActionID)!
 
   return (
-    <div className="h-full flex flex-col justify-end gap-12">
+    <div className="h-full flex flex-col justify-end gap-10">
+      <h1 className="title text-center text-4xl text-muted-foreground">
+        What will {activeActor.name} do?
+      </h1>
       {activeActionID && (
-        <div className="flex-1 flex flex-col items-center justify-center mb-74">
+        <div className="flex-1 flex flex-col items-center justify-center mb-64">
           <ActionContextBuilder
             className="min-w-120"
             playerID={activeActor.playerID}

@@ -63,7 +63,7 @@ function PhaseMainPrompt({
       }}
     >
       <CardHeader>
-        <CardTitle>Select Character(s)</CardTitle>
+        <CardTitle className="text-center">Select Fighters</CardTitle>
       </CardHeader>
     </ActionSelectionCard>
   )

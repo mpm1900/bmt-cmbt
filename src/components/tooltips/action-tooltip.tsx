@@ -1,6 +1,6 @@
 import type { ActionRenderer } from '@/renderers/actions'
 import { Collapsible, CollapsibleContent } from '../ui/collapsible'
-import { ItemActions, ItemContent } from '../ui/item'
+import { ItemContent } from '../ui/item'
 import { cn } from '@/lib/utils'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 import { ACTION_RENDERERS } from '@/renderers'
@@ -89,7 +89,7 @@ function ActionDetails({
           <div className="flex-1" />
           <renderer.Stat />
         </span>
-        <div className="flex-1 max-h-[50%]" />
+        <div className="flex-1 max-h-[33%]" />
         <CollapsibleContent className="text-muted-foreground text-sm">
           <renderer.Body />
         </CollapsibleContent>

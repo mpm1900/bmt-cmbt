@@ -2,7 +2,6 @@ import type { SAction, State } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -13,7 +12,6 @@ import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
 import { useEffect, useState, type ComponentProps } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { ACTION_RENDERERS } from '@/renderers'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
 import { ActionRepeatPages } from './action-repeat-pages'
@@ -65,9 +63,6 @@ function DuplicateTargetGenerator({
       {players.size > 1 && targets.length > 4 ? (
         <div className="flex flex-col w-full justify-around gap-2">
           <div className="flex flex-col gap-1">
-            <div className="font-semibold text-xs text-enemy/70 hidden">
-              Enemy Targets
-            </div>
             <div className="flex flex-wrap gap-2 w-full justify-center">
               {targets
                 .filter((t) => t.target.playerID !== context.playerID)
@@ -87,13 +82,7 @@ function DuplicateTargetGenerator({
                     />
                   )
                 })}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <div className="font-semibold text-xs text-ally/80 hidden">
-              Ally Targets
-            </div>
-            <div className="flex flex-wrap gap-2 w-full justify-center">
+
               {targets
                 .filter((t) => t.target.playerID === context.playerID)
                 .map(({ target, type }) => {
@@ -157,9 +146,6 @@ function UniqueTargetGenerator({
     return (
       <div className="flex flex-col w-full justify-around pt-4 gap-2">
         <div className="flex flex-col gap-1">
-          <div className="font-semibold text-xs text-enemy/70 hidden">
-            Enemy Targets
-          </div>
           <div className="flex flex-wrap gap-2 w-full justify-center">
             {targets
               .filter((t) => t.target.playerID !== context.playerID)
@@ -177,13 +163,7 @@ function UniqueTargetGenerator({
                   />
                 )
               })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-1">
-          <div className="font-semibold text-xs text-ally/80 hidden">
-            Ally Targets
-          </div>
-          <div className="flex flex-wrap gap-2 w-full justify-center">
+
             {targets
               .filter((t) => t.target.playerID === context.playerID)
               .map(({ target, type }) => {
@@ -252,7 +232,6 @@ function ActionContextBuilder({
     )
   }, [sourceID, action.ID])
 
-  const renderer = ACTION_RENDERERS[action.ID]
   const max = action.targets.max(state, context)
   const maxP = !action.targets.unique
     ? max
@@ -262,9 +241,12 @@ function ActionContextBuilder({
   const done = max === selectedTargets
 
   return (
-    <Card {...props}>
-      <CardHeader className="gap-0">
-        <CardTitle className="text-lg">Select Targets</CardTitle>
+    <Card
+      {...props}
+      className="bg-transparent border-none ring-0 shadow-none gap-6"
+    >
+      <CardHeader className="gap-0 text-center">
+        <CardTitle className="text-xl">Select {action.name} Targets</CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (
             <span>
@@ -274,11 +256,6 @@ function ActionContextBuilder({
             <span>No selection required.</span>
           )}
         </CardDescription>
-        {renderer && (
-          <CardAction>
-            <renderer.Icon />
-          </CardAction>
-        )}
       </CardHeader>
       <CardContent className="px-8">
         <div className="flex flex-col items-center justify-center gap-4">

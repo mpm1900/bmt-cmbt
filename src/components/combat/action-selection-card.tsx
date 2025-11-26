@@ -31,7 +31,7 @@ function ActionSelectionCard({
   const activeAction = actions.find((action) => action.ID === activeActionID)
   return (
     <motion.div
-      className="w-192 gap-2"
+      className="w-192 flex flex-col gap-4"
       initial={{ scale: 1, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}

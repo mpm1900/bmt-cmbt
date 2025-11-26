@@ -129,12 +129,14 @@ function getDamageResult<T>(
     const successModifier = damage.success ? 1 : 0
     const criticalModifier = damage.critical ? damage.criticalModifier : 1
     const evasionModifier = damage.evade && !damage.critical ? 0 : 1 // can't evade crits
+    const randomModifier = Math.random() * (1.1 - 0.9) + 0.9
     const damageAmount = Math.round(
       damage.power *
         ratio *
         successModifier *
         criticalModifier *
-        evasionModifier
+        evasionModifier *
+        randomModifier
     )
     result.damage = damageAmount
     result.recoil = result.damage * damage.recoil

@@ -31,7 +31,7 @@ function Actor({
   onClick: (actor: SActor) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { setActorPosition } = useGameUI((s) => ({
+  const { hoverActorID, setActorPosition } = useGameUI((s) => ({
     hoverActorID: s.hoverActorID,
     setActorPosition: s.setActorPosition,
   }))
@@ -54,6 +54,7 @@ function Actor({
   const [_health, maxHealth] = getHealth<State>(actor)
   const health = actor.state.alive ? _health : 0
   disabled = disabled || actor.state.stunned === 1
+  targeted = targeted || hoverActorID === actorID
 
   return (
     <motion.div

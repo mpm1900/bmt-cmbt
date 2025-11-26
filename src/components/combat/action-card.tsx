@@ -1,5 +1,5 @@
 import { findActor } from '@/game/access'
-import { validateAction } from '@/game/action'
+// import { validateAction } from '@/game/action'
 import type { SAction } from '@/game/state'
 import type { DeltaContext } from '@/game/types/delta'
 import { useGameState } from '@/hooks/useGameState'
@@ -21,14 +21,14 @@ function ActionCard({
   const state = useGameState((s) => s.state)
   const source = findActor(state, context.sourceID)
 
-  const disabled = context && !validateAction(action, state, context)
+  //const disabled = context && !validateAction(action, state, context)
   const renderer = ACTION_RENDERERS[action.ID]
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'cursor-default user-select-none flex flex-col justify-start text-left !w-65 h-91 bg-neutral-900 border border-neutral-800 ring ring-black shadow p-2 rounded-sm',
+        'cursor-default user-select-none flex flex-col justify-start text-left !w-65 h-85 bg-neutral-900 border-2 border-neutral-700 ring ring-black shadow p-2 rounded-sm',
         'hover:z-30 hover:shadow-[0px_16px_32px_16px_rgba(0,_0,_0,_0.2)] hover:-translate-y-6 transition-all',
         {
           'z-20 -translate-y-11! shadow-[0px_16px_32px_16px_rgba(0,_0,_0,_0.3)]! bg-neutral-800 border-neutral-600':
