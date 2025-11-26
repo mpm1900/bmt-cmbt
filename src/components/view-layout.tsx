@@ -10,11 +10,12 @@ function ViewLayoutContent({
   return (
     <div
       {...props}
-      className={cn('flex items-center justify-center my-8', className)}
+      className={cn(
+        'flex items-center justify-center my-8 h-full relative',
+        className
+      )}
     >
-      <div className="relative flex-1 flex items-center justify-center gap-4 w-286">
-        {children}
-      </div>
+      {children}
     </div>
   )
 }

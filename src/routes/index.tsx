@@ -1,4 +1,5 @@
 import { CombatView } from '@/components/combat/combat-view'
+import { TargetingLines } from '@/components/combat/targeting-lines'
 import { EncounterView } from '@/components/encounter/encounter-view'
 import { EncounterActors } from '@/components/player/encounter-actors'
 import { Player } from '@/components/player/player'
@@ -30,6 +31,9 @@ function RouteComponent() {
 
         <Player player={player} current={current} />
       </div>
+      {current && combat?.phase === 'main' && (
+        <TargetingLines currentAction={current} />
+      )}
     </div>
   )
 }

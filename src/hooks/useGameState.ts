@@ -50,7 +50,7 @@ const player: SPlayer = {
   credits: 9999,
 }
 
-const Max = createActor('Max', player.ID, 'lumberjack_2', {
+const Max = createActor('Max', player.ID, 'man', {
   accuracy: 0,
   strength: 100,
   evasion: 0,
@@ -60,7 +60,7 @@ const Max = createActor('Max', player.ID, 'lumberjack_2', {
   speed: 100,
 })
 Max.state.damage = 60
-const Katie = createActor('Katie', player.ID, 'girl_11', {
+const Katie = createActor('Katie', player.ID, 'woman_8', {
   accuracy: 0,
   strength: 100,
   evasion: 0,
@@ -79,7 +79,7 @@ const Hank = createActor('Hank', player.ID, 'lion', {
   faith: 150,
   speed: 150,
 })
-const Milo = createActor('Milo', player.ID, 'pup', {
+const Milo = createActor('Milo', player.ID, 'rac', {
   accuracy: 0,
   strength: 100,
   evasion: 0,

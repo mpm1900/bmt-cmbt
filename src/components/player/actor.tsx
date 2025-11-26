@@ -2,7 +2,7 @@ import { portraits } from '@/renderers/portraits'
 import type { State, SActor } from '@/game/state'
 import { ItemContent, ItemTitle } from '../ui/item'
 import { useGameState } from '@/hooks/useGameState'
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { ActorHealth } from './actor-health'
 import { ActorStatus } from './actor-status'
 import { EffectBadge } from '../effect-badge'
@@ -31,8 +31,24 @@ function Actor({
   onClick: (actor: SActor) => void
 }) {
   const state = useGameState((s) => s.state)
-  const hoverActorID = useGameUI((s) => s.hoverActorID)
-  targeted = targeted || hoverActorID === actorID
+  const { setActorPosition } = useGameUI((s) => ({
+    hoverActorID: s.hoverActorID,
+    setActorPosition: s.setActorPosition,
+  }))
+  const ref = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      setActorPosition(actorID, {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      })
+    }
+  }, [actorID, setActorPosition, window.innerHeight, window.innerWidth])
+
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
@@ -41,6 +57,7 @@ function Actor({
 
   return (
     <motion.div
+      ref={ref}
       initial={{ y: '100%', opacity: 0 }}
       animate={{ y: '0%', opacity: 1 }}
       exit={{ y: '100%', opacity: 0 }}
@@ -128,7 +145,23 @@ function EnemyActor({
   targeted: boolean
 }) {
   const state = useGameState((s) => s.state)
-  const hoverActorID = useGameUI((s) => s.hoverActorID)
+  const { hoverActorID, setActorPosition } = useGameUI((s) => ({
+    hoverActorID: s.hoverActorID,
+    setActorPosition: s.setActorPosition,
+  }))
+  const ref = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect()
+      setActorPosition(actorID, {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      })
+    }
+  }, [actorID, setActorPosition])
   targeted = targeted || hoverActorID === actorID
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
@@ -137,6 +170,7 @@ function EnemyActor({
 
   return (
     <motion.div
+      ref={ref}
       initial={{ y: '-100%', opacity: 0 }}
       animate={{ y: '0%', opacity: 1 }}
       exit={{ y: '-100%', opacity: 0 }}

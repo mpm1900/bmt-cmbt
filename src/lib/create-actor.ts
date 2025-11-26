@@ -15,7 +15,7 @@ const actions = [
   SolarBeam,
   BrainBlast,
   Heal,
-  DragonDance,
+  //DragonDance,
   HotShots,
 ]
 

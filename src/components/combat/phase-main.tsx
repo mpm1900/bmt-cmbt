@@ -1,6 +1,6 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
-import { findActor, getActiveActorIDs, getActor } from '@/game/access'
+import { getActor } from '@/game/access'
 import { CardHeader, CardTitle } from '../ui/card'
 import type { SAction, SActionItem, SActor } from '@/game/state'
 import { usePlayerID } from '@/hooks/usePlayer'
@@ -16,7 +16,6 @@ function PhaseMain({ current }: { current: SActionItem | undefined }) {
   const currentSource = getActor(state, current?.context.sourceID)
   const hasPrompt = prompt && prompt.context.playerID === playerID
   const hasRender = !hasPrompt && current && currentSource
-  console.log(prompt, promptSource, playerID)
 
   return (
     <AnimatePresence mode="wait">
@@ -73,39 +72,32 @@ function PhaseMainPrompt({
 function PhaseMainRenderer({
   action,
   source,
-  context,
 }: {
   action: SAction
   source: SActor
   context: DeltaContext
 }) {
-  const state = useGameState((s) => s.state)
-  const targets = context.targetIDs
-    .map((id) => findActor(state, id))
-    .filter(Boolean)
-  const positions = context.positions
-    .map((p) =>
-      findActor(
-        state,
-        getActiveActorIDs(state, p.playerID)[p.index] ?? undefined
-      )
-    )
-    .filter(Boolean)
-  const names = new Set(
-    targets.map((t) => t?.name).concat(positions.map((p) => p?.name))
-  )
-
   return (
     <motion.div
-      className="w-172 text-center self-center justify-self-center m-auto"
+      className="w-full text-center self-center justify-self-center m-auto z-30 py-20"
       transition={{ duration: 0.4 }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      style={{
+        background:
+          'radial-gradient(circle,rgba(0, 0, 0, 0.73) 0%, rgba(0, 0, 0, 0.55) 5%, rgba(0, 0, 0, 0) 16%)',
+      }}
     >
-      <div className="text-center">{source.name} uses</div>
-      <h1 className="text-6xl font-black text-center">{action.name}</h1>
-      <div>{Array.from(names).join(', ')}</div>
+      <div className="text-center text-muted-foreground">
+        <span className="title text-xl text-white">{source.name}</span> uses
+      </div>
+      <div className="relative">
+        <div className="absolute w-80 h-full top-0 left-46 z-0" />
+        <h1 className="text-7xl font-black text-center z-10 relative text-shadow-lg title">
+          {action.name}
+        </h1>
+      </div>
     </motion.div>
   )
 }

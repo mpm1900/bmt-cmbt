@@ -24,6 +24,7 @@ import { ActorDialog } from './actor-dialog'
 import { PlayerItemsDialog } from './player-items-dialog'
 import { useGameUI } from '@/hooks/useGameUI'
 import { Separator } from '../ui/separator'
+import { useState } from 'react'
 
 const numbers = [
   TbHexagonNumber1Filled,
@@ -41,11 +42,13 @@ function Player({
   const { state } = useGameState((s) => s)
   const { activePlayerTab, set } = useGameUI((s) => s)
   const actors = state.actors.filter((actor) => actor.playerID === player.ID)
+  const [itemsOpen, setItemOpen] = useState(false)
+
   return (
     <div className="flex justify-start gap-6 mb-3 w-full max-w-[1440px]">
       <div>
         <PlayerActors player={player} current={current} />
-        <div className="flex items-center justify-center text-center title text-lg h-5 leading-5 text-muted-foreground gap-6 px-3 mt-3">
+        <div className="flex items-center justify-center text-center title text-lg h-5 leading-5 text-muted-foreground gap-6 px-3 mt-1">
           <Separator className="flex-1" />
           Active Party
           <Separator className="flex-1" />
@@ -59,7 +62,7 @@ function Player({
           set({ activePlayerTab: value as typeof activePlayerTab })
         }
       >
-        <TabsList className="flex flex-col items-center justify-around bg-transparent h-full gap-2">
+        <TabsList className="flex flex-col items-center justify-around bg-transparent h-full gap-2 z-10">
           <TabsTrigger
             value="combat-log"
             className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50"
@@ -73,16 +76,16 @@ function Player({
             <RiTeamFill />
           </TabsTrigger>
           <div className="flex-1" />
-          <Dialog>
+          <Dialog open={itemsOpen} onOpenChange={setItemOpen}>
             <DialogTrigger className="px-2 py-1.5 bg-muted text-muted-foreground rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50">
               <BsBackpack4Fill />
             </DialogTrigger>
-            <PlayerItemsDialog />
+            <PlayerItemsDialog open={itemsOpen} onOpenChange={setItemOpen} />
           </Dialog>
         </TabsList>
         <div className="relative h-32 w-62 xl:w-80">
           <TabsContent value="combat-log" className="h-full">
-            <CombatLog className="h-full w-full rounded-xs p-2 bg-background/60 border ring ring-black text-xs" />
+            <CombatLog className="h-full w-full rounded-xs p-2 bg-background/90 border ring ring-black text-xs" />
           </TabsContent>
           <TabsContent value="party" className="h-full">
             <div className="grid grid-cols-2 grid-rows-3 h-full gap-1">
@@ -95,10 +98,10 @@ function Player({
                   <Dialog key={a.ID}>
                     <DialogTrigger asChild>
                       <Button
-                        className={cn('!rounded-sm justify-baseline', {
-                          'opacity-50 hover:opacity-90 h-full':
-                            !a.state.alive || true,
-                        })}
+                        className={cn(
+                          '!rounded-sm justify-baseline',
+                          'opacity-100 hover:opacity-90 h-full'
+                        )}
                         variant={a.state.alive ? 'slate' : 'destructive'}
                       >
                         {active ? (

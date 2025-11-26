@@ -27,7 +27,7 @@ function PhasePost() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <CardHeader>
+      <CardHeader className="text-center">
         {dead ? (
           <CardTitle>You Lose.</CardTitle>
         ) : (

@@ -10,16 +10,21 @@ import { playerStore } from './usePlayer'
 
 const playerID = playerStore.getState().playerID
 
+export type Point = { x: number; y: number; width: number; height: number }
+export type ActorPositions = Record<string, Point>
+
 const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
   activeActorID: string | undefined
   activeActionID: string | undefined
   activePlayerTab: 'party' | 'combat-log'
   hoverActorID: string | undefined
+  actorPositions: ActorPositions
 }
 
 type GameUIStore = GameUIState & {
   set: (state: Partial<GameUIState>) => void
+  setActorPosition: (actorId: string, position: Point) => void
   resetActive: (game: State) => void
 }
 
@@ -29,7 +34,15 @@ const gameUIStore = createStore<GameUIStore>((set) => {
     activeActionID: undefined,
     activePlayerTab: 'party',
     hoverActorID: undefined,
+    actorPositions: {},
     set: (state: Partial<GameUIState>) => set(state),
+    setActorPosition: (actorId: string, position: Point) =>
+      set((state) => ({
+        actorPositions: {
+          ...state.actorPositions,
+          [actorId]: position,
+        },
+      })),
     resetActive: (game: State) => {
       const nextActorID = getActionableActors(
         game,

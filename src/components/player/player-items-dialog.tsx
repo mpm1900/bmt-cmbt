@@ -6,7 +6,12 @@ import { ItemsTable } from '../encounter/items-table'
 import { MiniDropdown } from '../mini-dropdown'
 import { ActorSelect } from '../encounter/actor-select'
 
-function PlayerItemsDialog() {
+function PlayerItemsDialog({
+  onOpenChange,
+}: {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}) {
   const state = useGameState((s) => s.state)
   const playerID = usePlayerID()
   const player = state.players.find((p) => p.ID === playerID)
@@ -25,17 +30,17 @@ function PlayerItemsDialog() {
           <>
             {item.use && <MiniDropdown>Use</MiniDropdown>}
             {item.consumable && (
-              <div>
-                <ActorSelect
-                  disabled={false}
-                  placeholder="Use"
-                  options={item.consumable.targets
-                    .get(state, context)
-                    .map((t) => t.target)}
-                  value={undefined}
-                  onValueChange={() => {}}
-                />
-              </div>
+              <ActorSelect
+                disabled={false}
+                placeholder="Use"
+                options={item.consumable.targets
+                  .get(state, context)
+                  .map((t) => t.target)}
+                value={undefined}
+                onValueChange={() => {
+                  onOpenChange?.(false)
+                }}
+              />
             )}
             {item.actions && <MiniDropdown>Equip</MiniDropdown>}
           </>

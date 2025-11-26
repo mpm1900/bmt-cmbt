@@ -11,7 +11,7 @@ import {
 } from '../ui/card'
 import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ComponentProps } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ACTION_RENDERERS } from '@/renderers'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
@@ -232,7 +232,8 @@ function ActionContextBuilder({
   context,
   onContextChange,
   onContextConfirm,
-}: {
+  ...props
+}: ComponentProps<typeof Card> & {
   playerID: string
   action: SAction
   sourceID: string | undefined
@@ -261,7 +262,7 @@ function ActionContextBuilder({
   const done = max === selectedTargets
 
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader className="gap-0">
         <CardTitle className="text-lg">Select Targets</CardTitle>
         <CardDescription className="text-xs">

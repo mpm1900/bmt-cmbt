@@ -25,7 +25,7 @@ function ActionSubDetails({
   const DStatIcon = damage ? MAIN_STAT_ICONS[damage.defenseStat] : undefined
 
   return (
-    <div className="flex flex-row gap-4 h-5 p-0.5 self-center bg-black/60 px-3 rounded-full">
+    <div className="flex flex-row gap-4 h-5 p-0.5 self-center bg-black/60 px-2 rounded-xs">
       {damage && (
         <>
           <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
@@ -57,9 +57,7 @@ function ActionSubDetails({
         <>
           <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
             <Clock className="size-3.5" />
-            <span>
-              {cooldown - 1} turn{cooldown > 2 && 's'}
-            </span>
+            <span>{cooldown - 1}T</span>
           </div>
         </>
       )}
@@ -77,11 +75,8 @@ function ActionDetails({
   cooldown: number | undefined
 }) {
   return (
-    <Collapsible open={active} className="flex-1">
-      <ItemActions
-        className={cn('flex items-center float-right gap-1 h-4 pt-1', {})}
-      ></ItemActions>
-      <ItemContent className="block">
+    <Collapsible open={active} className="flex-1 h-full flex flex-col">
+      <ItemContent className="flex">
         <span
           className={cn('w-full inline-flex items-center gap-2 title text-xl', {
             'mb-3': active,
@@ -94,6 +89,7 @@ function ActionDetails({
           <div className="flex-1" />
           <renderer.Stat />
         </span>
+        <div className="flex-1 max-h-[50%]" />
         <CollapsibleContent className="text-muted-foreground text-sm">
           <renderer.Body />
         </CollapsibleContent>

@@ -17,7 +17,12 @@ const FireballRenderer: ActionRenderer = {
   Icon: () => <ElementIcon className="size-5 text-fire" />,
   Name: () => <div className="">Fireball</div>,
   Body: () => (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
+      <ActionSubDetails
+        accuracy={FireballAccuracy}
+        cooldown={FireballCooldown}
+        damage={FireballDamage}
+      />
       <div>
         Deals{' '}
         <strong className="text-foreground">{FireballDamage.power}</strong>{' '}
@@ -25,11 +30,6 @@ const FireballRenderer: ActionRenderer = {
         <strong className="text-foreground">{FireballTargetCount}</strong>{' '}
         target enemies simultaneously.
       </div>
-      <ActionSubDetails
-        accuracy={FireballAccuracy}
-        cooldown={FireballCooldown}
-        damage={FireballDamage}
-      />
     </div>
   ),
   Stat: () => <OStatIcon className="size-4 text-mind" />,

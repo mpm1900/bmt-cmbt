@@ -37,7 +37,7 @@ function DialogHistoryLog({
 
   return (
     <ScrollArea className={cn('max-h-50 px-3', className)} {...props}>
-      <ul className="text-xs text-muted-foreground">
+      <ul className="text-xs text-muted-foreground pt-2">
         {firstMessages.map((message, i) => (
           <li
             key={i + message.ID}

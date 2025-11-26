@@ -18,7 +18,13 @@ const SprayNPrayRenderer: ActionRenderer = {
   Icon: () => <ElementIcon className="size-5" />,
   Name: () => <div className="">Spray 'n Pray</div>,
   Body: () => (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
+      <ActionSubDetails
+        accuracy={SprayNPrayAccuracy}
+        critChance={SprayNPrayCritChance}
+        damage={SprayNPrayDamage}
+        cooldown={SprayNPrayCooldown}
+      />
       <div>
         Deals{' '}
         <strong className="text-foreground">{SprayNPrayDamage.power}</strong>{' '}
@@ -32,12 +38,6 @@ const SprayNPrayRenderer: ActionRenderer = {
           how the text looks on 2 lines."
         </div>
       </div>
-      <ActionSubDetails
-        accuracy={SprayNPrayAccuracy}
-        critChance={SprayNPrayCritChance}
-        damage={SprayNPrayDamage}
-        cooldown={SprayNPrayCooldown}
-      />
     </div>
   ),
   Stat: () => <StatIcon className="size-4 text-reflexes" />,
