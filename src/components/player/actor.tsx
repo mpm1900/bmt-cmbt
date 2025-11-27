@@ -112,7 +112,14 @@ function Actor({
         </Badge>
         <div className="flex-1 z-10">
           <ItemContent className="gap-0">
-            <ItemTitle className="text-xl title pl-2 text-shadow-lg">
+            <ItemTitle
+              className="text-xl title pl-2"
+              style={{
+                textShadow: !active
+                  ? '1px 1px 1px black'
+                  : '-1px 1px 1px rgba(255,255,255,0.8)',
+              }}
+            >
               {actor.name}
             </ItemTitle>
             <ActorHealth
@@ -185,7 +192,16 @@ function EnemyActor({
         className="h-14 py-1 px-2 pointer-events-none border border-stone-950"
       >
         <ItemContent className="gap-0">
-          <ItemTitle className="text-base title">{actor.name}</ItemTitle>
+          <ItemTitle
+            className="text-base title"
+            style={{
+              textShadow: !active
+                ? '1px 1px 1px black'
+                : '-1px 1px 1px rgba(255,255,255,0.8)',
+            }}
+          >
+            {actor.name}
+          </ItemTitle>
           <ActorHealth
             showHealthNumbers={false}
             health={health}

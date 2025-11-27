@@ -245,8 +245,10 @@ function ActionContextBuilder({
       {...props}
       className="bg-transparent border-none ring-0 shadow-none gap-6"
     >
-      <CardHeader className="gap-0 text-center text-shadow-lg rounded-xs bg-background border ring ring-black py-2 self-center min-w-60">
-        <CardTitle className="text-xl">Select {action.name} Targets</CardTitle>
+      <div className="gap-0 text-center text-shadow-lg rounded-xs bg-background border ring ring-black py-2 self-center px-6 w-fit">
+        <CardTitle className="text-xl inline">
+          Select Targets for {action.name}
+        </CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (
             <span>
@@ -256,7 +258,7 @@ function ActionContextBuilder({
             <span>No selection required.</span>
           )}
         </CardDescription>
-      </CardHeader>
+      </div>
       <CardContent className="px-8">
         <div className="flex flex-col items-center justify-center gap-4">
           {!action.targets.unique && (

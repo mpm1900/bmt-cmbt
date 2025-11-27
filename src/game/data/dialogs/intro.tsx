@@ -149,6 +149,7 @@ const IntroNode0: SDialogNode = {
           context: newContext<{}>({
             sourceID: '???',
           }),
+          type: 'dialogue',
           text: (
             <div className="inline">
               "Welcome to the game! This is a test dialog message. What would

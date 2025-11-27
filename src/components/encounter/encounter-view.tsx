@@ -28,7 +28,7 @@ function EncounterView() {
             <div className="flex items-start justify-between">
               <div className="h-10 -mt-6 -ml-4 relative">
                 <div className="triangle border-t-yellow-950/50 absolute -bottom-4 left-0 z-0"></div>
-                <CardTitle className="px-8 title text-2xl bg-yellow-950 border border-yellow-900/50 leading-10 relative text-shadow-xl shadow-xl z-10 ring ring-black">
+                <CardTitle className="px-8 title text-2xl bg-yellow-950 border border-yellow-900/50 leading-10 rounded-xs relative text-shadow-xl shadow-xl z-10 ring ring-black">
                   {state.encounter.name}
                 </CardTitle>
               </div>

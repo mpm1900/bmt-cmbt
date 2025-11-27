@@ -14,6 +14,7 @@ function newMessage(partial: Partial<Message>): Message {
     context: newContext({}),
     text: null,
     depth: 0,
+    type: 'narration',
     ...partial,
   }
 }
