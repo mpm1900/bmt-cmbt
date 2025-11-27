@@ -1,8 +1,10 @@
 import { Activate, Swap } from '@/game/data/actions/_system/swap'
 import type { ActionRenderer } from '.'
+import img from '@/assets/spells/Blue Ability_18.png'
 
 const ActivateRenderer: ActionRenderer = {
   actionID: Activate.ID,
+  img,
   Icon: () => <></>,
   Name: () => <div className="">Select Fighters</div>,
   Body: () =>
@@ -12,10 +14,11 @@ const ActivateRenderer: ActionRenderer = {
 
 const SwapRenderer: ActionRenderer = {
   actionID: Swap.ID,
+  img,
   Icon: () => <></>,
-  Name: () => <div className="">Swap Actors</div>,
+  Name: () => <div>Swap Actors</div>,
   Stat: () => <></>,
-  Body: () => 'Select an fighter to switch places.',
+  Body: () => <span className="p-2">Select an fighter to switch places.</span>,
 }
 
 export { ActivateRenderer, SwapRenderer }

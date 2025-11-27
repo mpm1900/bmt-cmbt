@@ -38,7 +38,7 @@ function ActionSelectionCard({
     >
       {children}
       <div className={cn('flex gap-2', { 'items-start': actions.length <= 1 })}>
-        <ScrollArea className="flex-1 max-h-100 bg-card/70 p-2 px-3 rounded-xs border ring ring-black">
+        <ScrollArea className="flex-1 max-h-100 ">
           <div className="flex flex-col gap-1 px-px">
             {actions.map((action) => (
               <ActionItem

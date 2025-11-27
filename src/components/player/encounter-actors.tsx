@@ -39,9 +39,9 @@ function EncounterActors({
           </div>
         )}
       </div>
-      {encounter?.activeActorIDs.map((actorID, i) => {
+      {encounter?.activeActorIDs.map((actorID, index) => {
         return (
-          <div key={i} className="relative h-20 w-48">
+          <div key={index} className="relative h-20 w-48">
             <div
               className={cn(
                 'rounded bg-background opacity-40 z-0 transition-all',
@@ -60,11 +60,12 @@ function EncounterActors({
                     state.promptQueue.length === 0 &&
                     current?.context.sourceID === actorID
                   }
+                  index={index}
                   targeted={isTargeted(
                     state,
                     current?.context,
                     actorID!,
-                    newPosition(encounter.ID, i)
+                    newPosition(encounter.ID, index)
                   )}
                 />
               )}

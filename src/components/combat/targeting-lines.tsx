@@ -1,24 +1,33 @@
 import { useGameState } from '@/hooks/useGameState'
-import { useGameUI, type Point } from '@/hooks/useGameUI'
+import { useGameUI } from '@/hooks/useGameUI'
 import { convertPositionToTargetContext, getActor } from '@/game/access'
 import type { SActionItem, SActor, State } from '@/game/state'
 import { usePlayerID } from '@/hooks/usePlayer'
 
 function TargetinLine({
   sourceActor,
-  sourcePosition,
+  sourceRef,
   state,
   targetID,
 }: {
   sourceActor: SActor
-  sourcePosition: Point
+  sourceRef: React.RefObject<HTMLElement>
   state: State
   targetID: string
 }) {
   const playerID = usePlayerID()
-  const actorPositions = useGameUI((s) => s.actorPositions)
+  const target = state.actors.find((a) => a.ID === targetID)!
+  const targetPlayer = state.players.find((p) => p.ID === target.playerID)!
+  const activeRefs = useGameUI((s) => s.activeRefs)
+  const playerRefs = activeRefs[targetPlayer.ID]
+  const targetRef = playerRefs.find(
+    (_, index) => index === targetPlayer.activeActorIDs.indexOf(targetID)
+  )
 
-  const targetPos = actorPositions[targetID]
+  if (!targetRef || !targetRef.current || !sourceRef || !sourceRef.current)
+    return null
+
+  const targetPos = targetRef.current.getBoundingClientRect()
   if (!targetPos) return null
 
   const targetActor = getActor(state, targetID)
@@ -26,14 +35,15 @@ function TargetinLine({
 
   const sourceIsPlayer = sourceActor.playerID === playerID
   const targetIsPlayer = targetActor.playerID === playerID
+  const sourcePosition = sourceRef.current!.getBoundingClientRect()
   const startX = sourcePosition.x + sourcePosition.width / 2
   const startY = sourceIsPlayer
-    ? sourcePosition.y - sourcePosition.height + 20
-    : sourcePosition.y + sourcePosition.height * 2
+    ? sourcePosition.y + 20
+    : sourcePosition.y + sourcePosition.height * 1
   const endX = targetPos.x + targetPos.width / 2
   const endY = targetIsPlayer
-    ? targetPos.y - targetPos.height + 20
-    : targetPos.y + targetPos.height * 2
+    ? targetPos.y + 20
+    : targetPos.y + targetPos.height * 1
 
   const dx = endX - startX
   const dy = endY - startY
@@ -66,15 +76,25 @@ function TargetinLine({
 }
 
 export function TargetingLines({
-  currentAction,
+  current,
+  sourceRef,
 }: {
-  currentAction: SActionItem
+  current: SActionItem
+  sourceRef?: React.RefObject<HTMLDivElement>
 }) {
-  const actorPositions = useGameUI((s) => s.actorPositions)
+  const activeRefs = useGameUI((s) => s.activeRefs)
   const state = useGameState((s) => s.state)
-  const context = convertPositionToTargetContext(state, currentAction.context)
-  const sourcePos = actorPositions[context.sourceID]
-  if (!sourcePos) return null
+  const player = state.players.find((p) => p.ID === current.context.playerID)!
+  const playerRefs = activeRefs[current.context.playerID]
+
+  const context = convertPositionToTargetContext(state, current.context)
+  sourceRef =
+    sourceRef ??
+    playerRefs.find(
+      (_, index) =>
+        index === player.activeActorIDs.indexOf(current.context.sourceID)
+    )
+  if (!sourceRef) return null
 
   const sourceActor = getActor(state, context.sourceID)
   if (!sourceActor) return null
@@ -82,11 +102,12 @@ export function TargetingLines({
   return (
     <svg className="absolute inset-0 pointer-events-none h-screen w-screen z-0">
       {context.targetIDs.map(
-        (targetID) =>
+        (targetID, index) =>
           targetID && (
             <TargetinLine
+              key={context.sourceID + targetID + index}
               sourceActor={sourceActor}
-              sourcePosition={sourcePos}
+              sourceRef={sourceRef}
               state={state}
               targetID={targetID}
             />

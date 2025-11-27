@@ -36,8 +36,8 @@ function ActionItem({
       {renderer ? (
         <ActionDetails
           renderer={renderer}
-          active={active}
           cooldown={source?.cooldowns[action.ID]}
+          showImage={false}
         />
       ) : (
         <span

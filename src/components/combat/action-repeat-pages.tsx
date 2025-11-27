@@ -25,9 +25,12 @@ function ActionRepeatPages({
 
   return (
     <ButtonGroup
-      className={cn('rounded-sm ring ring-black border', {
-        'border-ring': done,
-      })}
+      className={cn(
+        'rounded-sm ring ring-black border border-ring/50 bg-muted',
+        {
+          'border-ring': done,
+        }
+      )}
     >
       {pages.map((_, i) => (
         <Button

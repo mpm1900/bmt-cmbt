@@ -7,42 +7,69 @@ import type { State } from '@/game/state'
 import { createStore, useStore } from 'zustand'
 import { useShallow } from 'zustand/shallow'
 import { playerStore } from './usePlayer'
+import type { DeltaContext } from '@/game/types/delta'
+import { newContext } from '@/game/mutations'
 
 const playerID = playerStore.getState().playerID
 
-export type Point = { x: number; y: number; width: number; height: number }
-export type ActorPositions = Record<string, Point>
+export type ActorRefs = Record<string, React.RefObject<HTMLDivElement>[]>
 
 const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
-  activeActorID: string | undefined
   activeActionID: string | undefined
+  activeContext: DeltaContext
   activePlayerTab: 'party' | 'combat-log'
+  activeRefs: ActorRefs
+  activeActionRef: React.RefObject<HTMLDivElement> | undefined
   hoverActorID: string | undefined
-  actorPositions: ActorPositions
 }
 
 type GameUIStore = GameUIState & {
   set: (state: Partial<GameUIState>) => void
-  setActorPosition: (actorId: string, position: Point) => void
+  setActiveContext: (context: Partial<DeltaContext>) => void
+  setActiveRefs: (
+    playerID: string,
+    index: number,
+    ref: React.RefObject<HTMLDivElement>
+  ) => void
   resetActive: (game: State) => void
 }
 
 const gameUIStore = createStore<GameUIStore>((set) => {
   return {
-    activeActorID: undefined,
     activeActionID: undefined,
+    activeContext: newContext({}),
     activePlayerTab: 'party',
+    activeRefs: {},
+    activeActionRef: undefined,
     hoverActorID: undefined,
-    actorPositions: {},
+
     set: (state: Partial<GameUIState>) => set(state),
-    setActorPosition: (actorId: string, position: Point) =>
-      set((state) => ({
-        actorPositions: {
-          ...state.actorPositions,
-          [actorId]: position,
-        },
-      })),
+    setActiveContext: (context) => {
+      set({
+        activeContext: newContext<{}>(context),
+      })
+    },
+    setActiveRefs: (playerID, index, ref) => {
+      set((state) => {
+        const refs = state.activeRefs[playerID]
+        if (!refs) {
+          return {
+            activeRefs: {
+              ...state.activeRefs,
+              [playerID]: [ref],
+            },
+          }
+        }
+        refs[index] = ref
+        return {
+          activeRefs: {
+            ...state.activeRefs,
+            [playerID]: refs,
+          },
+        }
+      })
+    },
     resetActive: (game: State) => {
       const nextActorID = getActionableActors(
         game,
@@ -54,7 +81,10 @@ const gameUIStore = createStore<GameUIStore>((set) => {
 
       const actor = getActor(game, nextActorID)
       set({
-        activeActorID: nextActorID,
+        activeContext: newContext({
+          playerID: actor?.playerID,
+          sourceID: actor?.ID,
+        }),
         activeActionID: nextAvailableAction(actor, game)?.ID,
       })
     },

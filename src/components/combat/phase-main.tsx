@@ -86,7 +86,7 @@ function PhaseMainRenderer({
       exit={{ opacity: 0 }}
       style={{
         background:
-          'radial-gradient(circle,rgba(0, 0, 0, 0.73) 0%, rgba(0, 0, 0, 0.55) 5%, rgba(0, 0, 0, 0) 16%)',
+          'radial-gradient(ellipse at center,rgba(0, 0, 0, 0.73) 0%, rgba(0, 0, 0, 0.55) 5%, rgba(0, 0, 0, 0) 40%)',
       }}
     >
       <div className="text-center text-muted-foreground">

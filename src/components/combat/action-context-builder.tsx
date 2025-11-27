@@ -243,9 +243,15 @@ function ActionContextBuilder({
   return (
     <Card
       {...props}
-      className="bg-transparent border-none ring-0 shadow-none gap-6"
+      className="bg-transparent border-none ring-0 shadow-none gap-6 min-w-80"
     >
-      <CardHeader className="gap-0 text-center">
+      <CardHeader
+        className="gap-0 text-center text-shadow-lg"
+        style={{
+          background:
+            'radial-gradient(ellipse at center,rgba(0, 0, 0, 0.73) 0%, rgba(0, 0, 0, 0.55) 30%, rgba(0, 0, 0, 0) 50%)',
+        }}
+      >
         <CardTitle className="text-xl">Select {action.name} Targets</CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (

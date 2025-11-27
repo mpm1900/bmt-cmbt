@@ -2,6 +2,8 @@ import type { SAction } from '@/game/state'
 import { ActionCard } from './action-card'
 import { motion } from 'motion/react'
 import type { DeltaContext } from '@/game/types/delta'
+import { useGameState } from '@/hooks/useGameState'
+import { validateAction } from '@/game/action'
 
 function ActionCards({
   context,
@@ -14,6 +16,7 @@ function ActionCards({
   activeActionID: string | undefined
   onActiveActionIDChange: (actionID: string) => void
 }) {
+  const state = useGameState((s) => s.state)
   const numActions = actions.length
   const radius = 0
 
@@ -22,35 +25,49 @@ function ActionCards({
       initial={{ y: '200%' }}
       animate={{ y: '0' }}
       exit={{ y: '200%' }}
-      className="flex absolute left-0 right-0 justify-center -space-x-26 -mb-32 -z-0"
+      transition={{
+        type: 'spring',
+        damping: 25,
+        stiffness: 220,
+      }}
+      className="flex absolute left-0 right-0 justify-center -space-x-22 -mb-30 -z-0"
     >
       {actions.map((action, i) => {
         const rotation = i - (numActions - 1) / 2
         const translateY = radius * (1 - Math.cos(rotation * (Math.PI / 180)))
+        const active = action.ID === activeActionID
+        const disabled = !validateAction(action, state, context)
 
         return (
           <motion.div
             key={action.ID}
             style={{
               transformOrigin: 'bottom center',
-              zIndex: action.ID === activeActionID ? 99 : i,
             }}
             animate={{
-              rotate: rotation,
               y: translateY,
+              translateY: active ? -20 : 0,
+              zIndex: active ? 99 : i,
+              rotate: active ? rotation : rotation,
+              scale: active ? 1.1 : 1,
             }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            whileHover={{
-              scale: 1.1,
-              y: translateY,
-              rotate: 0,
-              zIndex: 100,
-            }}
+            transition={{ ease: 'easeOut', duration: 0.2 }}
+            whileHover={
+              disabled
+                ? {}
+                : {
+                    scale: 1.1,
+                    y: translateY,
+                    rotate: 0,
+                    zIndex: 100,
+                  }
+            }
           >
             <ActionCard
               context={context}
               action={action}
               active={action.ID === activeActionID}
+              disabled={disabled}
               onClick={() => onActiveActionIDChange(action.ID)}
             />
           </motion.div>

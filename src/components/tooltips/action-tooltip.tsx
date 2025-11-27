@@ -1,5 +1,4 @@
 import type { ActionRenderer } from '@/renderers/actions'
-import { Collapsible, CollapsibleContent } from '../ui/collapsible'
 import { ItemContent } from '../ui/item'
 import { cn } from '@/lib/utils'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
@@ -14,32 +13,30 @@ function ActionSubDetails({
   damage,
   accuracy,
   critChance,
-  cooldown,
 }: {
   damage?: PowerDamage
   accuracy?: number
   critChance?: number
-  cooldown?: number
 }) {
   const OStatIcon = damage ? MAIN_STAT_ICONS[damage.offenseStat] : undefined
   const DStatIcon = damage ? MAIN_STAT_ICONS[damage.defenseStat] : undefined
 
   return (
-    <div className="flex flex-row gap-4 h-5 p-0.5 self-center bg-black/60 px-2 rounded-xs">
+    <div className="flex flex-row justify-center gap-4 h-5 p-0.5 ring-2 ring-black bg-black px-2 w-full">
+      {accuracy && (
+        <>
+          <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
+            <TfiTarget className="size-3.5" />
+            <span>{accuracy}%</span>
+          </div>
+        </>
+      )}
       {damage && (
         <>
           <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
             {OStatIcon && <OStatIcon className="size-3.5 text-ally" />}
             <Slash className="size-3" />
             {DStatIcon && <DStatIcon className="size-3.5 text-enemy" />}
-          </div>
-        </>
-      )}
-      {accuracy && (
-        <>
-          <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
-            <TfiTarget className="size-3.5" />
-            <span>{accuracy}%</span>
           </div>
         </>
       )}
@@ -53,48 +50,47 @@ function ActionSubDetails({
           </div>
         </>
       )}
-      {cooldown && (
-        <>
-          <div className="text-xs inline-flex items-center gap-1 whitespace-nowrap">
-            <Clock className="size-3.5" />
-            <span>{cooldown - 1}T</span>
-          </div>
-        </>
-      )}
     </div>
   )
 }
 
 function ActionDetails({
   renderer,
-  active,
   cooldown = 0,
+  showImage,
 }: {
   renderer: ActionRenderer
-  active: boolean
   cooldown: number | undefined
+  showImage: boolean
 }) {
   return (
-    <Collapsible open={active} className="flex-1 h-full flex flex-col">
-      <ItemContent className="flex">
-        <span
-          className={cn('w-full inline-flex items-center gap-2 title text-xl', {
-            'mb-3': active,
-            'text-muted-foreground': !active,
-          })}
-        >
-          <renderer.Icon />
-          <renderer.Name />
-          {cooldown > 0 && <Clock className="opacity-60" />}
-          <div className="flex-1" />
-          <renderer.Stat />
-        </span>
-        <div className="flex-1 max-h-[33%]" />
-        <CollapsibleContent className="text-muted-foreground text-sm">
-          <renderer.Body />
-        </CollapsibleContent>
-      </ItemContent>
-    </Collapsible>
+    <ItemContent className="flex relative h-full">
+      <span
+        className={cn(
+          'inline-flex items-center gap-2 title text-xl px-2 z-10 text-shadow-lg rounded-t-xs',
+          { 'bg-white/70 text-black/70 ring ring-white/70': showImage }
+        )}
+      >
+        <renderer.Name />
+        {cooldown > 0 && <Clock className="opacity-60" />}
+        <div className="flex-1" />
+        <span className="text-sm">Cost</span>
+      </span>
+      {showImage && (
+        <div className="h-3/5 overflow-hidden -mt-8 z-0">
+          <img
+            src={renderer.img}
+            className="h-auto w-full"
+            style={{
+              imageRendering: 'pixelated',
+            }}
+          />
+        </div>
+      )}
+      <div className="text-muted-foreground text-sm z-10">
+        <renderer.Body />
+      </div>
+    </ItemContent>
   )
 }
 
@@ -137,7 +133,7 @@ function ActionTooltip({
         sideOffset={8}
         className="w-76"
       >
-        <ActionDetails renderer={renderer} active={true} cooldown={0} />
+        <ActionDetails renderer={renderer} cooldown={0} showImage={false} />
       </HoverCardContent>
     </HoverCard>
   )

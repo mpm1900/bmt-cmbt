@@ -17,6 +17,7 @@ import { useGameUI } from '@/hooks/useGameUI'
 function Actor({
   actorID,
   active,
+  index,
   targeted,
   disabled,
   status,
@@ -25,29 +26,18 @@ function Actor({
 }: Omit<React.ComponentProps<typeof motion.div>, 'onClick'> & {
   actorID: string
   active: boolean
+  index: number
   targeted: boolean
   disabled: boolean
   status: string
   onClick: (actor: SActor) => void
 }) {
   const state = useGameState((s) => s.state)
-  const { hoverActorID, setActorPosition } = useGameUI((s) => ({
+  const { hoverActorID, setActiveRefs } = useGameUI((s) => ({
     hoverActorID: s.hoverActorID,
-    setActorPosition: s.setActorPosition,
+    setActiveRefs: s.setActiveRefs,
   }))
   const ref = useRef<HTMLDivElement>(null)
-
-  useLayoutEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      setActorPosition(actorID, {
-        x: rect.left,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
-      })
-    }
-  }, [actorID, setActorPosition, window.innerHeight, window.innerWidth])
 
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
   const actor = getActor(state, actorID)!
@@ -55,6 +45,16 @@ function Actor({
   const health = actor.state.alive ? _health : 0
   disabled = disabled || actor.state.stunned === 1
   targeted = targeted || hoverActorID === actorID
+
+  useLayoutEffect(() => {
+    if (ref.current !== null) {
+      setActiveRefs(
+        actor.playerID,
+        index,
+        ref as React.RefObject<HTMLDivElement>
+      )
+    }
+  }, [actor.playerID, index, ref])
 
   return (
     <motion.div
@@ -102,7 +102,11 @@ function Actor({
         })}
       >
         <div className="absolute -left-8 -top-3 size-25 overflow-hidden z-0">
-          <img src={portraits[actor.image]} className="actor-portrait" />
+          <img
+            src={portraits[actor.image]}
+            className="actor-portrait"
+            style={{ imageRendering: 'pixelated' }}
+          />
         </div>
         <Badge
           className="absolute -left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"
@@ -112,7 +116,7 @@ function Actor({
         </Badge>
         <div className="flex-1 z-10">
           <ItemContent className="gap-0">
-            <ItemTitle className="text-xl title pl-4 shadow-xl">
+            <ItemTitle className="text-xl title pl-2 shadow-xl">
               {actor.name}
             </ItemTitle>
             <ActorHealth
@@ -138,36 +142,37 @@ function Actor({
 function EnemyActor({
   actorID,
   active,
+  index,
   targeted,
   ...rest
 }: React.ComponentProps<typeof motion.div> & {
   actorID: string
   active: boolean
+  index: number
   targeted: boolean
 }) {
   const state = useGameState((s) => s.state)
-  const { hoverActorID, setActorPosition } = useGameUI((s) => ({
+  const { hoverActorID, setActiveRefs } = useGameUI((s) => ({
     hoverActorID: s.hoverActorID,
-    setActorPosition: s.setActorPosition,
+    setActiveRefs: s.setActiveRefs,
   }))
   const ref = useRef<HTMLDivElement>(null)
 
-  useLayoutEffect(() => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect()
-      setActorPosition(actorID, {
-        x: rect.left,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
-      })
-    }
-  }, [actorID, setActorPosition])
   targeted = targeted || hoverActorID === actorID
   const actor = getActor(state, actorID)!
   const [_health, maxHealth] = getHealth<State>(actor)
   const health = actor.state.alive ? _health : 0
   const [openTooltipCount, setOpenTooltipCount] = useState(0)
+
+  useLayoutEffect(() => {
+    if (ref.current !== null) {
+      setActiveRefs(
+        actor.playerID,
+        index,
+        ref as React.RefObject<HTMLDivElement>
+      )
+    }
+  }, [actor.playerID, index, ref])
 
   return (
     <motion.div

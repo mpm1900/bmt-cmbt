@@ -1,4 +1,5 @@
 import { CombatView } from '@/components/combat/combat-view'
+import { StagingTargetLines } from '@/components/combat/staging-target-lines'
 import { TargetingLines } from '@/components/combat/targeting-lines'
 import { EncounterView } from '@/components/encounter/encounter-view'
 import { EncounterActors } from '@/components/player/encounter-actors'
@@ -21,9 +22,9 @@ function RouteComponent() {
   const ai = players.find((p) => p.ID !== playerID)
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center overflow-hidden">
+    <div className="h-screen w-screen flex flex-col items-center overflow-hidden relative">
       <ViewHeader />
-      <div className="flex-1 flex flex-col justify-between">
+      <div className="flex-1 flex flex-col justify-between relative z-10">
         <EncounterActors encounter={ai} current={current} />
 
         {combat && <CombatView current={current} />}
@@ -32,8 +33,9 @@ function RouteComponent() {
         <Player player={player} current={current} />
       </div>
       {current && combat?.phase === 'main' && (
-        <TargetingLines currentAction={current} />
+        <TargetingLines current={current} />
       )}
+      <StagingTargetLines />
     </div>
   )
 }
