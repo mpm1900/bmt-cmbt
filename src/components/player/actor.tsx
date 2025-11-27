@@ -116,7 +116,7 @@ function Actor({
         </Badge>
         <div className="flex-1 z-10">
           <ItemContent className="gap-0">
-            <ItemTitle className="text-xl title pl-2 shadow-xl">
+            <ItemTitle className="text-xl title pl-2 text-shadow-lg">
               {actor.name}
             </ItemTitle>
             <ActorHealth

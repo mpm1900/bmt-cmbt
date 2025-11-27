@@ -8,7 +8,7 @@ const ActivateRenderer: ActionRenderer = {
   Icon: () => <></>,
   Name: () => <div className="">Select Fighters</div>,
   Body: () =>
-    'Select a fighter to fill the missing space in your active party.',
+    'Select the fighter(s) to fill the missing space in your active party.',
   Stat: () => <></>,
 }
 
@@ -16,9 +16,13 @@ const SwapRenderer: ActionRenderer = {
   actionID: Swap.ID,
   img,
   Icon: () => <></>,
-  Name: () => <div>Swap Actors</div>,
+  Name: () => <div>Swap Fighters</div>,
   Stat: () => <></>,
-  Body: () => <span className="p-2">Select an fighter to switch places.</span>,
+  Body: () => (
+    <div className="flex flex-col gap-1">
+      <span className="p-2">Select an fighter to switch places.</span>
+    </div>
+  ),
 }
 
 export { ActivateRenderer, SwapRenderer }

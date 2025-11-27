@@ -77,15 +77,15 @@ function ActionDetails({
         <span className="text-sm">Cost</span>
       </span>
       {showImage && (
-        <div className="h-3/5 overflow-hidden -mt-8 z-0">
-          <img
-            src={renderer.img}
-            className="h-auto w-full"
-            style={{
-              imageRendering: 'pixelated',
-            }}
-          />
-        </div>
+        <div
+          className="h-3/5 overflow-hidden -mt-8 z-0"
+          style={{
+            imageRendering: 'pixelated',
+            backgroundImage: `url(${renderer.img})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+          }}
+        ></div>
       )}
       <div className="text-muted-foreground text-sm z-10">
         <renderer.Body />

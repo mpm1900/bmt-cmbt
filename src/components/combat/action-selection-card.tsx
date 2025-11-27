@@ -37,8 +37,8 @@ function ActionSelectionCard({
       exit={{ scale: 0, opacity: 0 }}
     >
       {children}
-      <div className={cn('flex gap-2', { 'items-start': actions.length <= 1 })}>
-        <ScrollArea className="flex-1 max-h-100 ">
+      <div className={cn('flex flex-col gap-2 items-center')}>
+        <ScrollArea className="flex-1 max-h-100 hidden">
           <div className="flex flex-col gap-1 px-px">
             {actions.map((action) => (
               <ActionItem
