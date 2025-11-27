@@ -13,6 +13,7 @@ function PlayerItemsDialog({
   onOpenChange?: (open: boolean) => void
 }) {
   const state = useGameState((s) => s.state)
+  const resolveActionItem = useGameState((s) => s.resolveActionItem)
   const playerID = usePlayerID()
   const player = state.players.find((p) => p.ID === playerID)
   const context = newContext({ playerID })
@@ -29,7 +30,7 @@ function PlayerItemsDialog({
         actions={(item) => (
           <>
             {item.use && <MiniDropdown>Use</MiniDropdown>}
-            {item.consumable && (
+            {item.consumable && !state.combat && (
               <ActorSelect
                 disabled={false}
                 placeholder="Use"
@@ -37,8 +38,13 @@ function PlayerItemsDialog({
                   .get(state, context)
                   .map((t) => t.target)}
                 value={undefined}
-                onValueChange={() => {
+                onValueChange={(value) => {
                   onOpenChange?.(false)
+                  resolveActionItem(item.consumable!, {
+                    ...context,
+                    sourceID: value,
+                    targetIDs: [value],
+                  })
                 }}
               />
             )}

@@ -35,6 +35,7 @@ import { newCombat } from '@/game/lib/combat'
 import { ArrowRight } from 'lucide-react'
 import { TwoEncounter } from './two'
 import { faker } from '@faker-js/faker'
+import { withConsumable } from '@/game/item'
 
 const playerID = playerStore.getState().playerID
 
@@ -54,15 +55,20 @@ const encounterPlayer: SPlayer = {
   ID: IntroNode0ID,
   activeActorIDs: [null, null, null],
   items: [
-    {
-      ID: v4(),
-      name: 'Potion',
-      value: 123,
-      consumable: Heal,
-      use: undefined,
-      actions: undefined,
-      effect: undefined,
-    },
+    withConsumable(
+      {
+        ID: v4(),
+        name: 'Potion',
+        value: 123,
+        consumable: Heal,
+        use: undefined,
+        actions: undefined,
+        effect: undefined,
+      },
+      {
+        playerID,
+      }
+    ),
   ],
   credits: 710,
 }
@@ -373,24 +379,30 @@ const IntroNode2: SDialogNode = {
   ],
   state: {},
   items: [
-    {
-      ID: v4(),
-      name: 'Potion',
-      value: 123,
-      consumable: Heal,
-      use: undefined,
-      actions: undefined,
-      effect: undefined,
-    },
-    {
-      ID: v4(),
-      name: 'Potion',
-      value: 123,
-      consumable: Heal,
-      use: undefined,
-      actions: undefined,
-      effect: undefined,
-    },
+    withConsumable(
+      {
+        ID: v4(),
+        name: 'Potion',
+        value: 123,
+        consumable: Heal,
+        use: undefined,
+        actions: undefined,
+        effect: undefined,
+      },
+      { playerID }
+    ),
+    withConsumable(
+      {
+        ID: v4(),
+        name: 'Potion',
+        value: 123,
+        consumable: Heal,
+        use: undefined,
+        actions: undefined,
+        effect: undefined,
+      },
+      { playerID }
+    ),
     {
       ID: v4(),
       name: 'Fireball Wand',
