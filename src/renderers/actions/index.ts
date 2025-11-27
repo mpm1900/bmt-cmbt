@@ -4,9 +4,8 @@ type ActionRenderer = {
   actionID: string
   img: string
   Name: ComponentType
+  Cost: ComponentType
   Body: ComponentType
-  Icon: ComponentType
-  Stat: ComponentType
 }
 
 export type { ActionRenderer }

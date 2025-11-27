@@ -6,31 +6,41 @@ import {
   FireballTargetCount,
 } from '@/game/data/actions/fireball'
 import type { ActionRenderer } from '.'
-import { ELEMENT_ICONS, MAIN_STAT_ICONS } from '../icons'
 import { ActionSubDetails } from '@/components/tooltips/action-tooltip'
 import img from '@/assets/spells/Fire Spell Pack25.png'
-
-const ElementIcon = ELEMENT_ICONS[FireballDamage.element]
-const OStatIcon = MAIN_STAT_ICONS[FireballDamage.offenseStat]
+import {
+  ActionBody,
+  ActionCooldown,
+  ActionDescription,
+  ActionLabel,
+  ActionTitle,
+} from '@/components/ui/action-utils'
+import { FaCircle } from 'react-icons/fa'
 
 const FireballRenderer: ActionRenderer = {
   actionID: Fireball.ID,
   img,
-  Icon: () => <ElementIcon className="size-5 text-fire" />,
-  Name: () => <div className="">Fireball</div>,
-  Body: () => (
-    <div className="flex flex-col gap-1">
-      <ActionSubDetails accuracy={FireballAccuracy} damage={FireballDamage} />
-      <div className="p-2">
-        Deals{' '}
-        <strong className="text-foreground">{FireballDamage.power}</strong>{' '}
-        <strong className="text-fire">fire</strong> damage to up to{' '}
-        <strong className="text-foreground">{FireballTargetCount}</strong>{' '}
-        target enemies simul. {FireballCooldown} turn cooldown.
-      </div>
-    </div>
+  Name: () => <ActionTitle>Fireball</ActionTitle>,
+  Cost: () => (
+    <>
+      <FaCircle />
+      <FaCircle />
+      <FaCircle />
+      <FaCircle />
+      <FaCircle />
+    </>
   ),
-  Stat: () => <OStatIcon className="size-4 text-mind" />,
+  Body: () => (
+    <ActionBody>
+      <ActionSubDetails accuracy={FireballAccuracy} damage={FireballDamage} />
+      <ActionDescription>
+        Deals <ActionLabel>{FireballDamage.power}</ActionLabel>{' '}
+        <ActionLabel variant="fire">fire</ActionLabel> damage to up to{' '}
+        <ActionLabel>{FireballTargetCount}</ActionLabel> target enemies simul.{' '}
+        <ActionCooldown>{FireballCooldown - 1} turn cooldown.</ActionCooldown>
+      </ActionDescription>
+    </ActionBody>
+  ),
 }
 
 export { FireballRenderer }

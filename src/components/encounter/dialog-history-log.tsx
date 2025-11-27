@@ -5,6 +5,7 @@ import { useGameState } from '@/hooks/useGameState'
 import { newContext } from '@/game/mutations'
 import { playerStore } from '@/hooks/usePlayer'
 import { useLayoutEffect } from '@tanstack/react-router'
+import { DialogMessage } from './dialog-active-messages'
 
 const context = newContext({
   playerID: playerStore.getState().playerID,
@@ -41,12 +42,13 @@ function DialogHistoryLog({
         {firstMessages.map((message, i) => (
           <li
             key={i + message.ID}
+            className="hover:bg-muted/50"
             style={{
               opacity: message.depth > 0 ? 0.7 : 1,
               paddingLeft: message.depth * 16,
             }}
           >
-            {message.text}
+            <DialogMessage message={message} />
           </li>
         ))}
         {showLastMessages &&
@@ -58,7 +60,7 @@ function DialogHistoryLog({
                 paddingLeft: message.depth * 16,
               }}
             >
-              {message.text}
+              <DialogMessage message={message} />
             </li>
           ))}
         <div ref={messageLogRef} />

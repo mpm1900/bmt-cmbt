@@ -36,6 +36,7 @@ import { ArrowRight } from 'lucide-react'
 import { TwoEncounter } from './two'
 import { faker } from '@faker-js/faker'
 import { withConsumable } from '@/game/item'
+import { newContext } from '@/game/mutations'
 
 const playerID = playerStore.getState().playerID
 
@@ -145,7 +146,15 @@ const IntroNode0: SDialogNode = {
         }),
         newMessage({
           ID: 'IntroNode0-1',
-          text: 'Welcome to the game! This is a test dialog message. What would you like to do first?',
+          context: newContext<{}>({
+            sourceID: '???',
+          }),
+          text: (
+            <div className="inline">
+              "Welcome to the game! This is a test dialog message. What would
+              you like to do first?"
+            </div>
+          ),
         }),
       ]
     }
@@ -231,7 +240,7 @@ const IntroNode0: SDialogNode = {
     },
     createSourceDialogOption(
       {
-        text: <span className="font-semibold">"Show me your items."</span>,
+        text: <span>"Show me your items."</span>,
         icons: (
           <>
             <GiCreditsCurrency />

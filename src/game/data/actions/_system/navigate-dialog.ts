@@ -8,10 +8,16 @@ function NavigateDialog(
   nodeID: string,
   messages: Array<Message>
 ): SDialogAction {
-  return InlineMutation((_state, context) => [
-    pushMessagesResolver(context, messages),
-    navigateDialogResolver(nodeID, context),
-  ])
+  return InlineMutation((_state, context) => {
+    console.log('context', context)
+    return [
+      pushMessagesResolver(
+        context,
+        messages.map((m) => ({ ...m, context }))
+      ),
+      navigateDialogResolver(nodeID, context),
+    ]
+  })
 }
 
 function NavigateSourceDialog(

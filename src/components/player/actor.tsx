@@ -102,11 +102,7 @@ function Actor({
         })}
       >
         <div className="absolute -left-8 -top-3 size-25 overflow-hidden z-0">
-          <img
-            src={portraits[actor.image]}
-            className="actor-portrait"
-            style={{ imageRendering: 'pixelated' }}
-          />
+          <img src={portraits[actor.image]} className="actor-portrait" />
         </div>
         <Badge
           className="absolute -left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"

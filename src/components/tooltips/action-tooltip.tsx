@@ -8,6 +8,7 @@ import { MAIN_STAT_ICONS } from '@/renderers/icons'
 import type { PowerDamage } from '@/game/types/damage'
 import { TfiTarget } from 'react-icons/tfi'
 import { FaDiceD20 } from 'react-icons/fa'
+import { ActionCost, ActionHeader } from '../ui/action-utils'
 
 function ActionSubDetails({
   damage,
@@ -65,17 +66,14 @@ function ActionDetails({
 }) {
   return (
     <ItemContent className="flex relative h-full">
-      <span
-        className={cn(
-          'inline-flex items-center gap-2 title text-xl px-2 z-10 text-shadow-lg rounded-t-xs',
-          { 'bg-white/70 text-black/70 ring ring-white/70': showImage }
-        )}
-      >
-        <renderer.Name />
+      <ActionHeader>
         {cooldown > 0 && <Clock className="opacity-60" />}
+        <renderer.Name />
         <div className="flex-1" />
-        <span className="text-sm">Cost</span>
-      </span>
+        <ActionCost>
+          <renderer.Cost />
+        </ActionCost>
+      </ActionHeader>
       {showImage && (
         <div
           className="h-3/5 overflow-hidden -mt-8 z-0"
@@ -87,9 +85,7 @@ function ActionDetails({
           }}
         ></div>
       )}
-      <div className="text-muted-foreground text-sm z-10">
-        <renderer.Body />
-      </div>
+      <renderer.Body />
     </ItemContent>
   )
 }

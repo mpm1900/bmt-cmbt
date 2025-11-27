@@ -6,7 +6,7 @@ import type { EffectRenderer } from '@/renderers/effects'
 function EffectDetails({ renderer }: { renderer: EffectRenderer }) {
   return (
     <>
-      <p className="font-bold mb-2">
+      <p className="text-lg title mb-2">
         <renderer.Name />
       </p>
       <p className="text-xs">

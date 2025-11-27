@@ -38,7 +38,7 @@ function createActor(
       alive: 1,
       damage: 0,
       flinching: 0,
-      mana: 100,
+      mana: 10,
       protected: 0,
       stunned: 0,
     },

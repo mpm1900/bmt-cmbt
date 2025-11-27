@@ -47,11 +47,9 @@ function ActorActivated(actor: SActor | undefined, isCombat?: boolean) {
   return (
     <>
       {Actor(actor)}{' '}
-      {
-        <span className="text-foreground">
-          {isCombat ? 'joined combat.' : 'joined.'}
-        </span>
-      }
+      <span className="text-foreground">
+        {isCombat ? 'joined combat.' : 'joined.'}
+      </span>
     </>
   )
 }

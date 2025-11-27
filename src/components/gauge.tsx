@@ -27,12 +27,18 @@ function Gauge({
   return (
     <GaugeContent {...props}>
       <motion.div
-        className="bg-red-800/80 absolute top-0 h-full border border-white/20 z-10 ring ring-black"
+        className={cn(
+          'bg-red-800/80 absolute top-0 h-full border-white/20 z-10 ring ring-black',
+          { border: value > 0 }
+        )}
         initial={{ width: `${value}%` }}
         animate={{ width: `${value}%` }}
       />
       <motion.div
-        className="bg-white/80 absolute top-0 h-full border border-white/20 z-0 ring ring-black"
+        className={cn(
+          'bg-white/80 absolute top-0 h-full border-white/20 z-0 ring ring-black',
+          { border: value > 0 }
+        )}
         initial={{ width: `${after}%` }}
         animate={{ width: `${after}%` }}
       />
