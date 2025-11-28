@@ -40,6 +40,7 @@ function PhasePlanning() {
             onContextChange={setActiveContext}
             onContextConfirm={(context) => {
               pushAction(activeAction, context)
+              setUI({ activeActionID: undefined })
             }}
           />
         </div>

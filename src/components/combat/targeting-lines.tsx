@@ -34,7 +34,7 @@ function Curve({
     const normalY = dx / (distance / 2)
 
     const cp1x = start.x + normalX * arcHeight
-    const cp1y = start.y + normalY * arcHeight - 80
+    const cp1y = start.y + normalY * arcHeight - 20
     const cp2x = end.x + normalX * arcHeight
     const cp2y = end.y + normalY * arcHeight
 
@@ -49,7 +49,7 @@ function Curve({
     <g>
       <path
         d={curvePath}
-        strokeWidth="2"
+        strokeWidth="3"
         fill="none"
         strokeDasharray="5, 5"
         {...props}
@@ -100,7 +100,7 @@ function TargetinLine({
   const sourcePosition = sourceRef.current!.getBoundingClientRect()
   const startX = sourcePosition.x + sourcePosition.width / 2
   const startY = sourceIsPlayer
-    ? sourcePosition.y
+    ? sourcePosition.y + 8
     : sourcePosition.y + sourcePosition.height * 1
   const endX = targetPos.x + targetPos.width / 2
   const endY = targetIsPlayer
