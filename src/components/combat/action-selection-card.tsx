@@ -13,6 +13,7 @@ function ActionSelectionCard({
   source,
   actions,
   activeActionID,
+  contextTitle,
   onActiveActionIDChange,
   onActionConfirm,
   children,
@@ -21,6 +22,7 @@ function ActionSelectionCard({
   source: SActor | undefined
   actions: Array<SAction>
   activeActionID: string | undefined
+  contextTitle?: ReactNode
   onActiveActionIDChange: (actionID: string | undefined) => void
   onActionConfirm: (action: SAction, context: DeltaContext) => void
   children?: ReactNode
@@ -60,6 +62,7 @@ function ActionSelectionCard({
               action={activeAction}
               sourceID={source?.ID}
               context={context}
+              contextTitle={contextTitle}
               onContextChange={setContext}
               onContextConfirm={(context) => {
                 onActionConfirm(activeAction, context)

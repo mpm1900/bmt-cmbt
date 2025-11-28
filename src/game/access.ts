@@ -19,7 +19,24 @@ import { getStats, withStats } from './lib/actor'
 import { validateAction } from './action'
 
 function getTriggers(state: State): Array<STrigger> {
-  const effects = [...state.effects, ...(state.combat?.effects ?? [])]
+  const actors = getAllActiveActors(state)
+  const actorEffects = actors.flatMap((a) =>
+    a.effects.map((effect) => ({
+      ID: v4(),
+      effect,
+      context: newContext({
+        playerID: a.playerID,
+        sourceID: a.ID,
+        parentID: a.ID,
+      }),
+    }))
+  )
+  console.log('AE', actorEffects)
+  const effects = [
+    ...state.effects,
+    ...(state.combat?.effects ?? []),
+    ...actorEffects,
+  ]
   return effects.flatMap(({ effect, context }) => effect.triggers(context))
 }
 
@@ -116,6 +133,13 @@ function getAliveActiveActors(
       isActive(state, actor.ID) &&
       actor.state.alive &&
       (fn ? fn(actor) : true)
+  )
+}
+
+function getAllActiveActors(state: State, fn?: (actor: SActor) => boolean) {
+  return state.actors.filter(
+    (actor) =>
+      isActive(state, actor.ID) && actor.state.alive && (fn ? fn(actor) : true)
   )
 }
 
@@ -220,6 +244,7 @@ export {
   withStatEffects,
   getAliveInactiveActors,
   getAliveActiveActors,
+  getAllActiveActors,
   getActionableActors,
   getActor,
   mapTarget,

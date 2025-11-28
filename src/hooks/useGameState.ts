@@ -60,6 +60,8 @@ const Max = createActor('Max', player.ID, 'man', {
   speed: 100,
 })
 Max.state.damage = 60
+Max.effects = [Intimidate, Goku]
+
 const Katie = createActor('Katie', player.ID, 'woman_8', {
   accuracy: 0,
   strength: 100,
@@ -69,6 +71,7 @@ const Katie = createActor('Katie', player.ID, 'woman_8', {
   insight: 180,
   speed: 70,
 })
+
 const Hank = createActor('Hank', player.ID, 'lion', {
   accuracy: 0,
   strength: 180,
@@ -79,6 +82,7 @@ const Hank = createActor('Hank', player.ID, 'lion', {
   faith: 150,
   speed: 150,
 })
+
 const Milo = createActor('Milo', player.ID, 'rac', {
   accuracy: 0,
   strength: 100,
@@ -110,24 +114,6 @@ const initialState: State = {
       ID: v4(),
       effect: HANDLE_TURN_END,
       context: newContext({}),
-    },
-    {
-      ID: v4(),
-      effect: Goku,
-      context: newContext({
-        playerID: player.ID,
-        sourceID: Max.ID,
-        parentID: Max.ID,
-      }),
-    },
-    {
-      ID: v4(),
-      effect: Intimidate,
-      context: newContext({
-        playerID: player.ID,
-        sourceID: Max.ID,
-        parentID: Max.ID,
-      }),
     },
     {
       ID: v4(),

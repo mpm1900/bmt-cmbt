@@ -26,7 +26,7 @@ const SwapRenderer: ActionRenderer = {
   Cost: () => <></>,
   Body: () => (
     <ActionBody>
-      <ActionDescription>
+      <ActionDescription className="pt-2">
         This fighter leaves combat and switches places with another inactive
         figher.
       </ActionDescription>

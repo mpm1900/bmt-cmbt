@@ -1,4 +1,5 @@
 import type { Action } from './action'
+import type { Effect } from './effect'
 
 type Element = 'physical' | 'fire' | 'shock' | 'psy'
 
@@ -26,6 +27,7 @@ type Actor<T> = {
   image: string
   modified: boolean
   actions: Array<Action<T, Actor<T>>>
+  effects: Array<Effect<T, Actor<T>>>
   stats: ActorStats
   state: ActorState
   cooldowns: Record<string, number>
@@ -36,4 +38,20 @@ type ModifiedActor<T> = Actor<T> & {
   applied: Record<string, number>
 }
 
-export type { Actor, ModifiedActor, ActorStats, ActorState, MainStat, Element }
+type ActorClass<T> = {
+  ID: string
+  name: string
+  actions: Array<Action<T, Actor<T>>>
+  stats: ActorStats
+  effects: Effect<T, Actor<T>>[]
+}
+
+export type {
+  Actor,
+  ModifiedActor,
+  ActorClass,
+  ActorStats,
+  ActorState,
+  MainStat,
+  Element,
+}

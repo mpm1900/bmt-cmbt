@@ -43,6 +43,7 @@ function createActor(
       stunned: 0,
     },
     cooldowns: {},
+    effects: [],
   }
 }
 

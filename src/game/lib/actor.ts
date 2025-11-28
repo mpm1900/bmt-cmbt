@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import type {
   Actor,
+  ActorClass,
   ActorState,
   ActorStats,
   ModifiedActor,
@@ -10,6 +11,48 @@ import type { EffectItem } from '../types/effect'
 import type { Action } from '../types/action'
 import { getDamageResult } from './damage'
 import type { Damage, DamageResult } from '../types/damage'
+import { newContext } from './context'
+
+function newStats(partial: Partial<ActorStats>): ActorStats {
+  return {
+    accuracy: 0,
+    evasion: 0,
+    faith: 0,
+    health: 0,
+    insight: 0,
+    speed: 0,
+    strength: 0,
+    ...partial,
+  }
+}
+
+function newActor<T>(
+  name: string,
+  playerID: string,
+  image: string,
+  actorClass: ActorClass<T>
+): Actor<T> {
+  return {
+    ID: v4(),
+    playerID: playerID,
+    parentID: undefined,
+    name,
+    image,
+    modified: false,
+    effects: actorClass.effects,
+    actions: actorClass.actions,
+    stats: newStats(actorClass.stats),
+    state: {
+      alive: 1,
+      damage: 0,
+      flinching: 0,
+      mana: 10,
+      protected: 0,
+      stunned: 0,
+    },
+    cooldowns: {},
+  }
+}
 
 function updateActor<T>(
   actor: Actor<T>,
@@ -123,7 +166,18 @@ function withEffects<T>(
     return actor as ModifiedActor<T>
   }
 
-  effects = effects.filter((e) => e.effect.delay === 0)
+  const actorEffects: Array<EffectItem<T, Actor<T>>> = actor.effects.map(
+    (effect) => ({
+      ID: v4(),
+      effect,
+      context: newContext({
+        playerID: actor.playerID,
+        sourceID: actor.ID,
+        parentID: actor.ID,
+      }),
+    })
+  )
+  effects = effects.concat(actorEffects).filter((e) => e.effect.delay === 0)
   const parentEffects = effects.filter((e) => e.context.parentID === actor.ID)
   const applied = parentEffects.reduce(
     (acc, e) => {
@@ -193,6 +247,8 @@ function decrementCooldowns<T, A extends Actor<T> = Actor<T>>(actor: A): A {
 }
 
 export {
+  newStats,
+  newActor,
   updateActor,
   withState,
   withStats,

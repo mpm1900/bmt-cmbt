@@ -9,7 +9,6 @@ function NavigateDialog(
   messages: Array<Message>
 ): SDialogAction {
   return InlineMutation((_state, context) => {
-    console.log('context', context)
     return [
       pushMessagesResolver(
         context,

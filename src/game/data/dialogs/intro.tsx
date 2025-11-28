@@ -87,10 +87,20 @@ const IntroNode0: SDialogNode = {
       return [
         newMessage({
           ID: 'IntroNode0-0',
-          text: 'You party has traveled far to this land. Each of their own motivations. You all step out of the carriage that brought you here, looking out at the foggy woods that serve as the outskrits of the city.',
+          text: (
+            <>
+              Your party has traveled far to this land, each member driven by
+              their own motivations. As you all step out of the carriage, you
+              see foggy woods that mark the outskirts of the city.
+            </>
+          ),
         }),
         newMessage({
           ID: 'IntroNode0-1',
+          text: <>Near the road is a cloaked figure with a skull mask.</>,
+        }),
+        newMessage({
+          ID: 'IntroNode0-2',
           context: newContext<{}>({
             sourceID: '???',
           }),

@@ -9,7 +9,7 @@ import {
 } from '../ui/card'
 import { Button } from '../ui/button'
 import { useGameState } from '@/hooks/useGameState'
-import { useEffect, useState, type ComponentProps } from 'react'
+import { useEffect, useState, type ComponentProps, type ReactNode } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { ActionUniqueTargetButton } from './action-unique-target-button'
 import { ActionRepeatTargetButton } from './action-repeat-target-button'
@@ -209,6 +209,7 @@ function ActionContextBuilder({
   action,
   sourceID,
   context,
+  contextTitle,
   onContextChange,
   onContextConfirm,
   ...props
@@ -217,6 +218,7 @@ function ActionContextBuilder({
   action: SAction
   sourceID: string | undefined
   context: DeltaContext
+  contextTitle?: ReactNode
   onContextChange: (context: DeltaContext) => void
   onContextConfirm: (context: DeltaContext) => void
 }) {
@@ -246,7 +248,7 @@ function ActionContextBuilder({
     >
       <div className="gap-0 text-center text-shadow-lg rounded-xs bg-background border ring ring-black py-2 self-center px-6 w-fit">
         <CardTitle className="text-xl inline">
-          Select Targets for {action.name}
+          {contextTitle || <>Select Targets for {action.name}</>}
         </CardTitle>
         <CardDescription className="text-xs">
           {max > 0 ? (

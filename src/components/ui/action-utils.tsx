@@ -49,7 +49,7 @@ function ActionDescription({
   return (
     <div
       data-slot="action-description"
-      className={cn('text-sm text-muted-foreground p-2', className)}
+      className={cn('text-sm text-muted-foreground p-2 pt-0', className)}
       {...props}
     />
   )
