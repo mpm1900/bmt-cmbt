@@ -24,7 +24,7 @@ function DialogNode() {
   if (!activeNode || !player) return null
 
   return (
-    <CardContent className="flex flex-1 flex-col gap-2 justify-between">
+    <CardContent className="flex flex-1 flex-col gap-2 justify-between z-0">
       <DialogHistoryLog />
       <div className="flex flex-1 flex-col justify-between">
         <DialogActiveMessages messages={activeNode.messages(state, context)} />

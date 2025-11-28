@@ -143,7 +143,6 @@ export function TargetingLines({
   const state = useGameState((s) => s.state)
   const player = state.players.find((p) => p.ID === current.context.playerID)!
   const playerRefs = activeRefs[current.context.playerID]
-  console.log('active refs', activeRefs)
 
   const context = convertPositionToTargetContext(state, current.context)
   sourceRef =

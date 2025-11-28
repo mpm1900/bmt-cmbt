@@ -117,23 +117,20 @@ const IntroNode0: SDialogNode = {
         }),
         newMessage({
           ID: 'IntroNode0-2',
-          context: newContext<{}>({
+          context: newContext({
             sourceID: skullMan.ID,
           }),
           type: 'dialogue',
-          text: (
-            <div className="inline">
-              "Welcome to the game! This is a test dialog message. What would
-              you like to do first?"
-            </div>
-          ),
+          text: <div className="inline">"Hello there."</div>,
         }),
       ]
     }
     return [
       newMessage({
         ID: 'IntroNode0-0.b',
-        text: 'Welcome back to this node.',
+        context: newContext({ sourceID: skullMan.ID }),
+        type: 'dialogue',
+        text: '"What can I do for you all?"',
       }),
     ]
   },
@@ -199,7 +196,7 @@ const IntroNode0: SDialogNode = {
     },
     createSourceDialogOption(
       {
-        text: <span>"Show me your items."</span>,
+        text: <span>"What do you have for sale?"</span>,
         icons: (
           <>
             <GiCreditsCurrency />
@@ -383,7 +380,9 @@ const IntroNode2: SDialogNode = {
   messages: () => [
     newMessage({
       ID: 'IntroNode2-0',
-      text: 'Welcome to the shop!',
+      type: 'dialogue',
+      context: newContext({ sourceID: skullMan.ID }),
+      text: '"Nothing much. I\'m just a mere watcher of new arrivals. Have a look."',
     }),
   ],
   options: (_, context) => [

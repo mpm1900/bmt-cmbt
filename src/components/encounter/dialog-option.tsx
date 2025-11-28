@@ -22,7 +22,7 @@ function DialogOptionContent({
   return (
     <InputGroup
       className={cn(
-        'h-8 border-none rounded-sm',
+        'h-8 border-none rounded-xs dark:bg-input/60',
         { 'dark:hover:bg-input': !disabled },
         className
       )}

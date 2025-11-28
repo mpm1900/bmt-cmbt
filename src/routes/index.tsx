@@ -22,7 +22,13 @@ function RouteComponent() {
   const ai = players.find((p) => p.ID !== playerID)
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center overflow-hidden relative">
+    <div
+      className="h-screen w-screen flex flex-col items-center overflow-hidden relative"
+      style={{
+        background:
+          'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 0.8) 100%)',
+      }}
+    >
       <ViewHeader />
       <div className="flex-1 flex flex-col justify-between relative z-10">
         <EncounterActors encounter={ai} current={current} />

@@ -9,6 +9,7 @@ import { hasNext } from '@/game/next'
 import { AnimatePresence } from 'motion/react'
 import { Button } from '../ui/button'
 import { BannerTitle } from '../ui/banner-title'
+import bg from '@/assets/Devastated Landscape1.png'
 
 function EncounterView() {
   const { state } = useGameState((s) => s)
@@ -25,7 +26,23 @@ function EncounterView() {
       <EncounterController />
       <ViewLayoutContent>
         <AnimatePresence mode="wait" onExitComplete={() => {}}>
-          <DialogCard key={state.encounter.ID} className="gap-0 relative">
+          <DialogCard
+            key={state.encounter.ID}
+            className="gap-0 relative"
+            style={{
+              imageRendering: 'pixelated',
+              backgroundImage: `url(${bg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'bottom',
+            }}
+          >
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                background:
+                  'linear-gradient(0deg,rgba(0, 0, 0, 0.95) 33%, rgba(0, 0, 0, 0.99) 100%)',
+              }}
+            />
             <div className="flex items-start justify-between">
               <BannerTitle>{state.encounter.name}</BannerTitle>
               <CardAction className="absolute top-2 right-2 z-30">

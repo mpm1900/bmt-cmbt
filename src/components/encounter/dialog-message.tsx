@@ -1,4 +1,5 @@
 import { findActor } from '@/game/access'
+import { Actor } from '@/game/data/messages'
 import type { Message } from '@/game/types/message'
 import { useGameState } from '@/hooks/useGameState'
 import { cn } from '@/lib/utils'
@@ -13,7 +14,7 @@ function ActiveMessageSource({
   const state = useGameState((s) => s.state)
   const actor = findActor(state, sourceID)
   if (!actor) return <span className="font-bold pr-2">???:</span>
-  if (textOnly) return <span className="font-bold pr-2">{actor.name}:</span>
+  if (textOnly) return <span className="pr-2">{Actor(actor)}:</span>
   return (
     <div className={cn('size-10 float-left mr-3 relative')}>
       <img
