@@ -45,7 +45,7 @@ function DialogHistoryLog({
                 paddingLeft: message.depth * 16,
               }}
             >
-              <DialogMessage message={message} />
+              <DialogMessage message={message} textOnly />
             </li>
           ))}
         <div ref={messageLogRef} />

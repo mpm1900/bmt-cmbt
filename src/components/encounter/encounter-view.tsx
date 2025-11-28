@@ -4,10 +4,11 @@ import { ViewLayoutContent } from '../view-layout'
 import { DialogNode } from './dialog-node'
 import { EncounterController } from './encounter-controller'
 import { DialogCard } from './dialog-card'
-import { CardAction, CardTitle } from '../ui/card'
+import { CardAction } from '../ui/card'
 import { hasNext } from '@/game/next'
 import { AnimatePresence } from 'motion/react'
 import { Button } from '../ui/button'
+import { BannerTitle } from '../ui/banner-title'
 
 function EncounterView() {
   const { state } = useGameState((s) => s)
@@ -26,12 +27,7 @@ function EncounterView() {
         <AnimatePresence mode="wait" onExitComplete={() => {}}>
           <DialogCard key={state.encounter.ID} className="gap-0 relative">
             <div className="flex items-start justify-between">
-              <div className="h-10 -mt-6 -ml-4 relative">
-                <div className="triangle border-t-yellow-950/50 absolute -bottom-4 left-0 z-0"></div>
-                <CardTitle className="px-8 title text-2xl bg-yellow-950 border border-yellow-900/50 leading-10 rounded-xs relative text-shadow-xl shadow-xl z-10 ring ring-black">
-                  {state.encounter.name}
-                </CardTitle>
-              </div>
+              <BannerTitle>{state.encounter.name}</BannerTitle>
               <CardAction className="absolute top-2 right-2 z-30">
                 {pastEncounters.length > 0 && (
                   <Button variant="ghost" disabled={running}>

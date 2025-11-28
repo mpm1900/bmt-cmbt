@@ -12,7 +12,10 @@ import { newContext } from '@/game/mutations'
 
 const playerID = playerStore.getState().playerID
 
-export type ActorRefs = Record<string, React.RefObject<HTMLDivElement>[]>
+export type ActorRefs = Record<
+  string,
+  Record<number, React.RefObject<HTMLDivElement>>
+>
 
 const GameUIViews = ['actions', 'items', 'switch', 'dialog'] as const
 type GameUIState = {
@@ -57,15 +60,14 @@ const gameUIStore = createStore<GameUIStore>((set) => {
           return {
             activeRefs: {
               ...state.activeRefs,
-              [playerID]: [ref],
+              [playerID]: { [index]: ref },
             },
           }
         }
-        refs[index] = ref
         return {
           activeRefs: {
             ...state.activeRefs,
-            [playerID]: refs,
+            [playerID]: { ...refs, [index]: ref },
           },
         }
       })

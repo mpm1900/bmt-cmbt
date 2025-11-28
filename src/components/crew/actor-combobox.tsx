@@ -18,7 +18,7 @@ function ActorCombobox({
 }) {
   return (
     <InputGroup
-      className={cn('group', {
+      className={cn('group ring ring-black', {
         'bg-input! border-ring cursor-default [&_*]:cursor-default': active,
       })}
       onClick={() => onSelect()}

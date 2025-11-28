@@ -8,6 +8,7 @@ import woman_54 from '@/assets/portraits/woman_54.png'
 import woman_8 from '@/assets/portraits/woman_8.png'
 import rac from '@/assets/portraits/rac.png'
 import man from '@/assets/portraits/man.png'
+import skull from '@/assets/portraits/Magic Heroes by Captainskeleto 2_6.png'
 
 export const portraits: Record<string, string> = {
   lion,
@@ -20,4 +21,5 @@ export const portraits: Record<string, string> = {
   girl_11,
   rac,
   man,
-}
+  skull,
+} as const

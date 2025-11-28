@@ -31,7 +31,6 @@ function getTriggers(state: State): Array<STrigger> {
       }),
     }))
   )
-  console.log('AE', actorEffects)
   const effects = [
     ...state.effects,
     ...(state.combat?.effects ?? []),

@@ -6,6 +6,7 @@ import {
 } from '@/game/encounter'
 import { getMissingActorCount } from '@/game/player'
 import {
+  addPlayerResolver,
   damagesResolver,
   mutatePlayerResolver,
   navigateEncounterResolver,
@@ -37,11 +38,13 @@ import { TwoEncounter } from './two'
 import { faker } from '@faker-js/faker'
 import { withConsumable } from '@/game/item'
 import { newContext } from '@/game/mutations'
+import { portraits } from '@/renderers/portraits'
 
 const playerID = playerStore.getState().playerID
+const IntroEncounterID = v4()
 
 const Criminal = (_index: number, aiID: string) =>
-  createActor(faker.person.firstName(), aiID, '', {
+  createActor(faker.person.firstName(), aiID, portraits.skull, {
     accuracy: 0,
     strength: 100,
     evasion: 0,
@@ -52,9 +55,20 @@ const Criminal = (_index: number, aiID: string) =>
   })
 
 const IntroNode0ID = v4()
+const skullMan = createActor('???', IntroEncounterID, portraits.skull, {
+  accuracy: 0,
+  strength: 100,
+  evasion: 0,
+  health: 100,
+  insight: 100,
+  faith: 100,
+  speed: 100,
+})
+const criminal2 = Criminal(2, IntroEncounterID)
+const criminal3 = Criminal(3, IntroEncounterID)
 const encounterPlayer: SPlayer = {
-  ID: IntroNode0ID,
-  activeActorIDs: [null, null, null],
+  ID: IntroEncounterID,
+  activeActorIDs: [null, null, skullMan.ID],
   items: [
     withConsumable(
       {
@@ -73,14 +87,16 @@ const encounterPlayer: SPlayer = {
   ],
   credits: 710,
 }
-const criminal1 = Criminal(1, encounterPlayer.ID)
-const criminal2 = Criminal(2, encounterPlayer.ID)
-const criminal3 = Criminal(3, encounterPlayer.ID)
 
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
   type: 'options',
-  checks: () => [],
+  checks: () => [
+    {
+      chance: 100,
+      success: () => [addPlayerResolver(encounterPlayer, [skullMan])],
+    },
+  ],
   messages: (state) => {
     const count = getNodeCount(state, IntroNode0.ID)
     if (count <= 1) {
@@ -102,7 +118,7 @@ const IntroNode0: SDialogNode = {
         newMessage({
           ID: 'IntroNode0-2',
           context: newContext<{}>({
-            sourceID: '???',
+            sourceID: skullMan.ID,
           }),
           type: 'dialogue',
           text: (
@@ -133,14 +149,11 @@ const IntroNode0: SDialogNode = {
       ),
       context,
       action: InlineMutation(() => [
-        /* state.actors
-          .filter((a) => a.playerID === playerID && isActive(state, a.ID))
-          .map((a) => deactivateActorResolver(playerID, a.ID, context)), */
         startCombatResolver(
           newCombat({ exitNodeID: IntroNode1.ID }),
           {
             players: [encounterPlayer],
-            actors: [criminal1, criminal2, criminal3],
+            actors: [skullMan, criminal2, criminal3],
           },
           {
             activeSize: 3,
@@ -148,16 +161,6 @@ const IntroNode0: SDialogNode = {
         ),
       ]),
     },
-    /*
-    {
-      ID: 'IntroNode-AddPlayer',
-      disable: 'hide',
-      text: <em>Add Player</em>,
-      icons: <></>,
-      context,
-      action: InlineMutation(() => [addPlayerResolver(encounterPlayer)]),
-    },
-    */
     {
       ID: v4(),
       disable: 'hide',
@@ -302,7 +305,6 @@ const IntroNode1: SDialogNode = {
         ]),
       ],
       failure: (roll) => [
-        //addPlayerResolver(encounterPlayer),
         pushMessagesResolver(context, [
           newMessage({
             text: (
@@ -319,7 +321,6 @@ const IntroNode1: SDialogNode = {
         ]),
         ...state.actors
           .filter((a) => {
-            console.log(context)
             return a.playerID === context.playerID
           })
           .map((a) =>
@@ -442,7 +443,7 @@ const IntroNode2: SDialogNode = {
 // const IntroNode3: SDialogNode = {}
 
 const IntroEncounter: SEncounter = {
-  ID: v4(),
+  ID: IntroEncounterID,
   name: 'Introductions',
   persist: false,
   startNodeID: IntroNode0.ID,

@@ -176,7 +176,7 @@ const gameStateStore = createStore<GameStateStore>((set) => ({
   },
   deleteCombat: () => {
     set(({ state }) => ({
-      state: endCombat(state, state.encounter.activeNodeID!),
+      state: endCombat(state, state.encounter.ID!),
     }))
   },
 }))

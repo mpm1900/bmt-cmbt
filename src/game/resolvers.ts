@@ -431,7 +431,7 @@ function nextTurnResolver(context: DeltaContext): SMutation {
   }
 }
 
-function addPlayerResolver(player: SPlayer): SMutation {
+function addPlayerResolver(player: SPlayer, actors: SActor[]): SMutation {
   return {
     ID: v4(),
     context: newContext({}),
@@ -441,6 +441,7 @@ function addPlayerResolver(player: SPlayer): SMutation {
         return {
           ...state,
           players: [...state.players, player],
+          actors: [...state.actors, ...actors],
         }
       },
     },
@@ -563,6 +564,13 @@ function navigateEncounterResolver(
     context,
     delta: {
       apply: (state) => {
+        console.log(state)
+        state = {
+          ...state,
+          players: state.players.filter((p) => p.ID !== state.encounter.ID),
+          actors: state.actors.filter((a) => a.ID !== state.encounter.ID),
+        }
+        console.log(state)
         if (state.encounter.persist) {
           state = {
             ...state,

@@ -82,18 +82,26 @@ function TargetinLine({
   const targetPlayer = state.players.find((p) => p.ID === target.playerID)!
   const activeRefs = useGameUI((s) => s.activeRefs)
   const playerRefs = activeRefs[targetPlayer.ID]
-  const targetRef = playerRefs.find(
+  const targetRef = Object.values(playerRefs).find(
     (_, index) => index === targetPlayer.activeActorIDs.indexOf(targetID)
   )
 
-  if (!targetRef || !targetRef.current || !sourceRef || !sourceRef.current)
+  if (!targetRef || !targetRef.current || !sourceRef || !sourceRef.current) {
+    console.log('missing ref', targetID, playerRefs)
     return null
+  }
 
   const targetPos = targetRef.current.getBoundingClientRect()
-  if (!targetPos) return null
+  if (!targetPos) {
+    console.log('no target position')
+    return null
+  }
 
   const targetActor = getActor(state, targetID)
-  if (!targetActor) return null
+  if (!targetActor) {
+    console.log('no target actor')
+    return null
+  }
 
   const sourceIsPlayer = sourceActor.playerID === playerID
   const targetIsPlayer = targetActor.playerID === playerID
@@ -135,11 +143,12 @@ export function TargetingLines({
   const state = useGameState((s) => s.state)
   const player = state.players.find((p) => p.ID === current.context.playerID)!
   const playerRefs = activeRefs[current.context.playerID]
+  console.log('active refs', activeRefs)
 
   const context = convertPositionToTargetContext(state, current.context)
   sourceRef =
     sourceRef ??
-    playerRefs.find(
+    Object.values(playerRefs).find(
       (_, index) =>
         index === player.activeActorIDs.indexOf(current.context.sourceID)
     )

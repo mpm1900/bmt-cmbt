@@ -359,7 +359,7 @@ function validateState(state: State): [State, boolean] {
           }),
           {
             ...ActivateX(count),
-            priority: player.ID === state.encounter.activeNodeID ? 1 : 0,
+            priority: player.ID === state.encounter.ID ? 1 : 0,
           }
         )
 

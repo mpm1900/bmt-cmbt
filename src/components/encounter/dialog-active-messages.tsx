@@ -6,7 +6,11 @@ function DialogActiveMessages({ messages }: { messages: Message[] }) {
     <ul className="space-y-2 border-t pt-2">
       {messages.map((message) => (
         <li key={message.ID} className="max-w-4/5 leading-1.5">
-          <DialogMessage className="text-sm" message={message} />
+          <DialogMessage
+            className="text-sm"
+            message={message}
+            textOnly={false}
+          />
         </li>
       ))}
     </ul>

@@ -131,9 +131,7 @@ function nextTurnPhase(state: State): State {
   }
 
   if (phase === 'planning') {
-    const player = state.players.find(
-      (p) => p.ID === state.encounter.activeNodeID
-    )!
+    const player = state.players.find((p) => p.ID === state.encounter.ID)!
     player.activeActorIDs.forEach((id) => {
       if (!id) return
       const source = findActor(state, id)
@@ -180,8 +178,7 @@ function nextAiPrompt(state: State): State {
   if (!state.promptQueue[0]) return state
 
   const { action, context } = state.promptQueue[0]
-  if (context.playerID !== state.encounter.activeNodeID || !action.ai)
-    return state
+  if (context.playerID !== state.encounter.ID || !action.ai) return state
   const contexts = getSortedAIContexts(action, state, context)
 
   state = resolvePrompt(state, contexts[0][0])
@@ -227,7 +224,7 @@ function hasNext(state: State): boolean {
     state.mutationQueue.length > 0 ||
     state.triggerQueue.length > 0 ||
     (state.actionQueue.length > 0 && state.promptQueue.length === 0) ||
-    state.promptQueue[0]?.context.playerID === state.encounter.activeNodeID
+    state.promptQueue[0]?.context.playerID === state.encounter.ID
   )
 }
 
