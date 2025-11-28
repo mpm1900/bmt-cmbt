@@ -58,7 +58,6 @@ function Actor({
 
   return (
     <motion.div
-      ref={ref}
       initial={{ y: '100%', opacity: 0 }}
       animate={{ y: '0%', opacity: 1 }}
       exit={{ y: '100%', opacity: 0 }}
@@ -91,7 +90,10 @@ function Actor({
         </div>
       </div>
       {state.combat?.phase === 'planning' && (
-        <ActorStatus actor={actor} className="absolute top-8 right-2" />
+        <ActorStatus
+          actor={actor}
+          className="absolute top-8 right-2 opacity-100 z-10"
+        />
       )}
       <ActorBg
         variant={targeted ? 'targeted' : active ? 'ally-active' : 'ally'}
@@ -101,23 +103,24 @@ function Actor({
           'opacity-50': disabled && !active,
         })}
       >
-        <div className="absolute -left-8 -top-3 size-25 overflow-hidden z-0">
+        <div
+          className="absolute -left-8 -top-3 size-25 overflow-hidden z-0"
+          ref={ref}
+        >
           <img src={portraits[actor.image]} className="actor-portrait" />
         </div>
         <Badge
-          className="absolute -left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black"
+          className="absolute -left-2 -bottom-2 bg-slate-900 border-slate-700 rounded-xs ring ring-black title text-xl h-6"
           variant="outline"
         >
-          9999
+          <div className="-mt-1.5">Lv. 1</div>
         </Badge>
         <div className="flex-1 z-10">
           <ItemContent className="gap-0">
             <ItemTitle
               className="text-xl title pl-2"
               style={{
-                textShadow: !active
-                  ? '1px 1px 1px black'
-                  : '-1px 1px 1px rgba(255,255,255,0.8)',
+                textShadow: !active ? '1px 1px 1px black' : undefined,
               }}
             >
               {actor.name}
@@ -189,7 +192,7 @@ function EnemyActor({
     >
       <ActorBg
         variant={targeted ? 'targeted' : active ? 'enemy-active' : 'enemy'}
-        className="h-14 py-1 px-2 pointer-events-none border border-stone-950"
+        className="h-14 py-1 px-2 pointer-events-none border border-stone-950 rounded-xs"
       >
         <ItemContent className="gap-0">
           <ItemTitle

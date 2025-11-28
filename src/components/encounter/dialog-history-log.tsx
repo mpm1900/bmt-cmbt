@@ -22,11 +22,6 @@ function DialogHistoryLog({
   )
   const activeMessages =
     activeNode?.messages(state, context).map((m) => m.ID) ?? []
-  const firstMessages = messageLog.slice(0, activeMessages.length * -1)
-  const lastMessages = messageLog.slice(activeMessages.length * -1)
-  const showLastMessages = !lastMessages.every((m) =>
-    activeMessages.includes(m.ID)
-  )
 
   const messageLogRef = useRef<HTMLDivElement>(null)
 
@@ -39,22 +34,11 @@ function DialogHistoryLog({
   return (
     <ScrollArea className={cn('max-h-50 px-3', className)} {...props}>
       <ul className="text-xs text-muted-foreground pt-2">
-        {firstMessages.map((message, i) => (
-          <li
-            key={i + message.ID}
-            className="hover:bg-muted/50"
-            style={{
-              opacity: message.depth > 0 ? 0.7 : 1,
-              paddingLeft: message.depth * 16,
-            }}
-          >
-            <DialogMessage message={message} />
-          </li>
-        ))}
-        {showLastMessages &&
-          lastMessages.map((message) => (
+        {messageLog
+          .filter((m) => !activeMessages.includes(m.ID))
+          .map((message, i) => (
             <li
-              key={message.ID}
+              key={i + message.ID}
               className="hover:bg-muted/50"
               style={{
                 opacity: message.depth > 0 ? 0.7 : 1,

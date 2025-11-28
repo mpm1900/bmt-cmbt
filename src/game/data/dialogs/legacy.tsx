@@ -80,14 +80,69 @@ const criminal3 = Criminal(3, encounterPlayer.ID)
 const IntroNode0: SDialogNode = {
   ID: IntroNode0ID,
   type: 'options',
-  checks: () => [],
+  checks: (state, context) => [
+    {
+      chance: 50,
+      success: (roll) => [
+        //addPlayerResolver(encounterPlayer),
+        pushMessagesResolver(context, [
+          newMessage({
+            text: (
+              <span className="text-green-300">
+                [random roll: success!]{' '}
+                <span className="opacity-50">
+                  (50{'>'}
+                  {roll.toFixed(0)})
+                </span>
+              </span>
+            ),
+          }),
+          newMessage({ text: `Your party avoided the trap!` }),
+        ]),
+      ],
+      failure: (roll) => [
+        //addPlayerResolver(encounterPlayer),
+        pushMessagesResolver(context, [
+          newMessage({
+            text: (
+              <span className="text-red-300">
+                [random roll: failure!]{' '}
+                <span className="opacity-50">
+                  (50{'>'}
+                  {roll.toFixed(0)})
+                </span>
+              </span>
+            ),
+          }),
+          newMessage({ text: `Your party triggered a shock trap!` }),
+        ]),
+        ...state.actors
+          .filter((a) => a.playerID === context.playerID)
+          .map((a) =>
+            damagesResolver(
+              { ...context, targetIDs: [a.ID] },
+              [
+                {
+                  type: 'percentage',
+                  percentage: 0.125,
+                  recoil: 0,
+                  lifesteal: 0,
+                },
+              ],
+              [],
+              0
+            )
+          ),
+      ],
+    },
+  ],
   messages: (state) => {
     const count = getNodeCount(state, IntroNode0.ID)
     if (count <= 1) {
       return [
         newMessage({
           ID: 'IntroNode0-0',
-          text: 'You party has traveled far to this land. Each of their own motivations. You all step out of the carriage that brought you here, looking out at the foggy woods that serve as the outskrits of the city.',
+          text: 'You party has traveled far to this land. Each of their own motivations. You all step out of the carriage that brought you here, looking out at the foody woods that serve as the outskrits of the city.',
         }),
         newMessage({
           ID: 'IntroNode0-1',
@@ -271,62 +326,7 @@ const IntroNode0: SDialogNode = {
 const IntroNode1: SDialogNode = {
   ID: v4(),
   type: 'options',
-  checks: (state, context) => [
-    {
-      chance: 50,
-      success: (roll) => [
-        //addPlayerResolver(encounterPlayer),
-        pushMessagesResolver(context, [
-          newMessage({
-            text: (
-              <span className="text-green-300">
-                [random roll: success!]{' '}
-                <span className="opacity-50">
-                  (50{'>'}
-                  {roll.toFixed(0)})
-                </span>
-              </span>
-            ),
-          }),
-          newMessage({ text: `Your party avoided the trap!` }),
-        ]),
-      ],
-      failure: (roll) => [
-        //addPlayerResolver(encounterPlayer),
-        pushMessagesResolver(context, [
-          newMessage({
-            text: (
-              <span className="text-red-300">
-                [random roll: failure!]{' '}
-                <span className="opacity-50">
-                  (50{'>'}
-                  {roll.toFixed(0)})
-                </span>
-              </span>
-            ),
-          }),
-          newMessage({ text: `Your party triggered a shock trap!` }),
-        ]),
-        ...state.actors
-          .filter((a) => a.playerID === context.playerID)
-          .map((a) =>
-            damagesResolver(
-              { ...context, targetIDs: [a.ID] },
-              [
-                {
-                  type: 'percentage',
-                  percentage: 0.125,
-                  recoil: 0,
-                  lifesteal: 0,
-                },
-              ],
-              [],
-              0
-            )
-          ),
-      ],
-    },
-  ],
+  checks: () => [],
   messages: () => [
     newMessage({
       ID: 'IntroNode1-0',
@@ -425,8 +425,6 @@ const IntroNode2: SDialogNode = {
   ],
   credits: 100,
 }
-
-// const IntroNode3: SDialogNode = {}
 
 const IntroEncounter: SEncounter = {
   ID: v4(),

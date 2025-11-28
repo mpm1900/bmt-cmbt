@@ -39,7 +39,12 @@ function ActionCards({
         const disabled = !validateAction(action, state, context)
 
         return (
-          <motion.div
+          <ActionCard
+            context={context}
+            action={action}
+            active={action.ID === activeActionID}
+            disabled={disabled}
+            onClick={() => onActiveActionIDChange(action.ID)}
             key={action.ID}
             style={{
               transformOrigin: 'bottom center',
@@ -51,7 +56,7 @@ function ActionCards({
               rotate: active ? rotation : rotation,
               scale: active ? 1.1 : 1,
             }}
-            transition={{ ease: 'easeOut', duration: 0.2 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             whileHover={
               disabled
                 ? {}
@@ -60,17 +65,10 @@ function ActionCards({
                     y: translateY,
                     rotate: 0,
                     zIndex: 100,
+                    translateY: -40,
                   }
             }
-          >
-            <ActionCard
-              context={context}
-              action={action}
-              active={action.ID === activeActionID}
-              disabled={disabled}
-              onClick={() => onActiveActionIDChange(action.ID)}
-            />
-          </motion.div>
+          />
         )
       })}
     </motion.div>

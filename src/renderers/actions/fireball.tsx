@@ -37,7 +37,7 @@ const FireballRenderer: ActionRenderer = {
         Deals <ActionLabel>{FireballDamage.power}</ActionLabel>{' '}
         <ActionLabel variant="fire">fire</ActionLabel> damage to up to{' '}
         <ActionLabel>{FireballTargetCount}</ActionLabel> target enemies simul.{' '}
-        <ActionCooldown>{FireballCooldown - 1} turn cooldown.</ActionCooldown>
+        <ActionCooldown>{FireballCooldown - 1}-turn cooldown.</ActionCooldown>
       </ActionDescription>
     </ActionBody>
   ),

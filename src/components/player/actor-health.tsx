@@ -18,7 +18,7 @@ function ActorHealth({
   return (
     <Gauge value={value}>
       {showHealthNumbers && (
-        <div className="absolute top-0.5 right-1 z-10 leading-4 title text-lg text-foreground text-shadow-md">
+        <div className="absolute top-0.5 right-1 z-10 leading-4 title text-xl text-foreground text-shadow-md">
           {children || (
             <>
               {Math.max(health, 0)}/{maxHealth}

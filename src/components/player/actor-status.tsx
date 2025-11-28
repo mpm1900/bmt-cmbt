@@ -1,6 +1,6 @@
 import type { SActor } from '@/game/state'
 import { useGameState } from '@/hooks/useGameState'
-import { XIcon } from 'lucide-react'
+import { Undo2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import type { ComponentProps } from 'react'
 
@@ -21,7 +21,7 @@ function ActorStatus({
       onClick={() => cancel(queuedAction.context.sourceID)}
       {...props}
     >
-      <XIcon className="size-4" />
+      <Undo2 className="size-4" />
     </Button>
   )
 }

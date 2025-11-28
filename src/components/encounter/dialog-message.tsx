@@ -13,12 +13,11 @@ function DialogMessage({
   className,
   message,
   ...props
-}: React.ComponentProps<'div'> & { message: Message }) {
+}: React.ComponentProps<'span'> & { message: Message }) {
   const { context } = message
   return (
-    <div
+    <span
       className={cn(
-        'inline',
         {
           'text-muted-foreground': message.type === 'narration',
           'text-foreground': message.type === 'dialogue',
@@ -31,7 +30,7 @@ function DialogMessage({
         <ActiveMessageSourceName sourceID={context.sourceID} />
       )}
       {message.text}
-    </div>
+    </span>
   )
 }
 

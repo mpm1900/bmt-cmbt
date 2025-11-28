@@ -3,6 +3,68 @@ import { useGameUI } from '@/hooks/useGameUI'
 import { convertPositionToTargetContext, getActor } from '@/game/access'
 import type { SActionItem, SActor, State } from '@/game/state'
 import { usePlayerID } from '@/hooks/usePlayer'
+import { cn } from '@/lib/utils'
+
+type Point = { x: number; y: number }
+function Curve({
+  start,
+  end,
+  source,
+  target,
+  ...props
+}: Omit<React.ComponentProps<'path'>, 'end'> & {
+  start: Point
+  end: Point
+  source: 'ally' | 'enemy'
+  target: 'ally' | 'enemy'
+}) {
+  let curvePath: string
+  const dx = end.x - start.x
+  const dy = end.y - start.y
+  const distance = Math.sqrt(dx * dx + dy * dy)
+  const areAllies = source === 'ally' && target === 'ally'
+  let arcHeight = areAllies
+    ? distance / 4
+    : (distance / 3) * (target === 'ally' ? -1 : 1)
+
+  if (distance === 0) return null
+
+  if (areAllies) {
+    const normalX = -dy / (distance / 2)
+    const normalY = dx / (distance / 2)
+
+    const cp1x = start.x + normalX * arcHeight
+    const cp1y = start.y + normalY * arcHeight - 80
+    const cp2x = end.x + normalX * arcHeight
+    const cp2y = end.y + normalY * arcHeight
+
+    curvePath = `M ${start.x},${start.y} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${end.x},${end.y}`
+  } else {
+    curvePath = `M ${start.x},${start.y} C ${start.x},${
+      start.y - arcHeight
+    } ${end.x},${end.y + arcHeight} ${end.x},${end.y}`
+  }
+
+  return (
+    <g>
+      <path
+        d={curvePath}
+        strokeWidth="2"
+        fill="none"
+        strokeDasharray="5, 5"
+        {...props}
+      >
+        <animate
+          attributeName="stroke-dashoffset"
+          from="1000"
+          to="0"
+          dur="15s"
+          repeatCount="indefinite"
+        />
+      </path>
+    </g>
+  )
+}
 
 function TargetinLine({
   sourceActor,
@@ -38,40 +100,27 @@ function TargetinLine({
   const sourcePosition = sourceRef.current!.getBoundingClientRect()
   const startX = sourcePosition.x + sourcePosition.width / 2
   const startY = sourceIsPlayer
-    ? sourcePosition.y + 20
+    ? sourcePosition.y
     : sourcePosition.y + sourcePosition.height * 1
   const endX = targetPos.x + targetPos.width / 2
   const endY = targetIsPlayer
-    ? targetPos.y + 20
+    ? targetPos.y + 8
     : targetPos.y + targetPos.height * 1
 
-  const dx = endX - startX
-  const dy = endY - startY
-  const distance = Math.sqrt(dx * dx + dy * dy)
-  const arcHeight = (distance / 3) * (targetIsPlayer ? -1 : 1)
-
-  const sCurvePath = `M ${startX},${startY} C ${startX},${
-    startY - arcHeight
-  } ${endX},${endY + arcHeight} ${endX},${endY}`
-
   return (
-    <g key={targetID}>
-      <path
-        d={sCurvePath}
+    <svg
+      className={cn('absolute inset-0 pointer-events-none h-screen w-screen', {
+        'z-10': sourceActor.playerID === targetActor.playerID,
+      })}
+    >
+      <Curve
+        start={{ x: startX, y: startY }}
+        end={{ x: endX, y: endY }}
         stroke={sourceIsPlayer ? 'var(--color-ally)' : 'var(--color-enemy)'}
-        strokeWidth="2"
-        fill="none"
-        strokeDasharray="5, 5"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          from="1000"
-          to="0"
-          dur="15s"
-          repeatCount="indefinite"
-        />
-      </path>
-    </g>
+        source={sourceActor.playerID === playerID ? 'ally' : 'enemy'}
+        target={targetActor.playerID === playerID ? 'ally' : 'enemy'}
+      />
+    </svg>
   )
 }
 
@@ -100,7 +149,7 @@ export function TargetingLines({
   if (!sourceActor) return null
 
   return (
-    <svg className="absolute inset-0 pointer-events-none h-screen w-screen z-0">
+    <>
       {context.targetIDs.map(
         (targetID, index) =>
           targetID && (
@@ -113,6 +162,6 @@ export function TargetingLines({
             />
           )
       )}
-    </svg>
+    </>
   )
 }

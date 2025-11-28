@@ -111,7 +111,12 @@ function Player({
                         ) : (
                           <TbHexagonOff />
                         )}
-                        {a.name}
+                        <div className="text-left">
+                          <div className="-mb-1 font-semibold">{a.name}</div>
+                          <div className="-mt-1 text-foreground/40 text-xs">
+                            Class
+                          </div>
+                        </div>
                       </Button>
                     </DialogTrigger>
                     <ActorDialog actor={a} />

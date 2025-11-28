@@ -3,9 +3,9 @@ import { DialogMessage } from './dialog-message'
 
 function DialogActiveMessages({ messages }: { messages: Message[] }) {
   return (
-    <ul>
+    <ul className="space-y-2">
       {messages.map((message) => (
-        <li key={message.ID}>
+        <li key={message.ID} className="max-w-3/4 leading-1.5">
           <DialogMessage className="text-sm" message={message} />
         </li>
       ))}

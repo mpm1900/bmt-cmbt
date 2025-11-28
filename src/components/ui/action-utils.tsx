@@ -6,9 +6,12 @@ function ActionHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       {...props}
       className={cn(
-        'inline-flex items-center gap-2 title text-xl px-2 z-10 text-shadow-lg rounded-t-xs',
+        'inline-flex items-center gap-2 title text-xl px-2 z-10 text-shadow-lg rounded-t-sm',
         'bg-white/80 text-neutral-900 ring ring-white/70'
       )}
+      style={{
+        boxShadow: '0 1px 5px rgba(0,0,0,0.7)',
+      }}
     />
   )
 }

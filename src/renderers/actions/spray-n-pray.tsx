@@ -14,7 +14,6 @@ import {
   ActionCooldown,
   ActionDescription,
   ActionLabel,
-  ActionLore,
   ActionTitle,
 } from '@/components/ui/action-utils'
 
@@ -34,10 +33,7 @@ const SprayNPrayRenderer: ActionRenderer = {
         Deals <ActionLabel>{SprayNPrayDamage.power}</ActionLabel>{' '}
         <ActionLabel>{SprayNPrayDamage.element}</ActionLabel> damage to any
         other target <ActionLabel>{SPrayNPrayCount}</ActionLabel> times.{' '}
-        <ActionCooldown>{SprayNPrayCooldown - 1} turn cooldown.</ActionCooldown>
-        <ActionLore>
-          "here is where I could put some lore, if I had some."
-        </ActionLore>
+        <ActionCooldown>{SprayNPrayCooldown - 1}-turn cooldown.</ActionCooldown>
       </ActionDescription>
     </ActionBody>
   ),
