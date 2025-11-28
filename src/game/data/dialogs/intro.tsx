@@ -318,7 +318,10 @@ const IntroNode1: SDialogNode = {
           newMessage({ text: `Your party triggered a shock trap!` }),
         ]),
         ...state.actors
-          .filter((a) => a.playerID === context.playerID)
+          .filter((a) => {
+            console.log(context)
+            return a.playerID === context.playerID
+          })
           .map((a) =>
             damagesResolver(
               { ...context, targetIDs: [a.ID] },

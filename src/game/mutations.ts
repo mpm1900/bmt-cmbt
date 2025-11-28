@@ -466,7 +466,9 @@ function endCombat(state: State, encounterID: string): State {
     combat: undefined,
     actionQueue: [],
     triggerQueue: [],
-    mutationQueue: [navigateDialogResolver(exitNodeID, newContext({}))],
+    mutationQueue: [
+      navigateDialogResolver(exitNodeID, newContext({ playerID })),
+    ],
     promptQueue: [],
   }
 
