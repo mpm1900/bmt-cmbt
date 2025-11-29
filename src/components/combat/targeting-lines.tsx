@@ -49,7 +49,7 @@ function Curve({
     <g>
       <path
         d={curvePath}
-        strokeWidth="3"
+        strokeWidth="2"
         fill="none"
         strokeDasharray="5, 5"
         {...props}
@@ -108,12 +108,12 @@ function TargetinLine({
   const sourcePosition = sourceRef.current!.getBoundingClientRect()
   const startX = sourcePosition.x + sourcePosition.width / 2
   const startY = sourceIsPlayer
-    ? sourcePosition.y + 8
+    ? sourcePosition.y + 4
     : sourcePosition.y + sourcePosition.height * 1
   const endX = targetPos.x + targetPos.width / 2
   const endY = targetIsPlayer
     ? targetPos.y + 8
-    : targetPos.y + targetPos.height * 1
+    : targetPos.y + targetPos.height * 1 - 4
 
   return (
     <svg
@@ -121,12 +121,24 @@ function TargetinLine({
         'z-10': sourceActor.playerID === targetActor.playerID,
       })}
     >
+      <defs>
+        <filter id="shadow">
+          <feDropShadow
+            dx="3"
+            dy="3"
+            stdDeviation="1"
+            flood-color="black"
+            flood-opacity="0.9"
+          />
+        </filter>
+      </defs>
       <Curve
         start={{ x: startX, y: startY }}
         end={{ x: endX, y: endY }}
         stroke={sourceIsPlayer ? 'var(--color-ally)' : 'var(--color-enemy)'}
         source={sourceActor.playerID === playerID ? 'ally' : 'enemy'}
         target={targetActor.playerID === playerID ? 'ally' : 'enemy'}
+        filter="url(#shadow)"
       />
     </svg>
   )

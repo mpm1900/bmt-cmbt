@@ -1,4 +1,4 @@
-import { findActor, getActionableActors } from './access'
+import { findActor, getActionableActors, getEncounterState } from './access'
 import { SourceAction } from './data/messages'
 import { newMessage } from './encounter'
 import {
@@ -211,7 +211,8 @@ function next(state: State): State {
     return nextTurnPhase(state)
   }
 
-  if (!state.encounter.activeNodeID) {
+  const estate = getEncounterState(state)
+  if (!estate?.activeNodeID) {
     state = startDialog(state)
   }
 
@@ -219,8 +220,9 @@ function next(state: State): State {
 }
 
 function hasNext(state: State): boolean {
+  const estate = getEncounterState(state)
   return (
-    state.encounter.activeNodeID === undefined ||
+    estate?.activeNodeID === undefined ||
     state.mutationQueue.length > 0 ||
     state.triggerQueue.length > 0 ||
     (state.actionQueue.length > 0 && state.promptQueue.length === 0) ||

@@ -6,6 +6,7 @@ import { newContext } from '@/game/mutations'
 import { playerStore } from '@/hooks/usePlayer'
 import { useLayoutEffect } from '@tanstack/react-router'
 import { DialogMessage } from './dialog-message'
+import { getEncounterState } from '@/game/access'
 
 const context = newContext({
   playerID: playerStore.getState().playerID,
@@ -17,8 +18,9 @@ function DialogHistoryLog({
 }: ComponentProps<typeof ScrollArea>) {
   const state = useGameState((s) => s.state)
   const messageLog = state.messageLog
+  const estate = getEncounterState(state)
   const activeNode = state.encounter.nodes.find(
-    (node) => node.ID === state.encounter.activeNodeID
+    (node) => node.ID === estate.activeNodeID
   )
   const activeMessages =
     activeNode?.messages(state, context).map((m) => m.ID) ?? []

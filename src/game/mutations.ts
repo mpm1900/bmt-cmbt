@@ -5,6 +5,7 @@ import {
   getActionableActors,
   getActiveNode,
   getActor,
+  getEncounterState,
   getItem,
   getTriggers,
   isActive,
@@ -36,6 +37,7 @@ import type {
   SPlayer,
   State,
   STrigger,
+  EncounterState,
 } from './state'
 import type { CombatPhase } from './types/combat'
 import type { Damage } from './types/damage'
@@ -384,6 +386,20 @@ function setEncounter(state: State, encounter: SEncounter | undefined): State {
   }
 }
 
+function updateEncounterState<T extends EncounterState = EncounterState>(
+  state: State,
+  encounterID: string,
+  fn: (state: T | undefined) => T | undefined
+): State {
+  return {
+    ...state,
+    encounterStates: {
+      ...state.encounterStates,
+      [encounterID]: fn(getEncounterState<T>(state, encounterID)),
+    },
+  }
+}
+
 function updateDialogNode(
   state: State,
   nodeID: string,
@@ -397,31 +413,23 @@ function updateDialogNode(
   })
 }
 
-function updateDialogNodeState<T = unknown>(
-  state: State,
-  nodeID: string,
-  fn: (state: T) => Partial<T>
-): State {
-  return updateDialogNode(state, nodeID, (node) => ({
-    ...node,
-    state: {
-      ...node.state,
-      ...fn(node.state as T),
-    },
-  }))
-}
-
 function incrementNodeCount(state: State, nodeID: string): State {
-  return {
-    ...state,
-    encounter: {
-      ...state.encounter,
+  return updateEncounterState(state, state.encounter.ID, (s) => {
+    if (!s) {
+      return {
+        activeNodeID: nodeID,
+        nodeCounts: { [nodeID]: 1 },
+        nodeHistory: [],
+      }
+    }
+    return {
+      ...s,
       nodeCounts: {
-        ...state.encounter.nodeCounts,
-        [nodeID]: (state.encounter.nodeCounts[nodeID] || 0) + 1,
+        ...s.nodeCounts,
+        [nodeID]: (s.nodeCounts[nodeID] || 0) + 1,
       },
-    },
-  }
+    }
+  })
 }
 
 function remapTargetIDs(
@@ -479,9 +487,14 @@ function endCombat(state: State, encounterID: string): State {
 function purchaseItem(state: State, playerID: string, itemID: string): State {
   const player = state.players.find((p) => p.ID === playerID)
   const node = getActiveNode(state)
-  if (!player || !node || !state.encounter.activeNodeID) return state
+  const estate = getEncounterState(state)
+  if (!estate) {
+    console.error('no encounter state')
+    return state
+  }
+  if (!player || !node || !estate.activeNodeID) return state
 
-  const item = getItem(state, state.encounter.activeNodeID, itemID)
+  const item = getItem(state, estate.activeNodeID, itemID)
   if (!item) return state
   if (item.value > player.credits) return state
 
@@ -528,7 +541,6 @@ export {
   sortTriggerQueue,
   startDialog,
   updateDialogNode,
-  updateDialogNodeState,
   validateState,
   withPhase,
   incrementNodeCount,
@@ -536,6 +548,7 @@ export {
   removePlayer,
   endCombat,
   setEncounter,
+  updateEncounterState,
   purchaseItem,
   decrementActorCooldowns,
 }

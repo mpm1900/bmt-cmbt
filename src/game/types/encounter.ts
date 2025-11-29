@@ -17,28 +17,24 @@ type DialogOption<T, A> = ActionQueueItem<T, A, DialogAction<T, A>> & {
   context: DeltaContext
 }
 
-type OptionsNode<T, A, S extends Object = {}> = {
+type OptionsNode<T, A> = {
   ID: string
   type: 'options'
   checks: (state: T, context: DeltaContext) => Array<DialogCheck<T>>
   messages: (state: T, context: DeltaContext) => Array<Message>
   options: (state: T, context: DeltaContext) => Array<DialogOption<T, A>>
-  state: S
 }
 
-type ShopNode<T, A, S extends Object = {}> = {
+type ShopNode<T, A> = {
   ID: string
   type: 'shop'
   messages: (state: T, context: DeltaContext) => Array<Message>
   items: Array<Item<T, A>>
   credits: number
   options: (state: T, context: DeltaContext) => Array<DialogOption<T, A>>
-  state: S
 }
 
-type DialogNode<T, A, S extends Object = {}> =
-  | OptionsNode<T, A, S>
-  | ShopNode<T, A, S>
+type DialogNode<T, A> = OptionsNode<T, A> | ShopNode<T, A>
 
 type Encounter<T, A> = {
   ID: string
@@ -46,9 +42,6 @@ type Encounter<T, A> = {
   persist: boolean
   nodes: Array<DialogNode<T, A> | ShopNode<T, A>>
   startNodeID: string
-  activeNodeID: string | undefined
-  nodeCounts: { [nodeID: string]: number }
-  nodeHistory: Array<string>
 }
 
 export type {

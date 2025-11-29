@@ -43,14 +43,13 @@ function ActionCard({
       disabled={disabled}
       onMouseDown={onClick}
       className={cn(
-        'cursor-default user-select-none flex flex-col justify-start text-left !w-55 h-71 bg-neutral-950 border-2 border-neutral-700 ring ring-black shadow p-0 rounded-sm',
+        'cursor-default user-select-none flex flex-col justify-start text-left !w-55 h-71 bg-neutral-950 border-2 border-neutral-700 ring ring-black p-0 rounded-sm',
         {
           'hover:z-30 hover:shadow-[0px_16px_32px_16px_rgba(0,_0,_0,_0.2)]':
             !disabled,
         },
         {
-          'z-20 shadow-[0px_16px_32px_16px_rgba(0,_0,_0,_0.3)]! bg-neutral-900 border-neutral-700':
-            active,
+          'z-20 bg-neutral-900 border-neutral-700': active,
         },
         'disabled:opacity-50',
         className

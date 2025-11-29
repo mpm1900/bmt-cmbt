@@ -23,6 +23,7 @@ import {
   pushMessages,
   removeParentEffects,
   setEncounter,
+  updateEncounterState,
 } from '@/game/mutations'
 import type { ActorState } from './types/actor'
 import type { Damage } from './types/damage'
@@ -30,6 +31,7 @@ import {
   convertPositionToTargetContext,
   findActor,
   getActor,
+  getEncounterState,
   isActive,
 } from './access'
 import { chance } from '@/lib/chance'
@@ -528,11 +530,15 @@ function navigateDialogResolver(
         state.mutationQueue = enqueue(state.mutationQueue, [
           pushMessagesResolver(context, active.messages(state, context)),
         ])
-        state = setEncounter(state, {
-          ...state.encounter,
-          activeNodeID: nodeID,
-          nodeHistory: [...state.encounter.nodeHistory, nodeID],
-        })
+        state = updateEncounterState(state, state.encounter.ID, (s) =>
+          s
+            ? {
+                ...s,
+                activeNodeID: nodeID,
+                nodeHistory: [...s.nodeHistory, nodeID],
+              }
+            : s
+        )
 
         return state
       },
@@ -564,13 +570,11 @@ function navigateEncounterResolver(
     context,
     delta: {
       apply: (state) => {
-        console.log(state)
         state = {
           ...state,
           players: state.players.filter((p) => p.ID !== state.encounter.ID),
           actors: state.actors.filter((a) => a.ID !== state.encounter.ID),
         }
-        console.log(state)
         if (state.encounter.persist) {
           state = {
             ...state,
@@ -581,6 +585,19 @@ function navigateEncounterResolver(
           }
         }
 
+        const estate = getEncounterState(state)
+        if (estate.activeNodeID) {
+          state = incrementNodeCount(state, estate.activeNodeID)
+          state = updateEncounterState(state, state.encounter.ID, (s) =>
+            s
+              ? {
+                  ...s,
+                  activeNodeID: undefined,
+                  nodeHistory: [...s.nodeHistory, estate.activeNodeID!],
+                }
+              : s
+          )
+        }
         state = setEncounter(state, encounter)
         return {
           ...state,

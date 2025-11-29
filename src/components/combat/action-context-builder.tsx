@@ -246,7 +246,10 @@ function ActionContextBuilder({
       {...props}
       className="bg-transparent border-none ring-0 shadow-none gap-6"
     >
-      <div className="gap-0 text-center text-shadow-lg rounded-xs bg-background border ring ring-black py-2 self-center px-6 w-fit">
+      <div
+        className="gap-0 text-center text-shadow-lg rounded-xs bg-background border ring ring-black py-2 self-center px-6 w-fit"
+        style={{ boxShadow: '0px 4px 16px rgba(0,0,0,0.8)' }}
+      >
         <CardTitle className="text-xl inline">
           {contextTitle || <>Select Targets for {action.name}</>}
         </CardTitle>

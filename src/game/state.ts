@@ -44,15 +44,22 @@ type STrigger = Trigger<State>
 type STriggerItem = TriggerQueueItem<State>
 type SCombat = Combat<State, SActor>
 type SEncounter = Encounter<State, SActor>
-type SShopeNode<T extends Object = {}> = ShopNode<State, SActor, T>
-type SOptionsNode<T extends Object = {}> = OptionsNode<State, SActor, T>
-type SDialogNode<T extends Object = {}> = DialogNode<State, SActor, T>
+type SShopeNode = ShopNode<State, SActor>
+type SOptionsNode = OptionsNode<State, SActor>
+type SDialogNode = DialogNode<State, SActor>
 type SDialogOption = DialogOption<State, SActor>
 type SDialogCheck = DialogCheck<State>
+
+type EncounterState = Object & {
+  activeNodeID: string | undefined
+  nodeCounts: Record<string, number>
+  nodeHistory: Array<string>
+}
 
 type State = {
   combat: SCombat | undefined
   encounter: SEncounter
+  encounterStates: Record<string, EncounterState | undefined>
   pastEncounters: Record<string, SEncounter>
 
   players: Array<SPlayer>
@@ -88,6 +95,7 @@ export type {
   SOptionsNode,
   SPlayer,
   SShopeNode,
+  EncounterState,
   State,
   STrigger,
   STriggerItem,

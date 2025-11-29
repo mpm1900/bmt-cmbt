@@ -30,6 +30,14 @@ function ActorBg({
   return (
     <motion.button
       className={actorBgVariants({ variant, className })}
+      style={{
+        boxShadow:
+          variant === 'ally' ||
+          variant === 'ally-active' ||
+          variant === 'targeted'
+            ? '8px 0px 16px rgba(0,0,0,0.4)'
+            : undefined,
+      }}
       {...props}
     ></motion.button>
   )

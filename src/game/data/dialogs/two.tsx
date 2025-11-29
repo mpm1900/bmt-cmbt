@@ -32,7 +32,6 @@ const TwoNode0: SDialogNode = {
       ]),
     },
   ],
-  state: {},
 }
 
 const TwoEncounter: SEncounter = {
@@ -40,10 +39,7 @@ const TwoEncounter: SEncounter = {
   name: 'Test 2nd Encounter',
   persist: true,
   startNodeID: TwoNode0.ID,
-  activeNodeID: undefined,
   nodes: [TwoNode0],
-  nodeCounts: {},
-  nodeHistory: [],
 }
 
 export { TwoEncounter }

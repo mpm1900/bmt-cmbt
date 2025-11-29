@@ -1,4 +1,4 @@
-import { getItem } from '@/game/access'
+import { getEncounterState, getItem } from '@/game/access'
 import { newMessage } from '@/game/encounter'
 import { purchaseItemResolver, pushMessagesResolver } from '@/game/resolvers'
 import type { SDialogAction } from '@/game/state'
@@ -12,8 +12,9 @@ function PurchaseItem(itemID: string): SDialogAction {
     priority: 0,
     cooldown: () => 0,
     validate: (state, context) => {
+      const estate = getEncounterState(state)
       const player = state.players.find((p) => p.ID === context.playerID)
-      const item = getItem(state, state.encounter.activeNodeID!, itemID)
+      const item = getItem(state, estate.activeNodeID!, itemID)
       if (!player || !item) return false
       return player.credits > item.value
     },
@@ -25,12 +26,13 @@ function PurchaseItem(itemID: string): SDialogAction {
     },
     sources: () => [],
     resolve: (state, context) => {
+      const estate = getEncounterState(state)
       return [
         purchaseItemResolver(context, itemID),
         pushMessagesResolver(context, [
           newMessage({
             text: Item(
-              getItem(state, state.encounter.activeNodeID!, itemID),
+              getItem(state, estate.activeNodeID!, itemID),
               ` purchased.`
             ),
           }),

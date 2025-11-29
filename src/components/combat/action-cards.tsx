@@ -53,8 +53,9 @@ function ActionCards({
               y: translateY,
               translateY: active ? -20 : 0,
               zIndex: active ? 99 : i,
-              rotate: active ? rotation : rotation,
+              rotate: rotation,
               scale: active ? 1.1 : 1,
+              boxShadow: `0px 12px ${active ? 16 : 8}px black`,
             }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             whileHover={

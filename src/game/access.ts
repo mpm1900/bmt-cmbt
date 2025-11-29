@@ -2,6 +2,7 @@ import { v4 } from 'uuid'
 import { withEffects } from './queries'
 import { getActorID, getPosition } from './player'
 import type {
+  EncounterState,
   SAction,
   SActor,
   SDialogNode,
@@ -215,14 +216,25 @@ function convertPositionToTargetContext(
   }
 }
 
+function getEncounterState<T extends EncounterState = EncounterState>(
+  state: State,
+  encounterID?: string
+): T {
+  encounterID = encounterID ?? state.encounter.ID
+  return (state.encounterStates[encounterID] ?? {
+    activeNodeID: undefined,
+    nodeCounts: {},
+    nodeHistory: [],
+  }) as T
+}
+
 function getNodeCount(state: State, nodeID: string): number {
-  return state.encounter.nodeCounts[nodeID] || 0
+  return getEncounterState(state).nodeCounts[nodeID] || 0
 }
 
 function getActiveNode(state: State): SDialogNode | undefined {
-  return state.encounter.nodes.find(
-    (n) => n.ID === state.encounter.activeNodeID
-  )
+  const estate = getEncounterState(state)
+  return state.encounter.nodes.find((n) => n.ID === estate.activeNodeID)
 }
 
 function getItem(
@@ -255,6 +267,7 @@ export {
   hasActiveActorSpace,
   convertPositionToTargetContext,
   convertTargetToPositionContext,
+  getEncounterState,
   getNodeCount,
   getActiveNode,
   getItem,

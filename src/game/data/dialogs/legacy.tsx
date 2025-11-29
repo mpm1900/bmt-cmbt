@@ -320,7 +320,6 @@ const IntroNode0: SDialogNode = {
       ]),
     },
   ],
-  state: {},
 }
 
 const IntroNode1: SDialogNode = {
@@ -360,7 +359,6 @@ const IntroNode1: SDialogNode = {
       action: Deactivate,
     },
   ],
-  state: {},
 }
 
 const IntroNode2: SDialogNode = {
@@ -387,7 +385,6 @@ const IntroNode2: SDialogNode = {
       []
     ),
   ],
-  state: {},
   items: [
     withConsumable(
       {
@@ -431,10 +428,7 @@ const IntroEncounter: SEncounter = {
   name: 'Introductions',
   persist: false,
   startNodeID: IntroNode0.ID,
-  activeNodeID: undefined,
   nodes: [IntroNode0, IntroNode1, IntroNode2],
-  nodeCounts: {},
-  nodeHistory: [],
 }
 
 export { IntroEncounter }
