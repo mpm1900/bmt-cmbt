@@ -127,7 +127,7 @@ const IntroNode0: SDialogNode = {
     }
     return [
       newMessage({
-        ID: 'IntroNode0-0.b',
+        ID: 'IntroNode0-0.' + count,
         context: newContext({ sourceID: skullMan.ID }),
         type: 'dialogue',
         text: '"What can I do for you all?"',
@@ -377,14 +377,17 @@ const IntroNode1: SDialogNode = {
 const IntroNode2: SDialogNode = {
   ID: v4(),
   type: 'shop',
-  messages: () => [
-    newMessage({
-      ID: 'IntroNode2-0',
-      type: 'dialogue',
-      context: newContext({ sourceID: skullMan.ID }),
-      text: '"Nothing much. I\'m just a mere watcher of new arrivals. Have a look."',
-    }),
-  ],
+  messages: (state) => {
+    const count = getNodeCount(state, IntroNode0.ID)
+    return [
+      newMessage({
+        ID: 'IntroNode2-0.' + count,
+        type: 'dialogue',
+        context: newContext({ sourceID: skullMan.ID }),
+        text: '"Nothing much. I\'m just a mere watcher of new arrivals. Have a look."',
+      }),
+    ]
+  },
   options: (_, context) => [
     createDialogOption(
       {
