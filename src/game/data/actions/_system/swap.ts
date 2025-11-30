@@ -118,6 +118,17 @@ function ActivateX(x: number): SDialogAction {
     },
   }
 }
+function ActivateXSome(x: number): SDialogAction {
+  const base = ActivateX(x)
+
+  return {
+    ...base,
+    targets: {
+      ...base.targets,
+      validate: (_, context) => context.targetIDs.length > 0,
+    },
+  }
+}
 
 const Deactivate: SDialogAction = {
   ...Swap,
@@ -149,4 +160,4 @@ const Deactivate: SDialogAction = {
   sources: () => [],
 }
 
-export { Swap, SwapWith, Activate, ActivateX, Deactivate }
+export { Swap, SwapWith, Activate, ActivateX, ActivateXSome, Deactivate }

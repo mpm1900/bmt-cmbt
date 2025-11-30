@@ -9,6 +9,7 @@ import type { PowerDamage } from '@/game/types/damage'
 import { TfiTarget } from 'react-icons/tfi'
 import { FaDiceD20 } from 'react-icons/fa'
 import { ActionCost, ActionHeader } from '../ui/action-utils'
+import type { ComponentProps } from 'react'
 
 function ActionSubDetails({
   damage,
@@ -62,13 +63,18 @@ function ActionDetails({
   renderer,
   cooldown = 0,
   showImage,
-}: {
+  className,
+  ...props
+}: ComponentProps<typeof ItemContent> & {
   renderer: ActionRenderer
   cooldown: number | undefined
   showImage: boolean
 }) {
   return (
-    <ItemContent className="flex relative h-full gap-0">
+    <ItemContent
+      className={cn('flex relative h-full gap-0', className)}
+      {...props}
+    >
       <ActionHeader>
         {cooldown > 0 && <Clock className="opacity-60" />}
         <renderer.Name />
@@ -130,9 +136,14 @@ function ActionTooltip({
         collisionPadding={8}
         side={side}
         sideOffset={8}
-        className="w-76"
+        className="w-76 border-0 ring-0 bg-transparent"
       >
-        <ActionDetails renderer={renderer} cooldown={0} showImage={false} />
+        <ActionDetails
+          renderer={renderer}
+          cooldown={0}
+          showImage={false}
+          className="bg-muted border-ring border-1 ring ring-black rounded-t-md rounded-b-xs shadow-2xl"
+        />
       </HoverCardContent>
     </HoverCard>
   )

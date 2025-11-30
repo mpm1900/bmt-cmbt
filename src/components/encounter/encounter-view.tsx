@@ -10,6 +10,7 @@ import { AnimatePresence } from 'motion/react'
 import { Button } from '../ui/button'
 import { BannerTitle } from '../ui/banner-title'
 import bg from '@/assets/Devastated Landscape1.png'
+import { motion } from 'motion/react'
 
 function EncounterView() {
   const { state } = useGameState((s) => s)
@@ -26,35 +27,46 @@ function EncounterView() {
       <EncounterController />
       <ViewLayoutContent>
         <AnimatePresence mode="wait" onExitComplete={() => {}}>
-          <DialogCard
+          <motion.div
             key={state.encounter.ID}
-            className="gap-0 relative"
-            style={{
-              imageRendering: 'pixelated',
-              backgroundImage: `url(${bg})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'bottom',
-            }}
+            className="flex justify-center relative"
+            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <div
-              className="absolute inset-0 z-0"
+            <BannerTitle className="absolute top-4 left-0">
+              {state.encounter.name}
+            </BannerTitle>
+
+            <DialogCard
+              className="gap-0 relative overflow-hidden mt-8"
               style={{
-                background:
-                  'linear-gradient(0deg,rgba(0, 0, 0, 0.95) 33%, rgba(0, 0, 0, 0.99) 100%)',
+                imageRendering: 'pixelated',
+                backgroundImage: `url(${bg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'bottom',
               }}
-            />
-            <div className="flex items-start justify-between">
-              <BannerTitle>{state.encounter.name}</BannerTitle>
-              <CardAction className="absolute top-2 right-2 z-30">
-                {pastEncounters.length > 0 && (
-                  <Button variant="ghost" disabled={running}>
-                    <span className="text-muted-foreground">Travel</span>
-                  </Button>
-                )}
-              </CardAction>
-            </div>
-            <DialogNode />
-          </DialogCard>
+            >
+              <div
+                className="absolute inset-0 z-0"
+                style={{
+                  background:
+                    'linear-gradient(0deg,rgba(0, 0, 0, 0.95) 33%, rgba(0, 0, 0, 0.99) 100%)',
+                }}
+              />
+              <div className="flex items-start justify-between">
+                <CardAction className="absolute top-2 right-2 z-30">
+                  {pastEncounters.length > 0 && (
+                    <Button variant="ghost" disabled={running}>
+                      <span className="text-muted-foreground">Travel</span>
+                    </Button>
+                  )}
+                </CardAction>
+              </div>
+              <DialogNode />
+            </DialogCard>
+          </motion.div>
         </AnimatePresence>
       </ViewLayoutContent>
     </>

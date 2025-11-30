@@ -389,7 +389,7 @@ function setEncounter(state: State, encounter: SEncounter | undefined): State {
 function updateEncounterState<T extends EncounterState = EncounterState>(
   state: State,
   encounterID: string,
-  fn: (state: T | undefined) => T | undefined
+  fn: (state: T) => T
 ): State {
   return {
     ...state,
@@ -415,13 +415,6 @@ function updateDialogNode(
 
 function incrementNodeCount(state: State, nodeID: string): State {
   return updateEncounterState(state, state.encounter.ID, (s) => {
-    if (!s) {
-      return {
-        activeNodeID: nodeID,
-        nodeCounts: { [nodeID]: 1 },
-        nodeHistory: [],
-      }
-    }
     return {
       ...s,
       nodeCounts: {

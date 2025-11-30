@@ -1,7 +1,6 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
-import { CardHeader, CardTitle } from '../ui/card'
 import type { SAction, SActionItem, SActor } from '@/game/state'
 import { usePlayerID } from '@/hooks/usePlayer'
 import type { DeltaContext } from '@/game/types/delta'
@@ -57,15 +56,12 @@ function PhaseMainPrompt({
       source={source}
       actions={[action]}
       activeActionID={action.ID}
+      contextTitle="Choose Next Fighters"
       onActiveActionIDChange={() => {}}
       onActionConfirm={(_action, context) => {
         onActionConfirm(context)
       }}
-    >
-      <CardHeader>
-        <CardTitle className="text-center">Select Fighters</CardTitle>
-      </CardHeader>
-    </ActionSelectionCard>
+    ></ActionSelectionCard>
   )
 }
 

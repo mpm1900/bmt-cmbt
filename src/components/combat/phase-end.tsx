@@ -1,7 +1,6 @@
 import { useGameState } from '@/hooks/useGameState'
 import { ActionSelectionCard } from './action-selection-card'
 import { getActor } from '@/game/access'
-import { CardHeader, CardTitle } from '../ui/card'
 import { usePlayerID } from '@/hooks/usePlayer'
 
 function PhaseEnd() {
@@ -20,15 +19,12 @@ function PhaseEnd() {
         source={source}
         actions={[action]}
         activeActionID={action.ID}
+        contextTitle="Choose Next Fighters"
         onActiveActionIDChange={() => {}}
         onActionConfirm={(_action, context) => {
           resolvePrompt(context)
         }}
-      >
-        <CardHeader>
-          <CardTitle className="text-center">Select Fighters</CardTitle>
-        </CardHeader>
-      </ActionSelectionCard>
+      ></ActionSelectionCard>
     )
   }
 

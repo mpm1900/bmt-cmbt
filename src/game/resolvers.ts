@@ -440,10 +440,14 @@ function addPlayerResolver(player: SPlayer, actors: SActor[]): SMutation {
     delta: {
       apply: (state, _context) => {
         if (!!state.players.find((p) => p.ID === player.ID)) return state
+        const actorIDs = state.actors.map((a) => a.ID)
         return {
           ...state,
           players: [...state.players, player],
-          actors: [...state.actors, ...actors],
+          actors: [
+            ...state.actors,
+            ...actors.filter((a) => !actorIDs.includes(a.ID)),
+          ],
         }
       },
     },
@@ -527,18 +531,17 @@ function navigateDialogResolver(
         }
 
         state = incrementNodeCount(state, nodeID)
-        state.mutationQueue = enqueue(state.mutationQueue, [
-          pushMessagesResolver(context, active.messages(state, context)),
-        ])
-        state = updateEncounterState(state, state.encounter.ID, (s) =>
-          s
-            ? {
-                ...s,
-                activeNodeID: nodeID,
-                nodeHistory: [...s.nodeHistory, nodeID],
-              }
-            : s
+        state.mutationQueue = enqueue(
+          state.mutationQueue,
+          active
+            .messages(state, context)
+            .map((message) => pushMessagesResolver(context, [message]))
         )
+        state = updateEncounterState(state, state.encounter.ID, (s) => ({
+          ...s,
+          activeNodeID: nodeID,
+          nodeHistory: [...s.nodeHistory, nodeID],
+        }))
 
         return state
       },
@@ -573,7 +576,7 @@ function navigateEncounterResolver(
         state = {
           ...state,
           players: state.players.filter((p) => p.ID !== state.encounter.ID),
-          actors: state.actors.filter((a) => a.ID !== state.encounter.ID),
+          actors: state.actors.filter((a) => a.playerID !== state.encounter.ID),
         }
         if (state.encounter.persist) {
           state = {
@@ -588,15 +591,11 @@ function navigateEncounterResolver(
         const estate = getEncounterState(state)
         if (estate.activeNodeID) {
           state = incrementNodeCount(state, estate.activeNodeID)
-          state = updateEncounterState(state, state.encounter.ID, (s) =>
-            s
-              ? {
-                  ...s,
-                  activeNodeID: undefined,
-                  nodeHistory: [...s.nodeHistory, estate.activeNodeID!],
-                }
-              : s
-          )
+          state = updateEncounterState(state, state.encounter.ID, (s) => ({
+            ...s,
+            activeNodeID: undefined,
+            nodeHistory: [...s.nodeHistory, estate.activeNodeID!],
+          }))
         }
         state = setEncounter(state, encounter)
         return {

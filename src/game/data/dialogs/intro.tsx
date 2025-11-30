@@ -1,4 +1,4 @@
-import { findPlayer, getAliveActiveActors, getNodeCount } from '@/game/access'
+import { getNodeCount } from '@/game/access'
 import {
   createDialogOption,
   createSourceDialogOption,
@@ -8,7 +8,6 @@ import { getMissingActorCount } from '@/game/player'
 import {
   addPlayerResolver,
   damagesResolver,
-  mutatePlayerResolver,
   navigateEncounterResolver,
   pushMessagesResolver,
   startCombatResolver,
@@ -16,21 +15,16 @@ import {
 import { type SEncounter, type SDialogNode, type SPlayer } from '@/game/state'
 import { createActor } from '@/lib/create-actor'
 import {
-  TbUserPlus,
   TbUserMinus,
   TbUsersPlus,
   TbExternalLink,
-  TbHeartPlus,
   TbSwords,
 } from 'react-icons/tb'
 import { v4 } from 'uuid'
 import { InlineMutation } from '../actions/_system/inline-mutation'
-import { Activate, ActivateX, Deactivate } from '../actions/_system/swap'
+import { ActivateXSome, Deactivate } from '../actions/_system/swap'
 import { Heal } from '../actions/heal'
 import { Fireball } from '../actions/fireball'
-import { GiCreditsCurrency } from 'react-icons/gi'
-import { FaQuestion } from 'react-icons/fa'
-import { chance } from '@/lib/chance'
 import { playerStore } from '@/hooks/usePlayer'
 import { newCombat } from '@/game/lib/combat'
 import { ArrowRight } from 'lucide-react'
@@ -39,6 +33,7 @@ import { faker } from '@faker-js/faker'
 import { withConsumable } from '@/game/item'
 import { newContext } from '@/game/mutations'
 import { portraits } from '@/renderers/portraits'
+import { LuSpeech } from 'react-icons/lu'
 
 const playerID = playerStore.getState().playerID
 const IntroEncounterID = v4()
@@ -64,6 +59,7 @@ const skullMan = createActor('???', IntroEncounterID, portraits.skull, {
   faith: 100,
   speed: 100,
 })
+skullMan.ID === 'skullMan'
 const criminal2 = Criminal(2, IntroEncounterID)
 const criminal3 = Criminal(3, IntroEncounterID)
 const encounterPlayer: SPlayer = {
@@ -97,10 +93,6 @@ const IntroNode0: SDialogNode = {
       success: () => {
         return [addPlayerResolver(encounterPlayer, [skullMan])]
       },
-      failure: () => {
-        console.error('nope')
-        return []
-      },
     },
   ],
   messages: (state) => {
@@ -127,7 +119,19 @@ const IntroNode0: SDialogNode = {
             sourceID: skullMan.ID,
           }),
           type: 'dialogue',
-          text: <>"Ah. The new arrivals are here."</>,
+          text: (
+            <span>
+              <p>
+                "Ah. The new arrivals are here. You all seem capable enough, but
+                a warning. These lands have a way of swaying one's soul. Be wary
+                of the calls of power."
+              </p>
+              <p className="mt-2">
+                "What consequences of life brings you all here? No one comes
+                here by their own accord. Step Forward."
+              </p>
+            </span>
+          ),
         }),
       ]
     }
@@ -165,47 +169,23 @@ const IntroNode0: SDialogNode = {
       ]),
     },
     {
-      ID: v4(),
-      disable: 'hide',
-      text: <em>Heal</em>,
-      icons: (
-        <>
-          <TbHeartPlus />
-        </>
-      ),
-      context,
-      action: Heal,
-    },
-    {
-      ID: 'IntroNode0-Activate-Actor',
-      disable: 'hide',
-      text: <em>Activate</em>,
-      icons: (
-        <>
-          <TbUserPlus />
-        </>
-      ),
-      context,
-      action: Activate,
-    },
-    {
       ID: 'IntroNode0-Activate-All-Actors',
       disable: 'hide',
-      text: <em>Activate All</em>,
+      text: <em>Step Forward</em>,
       icons: (
         <>
           <TbUsersPlus />
         </>
       ),
       context,
-      action: ActivateX(getMissingActorCount(state, context.playerID)),
+      action: ActivateXSome(getMissingActorCount(state, context.playerID)),
     },
     createSourceDialogOption(
       {
-        text: <span>"What do you have for sale?"</span>,
+        text: <>"I seek healing."</>,
         icons: (
           <>
-            <GiCreditsCurrency />
+            <LuSpeech />
           </>
         ),
       },
@@ -213,59 +193,58 @@ const IntroNode0: SDialogNode = {
       IntroNode2.ID,
       []
     ),
-    {
-      ID: v4(),
-      disable: 'disable',
-      text: (
-        <em className="inline-flex items-center">
-          Flip a Coin (-1
-          <span className="inline-block h-full">
-            <GiCreditsCurrency />
-          </span>
-          )
-        </em>
-      ),
-      icons: (
-        <>
-          <FaQuestion />
-        </>
-      ),
-      context,
-      action: {
-        ...InlineMutation(
-          (_state, context) => {
-            const result = chance(50)
-            const mutations = [
-              mutatePlayerResolver(playerID, context, (p) => ({
-                ...p,
-                credits: p.credits - 1,
-              })),
-            ]
-            if (result[0]) {
-              mutations.push(
-                pushMessagesResolver(context, [newMessage({ text: 'heads!' })])
-              )
-            } else {
-              mutations.push(
-                pushMessagesResolver(context, [newMessage({ text: 'tails!' })])
-              )
-            }
-
-            return mutations
-          },
-          (a) => ({
-            targets: {
-              ...a.targets,
-              validate: (_, context) => !!context.sourceID,
-            },
-            sources: (state, context) => getAliveActiveActors(state, context),
-            validate: (state, context) =>
-              getAliveActiveActors(state, context).length > 0 &&
-              (findPlayer(state, context.playerID)?.credits ?? 0) > 0,
-          })
+    createSourceDialogOption(
+      {
+        text: <>"I seek the beast that attacked my home."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
         ),
       },
-    },
+      context,
+      IntroNode2.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"I seek the truth."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      IntroNode2.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"I seek personal meaning."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      IntroNode2.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <em>stay silent.</em>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      IntroNode2.ID,
+      []
+    ),
     {
       ID: v4(),
       disable: 'hide',
@@ -388,7 +367,7 @@ const IntroNode2: SDialogNode = {
         ID: 'IntroNode2-0.' + count,
         type: 'dialogue',
         context: newContext({ sourceID: skullMan.ID }),
-        text: '"Nothing much. I\'m just a mere watcher of new arrivals. Have a look."',
+        text: '"Uh huh, very nice. Would you like to buy anything?"',
       }),
     ]
   },

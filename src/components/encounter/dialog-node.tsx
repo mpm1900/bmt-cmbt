@@ -24,9 +24,9 @@ function DialogNode() {
   if (!activeNode || !player) return null
 
   return (
-    <CardContent className="flex flex-1 flex-col gap-2 justify-between z-0">
+    <CardContent className="flex flex-1 flex-col gap-2 justify-between z-0 overflow-hidden">
       <DialogHistoryLog />
-      <div className="flex flex-1 flex-col justify-between">
+      <div className="flex flex-1 flex-col justify-between overflow-hidden gap-4">
         <DialogActiveMessages messages={activeNode.messages(state, context)} />
         {activeNode.type === 'shop' && (
           <ItemsTable

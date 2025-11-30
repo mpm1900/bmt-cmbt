@@ -6,12 +6,14 @@ import type { EffectRenderer } from '@/renderers/effects'
 function EffectDetails({ renderer }: { renderer: EffectRenderer }) {
   return (
     <>
-      <p className="text-lg title mb-2">
-        <renderer.Name />
-      </p>
-      <p className="text-xs">
+      <div className="mb-2 px-2 bg-gradient-to-r from-neutral-600 via-transparent to-transparent">
+        <span className="text-lg title -mt-2">
+          <renderer.Name />
+        </span>
+      </div>
+      <div className="text-xs p-2">
         <renderer.Description />
-      </p>
+      </div>
     </>
   )
 }
@@ -44,7 +46,10 @@ function EffectTooltip({
       onOpenChange={onOpenChange}
     >
       <HoverCardTrigger
-        className={cn('data-[state=open]:underline cursor-default', className)}
+        className={cn(
+          'data-[state=open]:underline data-[state=open]:!border-ring cursor-default',
+          className
+        )}
         {...props}
       />
       <HoverCardContent
@@ -53,6 +58,7 @@ function EffectTooltip({
         collisionPadding={8}
         side={side}
         sideOffset={8}
+        className="p-0"
       >
         <EffectDetails renderer={renderer} />
       </HoverCardContent>
