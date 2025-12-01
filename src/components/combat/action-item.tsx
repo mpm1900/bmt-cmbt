@@ -35,6 +35,7 @@ function ActionItem({
     >
       {renderer ? (
         <ActionDetails
+          active={active}
           renderer={renderer}
           cooldown={source?.cooldowns[action.ID]}
           showImage={false}

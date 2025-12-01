@@ -219,7 +219,7 @@ const Node1: SDialogNode = {
       ),
     }),
   ],
-  options: (state, context) => [
+  options: (_state, context) => [
     {
       ID: 'Node1-Start-Combat',
       disable: 'hide',

@@ -19,8 +19,8 @@ const SimplePrayerRenderer: ActionRenderer = {
   img,
   Name: () => <ActionTitle>Simple Prayer</ActionTitle>,
   Cost: () => null,
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       <ActionSubDetails
         accuracy={SimplePrayerAccuracy}
         damage={SimplePrayerDamage}

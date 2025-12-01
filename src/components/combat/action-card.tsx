@@ -58,6 +58,7 @@ function ActionCard({
     >
       {renderer ? (
         <ActionDetails
+          active={active}
           showImage
           renderer={renderer}
           cooldown={source?.cooldowns[action.ID]}

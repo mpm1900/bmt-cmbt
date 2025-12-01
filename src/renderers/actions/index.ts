@@ -5,7 +5,7 @@ type ActionRenderer = {
   img: string
   Name: ComponentType
   Cost: ComponentType
-  Body: ComponentType
+  Body: ComponentType<{ active: boolean }>
 }
 
 export type { ActionRenderer }

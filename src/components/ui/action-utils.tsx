@@ -32,11 +32,19 @@ function ActionCost({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-function ActionBody({ className, ...props }: React.ComponentProps<'div'>) {
+function ActionBody({
+  active,
+  className,
+  ...props
+}: React.ComponentProps<'div'> & { active: boolean }) {
   return (
     <div
       data-slot="action-body"
-      className={cn('flex flex-col gap-1', className)}
+      className={cn(
+        'flex flex-col gap-1',
+        { 'opacity-50': !active },
+        className
+      )}
       {...props}
     />
   )

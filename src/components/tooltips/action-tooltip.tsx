@@ -60,12 +60,14 @@ function ActionSubDetails({
 }
 
 function ActionDetails({
+  active,
   renderer,
   cooldown = 0,
   showImage,
   className,
   ...props
 }: ComponentProps<typeof ItemContent> & {
+  active: boolean
   renderer: ActionRenderer
   cooldown: number | undefined
   showImage: boolean
@@ -94,7 +96,7 @@ function ActionDetails({
           }}
         ></div>
       )}
-      <renderer.Body />
+      <renderer.Body active={active} />
     </ItemContent>
   )
 }
@@ -139,6 +141,7 @@ function ActionTooltip({
         className="w-76 border-0 ring-0 bg-transparent"
       >
         <ActionDetails
+          active={true}
           renderer={renderer}
           cooldown={0}
           showImage={false}

@@ -30,8 +30,8 @@ const FireballRenderer: ActionRenderer = {
       <FaCircle />
     </>
   ),
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       <ActionSubDetails accuracy={FireballAccuracy} damage={FireballDamage} />
       <ActionDescription>
         Deals <ActionLabel>{FireballDamage.power}</ActionLabel>{' '}

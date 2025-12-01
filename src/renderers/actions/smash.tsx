@@ -3,7 +3,6 @@ import {
   SmashAccuracy,
   SmashCritChance,
   SmashDamage,
-  SmashTargetCount,
 } from '@/game/data/actions/smash'
 import type { ActionRenderer } from '.'
 import img from '@/assets/spells/Wind_Smash.png'
@@ -20,8 +19,8 @@ const SmashRenderer: ActionRenderer = {
   img,
   Name: () => <ActionTitle>Smash</ActionTitle>,
   Cost: () => null,
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       <ActionSubDetails
         accuracy={SmashAccuracy}
         damage={SmashDamage}
@@ -29,8 +28,7 @@ const SmashRenderer: ActionRenderer = {
       />
       <ActionDescription>
         Deals <ActionLabel>{SmashDamage.power}</ActionLabel>{' '}
-        <ActionLabel>{SmashDamage.element}</ActionLabel> damage to{' '}
-        <ActionLabel>{SmashTargetCount}</ActionLabel> target enemy.
+        <ActionLabel>{SmashDamage.element}</ActionLabel> damage to target enemy.
       </ActionDescription>
     </ActionBody>
   ),

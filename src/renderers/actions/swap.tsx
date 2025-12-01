@@ -12,8 +12,8 @@ const ActivateRenderer: ActionRenderer = {
   img,
   Name: () => <ActionTitle>Select Fighters</ActionTitle>,
   Cost: () => <></>,
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       Select the fighter(s) to fill the missing space in your active party.'
     </ActionBody>
   ),
@@ -24,8 +24,8 @@ const SwapRenderer: ActionRenderer = {
   img,
   Name: () => <div>Swap Fighters</div>,
   Cost: () => <></>,
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       <ActionDescription className="pt-2">
         This fighter leaves combat and switches places with another inactive
         figher.

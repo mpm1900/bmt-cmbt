@@ -22,8 +22,8 @@ const SprayNPrayRenderer: ActionRenderer = {
   img,
   Name: () => <ActionTitle>Spray 'n Pray</ActionTitle>,
   Cost: () => <></>,
-  Body: () => (
-    <ActionBody>
+  Body: ({ active }) => (
+    <ActionBody active={active}>
       <ActionSubDetails
         accuracy={SprayNPrayAccuracy}
         critChance={SprayNPrayCritChance}
