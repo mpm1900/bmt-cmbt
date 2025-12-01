@@ -2,7 +2,6 @@ import type { SActionItem, SPlayer } from '@/game/state'
 import { PlayerActors } from './player-actors'
 import { CombatLog } from '../combat/combat-log'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import { VscListSelection } from 'react-icons/vsc'
 import { RiTeamFill } from 'react-icons/ri'
 import { BsBackpack4Fill } from 'react-icons/bs'
 import { useGameState } from '@/hooks/useGameState'
@@ -16,6 +15,7 @@ import {
   TbHexagonNumber1Filled,
   TbHexagonNumber2Filled,
   TbHexagonNumber3Filled,
+  TbSwords,
 } from 'react-icons/tb'
 import { getPosition } from '@/game/player'
 import { Dialog } from '@radix-ui/react-dialog'
@@ -65,13 +65,13 @@ function Player({
         <TabsList className="flex flex-col items-center justify-around bg-transparent h-full gap-2 z-10">
           <TabsTrigger
             value="combat-log"
-            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50"
+            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring dark:data-[state=active]:bg-ring"
           >
-            <VscListSelection />
+            <TbSwords />
           </TabsTrigger>
           <TabsTrigger
             value="party"
-            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring/50"
+            className="bg-muted rounded-sm ring border !border-foreground/10 ring-black hover:bg-ring dark:data-[state=active]:bg-ring"
           >
             <RiTeamFill />
           </TabsTrigger>
@@ -85,7 +85,7 @@ function Player({
         </TabsList>
         <div className="relative h-32 w-62 xl:w-80">
           <TabsContent value="combat-log" className="h-full">
-            <CombatLog className="h-full w-full rounded-xs p-2 bg-background/90 border ring ring-black text-xs" />
+            <CombatLog className="h-full w-full rounded-xs p-2 bg-black/90 border ring ring-black text-xs" />
           </TabsContent>
           <TabsContent value="party" className="h-full">
             <div className="grid grid-cols-2 grid-rows-3 h-full gap-1">
@@ -114,7 +114,7 @@ function Player({
                         <div className="text-left">
                           <div className="-mb-1 font-semibold">{a.name}</div>
                           <div className="-mt-1 text-foreground/40 text-xs">
-                            Class
+                            {a.class?.name ?? 'N/A'}
                           </div>
                         </div>
                       </Button>

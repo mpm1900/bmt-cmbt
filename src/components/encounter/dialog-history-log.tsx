@@ -34,7 +34,7 @@ function DialogHistoryLog({
   }, [messageLog.length])
 
   return (
-    <ScrollArea className={cn('max-h-50 px-3', className)} {...props}>
+    <ScrollArea className={cn('max-h-50 px-3 pt-4', className)} {...props}>
       <ul className="text-xs text-muted-foreground pt-2">
         {messageLog
           .filter((m) => !activeMessages.includes(m.ID))

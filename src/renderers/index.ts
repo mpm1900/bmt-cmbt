@@ -10,12 +10,18 @@ import { Goku } from '@/game/data/effects/goku'
 import { GokuRenderer } from './effects/goku'
 import { BodyDown } from '@/game/data/effects/body-down'
 import { BodyDownRenderer } from './effects/body-down'
+import { Smash } from '@/game/data/actions/smash'
+import { SmashRenderer } from './actions/smash'
+import { SimplePrayer } from '@/game/data/actions/simple-prayer'
+import { SimplePrayerRenderer } from './actions/simple-prayer'
 
 const ACTION_RENDERERS = {
   [Activate.ID]: ActivateRenderer,
   [Swap.ID]: SwapRenderer,
 
   [Fireball.ID]: FireballRenderer,
+  [SimplePrayer.ID]: SimplePrayerRenderer,
+  [Smash.ID]: SmashRenderer,
   [SprayNPray.ID]: SprayNPrayRenderer,
 }
 

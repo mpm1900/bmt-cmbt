@@ -20,7 +20,7 @@ const ELEMENT_ICONS: Record<Element, IconType> = {
 const MAIN_STAT_ICONS: Record<MainStat, IconType> = {
   strength: LuBicepsFlexed,
   faith: GiChaliceDrops,
-  insight: LuBrain,
+  intelligence: LuBrain,
   speed: GiSprint,
 }
 

@@ -1,23 +1,17 @@
-import { BrainBlast } from '@/game/data/actions/brain-blast'
+// import { BrainBlast } from '@/game/data/actions/brain-blast'
 // import { DragonDance } from '@/game/data/actions/dragon-dance'
 import { Fireball } from '@/game/data/actions/fireball'
-import { Heal } from '@/game/data/actions/heal'
-import { HotShots } from '@/game/data/actions/hot-shots'
-import { SolarBeam } from '@/game/data/actions/solar-beam'
+// import { Heal } from '@/game/data/actions/heal'
+// import { HotShots } from '@/game/data/actions/hot-shots'
+import { SimplePrayer } from '@/game/data/actions/simple-prayer'
+import { Smash } from '@/game/data/actions/smash'
+// import { SolarBeam } from '@/game/data/actions/solar-beam'
 import { SprayNPray } from '@/game/data/actions/spray-n-pray'
 import type { SActor } from '@/game/state'
 import type { ActorStats } from '@/game/types/actor'
 import { v4 } from 'uuid'
 
-const actions = [
-  Fireball,
-  SprayNPray,
-  SolarBeam,
-  BrainBlast,
-  Heal,
-  //DragonDance,
-  HotShots,
-]
+const actions = [Fireball, SprayNPray, Smash, SimplePrayer]
 
 function createActor(
   name: string,

@@ -26,7 +26,7 @@ function RouteComponent() {
       className="h-screen w-screen flex flex-col items-center overflow-hidden relative"
       style={{
         background:
-          'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 0.8) 100%)',
+          'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 1) 100%)',
       }}
     >
       <ViewHeader />

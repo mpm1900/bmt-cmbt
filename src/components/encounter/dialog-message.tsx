@@ -13,8 +13,8 @@ function ActiveMessageSource({
 }) {
   const state = useGameState((s) => s.state)
   const actor = findActor(state, sourceID)
-  if (!actor) return <span className="font-bold pr-2">???:</span>
-  if (textOnly) return <span className="pr-2">{Actor(actor)}:</span>
+  if (!actor) return <span className="pr-2 float-left">???:</span>
+  if (textOnly) return <span className="pr-2 float-left">{Actor(actor)}:</span>
   return (
     <div className={cn('size-10 float-left mr-3 relative mb-4')}>
       <img

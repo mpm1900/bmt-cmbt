@@ -3,7 +3,7 @@ import type { Effect } from './effect'
 
 type Element = 'physical' | 'fire' | 'shock' | 'psy'
 
-type MainStat = 'strength' | 'faith' | 'insight' | 'speed'
+type MainStat = 'strength' | 'faith' | 'intelligence' | 'speed'
 type ActorStats = Record<MainStat, number> & {
   accuracy: number
   evasion: number
@@ -23,6 +23,7 @@ type Actor<T> = {
   ID: string
   playerID: string
   parentID: string | undefined
+  class?: ActorClass<T>
   name: string
   image: string
   modified: boolean

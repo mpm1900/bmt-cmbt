@@ -136,6 +136,16 @@ function getAliveActiveActors(
   )
 }
 
+function getAliveActiveActorsRaw(
+  state: State,
+  fn?: (actor: SActor) => boolean
+): Array<SActor> {
+  return state.actors.filter(
+    (actor) =>
+      isActive(state, actor.ID) && actor.state.alive && (fn ? fn(actor) : true)
+  )
+}
+
 function getAllActiveActors(state: State, fn?: (actor: SActor) => boolean) {
   return state.actors.filter(
     (actor) =>
@@ -255,6 +265,7 @@ export {
   withStatEffects,
   getAliveInactiveActors,
   getAliveActiveActors,
+  getAliveActiveActorsRaw,
   getAllActiveActors,
   getActionableActors,
   getActor,

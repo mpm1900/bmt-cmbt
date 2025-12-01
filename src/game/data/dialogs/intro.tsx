@@ -8,6 +8,7 @@ import { getMissingActorCount } from '@/game/player'
 import {
   addPlayerResolver,
   damagesResolver,
+  navigateDialogResolver,
   navigateEncounterResolver,
   pushMessagesResolver,
   startCombatResolver,
@@ -41,21 +42,21 @@ const IntroEncounterID = v4()
 const Criminal = (_index: number, aiID: string) =>
   createActor(faker.person.firstName(), aiID, portraits.skull, {
     accuracy: 0,
-    strength: 100,
+    strength: 50,
     evasion: 0,
     health: 100,
-    insight: 100,
-    faith: 100,
-    speed: 100,
+    intelligence: 50,
+    faith: 50,
+    speed: 50,
   })
 
-const IntroNode0ID = v4()
+const Node0ID = v4()
 const skullMan = createActor('???', IntroEncounterID, portraits.skull, {
   accuracy: 0,
   strength: 100,
   evasion: 0,
   health: 100,
-  insight: 100,
+  intelligence: 100,
   faith: 100,
   speed: 100,
 })
@@ -84,8 +85,8 @@ const encounterPlayer: SPlayer = {
   credits: 710,
 }
 
-const IntroNode0: SDialogNode = {
-  ID: IntroNode0ID,
+const Node0: SDialogNode = {
+  ID: Node0ID,
   type: 'options',
   checks: () => [
     {
@@ -96,25 +97,25 @@ const IntroNode0: SDialogNode = {
     },
   ],
   messages: (state) => {
-    const count = getNodeCount(state, IntroNode0.ID)
+    const count = getNodeCount(state, Node0.ID)
     if (count <= 1) {
       return [
         newMessage({
-          ID: 'IntroNode0-0',
+          ID: 'Node0-0',
           text: (
             <>
               Your party has traveled far to this land, each member driven by
               their own motivations. As you all step out of the carriage, you
-              see foggy woods that mark the outskirts of the city.
+              see foggy woods that mark the outskirts of the nearest city.
             </>
           ),
         }),
         newMessage({
-          ID: 'IntroNode0-1',
+          ID: 'Node0-1',
           text: <>Near the road is a cloaked figure with a skull mask.</>,
         }),
         newMessage({
-          ID: 'IntroNode0-2',
+          ID: 'Node0-2',
           context: newContext({
             sourceID: skullMan.ID,
           }),
@@ -123,12 +124,12 @@ const IntroNode0: SDialogNode = {
             <span>
               <p>
                 "Ah. The new arrivals are here. You all seem capable enough, but
-                a warning. These lands have a way of swaying one's soul. Be wary
-                of the calls of power."
+                a warning. These lands have a way of claiming one's soul."
               </p>
               <p className="mt-2">
-                "What consequences of life brings you all here? No one comes
-                here by their own accord. Step Forward."
+                "Dangers and draws to power are omnipresent in these lands. I
+                suggest you all travel carefully. Designate 3 of you to lead the
+                party."
               </p>
             </span>
           ),
@@ -137,7 +138,7 @@ const IntroNode0: SDialogNode = {
     }
     return [
       newMessage({
-        ID: 'IntroNode0-0.' + count,
+        ID: 'Node0-0.' + count,
         context: newContext({ sourceID: skullMan.ID }),
         type: 'dialogue',
         text: '"What can I do for you all?"',
@@ -146,9 +147,9 @@ const IntroNode0: SDialogNode = {
   },
   options: (state, context) => [
     {
-      ID: 'IntroNode0-Start-Combat',
+      ID: 'Node0-Start-Combat',
       disable: 'hide',
-      text: <em>Start Combat</em>,
+      text: <em>Attack the man.</em>,
       icons: (
         <>
           <TbSwords />
@@ -157,7 +158,7 @@ const IntroNode0: SDialogNode = {
       context,
       action: InlineMutation(() => [
         startCombatResolver(
-          newCombat({ exitNodeID: IntroNode1.ID }),
+          newCombat({ exitNodeID: NodeAfterCombat.ID }),
           {
             players: [encounterPlayer],
             actors: [skullMan, criminal2, criminal3],
@@ -169,7 +170,7 @@ const IntroNode0: SDialogNode = {
       ]),
     },
     {
-      ID: 'IntroNode0-Activate-All-Actors',
+      ID: 'Node0-Activate-All-Actors',
       disable: 'hide',
       text: <em>Step Forward</em>,
       icons: (
@@ -178,73 +179,10 @@ const IntroNode0: SDialogNode = {
         </>
       ),
       context,
-      action: ActivateXSome(getMissingActorCount(state, context.playerID)),
+      action: ActivateXSome(getMissingActorCount(state, context.playerID), [
+        navigateDialogResolver(Node1.ID, context),
+      ]),
     },
-    createSourceDialogOption(
-      {
-        text: <>"I seek healing."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      IntroNode2.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek the beast that attacked my home."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      IntroNode2.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek the truth."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      IntroNode2.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek personal meaning."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      IntroNode2.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <em>stay silent.</em>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      IntroNode2.ID,
-      []
-    ),
     {
       ID: v4(),
       disable: 'hide',
@@ -262,7 +200,118 @@ const IntroNode0: SDialogNode = {
   ],
 }
 
-const IntroNode1: SDialogNode = {
+const Node1: SDialogNode = {
+  ID: v4(),
+  type: 'options',
+  checks: () => [],
+  messages: () => [
+    newMessage({
+      ID: 'Node1-0',
+      type: 'dialogue',
+      context: newContext({
+        sourceID: skullMan.ID,
+      }),
+      text: (
+        <>
+          "What consequences of life brings each of you here I wonder. No one
+          comes to this land by their own accord."
+        </>
+      ),
+    }),
+  ],
+  options: (state, context) => [
+    {
+      ID: 'Node1-Start-Combat',
+      disable: 'hide',
+      text: <em>Attack the man.</em>,
+      icons: (
+        <>
+          <TbSwords />
+        </>
+      ),
+      context,
+      action: InlineMutation(() => [
+        startCombatResolver(
+          newCombat({ exitNodeID: NodeAfterCombat.ID }),
+          {
+            players: [encounterPlayer],
+            actors: [skullMan, criminal2, criminal3],
+          },
+          {
+            activeSize: 3,
+          }
+        ),
+      ]),
+    },
+    createSourceDialogOption(
+      {
+        text: <>"I seek healing."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"I seek the beast that attacked my home."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"I seek the truth."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"I seek personal meaning."</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <em>stay silent.</em>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+  ],
+}
+
+const NodeAfterCombat: SDialogNode = {
   ID: v4(),
   type: 'options',
   checks: (state, context) => [
@@ -339,7 +388,7 @@ const IntroNode1: SDialogNode = {
         ),
       },
       context,
-      IntroNode0.ID,
+      Node0.ID,
       []
     ),
     {
@@ -357,11 +406,11 @@ const IntroNode1: SDialogNode = {
   ],
 }
 
-const IntroNode2: SDialogNode = {
+const NodeShop: SDialogNode = {
   ID: v4(),
   type: 'shop',
   messages: (state) => {
-    const count = getNodeCount(state, IntroNode0.ID)
+    const count = getNodeCount(state, Node0.ID)
     return [
       newMessage({
         ID: 'IntroNode2-0.' + count,
@@ -382,7 +431,7 @@ const IntroNode2: SDialogNode = {
         ),
       },
       context,
-      IntroNode0.ID,
+      Node0.ID,
       []
     ),
   ],
@@ -428,10 +477,10 @@ const IntroNode2: SDialogNode = {
 
 const IntroEncounter: SEncounter = {
   ID: IntroEncounterID,
-  name: 'Introductions',
+  name: 'A Last Resort, a New Begining',
   persist: false,
-  startNodeID: IntroNode0.ID,
-  nodes: [IntroNode0, IntroNode1, IntroNode2],
+  startNodeID: Node0.ID,
+  nodes: [Node0, Node1, NodeAfterCombat, NodeShop],
 }
 
 export { IntroEncounter }

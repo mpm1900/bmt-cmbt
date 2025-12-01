@@ -136,8 +136,8 @@ function TargetinLine({
         start={{ x: startX, y: startY }}
         end={{ x: endX, y: endY }}
         stroke={sourceIsPlayer ? 'var(--color-ally)' : 'var(--color-enemy)'}
-        source={sourceActor.playerID === playerID ? 'ally' : 'enemy'}
-        target={targetActor.playerID === playerID ? 'ally' : 'enemy'}
+        source={sourceIsPlayer ? 'ally' : 'enemy'}
+        target={targetIsPlayer ? 'ally' : 'enemy'}
         filter="url(#shadow)"
       />
     </svg>

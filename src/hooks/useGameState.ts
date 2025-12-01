@@ -31,6 +31,8 @@ import { useEffect, useState } from 'react'
 import { findActor } from '@/game/access'
 import { isPlayerDead } from '@/game/player'
 import { Protected } from '@/game/data/effects/protected'
+import { newActor } from '@/game/lib/actor'
+import { Blacksmith } from '@/game/data/actors/classes/blacksmith'
 
 type GameStateStore = {
   state: State
@@ -50,15 +52,7 @@ const player: SPlayer = {
   credits: 9999,
 }
 
-const Max = createActor('Max', player.ID, 'man', {
-  accuracy: 0,
-  strength: 100,
-  evasion: 0,
-  health: 100,
-  faith: 100,
-  insight: 100,
-  speed: 100,
-})
+const Max = newActor('Max', player.ID, 'man', Blacksmith())
 Max.state.damage = 60
 Max.effects = [Intimidate, Goku]
 
@@ -68,7 +62,7 @@ const Katie = createActor('Katie', player.ID, 'woman_8', {
   evasion: 0,
   health: 100,
   faith: 100,
-  insight: 180,
+  intelligence: 180,
   speed: 70,
 })
 
@@ -78,7 +72,7 @@ const Hank = createActor('Hank', player.ID, 'lion', {
   // evasion: 90,
   evasion: 0,
   health: 100,
-  insight: 100,
+  intelligence: 100,
   faith: 150,
   speed: 150,
 })
@@ -88,7 +82,7 @@ const Milo = createActor('Milo', player.ID, 'rac', {
   strength: 100,
   evasion: 0,
   health: 100,
-  insight: 100,
+  intelligence: 100,
   faith: 100,
   speed: 100,
 })

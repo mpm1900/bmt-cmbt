@@ -59,6 +59,15 @@ function withChanceEvents(
   }
 }
 
+function withDrSuccess(damage: PowerDamage): PowerDamage {
+  return {
+    ...damage,
+    success: true,
+    evade: false,
+    critical: false,
+  }
+}
+
 function getSourceChance<T>(
   source: Actor<T>,
   options: {
@@ -154,4 +163,5 @@ export {
   getTargetChance,
   getDamageResult,
   withChanceEvents,
+  withDrSuccess,
 }

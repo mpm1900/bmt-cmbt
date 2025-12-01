@@ -24,6 +24,12 @@ function CombatHeader() {
           {p}
         </Badge>
       ))}
+      {phase === 'planning' && (
+        <>
+          <Separator orientation="vertical" />
+          <Badge>{state.actionQueue.length}</Badge>
+        </>
+      )}
       <Separator orientation="vertical" />
       <Badge onClick={() => next()}>
         <GiNextButton />

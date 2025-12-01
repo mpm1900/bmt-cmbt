@@ -46,7 +46,7 @@ const Criminal = (_index: number, aiID: string) =>
     strength: 100,
     evasion: 0,
     health: 100,
-    insight: 100,
+    intelligence: 100,
     faith: 100,
     speed: 100,
   })

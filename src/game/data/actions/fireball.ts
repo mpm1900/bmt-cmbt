@@ -11,10 +11,12 @@ import { costResolver, damagesResolver } from '@/game/resolvers'
 import type { PowerDamage } from '@/game/types/damage'
 import { getPosition } from '@/game/player'
 import {
+  getDamageResult,
   getSourceChance,
   getTargetChance,
   newDamage,
   withChanceEvents,
+  withDrSuccess,
 } from '@/game/lib/damage'
 import { resolveAction } from '@/game/action'
 
@@ -23,8 +25,8 @@ const FireballManaCost = 0 //5
 const FireballCooldown = 2
 const FireballAccuracy = 100
 const FireballDamage: PowerDamage = newDamage({
-  offenseStat: 'insight',
-  defenseStat: 'insight',
+  offenseStat: 'intelligence',
+  defenseStat: 'intelligence',
   element: 'fire',
   power: 50,
   criticalModifier: 1.5,
@@ -66,11 +68,17 @@ const Fireball: SAction = {
       })
     },
     compute: (state, context) => {
-      return mapActorPosition(
-        state,
-        context.positions[0],
-        (a) => a.stats.health - a.state.damage
-      )
+      const source = getActor(state, context.sourceID)!
+      return mapActorPosition(state, context.positions[0], (a) => {
+        const target = getActor(state, a.ID)!
+        const result = getDamageResult(
+          source,
+          target,
+          withDrSuccess(FireballDamage)
+        )
+        console.log(result)
+        return 0
+      })
     },
   },
   resolve: (state, context) => {

@@ -9,7 +9,7 @@ import {
   activateActorResolver,
   deactivateActorResolver,
 } from '@/game/resolvers'
-import type { SDialogAction } from '@/game/state'
+import type { SDialogAction, SMutation } from '@/game/state'
 import { getUniqueCombinations } from '@/lib/get-unique-combinations'
 import { v4 } from 'uuid'
 
@@ -118,7 +118,7 @@ function ActivateX(x: number): SDialogAction {
     },
   }
 }
-function ActivateXSome(x: number): SDialogAction {
+function ActivateXSome(x: number, extra: Array<SMutation> = []): SDialogAction {
   const base = ActivateX(x)
 
   return {
@@ -126,6 +126,10 @@ function ActivateXSome(x: number): SDialogAction {
     targets: {
       ...base.targets,
       validate: (_, context) => context.targetIDs.length > 0,
+    },
+    resolve: (s, c) => {
+      const b = base.resolve(s, c)
+      return b.concat(extra)
     },
   }
 }

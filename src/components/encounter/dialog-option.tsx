@@ -96,7 +96,7 @@ function DialogOption({
           {Array.from({ length: max }).map((_, i) => (
             <ActorSelect
               key={i}
-              placeholder="Target"
+              placeholder="Select"
               disabled={disabled || loading}
               options={getOptions(i)}
               value={context.targetIDs[i]}
