@@ -79,7 +79,7 @@ function DialogOption({
             options={sources}
             value={context.sourceID}
             onValueChange={(sourceID) =>
-              setContext((c) => ({ ...c, sourceID }))
+              setContext((c) => ({ ...c, sourceID: sourceID ?? '' }))
             }
           />
         </InputGroupAddon>

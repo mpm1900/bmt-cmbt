@@ -42,7 +42,7 @@ function PlayerItemsDialog({
                   onOpenChange?.(false)
                   resolveActionItem(item.consumable!, {
                     ...context,
-                    sourceID: value,
+                    sourceID: value ?? '',
                     targetIDs: [value],
                   })
                 }}

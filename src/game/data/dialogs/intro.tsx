@@ -104,9 +104,11 @@ const Node0: SDialogNode = {
           ID: 'Node0-0',
           text: (
             <>
-              Your party has traveled far to this land, each member driven by
-              their own motivations. As you all step out of the carriage, you
-              see foggy woods that mark the outskirts of the nearest city.
+              Your party has traveled far to this land. You are unsure of
+              exactly how long you've been traveling. Each party member is
+              driven by their own quests and ambitions. As you all step off the
+              small boat that brought you here, you are greeted by thick fog
+              obscuring a view of a dark forest with mountains behind it.
             </>
           ),
         }),
@@ -123,16 +125,17 @@ const Node0: SDialogNode = {
           text: (
             <span>
               <p>
-                "Ah. The new arrivals are here. You all seem capable enough, but
-                a warning. These lands have a way of claiming one's soul."
-              </p>
-              <p className="mt-2">
-                "Dangers and draws to power are omnipresent in these lands. I
-                suggest you all travel carefully. Designate 3 of you to lead the
-                party."
+                "Ah. The new arrivals are here. You should know there horrors
+                that lurk all throughout these lands. Someone must lead your
+                party through the dark."
               </p>
             </span>
           ),
+        }),
+        newMessage({
+          ID: 'Node0-3',
+          type: 'narration',
+          text: '(Only active characters can interact with dialogue and encounters. "Step Forward" below to activate party members.)',
         }),
       ]
     }
@@ -146,6 +149,20 @@ const Node0: SDialogNode = {
     ]
   },
   options: (state, context) => [
+    {
+      ID: 'Node0-Activate-All-Actors',
+      disable: 'hide',
+      text: <em>Step Forward</em>,
+      icons: (
+        <>
+          <TbUsersPlus />
+        </>
+      ),
+      context,
+      action: ActivateXSome(getMissingActorCount(state, context.playerID), [
+        navigateDialogResolver(Node1.ID, context),
+      ]),
+    },
     {
       ID: 'Node0-Start-Combat',
       disable: 'hide',
@@ -167,20 +184,6 @@ const Node0: SDialogNode = {
             activeSize: 3,
           }
         ),
-      ]),
-    },
-    {
-      ID: 'Node0-Activate-All-Actors',
-      disable: 'hide',
-      text: <em>Step Forward</em>,
-      icons: (
-        <>
-          <TbUsersPlus />
-        </>
-      ),
-      context,
-      action: ActivateXSome(getMissingActorCount(state, context.playerID), [
-        navigateDialogResolver(Node1.ID, context),
       ]),
     },
     {
