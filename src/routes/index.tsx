@@ -1,3 +1,4 @@
+import { BgVitals } from '@/components/combat/bg-vitals'
 import { CombatView } from '@/components/combat/combat-view'
 import { StagingTargetLines } from '@/components/combat/staging-target-lines'
 import { TargetingLines } from '@/components/combat/targeting-lines'
@@ -29,6 +30,12 @@ function RouteComponent() {
           'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 1) 100%)',
       }}
     >
+      {!combat && <BgVitals player={player} />}
+      {current && combat?.phase === 'main' && (
+        <TargetingLines current={current} />
+      )}
+      <StagingTargetLines />
+
       <ViewHeader />
       <div className="flex-1 flex flex-col justify-between relative z-10">
         <EncounterActors encounter={ai} current={current} />
@@ -38,10 +45,6 @@ function RouteComponent() {
 
         <Player player={player} current={current} />
       </div>
-      {current && combat?.phase === 'main' && (
-        <TargetingLines current={current} />
-      )}
-      <StagingTargetLines />
     </div>
   )
 }
