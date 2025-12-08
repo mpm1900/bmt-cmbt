@@ -30,7 +30,7 @@ function RouteComponent() {
           'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 1) 100%)',
       }}
     >
-      {!combat && <BgVitals player={player} />}
+      <BgVitals player={player} />
       {current && combat?.phase === 'main' && (
         <TargetingLines current={current} />
       )}

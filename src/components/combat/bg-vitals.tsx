@@ -117,17 +117,19 @@ function BgVitals({ player }: { player: SPlayer }) {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
-        key={state.encounter.ID}
-        className="absolute z-0 inset-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {activeIDs.map((id, i) => (
-          <VitalLine key={id} actorID={id} index={i} />
-        ))}
-      </motion.div>
+      {!state.combat && (
+        <motion.div
+          key={state.encounter.ID}
+          className="absolute z-0 inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {activeIDs.map((id, i) => (
+            <VitalLine key={id} actorID={id} index={i} />
+          ))}
+        </motion.div>
+      )}
     </AnimatePresence>
   )
 }
