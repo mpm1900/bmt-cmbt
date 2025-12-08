@@ -11,13 +11,7 @@ import {
 } from 'motion/react'
 import { useEffect, useMemo } from 'react'
 
-function VitalLine({
-  actorID,
-  index,
-}: {
-  actorID: string | null
-  index: number
-}) {
+function VitalLine({ actorID }: { actorID: string | null }) {
   const state = useGameState((s) => s.state)
   const actor = actorID ? getActor(state, actorID) : undefined
 
@@ -62,9 +56,12 @@ function VitalLine({
   })
 
   return (
-    <svg
-      className="absolute top-1/3 h-[280px] w-full pointer-events-none opacity-25"
-      style={{ left: index * 32 + offset }}
+    <motion.svg
+      className="absolute top-1/3 h-[280px] w-full pointer-events-none"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: Math.max(0.2, 1 - hpPct) }}
+      exit={{ opacity: 0 }}
+      style={{ left: offset }}
       aria-hidden
     >
       <defs>
@@ -107,13 +104,14 @@ function VitalLine({
         fill="none"
         filter={`url(#vital-glow-${actorID})`}
       />
-    </svg>
+    </motion.svg>
   )
 }
 
 function BgVitals({ player }: { player: SPlayer }) {
   const activeIDs = player.activeActorIDs
   const state = useGameState((s) => s.state)
+  console.log(activeIDs)
 
   return (
     <AnimatePresence mode="wait">
@@ -126,7 +124,7 @@ function BgVitals({ player }: { player: SPlayer }) {
           exit={{ opacity: 0 }}
         >
           {activeIDs.map((id, i) => (
-            <VitalLine key={id} actorID={id} index={i} />
+            <VitalLine key={(id ?? '') + i} actorID={id} />
           ))}
         </motion.div>
       )}
