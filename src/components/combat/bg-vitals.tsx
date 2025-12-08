@@ -37,12 +37,12 @@ function VitalLine({ actorID }: { actorID: string | null }) {
 
   const d = useTransform(phase, (p) => {
     const width = typeof window !== 'undefined' ? window.innerWidth : 1200
-    const height = 280
+    const height = typeof window !== 'undefined' ? window.innerHeight : 200
     const midY = height / 2
     const maxAmp = midY * 0.9
 
     const amplitude = maxAmp * Math.pow(hpPct, 1)
-    const freq = 2 + 6 * hpPct
+    const freq = 2 * hpPct
 
     const samples = Math.max(200, Math.floor(width / 6))
     let path = ''
@@ -57,9 +57,9 @@ function VitalLine({ actorID }: { actorID: string | null }) {
 
   return (
     <motion.svg
-      className="absolute top-1/3 h-[280px] w-full pointer-events-none"
+      className="absolute top-0 h-full w-full pointer-events-none"
       initial={{ opacity: 0 }}
-      animate={{ opacity: Math.max(0.2, 1 - hpPct) }}
+      animate={{ opacity: Math.max(0.05, 1 - hpPct - 0.4) }}
       exit={{ opacity: 0 }}
       style={{ left: offset }}
       aria-hidden
@@ -111,23 +111,20 @@ function VitalLine({ actorID }: { actorID: string | null }) {
 function BgVitals({ player }: { player: SPlayer }) {
   const activeIDs = player.activeActorIDs
   const state = useGameState((s) => s.state)
-  console.log(activeIDs)
 
   return (
     <AnimatePresence mode="wait">
-      {!state.combat && (
-        <motion.div
-          key={state.encounter.ID}
-          className="absolute z-0 inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          {activeIDs.map((id, i) => (
-            <VitalLine key={(id ?? '') + i} actorID={id} />
-          ))}
-        </motion.div>
-      )}
+      <motion.div
+        key={state.encounter.ID}
+        className="absolute z-0 inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {activeIDs.map((id, i) => (
+          <VitalLine key={(id ?? '') + i} actorID={id} />
+        ))}
+      </motion.div>
     </AnimatePresence>
   )
 }

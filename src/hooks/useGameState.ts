@@ -53,7 +53,7 @@ const player: SPlayer = {
 }
 
 const Max = newActor('Max', player.ID, 'man', Blacksmith())
-Max.state.damage = 60
+Max.state.damage = 90
 Max.effects = [Intimidate, Goku]
 
 const Katie = createActor('Katie', player.ID, 'woman_8', {
