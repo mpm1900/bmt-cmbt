@@ -28,9 +28,11 @@ function VitalLine({
     return Math.max(0, Math.min(1, cur / max))
   }, [actor?.state.damage, actor?.stats.health])
 
+  const offset = useMemo(() => Math.random() * 32, [hpPct])
+
   useEffect(() => {
     const baseDur = 8
-    const dur = Math.max(3, baseDur * (1 - hpPct))
+    const dur = Math.max(4, baseDur * hpPct + Math.random() * 3)
     const controls = animate(phase, [0, Math.PI * 2], {
       duration: dur,
       ease: 'linear',
@@ -62,7 +64,7 @@ function VitalLine({
   return (
     <svg
       className="absolute top-1/3 h-[280px] w-full pointer-events-none opacity-25"
-      style={{ left: index * 8 }}
+      style={{ left: index * 32 + offset }}
       aria-hidden
     >
       <defs>
