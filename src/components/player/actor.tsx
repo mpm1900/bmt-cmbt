@@ -13,6 +13,7 @@ import { ActorBg } from './actor-bg'
 import { Badge } from '../ui/badge'
 import { cn } from '@/lib/utils'
 import { useGameUI } from '@/hooks/useGameUI'
+import { MdCircle, MdOutlineCircle } from 'react-icons/md'
 
 function Actor({
   actorID,
@@ -138,7 +139,13 @@ function Actor({
                 </span>
               )}
             </ActorHealth>
-            <span className="text-xs h-4">resource bars here</span>
+            <span className="text-xs h-4 p-2 flex items-center">
+              <MdCircle />
+              <MdOutlineCircle />
+              <MdOutlineCircle />
+              <MdOutlineCircle />
+              <MdOutlineCircle />
+            </span>
           </ItemContent>
         </div>
       </ActorBg>

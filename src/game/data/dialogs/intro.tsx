@@ -13,6 +13,13 @@ import { d0_ID, skullMan } from './d0_intro/_shared'
 import { Node0, Node0ID } from './d0_intro/n0_arrival'
 import { Node1 } from './d0_intro/n1_question'
 import { Deactivate } from '../actions/_system/swap'
+import {
+  Node1A0,
+  Node1A0_Knowledge,
+  Node1A0_Meaning,
+  Node1A0_Power,
+  Node1A0_Unsure,
+} from './d0_intro/n2_n1a0_whatis'
 
 const playerID = playerStore.getState().playerID
 
@@ -135,7 +142,7 @@ const NodeShop: SDialogNode = {
         ),
       },
       context,
-      Node0.ID,
+      Node1.ID,
       []
     ),
   ],
@@ -179,10 +186,20 @@ const NodeShop: SDialogNode = {
 
 const IntroEncounter: SEncounter = {
   ID: d0_ID,
-  name: 'A Last Resort, a New Begining',
+  name: 'Arrivals',
   persist: false,
   startNodeID: Node0ID,
-  nodes: [Node0, Node1, NodeAfterCombat, NodeShop],
+  nodes: [
+    Node0,
+    Node1,
+    Node1A0,
+    Node1A0_Power,
+    Node1A0_Knowledge,
+    Node1A0_Meaning,
+    Node1A0_Unsure,
+    NodeAfterCombat,
+    NodeShop,
+  ],
 }
 
 export { IntroEncounter, NodeAfterCombat, NodeShop }

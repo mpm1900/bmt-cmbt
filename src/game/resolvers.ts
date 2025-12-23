@@ -510,7 +510,8 @@ function navigateDialogResolver(
     context,
     delta: {
       apply: (state, context) => {
-        const active = state.encounter.nodes.find((node) => node.ID === nodeID)!
+        const active = state.encounter.nodes.find((node) => node.ID === nodeID)
+        if (!active) return state
         if (active.type == 'options') {
           active.checks(state, context).forEach((check) => {
             const [success, roll] = chance(check.chance)

@@ -40,17 +40,20 @@ const Node0: SDialogNode = {
           ID: 'Node0-0',
           text: (
             <>
-              Your party has traveled far to this land. You are unsure of
-              exactly how long you've been traveling. Each party member is
-              driven by their own quests and ambitions. As you all step off the
-              small boat that brought you here, you are greeted by thick fog
-              obscuring a view of a dark forest with mountains behind it.
+              You have travelled far. Every member of your party has their own
+              reasons for coming here.
             </>
           ),
         }),
         newMessage({
           ID: 'Node0-1',
-          text: <>Near the road is a cloaked figure with a skull mask.</>,
+          text: (
+            <>
+              As the ship you sailed on comes to a halt on the black water, you
+              notice what appears to be a masked main standing under a lamp.
+              They seem to be waiting for the ship to arrive.
+            </>
+          ),
         }),
         newMessage({
           ID: 'Node0-2',
@@ -61,9 +64,8 @@ const Node0: SDialogNode = {
           text: (
             <span>
               <p>
-                "Ah. The new arrivals are here. You should know there horrors
-                that lurk all throughout these lands. Someone must lead your
-                party through the dark. Step forward."
+                "Ah. The new arrivals are here. You all seem to have your wits
+                about you."
               </p>
             </span>
           ),
@@ -71,7 +73,13 @@ const Node0: SDialogNode = {
         newMessage({
           ID: 'Node0-3',
           type: 'narration',
-          text: '(Only active party memebers can interact with dialogue and encounters.)',
+          text: (
+            <span className="opacity-60">
+              (This game features a split active/inactive party system. Only
+              "active" party members can participate in converations and act in
+              combat.)
+            </span>
+          ),
         }),
       ]
     }
@@ -88,7 +96,11 @@ const Node0: SDialogNode = {
     {
       ID: 'Node0-Activate-All-Actors',
       disable: 'hide',
-      text: <em>Step Forward</em>,
+      text: (
+        <em>
+          Step Forward <span className="opacity-60">(Activate)</span>
+        </em>
+      ),
       icons: (
         <>
           <TbUsersPlus />

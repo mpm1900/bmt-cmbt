@@ -1,4 +1,3 @@
-import { BgVitals } from '@/components/combat/bg-vitals'
 import { CombatView } from '@/components/combat/combat-view'
 import { StagingTargetLines } from '@/components/combat/staging-target-lines'
 import { TargetingLines } from '@/components/combat/targeting-lines'
@@ -30,7 +29,6 @@ function RouteComponent() {
           'radial-gradient(ellipse at center, transparent 75%, rgba(0, 0, 0, 1) 100%)',
       }}
     >
-      <BgVitals player={player} />
       {current && combat?.phase === 'main' && (
         <TargetingLines current={current} />
       )}

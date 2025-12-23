@@ -3,12 +3,15 @@ import { newContext } from '@/game/mutations'
 import type { SDialogNode } from '@/game/state'
 import { v4 } from 'uuid'
 import { criminal2, criminal3, d0_PLAYER, skullMan } from './_shared'
-import { TbSwords } from 'react-icons/tb'
+import { TbSwords, TbUsersPlus } from 'react-icons/tb'
 import { InlineMutation } from '../../actions/_system/inline-mutation'
-import { startCombatResolver } from '@/game/resolvers'
+import { navigateDialogResolver, startCombatResolver } from '@/game/resolvers'
 import { newCombat } from '@/game/lib/combat'
 import { LuSpeech } from 'react-icons/lu'
 import { NodeAfterCombat, NodeShop } from '../intro'
+import { Node1A0ID } from './n2_n1a0_whatis'
+import { ActivateXSome } from '../../actions/_system/swap'
+import { getMissingActorCount } from '@/game/player'
 
 const Node1ID = v4()
 const Node1: SDialogNode = {
@@ -17,20 +20,64 @@ const Node1: SDialogNode = {
   checks: () => [],
   messages: () => [
     newMessage({
-      ID: 'Node1-0',
       type: 'dialogue',
       context: newContext({
         sourceID: skullMan.ID,
       }),
       text: (
         <>
-          "What consequences of life brings each of you here I wonder. No one
-          comes to this land by their own accord."
+          "I'm sure you must have many questions, for these are interesting
+          times indeed. Just know, you are not safe here. Arrivals are easy
+          prey."
         </>
       ),
     }),
   ],
-  options: (_state, context) => [
+  options: (state, context) => [
+    createSourceDialogOption(
+      {
+        text: <>"What is this place?"</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      Node1A0ID,
+      []
+    ),
+    createSourceDialogOption(
+      {
+        text: <>"Do you have anything to trade?"</>,
+        icons: (
+          <>
+            <LuSpeech />
+          </>
+        ),
+      },
+      context,
+      NodeShop.ID,
+      []
+    ),
+    {
+      ID: v4(),
+      disable: 'hide',
+      text: (
+        <em>
+          Step Forward <span className="opacity-60">(Activate)</span>
+        </em>
+      ),
+      icons: (
+        <>
+          <TbUsersPlus />
+        </>
+      ),
+      context,
+      action: ActivateXSome(getMissingActorCount(state, context.playerID), [
+        navigateDialogResolver(Node1ID, context),
+      ]),
+    },
     {
       ID: 'Node1-Start-Combat',
       disable: 'hide',
@@ -54,71 +101,6 @@ const Node1: SDialogNode = {
         ),
       ]),
     },
-    createSourceDialogOption(
-      {
-        text: <>"I seek healing."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      NodeShop.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek the beast that attacked my home."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      NodeShop.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek the truth."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      NodeShop.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <>"I seek personal meaning."</>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      NodeShop.ID,
-      []
-    ),
-    createSourceDialogOption(
-      {
-        text: <em>stay silent.</em>,
-        icons: (
-          <>
-            <LuSpeech />
-          </>
-        ),
-      },
-      context,
-      NodeShop.ID,
-      []
-    ),
   ],
 }
 
